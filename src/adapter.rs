@@ -17,7 +17,6 @@ pub enum Error {
     Rusb(rusb::Error),
     Adapter,
     Payload,
-    Unplugged(Port),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
