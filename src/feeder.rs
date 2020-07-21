@@ -42,12 +42,12 @@ impl Feeder {
         use vjoy::*;
 
         unsafe {
-            if vJoyEnabled() {
+            if vJoyEnabled() != 0 {
                 let status = GetVJDStatus(r_id.into());
 
                 match status {
                     VjdStat::Own | VjdStat::Free => {
-                        if !AcquireVJD(1) {
+                        if AcquireVJD(1) == 0 {
                             return Err(Error::VJoyAcquire { r_id });
                         }
                     }
