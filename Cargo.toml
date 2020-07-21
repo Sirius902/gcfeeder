@@ -1,0 +1,9 @@
+[package]
+name = "gcfeeder"
+version = "0.1.0"
+authors = ["Sirius902 <3645979-Sirius902@users.noreply.gitlab.com>"]
+edition = "2018"
+
+[dependencies]
+libc = "0.2"
+rusb = "0.6"
