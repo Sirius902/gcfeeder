@@ -2,12 +2,8 @@ use rusb::constants::LIBUSB_DT_HID;
 use rusb::{DeviceHandle, Direction, GlobalContext};
 use std::time::Duration;
 
-pub const MAIN_STICK_CENTER_X: u8 = 0x80;
-pub const MAIN_STICK_CENTER_Y: u8 = 0x80;
-pub const MAIN_STICK_RADIUS: u8 = 0x7F;
-pub const C_STICK_CENTER_X: u8 = 0x80;
-pub const C_STICK_CENTER_Y: u8 = 0x80;
-pub const C_STICK_RADIUS: u8 = 0x7F;
+const MAIN_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
+const C_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
 
 const PAYLOAD_SIZE: usize = 37;
 const ALLOWED_TIMEOUT: Duration = Duration::from_millis(16);
@@ -148,6 +144,47 @@ impl Drop for Adapter {
     }
 }
 
+#[derive(Copy, Clone)]
+struct StickRange {
+    pub center_x: u8,
+    pub center_y: u8,
+    pub radius: u8,
+}
+
+impl StickRange {
+    pub const fn new(center_x: u8, center_y: u8, radius: u8) -> StickRange {
+        StickRange {
+            center_x,
+            center_y,
+            radius,
+        }
+    }
+
+    pub const fn restrict(self, x: i16, y: i16) -> (u8, u8) {
+        let (center_x, center_y, radius) = (
+            self.center_x as i16,
+            self.center_y as i16,
+            self.radius as i16,
+        );
+
+        let xx = Self::clamp(x, center_x - radius, center_x + radius);
+        let yy = Self::clamp(y, center_y - radius, center_y + radius);
+
+        (xx as u8, yy as u8)
+    }
+
+    const fn clamp(n: i16, min: i16, max: i16) -> i16 {
+        assert!(min <= max);
+        if n < min {
+            min
+        } else if n > max {
+            max
+        } else {
+            n
+        }
+    }
+}
+
 struct Drift {
     stick_x: i16,
     stick_y: i16,
@@ -158,37 +195,28 @@ struct Drift {
 impl Drift {
     pub fn new(initial: &Input) -> Drift {
         Drift {
-            stick_x: i16::from(MAIN_STICK_CENTER_X) - i16::from(initial.stick_x),
-            stick_y: i16::from(MAIN_STICK_CENTER_Y) - i16::from(initial.stick_y),
-            substick_x: i16::from(C_STICK_CENTER_X) - i16::from(initial.substick_x),
-            substick_y: i16::from(C_STICK_CENTER_Y) - i16::from(initial.substick_y),
+            stick_x: i16::from(MAIN_STICK.center_x) - i16::from(initial.stick_x),
+            stick_y: i16::from(MAIN_STICK.center_y) - i16::from(initial.stick_y),
+            substick_x: i16::from(C_STICK.center_x) - i16::from(initial.substick_x),
+            substick_y: i16::from(C_STICK.center_y) - i16::from(initial.substick_y),
         }
     }
 
     pub fn correct(&self, mut input: Input) -> Input {
-        let constrict =
-            |n: i16, center: i16, radius: i16| n.min(center + radius).max(center - radius);
-
-        input.stick_x = constrict(
+        let (stick_x, stick_y) = MAIN_STICK.restrict(
             i16::from(input.stick_x) + self.stick_x,
-            i16::from(MAIN_STICK_CENTER_X),
-            i16::from(MAIN_STICK_RADIUS),
-        ) as u8;
-        input.stick_y = constrict(
             i16::from(input.stick_y) + self.stick_y,
-            i16::from(MAIN_STICK_CENTER_Y),
-            i16::from(MAIN_STICK_RADIUS),
-        ) as u8;
-        input.substick_x = constrict(
+        );
+        
+        let (substick_x, substick_y) = C_STICK.restrict(
             i16::from(input.substick_x) + self.substick_x,
-            i16::from(C_STICK_CENTER_X),
-            i16::from(C_STICK_RADIUS),
-        ) as u8;
-        input.substick_y = constrict(
             i16::from(input.substick_y) + self.substick_y,
-            i16::from(C_STICK_CENTER_Y),
-            i16::from(C_STICK_RADIUS),
-        ) as u8;
+        );
+
+        input.stick_x = stick_x;
+        input.stick_y = stick_y;
+        input.substick_x = substick_x;
+        input.substick_y = substick_y;
 
         input
     }
@@ -269,10 +297,10 @@ impl Default for Input {
             button_r: false,
             button_l: false,
 
-            stick_x: MAIN_STICK_CENTER_X,
-            stick_y: MAIN_STICK_CENTER_Y,
-            substick_x: C_STICK_CENTER_X,
-            substick_y: C_STICK_CENTER_Y,
+            stick_x: MAIN_STICK.center_x,
+            stick_y: MAIN_STICK.center_y,
+            substick_x: C_STICK.center_x,
+            substick_y: C_STICK.center_y,
             trigger_left: 0,
             trigger_right: 0,
         }
