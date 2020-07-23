@@ -77,6 +77,9 @@ pub struct Device {
 }
 
 impl Device {
+    /// Acquires the specified vJoy device.
+    /// 
+    /// `device_id` is one indexed.
     pub fn acquire(device_id: u32) -> Result<Device, Error> {
         unsafe {
             if ffi::vJoyEnabled() == FALSE {
