@@ -74,10 +74,6 @@ impl Adapter {
         })
     }
 
-    pub fn close(&mut self) -> Result<(), Error> {
-        self.handle.release_interface(0).map_err(Error::Rusb)
-    }
-
     pub fn read_inputs(&mut self) -> Result<[Option<Input>; 4], Error> {
         let payload = self.read_payload()?;
         let mut inputs: [Option<Input>; 4] = Default::default();
@@ -148,7 +144,7 @@ impl Adapter {
 
 impl Drop for Adapter {
     fn drop(&mut self) {
-        let _ = self.close();
+        let _ = self.handle.release_interface(0);
     }
 }
 
