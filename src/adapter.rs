@@ -160,7 +160,7 @@ impl StickRange {
         }
     }
 
-    pub const fn restrict(self, x: i16, y: i16) -> (u8, u8) {
+    pub fn restrict(self, x: i16, y: i16) -> (u8, u8) {
         let (center_x, center_y, radius) = (
             self.center_x as i16,
             self.center_y as i16,
@@ -173,7 +173,7 @@ impl StickRange {
         (xx as u8, yy as u8)
     }
 
-    const fn clamp(n: i16, min: i16, max: i16) -> i16 {
+    fn clamp(n: i16, min: i16, max: i16) -> i16 {
         assert!(min <= max);
         if n < min {
             min
@@ -207,7 +207,7 @@ impl Drift {
             i16::from(input.stick_x) + self.stick_x,
             i16::from(input.stick_y) + self.stick_y,
         );
-        
+
         let (substick_x, substick_y) = C_STICK.restrict(
             i16::from(input.substick_x) + self.substick_x,
             i16::from(input.substick_y) + self.substick_y,
