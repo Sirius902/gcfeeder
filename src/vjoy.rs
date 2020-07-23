@@ -50,6 +50,7 @@ mod ffi {
     use super::*;
     use libc::c_int;
 
+    #[allow(dead_code)]
     #[link(name = "vJoyInterface")]
     extern "C" {
         pub fn vJoyEnabled() -> BOOL;
