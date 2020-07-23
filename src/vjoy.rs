@@ -70,8 +70,8 @@ pub type DeviceId = u32;
 #[derive(Debug)]
 pub enum Error {
     Driver,
-    Acquire(DeviceId),
-    Device { id: DeviceId, status: VjdStat },
+    Acquire { id: DeviceId, status: VjdStat },
+    Relinquish { id: DeviceId, status: VjdStat },
     Update(DeviceId),
 }
 
@@ -93,15 +93,29 @@ impl Device {
 
             match status {
                 VjdStat::Own | VjdStat::Free => {
-                    if ffi::AcquireVJD(id) == FALSE {
-                        return Err(Error::Acquire(id));
+                    if ffi::AcquireVJD(id) == TRUE {
+                        return Ok(Device { id });
                     }
                 }
-                _ => return Err(Error::Device { id, status }),
+                _ => {},
             }
-        }
 
-        Ok(Device { id })
+            Err(Error::Acquire { id, status })
+        }
+    }
+
+    pub fn relinquish(&mut self) -> Result<(), Error> {
+        unsafe {
+            let status = ffi::GetVJDStatus(self.id);
+
+            if let VjdStat::Own = status {
+                if ffi::RelinquishVJD(self.id) == TRUE {
+                    return Ok(());
+                }
+            }
+
+            Err(Error::Relinquish { id: self.id, status })
+        }
     }
 
     pub fn update(&self, mut position: JoystickPosition) -> Result<(), Error> {
@@ -129,11 +143,7 @@ impl Device {
 
 impl Drop for Device {
     fn drop(&mut self) {
-        unsafe {
-            if let VjdStat::Own = ffi::GetVJDStatus(self.id) {
-                let _ = ffi::RelinquishVJD(self.id);
-            }
-        }
+        let _ = self.relinquish();
     }
 }
 
