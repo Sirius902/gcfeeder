@@ -65,62 +65,78 @@ mod ffi {
     }
 }
 
+pub type DeviceId = u32;
+
 #[derive(Debug)]
 pub enum Error {
     Driver,
-    Acquire { device_id: u32 },
-    Device { device_id: u32, status: VjdStat },
-    Update { device_id: u32 },
+    Acquire(DeviceId),
+    Device { id: DeviceId, status: VjdStat },
+    Update(DeviceId),
 }
 
 pub struct Device {
-    device_id: u32,
+    id: DeviceId,
 }
 
 impl Device {
     /// Acquires the specified vJoy device.
     /// 
-    /// `device_id` is one indexed.
-    pub fn acquire(device_id: u32) -> Result<Device, Error> {
+    /// `id` is one indexed.
+    pub fn acquire(id: DeviceId) -> Result<Device, Error> {
         unsafe {
-            if ffi::vJoyEnabled() == FALSE {
+            if !driver_enabled() {
                 return Err(Error::Driver);
             }
 
-            let status = ffi::GetVJDStatus(device_id);
+            let status = ffi::GetVJDStatus(id);
 
             match status {
                 VjdStat::Own | VjdStat::Free => {
-                    if ffi::AcquireVJD(device_id) == FALSE {
-                        return Err(Error::Acquire { device_id });
+                    if ffi::AcquireVJD(id) == FALSE {
+                        return Err(Error::Acquire(id));
                     }
                 }
-                _ => return Err(Error::Device { device_id, status }),
+                _ => return Err(Error::Device { id, status }),
             }
         }
 
-        Ok(Device { device_id })
+        Ok(Device { id })
     }
 
     pub fn update(&self, mut position: JoystickPosition) -> Result<(), Error> {
-        position.b_device = self.device_id as u8;
+        position.b_device = self.id as u8;
 
-        if unsafe { ffi::UpdateVJD(self.device_id, &position) } == FALSE {
-            Err(Error::Update {
-                device_id: self.device_id,
-            })
+        if unsafe { ffi::UpdateVJD(self.id, &position) } == FALSE {
+            Err(Error::Update(self.id))
         } else {
             Ok(())
         }
+    }
+
+    pub fn id(&self) -> u32 {
+        self.id
+    }
+
+    pub fn status(id: DeviceId) -> VjdStat {
+        unsafe { ffi::GetVJDStatus(id) }
+    }
+
+    pub fn button_count(id: DeviceId) -> i32 {
+        unsafe { ffi::GetVJDButtonNumber(id) }
     }
 }
 
 impl Drop for Device {
     fn drop(&mut self) {
         unsafe {
-            if let VjdStat::Own = ffi::GetVJDStatus(self.device_id) {
-                let _ = ffi::RelinquishVJD(self.device_id);
+            if let VjdStat::Own = ffi::GetVJDStatus(self.id) {
+                let _ = ffi::RelinquishVJD(self.id);
             }
         }
     }
+}
+
+pub fn driver_enabled() -> bool {
+    unsafe { ffi::vJoyEnabled() != FALSE }
 }
