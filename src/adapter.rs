@@ -148,8 +148,7 @@ impl Drop for Adapter {
     }
 }
 
-#[derive(Debug)]
-pub struct Drift {
+struct Drift {
     stick_x: i16,
     stick_y: i16,
     substick_x: i16,
