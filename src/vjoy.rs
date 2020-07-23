@@ -92,12 +92,15 @@ impl Device {
             let status = ffi::GetVJDStatus(id);
 
             match status {
-                VjdStat::Own | VjdStat::Free => {
+                VjdStat::Free => {
                     if ffi::AcquireVJD(id) == TRUE {
                         return Ok(Device { id });
                     }
                 }
-                _ => {},
+                VjdStat::Own => {
+                    return Ok(Device { id });
+                }
+                _ => {}
             }
 
             Err(Error::Acquire { id, status })
@@ -114,7 +117,10 @@ impl Device {
                 }
             }
 
-            Err(Error::Relinquish { id: self.id, status })
+            Err(Error::Relinquish {
+                id: self.id,
+                status,
+            })
         }
     }
 
