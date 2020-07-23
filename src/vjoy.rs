@@ -81,7 +81,7 @@ pub struct Device {
 
 impl Device {
     /// Acquires the specified vJoy device.
-    /// 
+    ///
     /// `id` is one indexed.
     pub fn acquire(id: DeviceId) -> Result<Device, Error> {
         unsafe {
