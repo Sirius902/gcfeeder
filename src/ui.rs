@@ -1,4 +1,4 @@
-use crate::feeder;
+use gcfeeder::feeder;
 
 use druid::widget::{Button, Flex, Label};
 use druid::{Data, Env, Widget, WidgetExt};

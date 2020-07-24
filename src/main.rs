@@ -1,5 +1,6 @@
 use druid::{AppLauncher, PlatformError, WindowDesc};
-use gcfeeder::ui;
+
+mod ui;
 
 fn main() -> Result<(), PlatformError> {
     let main_window = WindowDesc::new(ui::builder).title("gcfeeder");
