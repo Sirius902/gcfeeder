@@ -54,7 +54,7 @@ impl Drop for FeederThread {
     fn drop(&mut self) {
         self.sender
             .send(())
-            .expect("failed to send terminate feeder thread");
+            .expect("failed to terminate feeder thread");
 
         if let Some(handle) = self.handle.take() {
             handle.join().expect("failed to join feeder thread");
