@@ -64,14 +64,13 @@ impl Drop for FeederThread {
 
 #[derive(Clone, Data)]
 pub struct State {
-    // TODO: I would like to use Rc<RefCell<...>> but that fails is_same check
-    feeder_thread: Rc<Option<FeederThread>>,
+    feeder_thread: Option<Rc<FeederThread>>,
 }
 
 impl State {
     pub fn new() -> State {
         State {
-            feeder_thread: Rc::new(None),
+            feeder_thread: None,
         }
     }
 }
@@ -91,7 +90,7 @@ pub fn builder() -> impl Widget<State> {
     let start_button = Button::new("Start")
         .on_click(|_ctx, state: &mut State, _env| {
             if state.feeder_thread.is_none() {
-                state.feeder_thread = Rc::new(Some(FeederThread::spawn().unwrap()));
+                state.feeder_thread = Some(Rc::new(FeederThread::spawn().unwrap()));
             }
         })
         .padding(5.0);
@@ -99,7 +98,7 @@ pub fn builder() -> impl Widget<State> {
     let stop_button = Button::new("Stop")
         .on_click(|_ctx, state: &mut State, _env| {
             if state.feeder_thread.is_some() {
-                state.feeder_thread = Rc::new(None);
+                state.feeder_thread = None;
             }
         })
         .padding(5.0);
