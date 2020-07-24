@@ -63,20 +63,20 @@ impl Drop for FeederThread {
 }
 
 #[derive(Clone, Data)]
-pub struct State {
+pub struct AppState {
     feeder_thread: Option<Rc<FeederThread>>,
 }
 
-impl State {
-    pub fn new() -> State {
-        State {
+impl AppState {
+    pub fn new() -> AppState {
+        AppState {
             feeder_thread: None,
         }
     }
 }
 
-pub fn builder() -> impl Widget<State> {
-    let label = Label::new(|state: &State, _env: &Env| {
+pub fn builder() -> impl Widget<AppState> {
+    let label = Label::new(|state: &AppState, _env: &Env| {
         if state.feeder_thread.is_some() {
             "Running"
         } else {
@@ -88,7 +88,7 @@ pub fn builder() -> impl Widget<State> {
     .center();
 
     let start_button = Button::new("Start")
-        .on_click(|_ctx, state: &mut State, _env| {
+        .on_click(|_ctx, state: &mut AppState, _env| {
             if state.feeder_thread.is_none() {
                 state.feeder_thread = Some(Rc::new(FeederThread::spawn().unwrap()));
             }
@@ -96,7 +96,7 @@ pub fn builder() -> impl Widget<State> {
         .padding(5.0);
 
     let stop_button = Button::new("Stop")
-        .on_click(|_ctx, state: &mut State, _env| {
+        .on_click(|_ctx, state: &mut AppState, _env| {
             if state.feeder_thread.is_some() {
                 state.feeder_thread = None;
             }
