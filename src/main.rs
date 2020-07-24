@@ -1,14 +1,11 @@
-use std::thread;
-use std::time::Duration;
+use druid::{AppLauncher, PlatformError, WindowDesc};
+use gcfeeder::ui;
 
-use feeder::Feeder;
-use gcfeeder::feeder;
+fn main() -> Result<(), PlatformError> {
+    let main_window = WindowDesc::new(ui::builder).title("gcfeeder");
 
-fn main() -> Result<(), feeder::Error> {
-    let mut feeder = Feeder::new()?;
-
-    loop {
-        feeder.feed()?;
-        thread::sleep(Duration::from_millis(2));
-    }
+    let state = ui::State::new();
+    AppLauncher::with_window(main_window)
+        .use_simple_logger()
+        .launch(state)
 }
