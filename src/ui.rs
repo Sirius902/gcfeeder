@@ -24,7 +24,7 @@ impl FeederThread {
         let mut feeder = Feeder::new()?;
 
         let handle = thread::spawn(move || loop {
-            if let Ok(_) = terminate_recv.try_recv() {
+            if terminate_recv.try_recv().is_ok() {
                 break;
             }
 
