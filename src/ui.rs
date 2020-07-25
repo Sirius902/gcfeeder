@@ -80,7 +80,7 @@ pub fn builder() -> impl Widget<AppState> {
         if state.feeder_thread.is_some() {
             "Running"
         } else {
-            "Not Running"
+            "Idle"
         }
         .into()
     })
