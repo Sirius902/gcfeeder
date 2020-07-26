@@ -1,8 +1,6 @@
 use gcfeeder::feeder;
 
-use druid::widget::{Button, Flex, Label};
-use druid::{Data, Env, Widget, WidgetExt};
-use std::rc::Rc;
+use iced::{button, Align, Button, Column, Container, Element, Length, Sandbox, Text};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -62,49 +60,70 @@ impl Drop for FeederThread {
     }
 }
 
-#[derive(Clone, Data)]
-pub struct AppState {
-    feeder_thread: Option<Rc<FeederThread>>,
+#[derive(Default)]
+pub struct GCFeeder {
+    feeder_thread: Option<FeederThread>,
+    start_button: button::State,
+    stop_button: button::State,
 }
 
-impl AppState {
-    pub fn new() -> AppState {
-        AppState {
-            feeder_thread: None,
+#[derive(Debug, Clone, Copy)]
+pub enum Message {
+    StartThread,
+    StopThread,
+}
+
+impl Sandbox for GCFeeder {
+    type Message = Message;
+
+    fn new() -> Self {
+        Self::default()
+    }
+
+    fn title(&self) -> String {
+        "gcfeeder".to_owned()
+    }
+
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::StartThread => {
+                if self.feeder_thread.is_none() {
+                    self.feeder_thread = Some(FeederThread::spawn().unwrap());
+                }
+            }
+            Message::StopThread => {
+                self.feeder_thread = None;
+            }
         }
     }
-}
 
-pub fn builder() -> impl Widget<AppState> {
-    let label = Label::new(|state: &AppState, _env: &Env| {
-        if state.feeder_thread.is_some() {
-            "Running"
-        } else {
-            "Idle"
-        }
+    fn view(&mut self) -> Element<Message> {
+        Container::new(
+            Column::new()
+                .width(Length::Shrink)
+                .height(Length::Shrink)
+                .padding(20)
+                .align_items(Align::Center)
+                .push(
+                    Text::new(if self.feeder_thread.is_some() {
+                        "Running"
+                    } else {
+                        "Idle"
+                    })
+                    .size(22),
+                )
+                .push(
+                    Button::new(&mut self.start_button, Text::new("Start"))
+                        .on_press(Message::StartThread),
+                )
+                .push(
+                    Button::new(&mut self.stop_button, Text::new("Stop"))
+                        .on_press(Message::StopThread),
+                ),
+        )
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .center_x()
         .into()
-    })
-    .padding(5.0)
-    .center();
-
-    let start_button = Button::new("Start")
-        .on_click(|_ctx, state: &mut AppState, _env| {
-            if state.feeder_thread.is_none() {
-                state.feeder_thread = Some(Rc::new(FeederThread::spawn().unwrap()));
-            }
-        })
-        .padding(5.0);
-
-    let stop_button = Button::new("Stop")
-        .on_click(|_ctx, state: &mut AppState, _env| {
-            if state.feeder_thread.is_some() {
-                state.feeder_thread = None;
-            }
-        })
-        .padding(5.0);
-
-    Flex::column()
-        .with_child(label)
-        .with_child(start_button)
-        .with_child(stop_button)
+    }
 }

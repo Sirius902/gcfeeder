@@ -1,12 +1,15 @@
-use druid::{AppLauncher, PlatformError, WindowDesc};
+use iced::{window, Sandbox, Settings};
+use ui::GCFeeder;
 
 mod ui;
 
-fn main() -> Result<(), PlatformError> {
-    let main_window = WindowDesc::new(ui::builder).title("gcfeeder");
-
-    let state = ui::AppState::new();
-    AppLauncher::with_window(main_window)
-        .use_simple_logger()
-        .launch(state)
+fn main() {
+    GCFeeder::run(Settings {
+        window: window::Settings {
+            size: (640, 480),
+            resizable: false,
+            decorations: true,
+        },
+        ..Settings::default()
+    })
 }
