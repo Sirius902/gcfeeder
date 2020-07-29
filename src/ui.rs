@@ -102,7 +102,7 @@ impl Sandbox for GCFeeder {
             Column::new()
                 .width(Length::Shrink)
                 .height(Length::Shrink)
-                .padding(20)
+                .padding(15)
                 .spacing(5)
                 .align_items(Align::Center)
                 .push(
