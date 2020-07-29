@@ -103,6 +103,7 @@ impl Sandbox for GCFeeder {
                 .width(Length::Shrink)
                 .height(Length::Shrink)
                 .padding(20)
+                .spacing(5)
                 .align_items(Align::Center)
                 .push(
                     Text::new(if self.feeder_thread.is_some() {
@@ -110,7 +111,7 @@ impl Sandbox for GCFeeder {
                     } else {
                         "Idle"
                     })
-                    .size(22),
+                    .size(24),
                 )
                 .push(
                     Button::new(&mut self.start_button, Text::new("Start"))
