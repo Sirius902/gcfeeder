@@ -10,3 +10,7 @@ The process for reading adapter inputs is based on Dolphin's Gamecube Adapter su
 ### Usage Requirements
 * Both [vJoy and vJoyConf](http://vjoystick.sourceforge.net/site) must be installed.
 * WinUSB (libusb) driver must be installed for the adapter (WUP-028) with [Zadig](https://zadig.akeo.ie). For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
+* vJoy driver must be enabled and device 1 must have the following configuration:
+    * Axes: X, Y, Z, Rx, Ry, Rz
+    * Number of Buttons: 12
+    * POV Hat Switch: Continuous with 0 POVs
