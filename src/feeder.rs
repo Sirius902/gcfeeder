@@ -48,28 +48,28 @@ impl Feeder {
         }
 
         if self.rumble_enabled {
-            self.update_rumble()?;
+            self.try_update_rumble()?;
         }
 
         Ok(())
     }
 
-    fn update_rumble(&mut self) -> Result<(), Error> {
-        let status = vjoy::ffb_status(DEVICE_ID).unwrap_or(vjoy::FFBOp::Stop);
+    fn try_update_rumble(&mut self) -> Result<(), Error> {
+        if let Some(status) = vjoy::try_ffb_status(DEVICE_ID) {
+            let new_rumble = Rumble::from(status);
 
-        let new_rumble = Rumble::from(status);
+            if self.previous_rumble != new_rumble {
+                self.previous_rumble = new_rumble;
 
-        if self.previous_rumble != new_rumble {
-            self.previous_rumble = new_rumble;
+                let result =
+                    self.adapter
+                        .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
 
-            let result =
-                self.adapter
-                    .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
-
-            if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
-                return Ok(());
-            } else {
-                return result.map_err(Error::Adapter);
+                if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
+                    return Ok(());
+                } else {
+                    return result.map_err(Error::Adapter);
+                }
             }
         }
 

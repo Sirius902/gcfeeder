@@ -193,8 +193,11 @@ pub fn start_ffb() {
     }
 }
 
-pub fn ffb_status(id: DeviceId) -> Option<FFBOp> {
-    FFB_STATUS.read().unwrap().get(&id).cloned()
+pub fn try_ffb_status(id: DeviceId) -> Option<FFBOp> {
+    FFB_STATUS
+        .try_read()
+        .ok()
+        .map(|ffb_status| ffb_status.get(&id).cloned().unwrap_or(FFBOp::Stop))
 }
 
 #[no_mangle]
