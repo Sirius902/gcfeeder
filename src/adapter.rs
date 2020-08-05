@@ -39,9 +39,25 @@ impl Port {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum Rumble {
+    Off,
+    On,
+}
+
+impl From<Rumble> for u8 {
+    fn from(state: Rumble) -> u8 {
+        match state {
+            Rumble::Off => 0,
+            Rumble::On => 1,
+        }
+    }
+}
+
 pub struct Adapter {
     handle: DeviceHandle<GlobalContext>,
     endpoint_in: u8,
+    endpoint_out: u8,
     /// `None` if the controller on the channel is unplugged. If it is plugged,
     /// the drift is calculated once when connected on `read_inputs`.
     drifts: [Option<Drift>; 4],
@@ -63,11 +79,16 @@ impl Adapter {
             .write_interrupt(endpoint_out, &[0x13], ALLOWED_TIMEOUT)
             .map_err(Error::Rusb)?;
 
-        Ok(Adapter {
+        let adapter = Adapter {
             handle,
             endpoint_in,
+            endpoint_out,
             drifts: Default::default(),
-        })
+        };
+
+        adapter.reset_rumble()?;
+
+        Ok(adapter)
     }
 
     pub fn close(&mut self) -> Result<(), Error> {
@@ -96,6 +117,27 @@ impl Adapter {
         }
 
         Ok(inputs)
+    }
+
+    pub fn set_rumble(&self, states: [Rumble; 4]) -> Result<(), Error> {
+        let payload = [
+            0x11,
+            states[0].into(),
+            states[1].into(),
+            states[2].into(),
+            states[3].into(),
+        ];
+
+        let _bytes_written = self
+            .handle
+            .write_interrupt(self.endpoint_out, &payload, ALLOWED_TIMEOUT)
+            .map_err(Error::Rusb)?;
+
+        Ok(())
+    }
+
+    pub fn reset_rumble(&self) -> Result<(), Error> {
+        self.set_rumble([Rumble::Off, Rumble::Off, Rumble::Off, Rumble::Off])
     }
 
     fn read_payload(&self) -> Result<[u8; PAYLOAD_SIZE], Error> {

@@ -2003,9 +2003,16 @@ version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "829d4a8476c35c9bf0bbce5a3b23f4106f79728039b726d292bb93bc106787cb"
 dependencies = [
+<<<<<<< HEAD
  "idna",
  "matches",
  "percent-encoding",
+=======
+ "libc",
+ "once_cell",
+ "rusb",
+ "winapi",
+>>>>>>> master
 ]
 
 [[package]]
@@ -2054,8 +2061,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "wasm-bindgen-backend"
-version = "0.2.65"
+name = "once_cell"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b631f7e854af39a1739f401cf34a8a013dfe09eac4fa4dba91e9768bd28168d"
+
+[[package]]
+name = "pkg-config"
+version = "0.3.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89ed2fb8c84bfad20ea66b26a3743f3e7ba8735a69fe7d95118c33ec8fc1244d"
 dependencies = [

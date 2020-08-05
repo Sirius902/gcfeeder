@@ -1,5 +1,11 @@
+use once_cell::sync::Lazy;
+use std::collections::HashMap;
+use std::sync::RwLock;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
+
+pub static FFB_STATUS: Lazy<RwLock<HashMap<DeviceId, FFBOp>>> =
+    Lazy::new(|| RwLock::new(HashMap::new()));
 
 #[repr(C)]
 #[derive(Debug)]
@@ -46,11 +52,30 @@ impl JoystickPosition {
     }
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum FFBOp {
+    Start = 1,
+    Solo = 2,
+    Stop = 3,
+}
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct FFBEffOp {
+    effect_block_index: BYTE,
+    effect_op: FFBOp,
+    loop_count: BYTE,
+}
+
+#[allow(dead_code)]
 mod ffi {
     use super::*;
     use libc::c_int;
 
-    #[allow(dead_code)]
+    pub type FfbData = VOID;
+    pub type FfbGenCB = extern "C" fn(ffb_data: *const FfbData, userdata: *mut VOID);
+
     #[link(name = "vJoyInterface")]
     extern "C" {
         pub fn vJoyEnabled() -> BOOL;
@@ -62,6 +87,13 @@ mod ffi {
         pub fn GetVJDButtonNumber(rID: UINT) -> c_int;
 
         pub fn ResetVJD(rID: UINT) -> BOOL;
+
+        pub fn FfbRegisterGenCB(cb: FfbGenCB, data: *mut VOID);
+        pub fn IsDeviceFfb(rID: UINT) -> BOOL;
+        pub fn IsDeviceFfbEffect(rID: UINT, Effect: UINT) -> BOOL;
+
+        pub fn Ffb_h_DeviceID(Packet: *const FfbData, DeviceId: *mut c_int) -> DWORD;
+        pub fn Ffb_h_EffOp(Packet: *const FfbData, Operation: *mut FFBEffOp) -> DWORD;
     }
 }
 
@@ -145,6 +177,10 @@ impl Device {
     pub fn button_count(id: DeviceId) -> i32 {
         unsafe { ffi::GetVJDButtonNumber(id) }
     }
+
+    pub fn is_ffb(&self) -> bool {
+        unsafe { ffi::IsDeviceFfb(self.id) == TRUE }
+    }
 }
 
 impl Drop for Device {
@@ -154,5 +190,28 @@ impl Drop for Device {
 }
 
 pub fn driver_enabled() -> bool {
-    unsafe { ffi::vJoyEnabled() != FALSE }
+    unsafe { ffi::vJoyEnabled() == TRUE }
+}
+
+// TODO: I'm not sure if it's safe to call FfbRegisterGenCB more than once so maybe prevent that
+pub fn start_ffb() {
+    unsafe {
+        ffi::FfbRegisterGenCB(update_ffb, 0 as *mut VOID);
+    }
+}
+
+#[no_mangle]
+extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
+    unsafe {
+        let mut id = 0;
+        let mut operation = std::mem::zeroed::<FFBEffOp>();
+
+        if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS {
+            if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
+                assert!(1 <= id && id <= 15, "ffb: device id out of range");
+                let mut ffb_status = FFB_STATUS.write().unwrap();
+                let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
+            }
+        }
+    }
 }
