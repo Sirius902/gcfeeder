@@ -44,6 +44,11 @@ pub struct JoystickPosition {
     pub b_hats_ex1: DWORD, // 16-bit of continuous HAT switch
     pub b_hats_ex2: DWORD, // 16-bit of continuous HAT switch
     pub b_hats_ex3: DWORD, // 16-bit of continuous HAT switch
+
+    // JOYSTICK_POSITION_V2 Extension
+    pub l_buttons_ex1: LONG, // Buttons 33-64
+    pub l_buttons_ex2: LONG, // Buttons 65-96
+    pub l_buttons_ex3: LONG, // Buttons 97-128
 }
 
 impl JoystickPosition {
