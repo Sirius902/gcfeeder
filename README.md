@@ -2,11 +2,8 @@
 A vJoy feeder written in Rust for Gamecube controllers using the Gamecube Controller Adapter.
 Inspired by [Wii U GCN USB Driver](http://m4sv.com/page/wii-u-gcn-usb-driver).
 
-The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support and therefore is compatible with Dolphin's passthrough.
-
-### Notes
-* libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
-* Only supports port one on the adapter.
+The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
+Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
 
 ### Usage Requirements
 * Both [vJoy and vJoyConf](http://vjoystick.sourceforge.net/site) must be installed.
@@ -15,3 +12,9 @@ The process for reading adapter inputs is based on Dolphin's Gamecube Adapter su
     * Axes: X, Y, Z, Rx, Ry, Rz
     * Number of Buttons: 12
     * POV Hat Switch: Continuous with 0 POVs
+    * Force Feedback effects: May be optionally enabled for rumble support
+
+### Notes
+* libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
+* Only supports port one on the adapter.
+* Currently reads Force Feedback packets from all effects on vJoy to control rumble for compatibility (Dolphin seems to crash unless all effects are enabled).
