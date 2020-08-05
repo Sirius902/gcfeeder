@@ -74,6 +74,11 @@ impl Adapter {
 
         let (endpoint_in, endpoint_out) = Self::endpoints(&handle)?;
 
+        // From Dolphin:
+        // This call makes Nyko-brand (and perhaps other) adapters work.
+        // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
+        let _err = handle.write_control(0x21, 11, 0x0001, 0, &[], Duration::from_secs(1));
+
         // Not sure what this does but Dolphin does it
         let _ = handle
             .write_interrupt(endpoint_out, &[0x13], ALLOWED_TIMEOUT)
