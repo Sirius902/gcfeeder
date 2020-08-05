@@ -44,6 +44,7 @@ name = "gcfeeder"
 version = "0.1.0"
 dependencies = [
  "libc",
+ "once_cell",
  "rusb",
  "winapi",
 ]
@@ -79,6 +80,12 @@ dependencies = [
  "tar",
  "vcpkg",
 ]
+
+[[package]]
+name = "once_cell"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b631f7e854af39a1739f401cf34a8a013dfe09eac4fa4dba91e9768bd28168d"
 
 [[package]]
 name = "pkg-config"
