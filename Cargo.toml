@@ -5,6 +5,7 @@ authors = ["Sirius902 <3645979-Sirius902@users.noreply.gitlab.com>"]
 edition = "2018"
 
 [dependencies]
+iced = "0.1"
 libc = "0.2"
 once_cell = "1.4"
 rusb = "0.6"

@@ -1,14 +1,17 @@
-use std::thread;
-use std::time::Duration;
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use feeder::Feeder;
-use gcfeeder::feeder;
+use iced::{window, Sandbox, Settings};
+use ui::GCFeeder;
 
-fn main() -> Result<(), feeder::Error> {
-    let mut feeder = Feeder::new()?;
+mod ui;
 
-    loop {
-        feeder.feed()?;
-        thread::sleep(Duration::from_millis(2));
-    }
+fn main() {
+    GCFeeder::run(Settings {
+        window: window::Settings {
+            size: (640, 480),
+            resizable: false,
+            decorations: true,
+        },
+        ..Settings::default()
+    })
 }
