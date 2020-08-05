@@ -4,7 +4,7 @@ use std::sync::RwLock;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-pub static FFB_STATUS: Lazy<RwLock<HashMap<DeviceId, FFBOp>>> =
+static FFB_STATUS: Lazy<RwLock<HashMap<DeviceId, FFBOp>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
 #[repr(C)]
@@ -198,6 +198,10 @@ pub fn start_ffb() {
     unsafe {
         ffi::FfbRegisterGenCB(update_ffb, 0 as *mut VOID);
     }
+}
+
+pub fn ffb_status(id: DeviceId) -> Option<FFBOp> {
+    FFB_STATUS.read().unwrap().get(&id).cloned()
 }
 
 #[no_mangle]

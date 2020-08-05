@@ -55,21 +55,16 @@ impl Feeder {
     }
 
     fn update_rumble(&mut self) -> Result<(), Error> {
-        let ffb_status = vjoy::FFB_STATUS
-            .read()
-            .unwrap()
-            .get(&DEVICE_ID)
-            .cloned()
-            .unwrap_or(vjoy::FFBOp::Stop);
+        let status = vjoy::ffb_status(DEVICE_ID).unwrap_or(vjoy::FFBOp::Stop);
 
-        let new_rumble = Rumble::from(ffb_status);
+        let new_rumble = Rumble::from(status);
 
         if self.previous_rumble != new_rumble {
             self.previous_rumble = new_rumble;
 
-            let result = self
-                .adapter
-                .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
+            let result =
+                self.adapter
+                    .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
 
             if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
                 return Ok(());
