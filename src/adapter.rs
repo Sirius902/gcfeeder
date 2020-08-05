@@ -231,6 +231,7 @@ impl StickRange {
     }
 }
 
+// TODO: Maybe rename to Calibration and add in triggers?
 struct Drift {
     stick_x: i16,
     stick_y: i16,
