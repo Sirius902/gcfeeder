@@ -62,14 +62,14 @@ impl Feeder {
             .cloned()
             .unwrap_or(vjoy::FFBOp::Stop);
 
-        let rumble = Rumble::from(ffb_status);
+        let new_rumble = Rumble::from(ffb_status);
 
-        if self.previous_rumble != rumble {
-            self.previous_rumble = rumble;
+        if self.previous_rumble != new_rumble {
+            self.previous_rumble = new_rumble;
 
             let result = self
                 .adapter
-                .set_rumble([rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
+                .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
 
             if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
                 return Ok(());
