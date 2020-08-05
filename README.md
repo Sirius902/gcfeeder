@@ -6,6 +6,7 @@ The process for reading adapter inputs is based on Dolphin's Gamecube Adapter su
 
 ### Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
+* Only supports port one on the adapter.
 
 ### Usage Requirements
 * Both [vJoy and vJoyConf](http://vjoystick.sourceforge.net/site) must be installed.
