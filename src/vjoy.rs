@@ -116,6 +116,7 @@ impl Device {
     ///
     /// `id` is one indexed.
     pub fn acquire(id: DeviceId) -> Result<Device, Error> {
+        assert!(1 <= id && id <= 15, "vjoy: device id out of range");
         unsafe {
             if !driver_enabled() {
                 return Err(Error::Driver);
@@ -212,7 +213,7 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
 
         if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS {
             if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
-                assert!(1 <= id && id <= 15, "ffb: device id out of range");
+                assert!(1 <= id && id <= 15, "vjoy: device id out of range");
                 let mut ffb_status = FFB_STATUS.write().unwrap();
                 let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
             }
