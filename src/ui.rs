@@ -63,6 +63,7 @@ impl Drop for FeederThread {
 #[derive(Default)]
 pub struct GCFeeder {
     feeder_thread: Option<FeederThread>,
+    feeder_errors: Vec<feeder::Error>,
     start_button: button::State,
     stop_button: button::State,
 }
@@ -87,8 +88,17 @@ impl Sandbox for GCFeeder {
     fn update(&mut self, message: Message) {
         match message {
             Message::StartThread => {
-                if self.feeder_thread.is_none() {
-                    self.feeder_thread = Some(FeederThread::spawn().unwrap());
+                if self.feeder_thread.is_some() {
+                    return;
+                }
+
+                match FeederThread::spawn() {
+                    Ok(feeder_thread) => {
+                        self.feeder_thread = Some(feeder_thread);
+                    }
+                    Err(err) => {
+                        self.feeder_errors.push(err);
+                    }
                 }
             }
             Message::StopThread => {
