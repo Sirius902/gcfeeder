@@ -4,8 +4,7 @@ use std::sync::Mutex;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-static FFB_STATUS: Lazy<Mutex<HashMap<DeviceId, FFBOp>>> =
-    Lazy::new(|| Mutex::new(HashMap::new()));
+static FFB_STATUS: Lazy<Mutex<HashMap<DeviceId, FFBOp>>> = Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[repr(C)]
 #[derive(Debug)]
@@ -211,12 +210,12 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
         let mut id = 0;
         let mut operation = std::mem::zeroed::<FFBEffOp>();
 
-        if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS {
-            if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
-                assert!(1 <= id && id <= 15, "vjoy: device id out of range");
-                let mut ffb_status = FFB_STATUS.lock().unwrap();
-                let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
-            }
+        if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS
+            && ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS
+        {
+            assert!(1 <= id && id <= 15, "vjoy: device id out of range");
+            let mut ffb_status = FFB_STATUS.lock().unwrap();
+            let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
         }
     }
 }
