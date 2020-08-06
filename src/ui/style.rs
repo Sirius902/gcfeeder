@@ -249,4 +249,17 @@ pub mod dark {
             }
         }
     }
+
+    pub struct ErrorLog;
+
+    impl container::StyleSheet for ErrorLog {
+        fn style(&self) -> container::Style {
+            container::Style {
+                background: Some(Background::Color(Color::from_rgb8(0x6A, 0x70, 0x7C))),
+                text_color: Some(Color::WHITE),
+                border_radius: 2,
+                ..container::Style::default()
+            }
+        }
+    }
 }

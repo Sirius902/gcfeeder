@@ -126,11 +126,17 @@ impl Sandbox for GCFeeder {
     }
 
     fn view(&mut self) -> Element<Message> {
-        let error_log = Scrollable::new(&mut self.error_log)
-            .width(Length::from(250))
-            .height(Length::from(200))
-            .style(style::dark::Scrollable)
-            .push(Text::new(&self.log_text));
+        let error_log = Container::new(
+            Scrollable::new(&mut self.error_log)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .style(style::dark::Scrollable)
+                .push(Text::new(&self.log_text)),
+        )
+        .width(Length::from(300))
+        .height(Length::from(225))
+        .padding(10)
+        .style(style::dark::ErrorLog);
 
         let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
             .style(style::dark::Button)
