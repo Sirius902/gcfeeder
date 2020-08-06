@@ -1,11 +1,11 @@
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::Mutex;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-static FFB_STATUS: Lazy<RwLock<HashMap<DeviceId, FFBOp>>> =
-    Lazy::new(|| RwLock::new(HashMap::new()));
+static FFB_STATUS: Lazy<Mutex<HashMap<DeviceId, FFBOp>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[repr(C)]
 #[derive(Debug)]
@@ -200,7 +200,7 @@ pub fn start_ffb() {
 
 pub fn try_ffb_status(id: DeviceId) -> Option<FFBOp> {
     FFB_STATUS
-        .try_read()
+        .try_lock()
         .ok()
         .map(|ffb_status| ffb_status.get(&id).cloned().unwrap_or(FFBOp::Stop))
 }
@@ -214,7 +214,7 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
         if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS {
             if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
                 assert!(1 <= id && id <= 15, "vjoy: device id out of range");
-                let mut ffb_status = FFB_STATUS.write().unwrap();
+                let mut ffb_status = FFB_STATUS.lock().unwrap();
                 let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
             }
         }
