@@ -1,12 +1,17 @@
 use gcfeeder::feeder;
 
-use iced::{button, Align, Button, Column, Container, Element, Length, Sandbox, Text};
+use iced::{
+    button, scrollable, Align, Button, Column, Container, Element, Length, Sandbox, Scrollable,
+    Text,
+};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
 use feeder::Feeder;
 use thread::JoinHandle;
+
+mod style;
 
 pub struct FeederThread {
     handle: Option<JoinHandle<()>>,
@@ -64,6 +69,7 @@ impl Drop for FeederThread {
 pub struct GCFeeder {
     feeder_thread: Option<FeederThread>,
     error_log: Vec<feeder::Error>,
+    log_scroll: scrollable::State,
     start_button: button::State,
     stop_button: button::State,
 }
@@ -116,6 +122,13 @@ impl Sandbox for GCFeeder {
                 .spacing(5)
                 .align_items(Align::Center)
                 .push(
+                    Scrollable::new(&mut self.log_scroll)
+                        .width(Length::from(250))
+                        .height(Length::from(200))
+                        .style(style::dark::Scrollable)
+                        .push(Text::new("")),
+                )
+                .push(
                     Text::new(if self.feeder_thread.is_some() {
                         "Running"
                     } else {
@@ -125,15 +138,18 @@ impl Sandbox for GCFeeder {
                 )
                 .push(
                     Button::new(&mut self.start_button, Text::new("Start"))
+                        .style(style::dark::Button)
                         .on_press(Message::StartThread),
                 )
                 .push(
                     Button::new(&mut self.stop_button, Text::new("Stop"))
+                        .style(style::dark::Button)
                         .on_press(Message::StopThread),
                 ),
         )
         .width(Length::Fill)
         .height(Length::Fill)
+        .style(style::dark::Container)
         .center_x()
         .into()
     }
