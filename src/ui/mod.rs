@@ -1,8 +1,8 @@
 use gcfeeder::feeder;
 
 use iced::{
-    button, scrollable, Align, Button, Column, Container, Element, Length, Sandbox, Scrollable,
-    Text,
+    button, scrollable, Align, Button, Column, Container, Element, Length, Row, Sandbox,
+    Scrollable, Text,
 };
 use std::sync::mpsc;
 use std::thread;
@@ -164,8 +164,13 @@ impl Sandbox for GCFeeder {
                 .padding(15)
                 .spacing(5)
                 .align_items(Align::Center)
+                .push(
+                    Row::new()
+                        .spacing(15)
+                        .push(Text::new("Error Log"))
+                        .push(clear_button),
+                )
                 .push(error_log)
-                .push(clear_button)
                 .push(feeder_status)
                 .push(start_button)
                 .push(stop_button),
