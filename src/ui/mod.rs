@@ -68,8 +68,8 @@ impl Drop for FeederThread {
 #[derive(Default)]
 pub struct GCFeeder {
     feeder_thread: Option<FeederThread>,
-    error_log: Vec<feeder::Error>,
-    log_scroll: scrollable::State,
+    errors: Vec<feeder::Error>,
+    error_log: scrollable::State,
     start_button: button::State,
     stop_button: button::State,
 }
@@ -103,7 +103,7 @@ impl Sandbox for GCFeeder {
                         self.feeder_thread = Some(feeder_thread);
                     }
                     Err(err) => {
-                        self.error_log.push(err);
+                        self.errors.push(err);
                     }
                 }
             }
@@ -114,6 +114,27 @@ impl Sandbox for GCFeeder {
     }
 
     fn view(&mut self) -> Element<Message> {
+        let error_log = Scrollable::new(&mut self.error_log)
+            .width(Length::from(250))
+            .height(Length::from(200))
+            .style(style::dark::Scrollable)
+            .push(Text::new("testing 123\n".repeat(10)));
+
+        let feeder_status = Text::new(if self.feeder_thread.is_some() {
+            "Running"
+        } else {
+            "Idle"
+        })
+        .size(24);
+
+        let start_button = Button::new(&mut self.start_button, Text::new("Start"))
+            .style(style::dark::Button)
+            .on_press(Message::StartThread);
+
+        let stop_button = Button::new(&mut self.stop_button, Text::new("Stop"))
+            .style(style::dark::Button)
+            .on_press(Message::StopThread);
+
         Container::new(
             Column::new()
                 .width(Length::Shrink)
@@ -121,31 +142,10 @@ impl Sandbox for GCFeeder {
                 .padding(15)
                 .spacing(5)
                 .align_items(Align::Center)
-                .push(
-                    Scrollable::new(&mut self.log_scroll)
-                        .width(Length::from(250))
-                        .height(Length::from(200))
-                        .style(style::dark::Scrollable)
-                        .push(Text::new("")),
-                )
-                .push(
-                    Text::new(if self.feeder_thread.is_some() {
-                        "Running"
-                    } else {
-                        "Idle"
-                    })
-                    .size(24),
-                )
-                .push(
-                    Button::new(&mut self.start_button, Text::new("Start"))
-                        .style(style::dark::Button)
-                        .on_press(Message::StartThread),
-                )
-                .push(
-                    Button::new(&mut self.stop_button, Text::new("Stop"))
-                        .style(style::dark::Button)
-                        .on_press(Message::StopThread),
-                ),
+                .push(error_log)
+                .push(feeder_status)
+                .push(start_button)
+                .push(stop_button),
         )
         .width(Length::Fill)
         .height(Length::Fill)
