@@ -68,16 +68,25 @@ impl Drop for FeederThread {
 #[derive(Default)]
 pub struct GCFeeder {
     feeder_thread: Option<FeederThread>,
-    errors: Vec<feeder::Error>,
+    log_text: String,
     error_log: scrollable::State,
+    clear_button: button::State,
     start_button: button::State,
     stop_button: button::State,
+}
+
+impl GCFeeder {
+    fn log(&mut self, message: &str) {
+        self.log_text.push_str(message);
+        self.log_text.push('\n');
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
 pub enum Message {
     StartThread,
     StopThread,
+    ClearLog,
 }
 
 impl Sandbox for GCFeeder {
@@ -103,12 +112,15 @@ impl Sandbox for GCFeeder {
                         self.feeder_thread = Some(feeder_thread);
                     }
                     Err(err) => {
-                        self.errors.push(err);
+                        self.log(&format!("{:?}", err));
                     }
                 }
             }
             Message::StopThread => {
                 self.feeder_thread = None;
+            }
+            Message::ClearLog => {
+                self.log_text.clear();
             }
         }
     }
@@ -118,7 +130,11 @@ impl Sandbox for GCFeeder {
             .width(Length::from(250))
             .height(Length::from(200))
             .style(style::dark::Scrollable)
-            .push(Text::new("testing 123\n".repeat(10)));
+            .push(Text::new(&self.log_text));
+
+        let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
+            .style(style::dark::Button)
+            .on_press(Message::ClearLog);
 
         let feeder_status = Text::new(if self.feeder_thread.is_some() {
             "Running"
@@ -143,6 +159,7 @@ impl Sandbox for GCFeeder {
                 .spacing(5)
                 .align_items(Align::Center)
                 .push(error_log)
+                .push(clear_button)
                 .push(feeder_status)
                 .push(start_button)
                 .push(stop_button),
