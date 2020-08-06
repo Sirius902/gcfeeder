@@ -63,7 +63,7 @@ impl Drop for FeederThread {
 #[derive(Default)]
 pub struct GCFeeder {
     feeder_thread: Option<FeederThread>,
-    feeder_errors: Vec<feeder::Error>,
+    error_log: Vec<feeder::Error>,
     start_button: button::State,
     stop_button: button::State,
 }
@@ -97,7 +97,7 @@ impl Sandbox for GCFeeder {
                         self.feeder_thread = Some(feeder_thread);
                     }
                     Err(err) => {
-                        self.feeder_errors.push(err);
+                        self.error_log.push(err);
                     }
                 }
             }
