@@ -1,5 +1,8 @@
 use crate::{adapter, vjoy};
-use adapter::{Adapter, Rumble};
+use adapter::{
+    rumble::{Rumble, Rumbler},
+    Adapter,
+};
 
 const DEVICE_ID: u32 = 1;
 
@@ -12,7 +15,7 @@ pub enum Error {
 pub struct Feeder {
     adapter: Adapter,
     device: vjoy::Device,
-    rumble_enabled: bool,
+    rumbler: Option<Rumbler>,
     previous_rumble: Rumble,
 }
 
@@ -20,16 +23,20 @@ impl Feeder {
     pub fn new() -> Result<Feeder, Error> {
         let adapter = Adapter::open().map_err(Error::Adapter)?;
         let device = vjoy::Device::acquire(DEVICE_ID).map_err(Error::VJoy)?;
-        let rumble_enabled = device.is_ffb();
+        let rumbler = if device.is_ffb() {
+            Some(adapter.make_rumbler())
+        } else {
+            None
+        };
 
-        if rumble_enabled {
+        if rumbler.is_some() {
             vjoy::start_ffb();
         }
 
         Ok(Feeder {
             adapter,
             device,
-            rumble_enabled,
+            rumbler,
             previous_rumble: Rumble::Off,
         })
     }
@@ -47,28 +54,27 @@ impl Feeder {
             let _ = self.device.update(input.into());
         }
 
-        if self.rumble_enabled {
-            self.try_update_rumble()?;
-        }
+        self.try_update_rumble()?;
 
         Ok(())
     }
 
     fn try_update_rumble(&mut self) -> Result<(), Error> {
-        if let Some(status) = vjoy::try_ffb_status(DEVICE_ID) {
-            let new_rumble = Rumble::from(status);
+        if let Some(ref rumbler) = self.rumbler {
+            if let Some(status) = vjoy::try_ffb_status(DEVICE_ID) {
+                let new_rumble = Rumble::from(status);
 
-            if self.previous_rumble != new_rumble {
-                self.previous_rumble = new_rumble;
+                if self.previous_rumble != new_rumble {
+                    self.previous_rumble = new_rumble;
 
-                let result =
-                    self.adapter
-                        .set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
+                    let result =
+                        rumbler.set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
 
-                if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
-                    return Ok(());
-                } else {
-                    return result.map_err(Error::Adapter);
+                    if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
+                        return Ok(());
+                    } else {
+                        return result.map_err(Error::Adapter);
+                    }
                 }
             }
         }
