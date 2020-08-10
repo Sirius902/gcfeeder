@@ -3,6 +3,10 @@ use adapter::{
     rumble::{Rumble, Rumbler},
     Adapter,
 };
+use crossbeam::channel;
+use std::thread;
+use std::time::Duration;
+use stoppable_thread::StoppableHandle;
 
 const DEVICE_ID: u32 = 1;
 
@@ -13,10 +17,9 @@ pub enum Error {
 }
 
 pub struct Feeder {
-    adapter: Adapter,
-    device: vjoy::Device,
-    rumbler: Option<Rumbler>,
-    previous_rumble: Rumble,
+    input_thread: Option<StoppableHandle<()>>,
+    rumble_thread: Option<StoppableHandle<()>>,
+    error_receiver: channel::Receiver<Error>,
 }
 
 impl Feeder {
@@ -29,58 +32,93 @@ impl Feeder {
             None
         };
 
-        if rumbler.is_some() {
-            vjoy::start_ffb();
-        }
+        let (error_sender, error_receiver) = channel::unbounded();
+
+        let input_thread = Some(spawn_input_thread(adapter, device, error_sender.clone()));
+        let rumble_thread =
+            rumbler.map(|rumbler| spawn_rumble_thread(rumbler, vjoy::start_ffb(), error_sender));
 
         Ok(Feeder {
-            adapter,
-            device,
-            rumbler,
-            previous_rumble: Rumble::Off,
+            input_thread,
+            rumble_thread,
+            error_receiver,
         })
     }
+}
 
-    pub fn feed(&mut self) -> Result<(), Error> {
-        let result = self.adapter.read_inputs();
-
-        if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
-            return Ok(());
+impl Drop for Feeder {
+    fn drop(&mut self) {
+        if let Some(input_thread) = self.input_thread.take() {
+            input_thread.stop().join().unwrap();
         }
 
-        let mut inputs = result.map_err(Error::Adapter)?;
-
-        if let Some(input) = inputs[0].take() {
-            let _ = self.device.update(input.into());
+        if let Some(rumble_thread) = self.rumble_thread.take() {
+            rumble_thread.stop().join().unwrap();
         }
-
-        self.try_update_rumble()?;
-
-        Ok(())
     }
+}
 
-    fn try_update_rumble(&mut self) -> Result<(), Error> {
-        if let Some(ref rumbler) = self.rumbler {
-            if let Some(status) = vjoy::try_ffb_status(DEVICE_ID) {
-                let new_rumble = Rumble::from(status);
+fn spawn_input_thread(
+    mut adapter: Adapter,
+    device: vjoy::Device,
+    error_sender: channel::Sender<Error>,
+) -> StoppableHandle<()> {
+    stoppable_thread::spawn(move |stopped| loop {
+        if stopped.get() {
+            break;
+        }
 
-                if self.previous_rumble != new_rumble {
-                    self.previous_rumble = new_rumble;
+        let result = adapter.read_inputs();
 
-                    let result =
-                        rumbler.set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
-
-                    if let Err(adapter::Error::Rusb(rusb::Error::Timeout)) = result {
-                        return Ok(());
-                    } else {
-                        return result.map_err(Error::Adapter);
-                    }
+        match result {
+            Err(adapter::Error::Rusb(rusb::Error::Timeout)) => {}
+            Err(err) => {
+                error_sender.send(Error::Adapter(err)).unwrap();
+            }
+            Ok(mut inputs) => {
+                if let Some(input) = inputs[0].take() {
+                    let _ = device.update(input.into());
                 }
             }
         }
 
-        Ok(())
-    }
+        thread::sleep(Duration::from_millis(2));
+    })
+}
+
+fn spawn_rumble_thread(
+    rumbler: Rumbler,
+    ffb_reciever: channel::Receiver<vjoy::FFBPacket>,
+    error_sender: channel::Sender<Error>,
+) -> StoppableHandle<()> {
+    let mut previous_rumble = Rumble::Off;
+
+    stoppable_thread::spawn(move |stopped| loop {
+        if stopped.get() {
+            break;
+        }
+
+        if let Ok((device_id, status)) = ffb_reciever.recv_timeout(Duration::from_millis(2)) {
+            if device_id == DEVICE_ID {
+                let new_rumble = Rumble::from(status);
+
+                if previous_rumble != new_rumble {
+                    previous_rumble = new_rumble;
+
+                    let result =
+                        rumbler.set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
+
+                    match result {
+                        Err(adapter::Error::Rusb(rusb::Error::Timeout)) => {}
+                        Err(err) => {
+                            error_sender.send(Error::Adapter(err)).unwrap();
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    })
 }
 
 impl From<adapter::Input> for vjoy::JoystickPosition {

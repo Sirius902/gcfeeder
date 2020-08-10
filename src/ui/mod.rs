@@ -1,73 +1,16 @@
 use gcfeeder::feeder;
 
+use feeder::Feeder;
 use iced::{
     button, scrollable, Align, Button, Column, Container, Element, Length, Row, Sandbox,
     Scrollable, Text,
 };
-use std::sync::mpsc;
-use std::thread;
-use std::time::Duration;
-
-use feeder::Feeder;
-use thread::JoinHandle;
 
 mod style;
 
-pub struct FeederThread {
-    handle: Option<JoinHandle<()>>,
-    sender: mpsc::Sender<()>,
-    receiver: mpsc::Receiver<feeder::Error>,
-}
-
-impl FeederThread {
-    pub fn spawn() -> Result<FeederThread, feeder::Error> {
-        let (terminate_send, terminate_recv) = mpsc::channel();
-        let (error_send, error_recv) = mpsc::channel();
-
-        let mut feeder = Feeder::new()?;
-
-        let handle = thread::spawn(move || loop {
-            if terminate_recv.try_recv().is_ok() {
-                break;
-            }
-
-            if let Err(err) = feeder.feed() {
-                error_send
-                    .send(err)
-                    .expect("failed to send error from feeder thread");
-                break;
-            }
-
-            thread::sleep(Duration::from_millis(2));
-        });
-
-        Ok(FeederThread {
-            handle: Some(handle),
-            sender: terminate_send,
-            receiver: error_recv,
-        })
-    }
-
-    pub fn error(&self) -> Option<feeder::Error> {
-        self.receiver.try_recv().ok()
-    }
-}
-
-impl Drop for FeederThread {
-    fn drop(&mut self) {
-        self.sender
-            .send(())
-            .expect("failed to terminate feeder thread");
-
-        if let Some(handle) = self.handle.take() {
-            handle.join().expect("failed to join feeder thread");
-        }
-    }
-}
-
 #[derive(Default)]
 pub struct GCFeeder {
-    feeder_thread: Option<FeederThread>,
+    feeder: Option<Feeder>,
     log_text: String,
     error_log: scrollable::State,
     clear_button: button::State,
@@ -103,13 +46,13 @@ impl Sandbox for GCFeeder {
     fn update(&mut self, message: Message) {
         match message {
             Message::StartThread => {
-                if self.feeder_thread.is_some() {
+                if self.feeder.is_some() {
                     return;
                 }
 
-                match FeederThread::spawn() {
-                    Ok(feeder_thread) => {
-                        self.feeder_thread = Some(feeder_thread);
+                match Feeder::new() {
+                    Ok(feeder) => {
+                        self.feeder = Some(feeder);
                     }
                     Err(err) => {
                         self.log(&format!("{:?}", err));
@@ -117,7 +60,7 @@ impl Sandbox for GCFeeder {
                 }
             }
             Message::StopThread => {
-                self.feeder_thread = None;
+                self.feeder = None;
             }
             Message::ClearLog => {
                 self.log_text.clear();
@@ -142,7 +85,7 @@ impl Sandbox for GCFeeder {
             .style(style::dark::Button)
             .on_press(Message::ClearLog);
 
-        let feeder_status = Text::new(if self.feeder_thread.is_some() {
+        let feeder_status = Text::new(if self.feeder.is_some() {
             "Running"
         } else {
             "Idle"

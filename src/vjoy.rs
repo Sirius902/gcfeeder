@@ -1,10 +1,13 @@
+use channel::Sender;
+use crossbeam::channel;
 use once_cell::sync::Lazy;
-use std::collections::HashMap;
 use std::sync::Mutex;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-static FFB_STATUS: Lazy<Mutex<HashMap<DeviceId, FFBOp>>> = Lazy::new(|| Mutex::new(HashMap::new()));
+static FFB_SENDER: Lazy<Mutex<Option<Sender<FFBPacket>>>> = Lazy::new(|| Mutex::new(None));
+
+pub type FFBPacket = (DeviceId, FFBOp);
 
 #[repr(C)]
 #[derive(Debug)]
@@ -67,9 +70,9 @@ pub enum FFBOp {
 #[repr(C)]
 #[derive(Debug)]
 pub struct FFBEffOp {
-    effect_block_index: BYTE,
-    effect_op: FFBOp,
-    loop_count: BYTE,
+    pub effect_block_index: BYTE,
+    pub effect_op: FFBOp,
+    pub loop_count: BYTE,
 }
 
 #[allow(dead_code)]
@@ -190,18 +193,15 @@ pub fn driver_enabled() -> bool {
     unsafe { ffi::vJoyEnabled() == TRUE }
 }
 
-// TODO: I'm not sure if it's safe to call FfbRegisterGenCB more than once so maybe prevent that
-pub fn start_ffb() {
+pub fn start_ffb() -> channel::Receiver<FFBPacket> {
+    let (ffb_sender, ffb_receiver) = channel::unbounded();
+    *FFB_SENDER.lock().unwrap() = Some(ffb_sender);
+
     unsafe {
         ffi::FfbRegisterGenCB(update_ffb, 0 as *mut VOID);
     }
-}
 
-pub fn try_ffb_status(id: DeviceId) -> Option<FFBOp> {
-    FFB_STATUS
-        .try_lock()
-        .ok()
-        .map(|ffb_status| ffb_status.get(&id).cloned().unwrap_or(FFBOp::Stop))
+    ffb_receiver
 }
 
 #[no_mangle]
@@ -214,8 +214,12 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
             && ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS
         {
             assert!(1 <= id && id <= 15, "vjoy: device id out of range");
-            let mut ffb_status = FFB_STATUS.lock().unwrap();
-            let _ = ffb_status.insert(id as DeviceId, operation.effect_op);
+
+            if let Some(ref ffb_sender) = *FFB_SENDER.lock().unwrap() {
+                ffb_sender
+                    .send((id as DeviceId, operation.effect_op))
+                    .unwrap();
+            }
         }
     }
 }
