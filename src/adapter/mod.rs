@@ -9,6 +9,8 @@ pub mod rumble;
 const MAIN_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
 const C_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
 
+const TRIGGER_RANGE: AnalogRange = AnalogRange::new(0x00, 0xFF);
+
 const PAYLOAD_SIZE: usize = 37;
 const ALLOWED_TIMEOUT: Duration = Duration::from_millis(16);
 
@@ -183,21 +185,34 @@ impl StickRange {
             self.radius as i16,
         );
 
-        let xx = Self::clamp(x, center_x - radius, center_x + radius);
-        let yy = Self::clamp(y, center_y - radius, center_y + radius);
+        let xx = clamp(x, center_x - radius, center_x + radius);
+        let yy = clamp(y, center_y - radius, center_y + radius);
 
         (xx as u8, yy as u8)
     }
+}
 
-    fn clamp(n: i16, min: i16, max: i16) -> i16 {
-        assert!(min <= max);
-        if n < min {
-            min
-        } else if n > max {
-            max
-        } else {
-            n
+#[derive(Copy, Clone)]
+struct AnalogRange {
+    pub min: u8,
+    pub max: u8,
+}
+
+impl AnalogRange {
+    pub const fn new(min: u8, max: u8) -> AnalogRange {
+        AnalogRange {
+            min,
+            max,
         }
+    }
+
+    pub fn restrict(self, n: i16) -> u8 {
+        let (min, max) = (
+            self.min as i16,
+            self.max as i16,
+        );
+
+        clamp(n, min, max) as u8
     }
 }
 
@@ -206,6 +221,8 @@ struct Calibration {
     stick_y: i16,
     substick_x: i16,
     substick_y: i16,
+    trigger_left: i16,
+    trigger_right: i16,
 }
 
 impl Calibration {
@@ -215,6 +232,8 @@ impl Calibration {
             stick_y: i16::from(MAIN_STICK.center_y) - i16::from(initial.stick_y),
             substick_x: i16::from(C_STICK.center_x) - i16::from(initial.substick_x),
             substick_y: i16::from(C_STICK.center_y) - i16::from(initial.substick_y),
+            trigger_left: i16::from(initial.trigger_left),
+            trigger_right: i16::from(initial.trigger_right),
         }
     }
 
@@ -229,10 +248,15 @@ impl Calibration {
             i16::from(input.substick_y) + self.substick_y,
         );
 
+        let trigger_left = TRIGGER_RANGE.restrict(i16::from(input.trigger_left) - self.trigger_left);
+        let trigger_right = TRIGGER_RANGE.restrict(i16::from(input.trigger_right) - self.trigger_right);
+
         input.stick_x = stick_x;
         input.stick_y = stick_y;
         input.substick_x = substick_x;
         input.substick_y = substick_y;
+        input.trigger_left = trigger_left;
+        input.trigger_right = trigger_right;
 
         input
     }
@@ -320,5 +344,16 @@ impl Default for Input {
             trigger_left: 0,
             trigger_right: 0,
         }
+    }
+}
+
+fn clamp(n: i16, min: i16, max: i16) -> i16 {
+    assert!(min <= max);
+    if n < min {
+        min
+    } else if n > max {
+        max
+    } else {
+        n
     }
 }
