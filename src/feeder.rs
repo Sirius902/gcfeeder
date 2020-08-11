@@ -98,7 +98,7 @@ fn spawn_rumble_thread(
             break;
         }
 
-        if let Ok((device_id, status)) = ffb_reciever.recv_timeout(Duration::from_millis(1)) {
+        if let Ok((device_id, status)) = ffb_reciever.recv_timeout(Duration::from_millis(2)) {
             if device_id == DEVICE_ID {
                 let new_rumble = Rumble::from(status);
 
