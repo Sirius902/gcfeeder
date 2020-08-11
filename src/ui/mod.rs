@@ -2,9 +2,10 @@ use gcfeeder::feeder;
 
 use feeder::Feeder;
 use iced::{
-    button, scrollable, Align, Button, Column, Container, Element, Length, Row, Sandbox,
-    Scrollable, Text,
+    button, executor, scrollable, time, Align, Application, Button, Column, Command, Container,
+    Element, Length, Row, Scrollable, Subscription, Text,
 };
+use std::time::Duration;
 
 mod style;
 
@@ -23,6 +24,10 @@ impl GCFeeder {
         self.log_text.push_str(message);
         self.log_text.push('\n');
     }
+
+    fn log_error(&mut self, error: feeder::Error) {
+        self.log(&format!("{:?}", error));
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -30,32 +35,33 @@ pub enum Message {
     StartThread,
     StopThread,
     ClearLog,
+    CheckError,
 }
 
-impl Sandbox for GCFeeder {
+impl Application for GCFeeder {
+    type Executor = executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Self {
-        Self::default()
+    fn new(_flags: ()) -> (Self, Command<Message>) {
+        (Self::default(), Command::none())
     }
 
     fn title(&self) -> String {
         "gcfeeder".to_owned()
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::StartThread => {
-                if self.feeder.is_some() {
-                    return;
-                }
-
-                match Feeder::new() {
-                    Ok(feeder) => {
-                        self.feeder = Some(feeder);
-                    }
-                    Err(err) => {
-                        self.log(&format!("{:?}", err));
+                if self.feeder.is_none() {
+                    match Feeder::new() {
+                        Ok(feeder) => {
+                            self.feeder = Some(feeder);
+                        }
+                        Err(err) => {
+                            self.log_error(err);
+                        }
                     }
                 }
             }
@@ -65,7 +71,27 @@ impl Sandbox for GCFeeder {
             Message::ClearLog => {
                 self.log_text.clear();
             }
+            Message::CheckError => {
+                let mut stop_feeder = false;
+
+                if let Some(ref feeder) = self.feeder {
+                    if let Ok(err) = feeder.error_receiver.try_recv() {
+                        self.log_error(err);
+                        stop_feeder = true;
+                    }
+                }
+
+                if stop_feeder {
+                    self.feeder = None;
+                }
+            }
         }
+
+        Command::none()
+    }
+
+    fn subscription(&self) -> Subscription<Message> {
+        time::every(Duration::from_millis(150)).map(|_| Message::CheckError)
     }
 
     fn view(&mut self) -> Element<Message> {

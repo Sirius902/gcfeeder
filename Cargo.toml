@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 crossbeam = "0.7"
-iced = "0.1"
+iced = { git = "https://github.com/hecrj/iced", rev = "00d66da", features = ["tokio"] }
 libc = "0.2"
 once_cell = "1.4"
 rusb = "0.6"

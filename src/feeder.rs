@@ -19,7 +19,7 @@ pub enum Error {
 pub struct Feeder {
     input_thread: Option<StoppableHandle<()>>,
     rumble_thread: Option<StoppableHandle<()>>,
-    error_receiver: channel::Receiver<Error>,
+    pub error_receiver: channel::Receiver<Error>,
 }
 
 impl Feeder {
