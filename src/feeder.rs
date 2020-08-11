@@ -82,7 +82,7 @@ fn spawn_input_thread(
             }
         }
 
-        thread::sleep(Duration::from_millis(2));
+        thread::yield_now();
     })
 }
 
