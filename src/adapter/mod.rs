@@ -200,17 +200,11 @@ struct AnalogRange {
 
 impl AnalogRange {
     pub const fn new(min: u8, max: u8) -> AnalogRange {
-        AnalogRange {
-            min,
-            max,
-        }
+        AnalogRange { min, max }
     }
 
     pub fn restrict(self, n: i16) -> u8 {
-        let (min, max) = (
-            self.min as i16,
-            self.max as i16,
-        );
+        let (min, max) = (self.min as i16, self.max as i16);
 
         clamp(n, min, max) as u8
     }
@@ -232,8 +226,8 @@ impl Calibration {
             stick_y: i16::from(MAIN_STICK.center_y) - i16::from(initial.stick_y),
             substick_x: i16::from(C_STICK.center_x) - i16::from(initial.substick_x),
             substick_y: i16::from(C_STICK.center_y) - i16::from(initial.substick_y),
-            trigger_left: i16::from(initial.trigger_left),
-            trigger_right: i16::from(initial.trigger_right),
+            trigger_left: i16::from(TRIGGER_RANGE.min) - i16::from(initial.trigger_left),
+            trigger_right: i16::from(TRIGGER_RANGE.min) - i16::from(initial.trigger_right),
         }
     }
 
@@ -248,8 +242,10 @@ impl Calibration {
             i16::from(input.substick_y) + self.substick_y,
         );
 
-        let trigger_left = TRIGGER_RANGE.restrict(i16::from(input.trigger_left) - self.trigger_left);
-        let trigger_right = TRIGGER_RANGE.restrict(i16::from(input.trigger_right) - self.trigger_right);
+        let trigger_left =
+            TRIGGER_RANGE.restrict(i16::from(input.trigger_left) + self.trigger_left);
+        let trigger_right =
+            TRIGGER_RANGE.restrict(i16::from(input.trigger_right) + self.trigger_right);
 
         input.stick_x = stick_x;
         input.stick_y = stick_y;
