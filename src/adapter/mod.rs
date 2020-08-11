@@ -48,8 +48,8 @@ pub struct Adapter {
     endpoint_in: u8,
     endpoint_out: u8,
     /// `None` if the controller on the channel is unplugged. If it is plugged,
-    /// the drift is calculated once when connected on `read_inputs`.
-    drifts: [Option<Drift>; 4],
+    /// the calibration is calculated once when connected on `read_inputs`.
+    calibrations: [Option<Calibration>; 4],
 }
 
 impl Adapter {
@@ -77,7 +77,7 @@ impl Adapter {
             handle: Arc::new(handle),
             endpoint_in,
             endpoint_out,
-            drifts: Default::default(),
+            calibrations: Default::default(),
         };
 
         adapter.make_rumbler().reset_rumble()?;
@@ -96,14 +96,14 @@ impl Adapter {
             let connected = r#type != 0;
 
             if !connected {
-                self.drifts[chan] = None;
+                self.calibrations[chan] = None;
                 continue;
             }
 
             let raw = Input::parse(&payload, *port);
-            let drift = self.drifts[chan].get_or_insert_with(|| Drift::new(&raw));
+            let calibration = self.calibrations[chan].get_or_insert_with(|| Calibration::new(&raw));
 
-            inputs[chan] = Some(drift.correct(raw));
+            inputs[chan] = Some(calibration.correct(raw));
         }
 
         Ok(inputs)
@@ -201,17 +201,16 @@ impl StickRange {
     }
 }
 
-// TODO: Maybe rename to Calibration and add in triggers?
-struct Drift {
+struct Calibration {
     stick_x: i16,
     stick_y: i16,
     substick_x: i16,
     substick_y: i16,
 }
 
-impl Drift {
-    pub fn new(initial: &Input) -> Drift {
-        Drift {
+impl Calibration {
+    pub fn new(initial: &Input) -> Calibration {
+        Calibration {
             stick_x: i16::from(MAIN_STICK.center_x) - i16::from(initial.stick_x),
             stick_y: i16::from(MAIN_STICK.center_y) - i16::from(initial.stick_y),
             substick_x: i16::from(C_STICK.center_x) - i16::from(initial.substick_x),
