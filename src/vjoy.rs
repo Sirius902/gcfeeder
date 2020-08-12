@@ -1,12 +1,14 @@
 use channel::{Receiver, Sender};
 use crossbeam::channel;
 use once_cell::sync::Lazy;
+use std::sync::atomic::{AtomicBool, Ordering};
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
 pub type Channel<T> = (Sender<T>, Receiver<T>);
 pub type FFBPacket = (DeviceId, FFBOp);
 
+static FFB_STARTED: AtomicBool = AtomicBool::new(false);
 static FFB_CHANNEL: Lazy<Channel<FFBPacket>> = Lazy::new(|| channel::unbounded());
 
 #[repr(C)]
@@ -221,8 +223,12 @@ pub fn driver_enabled() -> bool {
 pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
     let (_, ref ffb_receiver) = *FFB_CHANNEL;
 
-    unsafe {
-        ffi::FfbRegisterGenCB(update_ffb, std::ptr::null_mut());
+    if !FFB_STARTED.load(Ordering::Relaxed) {
+        unsafe {
+            ffi::FfbRegisterGenCB(update_ffb, std::ptr::null_mut());
+        }
+
+        FFB_STARTED.store(true, Ordering::Relaxed);
     }
 
     ffb_receiver.clone()
