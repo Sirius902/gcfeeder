@@ -91,7 +91,7 @@ fn spawn_rumble_thread(
     ffb_reciever: channel::Receiver<vjoy::FFBPacket>,
     error_sender: channel::Sender<Error>,
 ) -> StoppableHandle<()> {
-    let mut rumble_duration = Duration::from_millis(500);
+    let mut rumble_duration = Duration::from_secs(1);
     let mut rumble_timer = Duration::default();
     let mut then = Instant::now();
 
