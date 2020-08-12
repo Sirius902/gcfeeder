@@ -223,7 +223,7 @@ pub fn start_ffb() -> channel::Receiver<FFBPacket> {
     *FFB_SENDER.lock().unwrap() = Some(ffb_sender);
 
     unsafe {
-        ffi::FfbRegisterGenCB(update_ffb, 0 as *mut VOID);
+        ffi::FfbRegisterGenCB(update_ffb, std::ptr::null_mut());
     }
 
     ffb_receiver
