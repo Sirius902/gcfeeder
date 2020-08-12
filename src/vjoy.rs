@@ -75,6 +75,30 @@ pub struct FFBEffOp {
     pub loop_count: BYTE,
 }
 
+#[repr(C)]
+#[derive(Debug)]
+pub enum FFBPType {
+    // Write
+    EffectReport = 0x01,          // Usage Set Effect Report
+    EnvelopeReport = 0x02,        // Usage Set Envelope Report
+    ConditionReport = 0x03,       // Usage Set Condition Report
+    PeriodicReport = 0x04,        // Usage Set Periodic Report
+    ConstantReport = 0x05,        // Usage Set Constant Force Report
+    RampReport = 0x06,            // Usage Set Ramp Force Report
+    CustomReport = 0x07,          // Usage Custom Force Data Report
+    DownloadSample = 0x08,        // Usage Download Force Sample
+    EffectOperationReport = 0x09, // Usage Effect Operation Report
+    BlockFreeReport = 0x0A,       // Usage PID Block Free Report
+    ControlReport = 0x0B,         // Usage PID Device Control
+    GainReport = 0x0C,            // Usage Device Gain Report
+    SetCustomReport = 0x0D,       // Usage Set Custom Force Report
+
+    // Feature
+    NewEffectReport = 0x01 + 0x10, // Usage Create New Effect Report
+    BlockLoadReport = 0x02 + 0x10, // Usage Block Load Report
+    PoolReport = 0x03 + 0x10,      // Usage PID Pool Report
+}
+
 #[allow(dead_code)]
 mod ffi {
     use super::*;
@@ -101,6 +125,7 @@ mod ffi {
 
         pub fn Ffb_h_DeviceID(Packet: *const FfbData, DeviceId: *mut c_int) -> DWORD;
         pub fn Ffb_h_EffOp(Packet: *const FfbData, Operation: *mut FFBEffOp) -> DWORD;
+        pub fn Ffb_h_Type(Packet: *const FfbData, Type: *mut FFBPType) -> DWORD;
     }
 }
 
