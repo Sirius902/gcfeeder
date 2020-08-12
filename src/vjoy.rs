@@ -6,7 +6,6 @@ use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
 pub type Channel<T> = (Sender<T>, Receiver<T>);
-pub type FFBPacket = (DeviceId, FFBOp);
 
 static FFB_STARTED: AtomicBool = AtomicBool::new(false);
 static FFB_CHANNEL: Lazy<Channel<FFBPacket>> = Lazy::new(|| channel::unbounded());
@@ -79,6 +78,41 @@ pub struct FFBEffOp {
 
 #[repr(C)]
 #[derive(Debug)]
+pub struct FFBEffReport {
+    pub effect_block_index: BYTE,
+    pub effect_type: FFBEType,
+    pub duration: WORD, // Value in milliseconds. 0xFFFF means infinite
+    pub triger_rpt: WORD,
+    pub sample_prd: WORD,
+    pub gain: BYTE,
+    pub triger_button: BYTE,
+    pub polar: BOOL, // How to interpret force direction Polar (0-360�) or Cartesian (X,Y)
+    /// Could also be dir_x, uses `union` originally.
+    pub direction: BYTE, // Polar direction: (0x00-0xFF correspond to 0-360�)
+    pub dir_y: BYTE, // Y direction: Positive values are below the center (Y); Negative are Two's complement
+}
+
+#[repr(C)]
+#[derive(Debug)]
+pub enum FFBEType {
+    // Effect Type
+    None = 0,         //    No Force
+    Constant = 1,     //    Constant Force
+    Ramp = 2,         //    Ramp
+    Square = 3,       //    Square
+    Sine = 4,         //    Sine
+    Triangle = 5,     //    Triangle
+    SawtoothUp = 6,   //    Sawtooth Up
+    SawtoothDown = 7, //    Sawtooth Down
+    Spring = 8,       //    Spring
+    Damper = 9,       //    Damper
+    Interia = 10,     //    Inertia
+    Friction = 11,    //    Friction
+    Custom = 12,      //    Custom Force Data
+}
+
+#[repr(C)]
+#[derive(Debug)]
 pub enum FFBPType {
     // Write
     EffectReport = 0x01,          // Usage Set Effect Report
@@ -128,6 +162,7 @@ mod ffi {
         pub fn Ffb_h_DeviceID(Packet: *const FFBData, DeviceId: *mut c_int) -> DWORD;
         pub fn Ffb_h_EffOp(Packet: *const FFBData, Operation: *mut FFBEffOp) -> DWORD;
         pub fn Ffb_h_Type(Packet: *const FFBData, Type: *mut FFBPType) -> DWORD;
+        pub fn Ffb_h_Eff_Report(Packet: *const FFBData, Effect: *mut FFBEffReport) -> DWORD;
     }
 }
 
@@ -220,6 +255,11 @@ pub fn driver_enabled() -> bool {
     unsafe { ffi::vJoyEnabled() == TRUE }
 }
 
+pub enum FFBPacket {
+    EffectOperation(DeviceId, FFBEffOp),
+    EffectReport(DeviceId, FFBEffReport),
+}
+
 pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
     let (_, ref ffb_receiver) = *FFB_CHANNEL;
 
@@ -237,17 +277,33 @@ pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
 #[no_mangle]
 extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
     unsafe {
+        let (ref ffb_sender, _) = *FFB_CHANNEL;
         let mut id = 0;
-        let mut operation = std::mem::zeroed::<FFBEffOp>();
+        let mut ffb_type: Option<FFBPType> = None;
 
         if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS
-            && ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS
+            && ffi::Ffb_h_Type(ffb_data, &mut ffb_type as *mut _ as *mut FFBPType)
+                == ERROR_SEVERITY_SUCCESS
         {
-            let (ref ffb_sender, _) = *FFB_CHANNEL;
-
-            ffb_sender
-                .send((id as DeviceId, operation.effect_op))
-                .unwrap();
+            match ffb_type.unwrap() {
+                FFBPType::BlockFreeReport => {
+                    let mut operation = std::mem::zeroed::<FFBEffOp>();
+                    if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
+                        ffb_sender
+                            .send(FFBPacket::EffectOperation(id as DeviceId, operation))
+                            .unwrap();
+                    }
+                }
+                FFBPType::EffectReport => {
+                    let mut report = std::mem::zeroed::<FFBEffReport>();
+                    if ffi::Ffb_h_Eff_Report(ffb_data, &mut report) == ERROR_SEVERITY_SUCCESS {
+                        ffb_sender
+                            .send(FFBPacket::EffectReport(id as DeviceId, report))
+                            .unwrap();
+                    }
+                }
+                _ => {}
+            }
         }
     }
 }

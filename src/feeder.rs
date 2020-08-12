@@ -5,7 +5,7 @@ use adapter::{
 };
 use crossbeam::channel;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use stoppable_thread::StoppableHandle;
 
 const DEVICE_ID: u32 = 1;
@@ -91,33 +91,53 @@ fn spawn_rumble_thread(
     ffb_reciever: channel::Receiver<vjoy::FFBPacket>,
     error_sender: channel::Sender<Error>,
 ) -> StoppableHandle<()> {
-    let mut previous_rumble = Rumble::Off;
+    let mut rumble_duration = Duration::from_millis(150);
+    let mut rumble_timer = Duration::default();
+    let mut then = Instant::now();
 
     stoppable_thread::spawn(move |stopped| loop {
         if stopped.get() {
             break;
         }
 
-        if let Ok((device_id, status)) = ffb_reciever.recv_timeout(Duration::from_millis(2)) {
-            if device_id == DEVICE_ID {
-                let new_rumble = Rumble::from(status);
-
-                if previous_rumble != new_rumble {
-                    previous_rumble = new_rumble;
-
-                    let result =
-                        rumbler.set_rumble([new_rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
-
-                    match result {
-                        Err(adapter::Error::Rusb(rusb::Error::Timeout)) => {}
-                        Err(err) => {
-                            error_sender.send(Error::Adapter(err)).unwrap();
-                        }
-                        _ => {}
+        match ffb_reciever.try_recv() {
+            Ok(vjoy::FFBPacket::EffectOperation(device_id, operation)) => {
+                if device_id == DEVICE_ID {
+                    if operation.effect_op == vjoy::FFBOp::Stop {
+                        rumble_timer = Duration::default();
+                    } else {
+                        rumble_timer = rumble_duration * operation.loop_count.into();
                     }
                 }
             }
+            Ok(vjoy::FFBPacket::EffectReport(device_id, report)) => {
+                if device_id == DEVICE_ID {
+                    rumble_duration = Duration::from_millis(report.duration.into());
+                }
+            }
+            Err(_) => {}
         }
+
+        let rumble = if rumble_timer.as_millis() > 0 {
+            Rumble::On
+        } else {
+            Rumble::Off
+        };
+
+        let result = rumbler.set_rumble([rumble, Rumble::Off, Rumble::Off, Rumble::Off]);
+
+        match result {
+            Err(adapter::Error::Rusb(rusb::Error::Timeout)) => {}
+            Err(err) => {
+                error_sender.send(Error::Adapter(err)).unwrap();
+            }
+            _ => {}
+        }
+
+        rumble_timer = rumble_timer.checked_sub(then.elapsed()).unwrap_or_default();
+        then = Instant::now();
+
+        thread::yield_now();
     })
 }
 
@@ -150,17 +170,5 @@ impl From<adapter::Input> for vjoy::JoystickPosition {
         pos.w_axis_z_rot = i32::from(input.trigger_right) * MULT;
 
         pos
-    }
-}
-
-// TODO: Not sure what `Solo` is. Consider ignoring it for rumble purposes?
-impl From<vjoy::FFBOp> for Rumble {
-    fn from(operation: vjoy::FFBOp) -> Rumble {
-        use vjoy::FFBOp::*;
-
-        match operation {
-            Start | Solo => Rumble::On,
-            Stop => Rumble::Off,
-        }
     }
 }
