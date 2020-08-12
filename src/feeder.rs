@@ -36,7 +36,7 @@ impl Feeder {
 
         let input_thread = Some(spawn_input_thread(adapter, device, error_sender.clone()));
         let rumble_thread =
-            rumbler.map(|rumbler| spawn_rumble_thread(rumbler, vjoy::start_ffb(), error_sender));
+            rumbler.map(|rumbler| spawn_rumble_thread(rumbler, vjoy::receive_ffb(), error_sender));
 
         Ok(Feeder {
             input_thread,

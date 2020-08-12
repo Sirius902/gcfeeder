@@ -1,13 +1,13 @@
-use channel::Sender;
+use channel::{Receiver, Sender};
 use crossbeam::channel;
 use once_cell::sync::Lazy;
-use std::sync::Mutex;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-static FFB_SENDER: Lazy<Mutex<Option<Sender<FFBPacket>>>> = Lazy::new(|| Mutex::new(None));
-
+pub type Channel<T> = (Sender<T>, Receiver<T>);
 pub type FFBPacket = (DeviceId, FFBOp);
+
+static FFB_CHANNEL: Lazy<Channel<FFBPacket>> = Lazy::new(|| channel::unbounded());
 
 #[repr(C)]
 #[derive(Debug)]
@@ -218,15 +218,14 @@ pub fn driver_enabled() -> bool {
     unsafe { ffi::vJoyEnabled() == TRUE }
 }
 
-pub fn start_ffb() -> channel::Receiver<FFBPacket> {
-    let (ffb_sender, ffb_receiver) = channel::unbounded();
-    *FFB_SENDER.lock().unwrap() = Some(ffb_sender);
+pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
+    let (_, ref ffb_receiver) = *FFB_CHANNEL;
 
     unsafe {
         ffi::FfbRegisterGenCB(update_ffb, std::ptr::null_mut());
     }
 
-    ffb_receiver
+    ffb_receiver.clone()
 }
 
 #[no_mangle]
@@ -238,11 +237,11 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
         if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS
             && ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS
         {
-            if let Some(ref ffb_sender) = *FFB_SENDER.lock().unwrap() {
-                ffb_sender
-                    .send((id as DeviceId, operation.effect_op))
-                    .unwrap();
-            }
+            let (ref ffb_sender, _) = *FFB_CHANNEL;
+
+            ffb_sender
+                .send((id as DeviceId, operation.effect_op))
+                .unwrap();
         }
     }
 }
