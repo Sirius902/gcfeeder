@@ -101,7 +101,11 @@ fn spawn_rumble_thread(
         }
 
         match ffb_reciever.try_recv() {
-            Ok(vjoy::FFBPacket::EffectOperation(device_id, operation)) => {
+            Ok(vjoy::FFBPacket::EffectOperation {
+                device_id,
+                operation,
+                ..
+            }) => {
                 if device_id == DEVICE_ID {
                     if operation.effect_op == vjoy::FFBOp::Stop {
                         rumble_timer = Duration::default();
@@ -110,7 +114,9 @@ fn spawn_rumble_thread(
                     }
                 }
             }
-            Ok(vjoy::FFBPacket::EffectReport(device_id, report)) => {
+            Ok(vjoy::FFBPacket::EffectReport {
+                device_id, report, ..
+            }) => {
                 if device_id == DEVICE_ID {
                     rumble_duration = Duration::from_millis(report.duration.into());
                 }

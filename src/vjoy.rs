@@ -2,6 +2,7 @@ use channel::{Receiver, Sender};
 use crossbeam::channel;
 use once_cell::sync::Lazy;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::time::Instant;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
@@ -256,8 +257,16 @@ pub fn driver_enabled() -> bool {
 }
 
 pub enum FFBPacket {
-    EffectOperation(DeviceId, FFBEffOp),
-    EffectReport(DeviceId, FFBEffReport),
+    EffectOperation {
+        device_id: DeviceId,
+        operation: FFBEffOp,
+        timestamp: Instant,
+    },
+    EffectReport {
+        device_id: DeviceId,
+        report: FFBEffReport,
+        timestamp: Instant,
+    },
 }
 
 pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
@@ -285,12 +294,18 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
             && ffi::Ffb_h_Type(ffb_data, &mut ffb_type as *mut _ as *mut FFBPType)
                 == ERROR_SEVERITY_SUCCESS
         {
+            let timestamp = Instant::now();
+
             match ffb_type.unwrap() {
                 FFBPType::BlockFreeReport => {
                     let mut operation = std::mem::zeroed::<FFBEffOp>();
                     if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
                         ffb_sender
-                            .send(FFBPacket::EffectOperation(id as DeviceId, operation))
+                            .send(FFBPacket::EffectOperation {
+                                device_id: id as DeviceId,
+                                operation,
+                                timestamp,
+                            })
                             .unwrap();
                     }
                 }
@@ -298,7 +313,11 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
                     let mut report = std::mem::zeroed::<FFBEffReport>();
                     if ffi::Ffb_h_Eff_Report(ffb_data, &mut report) == ERROR_SEVERITY_SUCCESS {
                         ffb_sender
-                            .send(FFBPacket::EffectReport(id as DeviceId, report))
+                            .send(FFBPacket::EffectReport {
+                                device_id: id as DeviceId,
+                                report,
+                                timestamp,
+                            })
                             .unwrap();
                     }
                 }
