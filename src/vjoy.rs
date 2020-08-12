@@ -238,8 +238,6 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
         if ffi::Ffb_h_DeviceID(ffb_data, &mut id) == ERROR_SEVERITY_SUCCESS
             && ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS
         {
-            assert!(1 <= id && id <= 15, "vjoy: device id out of range");
-
             if let Some(ref ffb_sender) = *FFB_SENDER.lock().unwrap() {
                 ffb_sender
                     .send((id as DeviceId, operation.effect_op))
