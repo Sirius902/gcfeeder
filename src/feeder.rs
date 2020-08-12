@@ -94,6 +94,7 @@ fn spawn_rumble_thread(
     let mut rumble_duration = Duration::from_secs(1);
     let mut rumble_timer = Duration::default();
     let mut then = Instant::now();
+    let mut last_effect: Option<Instant> = None;
 
     stoppable_thread::spawn(move |stopped| loop {
         if stopped.get() {
@@ -104,19 +105,26 @@ fn spawn_rumble_thread(
             Ok(vjoy::FFBPacket::EffectOperation {
                 device_id,
                 operation,
-                ..
+                timestamp,
             }) => {
                 if device_id == DEVICE_ID {
-                    if operation.effect_op == vjoy::FFBOp::Stop {
+                    /* Kind of a janky hack, but stop rumbling the controller if two effect
+                     * operation packets arrive less than a millisecond from each other since
+                     * they may be out of order. */
+                    let quick_packet = last_effect
+                        .map(|last_effect| (timestamp - last_effect).as_millis() < 1)
+                        .unwrap_or(false);
+
+                    if operation.effect_op == vjoy::FFBOp::Stop || quick_packet {
                         rumble_timer = Duration::default();
                     } else {
                         rumble_timer = rumble_duration * operation.loop_count.into();
                     }
+
+                    last_effect = Some(timestamp);
                 }
             }
-            Ok(vjoy::FFBPacket::EffectReport {
-                device_id, report, ..
-            }) => {
+            Ok(vjoy::FFBPacket::EffectReport { device_id, report }) => {
                 if device_id == DEVICE_ID {
                     rumble_duration = Duration::from_millis(report.duration.into());
                 }

@@ -265,7 +265,6 @@ pub enum FFBPacket {
     EffectReport {
         device_id: DeviceId,
         report: FFBEffReport,
-        timestamp: Instant,
     },
 }
 
@@ -294,12 +293,12 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
             && ffi::Ffb_h_Type(ffb_data, &mut ffb_type as *mut _ as *mut FFBPType)
                 == ERROR_SEVERITY_SUCCESS
         {
-            let timestamp = Instant::now();
-
             match ffb_type.unwrap() {
                 FFBPType::BlockFreeReport => {
                     let mut operation = std::mem::zeroed::<FFBEffOp>();
                     if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
+                        let timestamp = Instant::now();
+
                         ffb_sender
                             .send(FFBPacket::EffectOperation {
                                 device_id: id as DeviceId,
@@ -316,7 +315,6 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
                             .send(FFBPacket::EffectReport {
                                 device_id: id as DeviceId,
                                 report,
-                                timestamp,
                             })
                             .unwrap();
                     }
