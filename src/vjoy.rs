@@ -104,8 +104,8 @@ mod ffi {
     use super::*;
     use libc::c_int;
 
-    pub type FfbData = VOID;
-    pub type FfbGenCB = extern "C" fn(ffb_data: *const FfbData, userdata: *mut VOID);
+    pub type FFBData = VOID;
+    pub type FfbGenCB = extern "C" fn(ffb_data: *const FFBData, userdata: *mut VOID);
 
     #[link(name = "vJoyInterface")]
     extern "C" {
@@ -123,9 +123,9 @@ mod ffi {
         pub fn IsDeviceFfb(rID: UINT) -> BOOL;
         pub fn IsDeviceFfbEffect(rID: UINT, Effect: UINT) -> BOOL;
 
-        pub fn Ffb_h_DeviceID(Packet: *const FfbData, DeviceId: *mut c_int) -> DWORD;
-        pub fn Ffb_h_EffOp(Packet: *const FfbData, Operation: *mut FFBEffOp) -> DWORD;
-        pub fn Ffb_h_Type(Packet: *const FfbData, Type: *mut FFBPType) -> DWORD;
+        pub fn Ffb_h_DeviceID(Packet: *const FFBData, DeviceId: *mut c_int) -> DWORD;
+        pub fn Ffb_h_EffOp(Packet: *const FFBData, Operation: *mut FFBEffOp) -> DWORD;
+        pub fn Ffb_h_Type(Packet: *const FFBData, Type: *mut FFBPType) -> DWORD;
     }
 }
 
@@ -230,7 +230,7 @@ pub fn start_ffb() -> channel::Receiver<FFBPacket> {
 }
 
 #[no_mangle]
-extern "C" fn update_ffb(ffb_data: *const ffi::FfbData, _: *mut VOID) {
+extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
     unsafe {
         let mut id = 0;
         let mut operation = std::mem::zeroed::<FFBEffOp>();
