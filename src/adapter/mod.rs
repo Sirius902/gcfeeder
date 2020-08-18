@@ -6,8 +6,8 @@ use std::time::Duration;
 
 pub mod rumble;
 
-const MAIN_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
-const C_STICK: StickRange = StickRange::new(0x80, 0x80, 0x7F);
+const MAIN_STICK: StickRange = StickRange::new(0x80, 0x7F);
+const C_STICK: StickRange = StickRange::new(0x80, 0x7F);
 
 const TRIGGER_RANGE: AnalogRange = AnalogRange::new(0x00, 0xFF);
 
@@ -164,29 +164,20 @@ impl Adapter {
 
 #[derive(Copy, Clone)]
 struct StickRange {
-    pub center_x: u8,
-    pub center_y: u8,
+    pub center: u8,
     pub radius: u8,
 }
 
 impl StickRange {
-    pub const fn new(center_x: u8, center_y: u8, radius: u8) -> StickRange {
-        StickRange {
-            center_x,
-            center_y,
-            radius,
-        }
+    pub const fn new(center: u8, radius: u8) -> StickRange {
+        StickRange { center, radius }
     }
 
     pub fn restrict(self, x: i16, y: i16) -> (u8, u8) {
-        let (center_x, center_y, radius) = (
-            self.center_x as i16,
-            self.center_y as i16,
-            self.radius as i16,
-        );
+        let (center, radius) = (self.center as i16, self.radius as i16);
 
-        let xx = clamp(x, center_x - radius, center_x + radius);
-        let yy = clamp(y, center_y - radius, center_y + radius);
+        let xx = clamp(x, center - radius, center + radius);
+        let yy = clamp(y, center - radius, center + radius);
 
         (xx as u8, yy as u8)
     }
@@ -222,10 +213,10 @@ struct Calibration {
 impl Calibration {
     pub fn new(initial: &Input) -> Calibration {
         Calibration {
-            stick_x: i16::from(MAIN_STICK.center_x) - i16::from(initial.stick_x),
-            stick_y: i16::from(MAIN_STICK.center_y) - i16::from(initial.stick_y),
-            substick_x: i16::from(C_STICK.center_x) - i16::from(initial.substick_x),
-            substick_y: i16::from(C_STICK.center_y) - i16::from(initial.substick_y),
+            stick_x: i16::from(MAIN_STICK.center) - i16::from(initial.stick_x),
+            stick_y: i16::from(MAIN_STICK.center) - i16::from(initial.stick_y),
+            substick_x: i16::from(C_STICK.center) - i16::from(initial.substick_x),
+            substick_y: i16::from(C_STICK.center) - i16::from(initial.substick_y),
             trigger_left: i16::from(TRIGGER_RANGE.min) - i16::from(initial.trigger_left),
             trigger_right: i16::from(TRIGGER_RANGE.min) - i16::from(initial.trigger_right),
         }
@@ -333,10 +324,10 @@ impl Default for Input {
             button_r: false,
             button_l: false,
 
-            stick_x: MAIN_STICK.center_x,
-            stick_y: MAIN_STICK.center_y,
-            substick_x: C_STICK.center_x,
-            substick_y: C_STICK.center_y,
+            stick_x: MAIN_STICK.center,
+            stick_y: MAIN_STICK.center,
+            substick_x: C_STICK.center,
+            substick_y: C_STICK.center,
             trigger_left: 0,
             trigger_right: 0,
         }
