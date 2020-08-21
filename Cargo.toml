@@ -5,6 +5,7 @@ authors = ["Sirius902 <3645979-Sirius902@users.noreply.gitlab.com>"]
 edition = "2018"
 
 [dependencies]
+bus = "2.2"
 crossbeam = "0.7"
 iced = { git = "https://github.com/hecrj/iced", rev = "00d66da", features = ["tokio"] }
 libc = "0.2"

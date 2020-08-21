@@ -1,15 +1,13 @@
-use channel::{Receiver, Sender};
-use crossbeam::channel;
+use bus::{Bus, BusReader};
 use once_cell::sync::Lazy;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Mutex;
 use std::time::Instant;
 use winapi::shared::minwindef::*;
 use winapi::um::winnt::*;
 
-pub type Channel<T> = (Sender<T>, Receiver<T>);
-
 static FFB_STARTED: AtomicBool = AtomicBool::new(false);
-static FFB_CHANNEL: Lazy<Channel<FFBPacket>> = Lazy::new(|| channel::unbounded());
+static FFB_BUS: Lazy<Mutex<Bus<FFBPacket>>> = Lazy::new(|| Mutex::new(Bus::new(10)));
 
 #[repr(C)]
 #[derive(Debug)]
@@ -70,7 +68,7 @@ pub enum FFBOp {
 }
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct FFBEffOp {
     pub effect_block_index: BYTE,
     pub effect_op: FFBOp,
@@ -78,7 +76,7 @@ pub struct FFBEffOp {
 }
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct FFBEffReport {
     pub effect_block_index: BYTE,
     pub effect_type: FFBEType,
@@ -94,7 +92,7 @@ pub struct FFBEffReport {
 }
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum FFBEType {
     // Effect Type
     None = 0,         //    No Force
@@ -256,6 +254,7 @@ pub fn driver_enabled() -> bool {
     unsafe { ffi::vJoyEnabled() == TRUE }
 }
 
+#[derive(Copy, Clone)]
 pub enum FFBPacket {
     EffectOperation {
         device_id: DeviceId,
@@ -268,8 +267,8 @@ pub enum FFBPacket {
     },
 }
 
-pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
-    let (_, ref ffb_receiver) = *FFB_CHANNEL;
+pub fn receive_ffb() -> BusReader<FFBPacket> {
+    let mut ffb_bus = FFB_BUS.lock().unwrap();
 
     if !FFB_STARTED.load(Ordering::Relaxed) {
         unsafe {
@@ -279,13 +278,13 @@ pub fn receive_ffb() -> channel::Receiver<FFBPacket> {
         FFB_STARTED.store(true, Ordering::Relaxed);
     }
 
-    ffb_receiver.clone()
+    ffb_bus.add_rx()
 }
 
 #[no_mangle]
 extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
     unsafe {
-        let (ref ffb_sender, _) = *FFB_CHANNEL;
+        let mut ffb_bus = FFB_BUS.lock().unwrap();
         let mut id = 0;
         let mut ffb_type: Option<FFBPType> = None;
 
@@ -299,24 +298,20 @@ extern "C" fn update_ffb(ffb_data: *const ffi::FFBData, _: *mut VOID) {
                     if ffi::Ffb_h_EffOp(ffb_data, &mut operation) == ERROR_SEVERITY_SUCCESS {
                         let timestamp = Instant::now();
 
-                        ffb_sender
-                            .send(FFBPacket::EffectOperation {
-                                device_id: id as DeviceId,
-                                operation,
-                                timestamp,
-                            })
-                            .unwrap();
+                        ffb_bus.broadcast(FFBPacket::EffectOperation {
+                            device_id: id as DeviceId,
+                            operation,
+                            timestamp,
+                        });
                     }
                 }
                 FFBPType::EffectReport => {
                     let mut report = std::mem::zeroed::<FFBEffReport>();
                     if ffi::Ffb_h_Eff_Report(ffb_data, &mut report) == ERROR_SEVERITY_SUCCESS {
-                        ffb_sender
-                            .send(FFBPacket::EffectReport {
-                                device_id: id as DeviceId,
-                                report,
-                            })
-                            .unwrap();
+                        ffb_bus.broadcast(FFBPacket::EffectReport {
+                            device_id: id as DeviceId,
+                            report,
+                        });
                     }
                 }
                 _ => {}

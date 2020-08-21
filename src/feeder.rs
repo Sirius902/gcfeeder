@@ -3,6 +3,7 @@ use adapter::{
     rumble::{Rumble, Rumbler},
     Adapter,
 };
+use bus::BusReader;
 use crossbeam::channel;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -88,7 +89,7 @@ fn spawn_input_thread(
 
 fn spawn_rumble_thread(
     rumbler: Rumbler,
-    ffb_reciever: channel::Receiver<vjoy::FFBPacket>,
+    mut ffb_reciever: BusReader<vjoy::FFBPacket>,
     error_sender: channel::Sender<Error>,
 ) -> StoppableHandle<()> {
     let mut rumble_duration = Duration::from_secs(1);
