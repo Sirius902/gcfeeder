@@ -32,7 +32,7 @@ impl Rumbler {
             states[3].into(),
         ];
 
-        let _bytes_written = self
+        let _ = self
             .handle
             .write_interrupt(self.endpoint_out, &payload, ALLOWED_TIMEOUT)
             .map_err(Error::Rusb)?;
