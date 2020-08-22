@@ -68,7 +68,7 @@ impl Adapter {
         // From Dolphin:
         // This call makes Nyko-brand (and perhaps other) adapters work.
         // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
-        let _err = handle.write_control(0x21, 11, 0x0001, 0, &[], Duration::from_secs(1));
+        let _ = handle.write_control(0x21, 11, 0x0001, 0, &[], Duration::from_secs(1));
 
         // Not sure what this does but Dolphin does it
         let _ = handle
