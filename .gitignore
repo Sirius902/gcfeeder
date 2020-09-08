@@ -1,3 +1,25 @@
-/target
 
-/*.dll
+# Created by https://www.toptal.com/developers/gitignore/api/zig,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=zig,visualstudiocode
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+### zig ###
+# Zig programming language
+
+zig-cache/
+build/
+build-*/
+docgen_tmp/
+
+# End of https://www.toptal.com/developers/gitignore/api/zig,visualstudiocode

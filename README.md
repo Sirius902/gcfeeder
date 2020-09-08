@@ -1,5 +1,5 @@
 ## gcfeeder
-A vJoy feeder written in Rust for Gamecube controllers using the Gamecube Controller Adapter.
+A vJoy feeder for Gamecube controllers using the Gamecube Controller Adapter.
 Inspired by [Wii U GCN USB Driver](http://m4sv.com/page/wii-u-gcn-usb-driver).
 
 The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
