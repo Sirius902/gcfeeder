@@ -41,3 +41,20 @@ pub fn build(b: *Builder) void {
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 }
+
+fn copyDlls(b: *Builder) !void {
+    var src = try std.fs.cwd().openDir("src", .{ .iterate = true });
+    defer src.close();
+
+    var files = src.iterate();
+    while (try files.next()) |file| {
+        const extension = fileExtension(file.name) orelse continue;
+        if (std.mem.eql(u8, extension, ".zig")) {
+            std.debug.print("{}\n", .{file.name});
+        }
+    }
+}
+
+fn fileExtension(name: []const u8) ?[]const u8 {
+    return if (std.mem.lastIndexOf(u8, name, ".")) |i| name[i..] else null;
+}
