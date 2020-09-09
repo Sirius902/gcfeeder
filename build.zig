@@ -25,7 +25,7 @@ pub fn build(b: *Builder) void {
     exe.addLibPath(lib_dir);
 
     exe.linkLibC();
-    exe.linkSystemLibrary("usb-1.0.dll");
+    exe.linkSystemLibrary("usb-1.0");
 
     exe.setTarget(target);
     exe.setBuildMode(mode);
