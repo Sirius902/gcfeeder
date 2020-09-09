@@ -2,7 +2,11 @@ const std = @import("std");
 const Builder = std.build.Builder;
 
 pub fn build(b: *Builder) void {
-    const target = b.standardTargetOptions(.{ .default_target = .{ .abi = .gnu } });
+    // Standard target options allows the person running `zig build` to choose
+    // what target to build for. Here we do not override the defaults, which
+    // means any target is allowed, and the default is native. Other options
+    // for restricting supported target set are available.
+    const target = b.standardTargetOptions(.{});
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
@@ -25,7 +29,7 @@ pub fn build(b: *Builder) void {
     exe.addLibPath(lib_dir);
 
     exe.linkLibC();
-    exe.linkSystemLibrary("usb-1.0");
+    exe.linkSystemLibrary("libusb-1.0");
 
     exe.setTarget(target);
     exe.setBuildMode(mode);
