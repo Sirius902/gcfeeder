@@ -22,4 +22,8 @@ build/
 build-*/
 docgen_tmp/
 
+### zls ###
+# Zig Language Server
+build_runner.zig
+
 # End of https://www.toptal.com/developers/gitignore/api/zig,visualstudiocode

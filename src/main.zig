@@ -1,22 +1,15 @@
 const std = @import("std");
 const time = std.time;
-const Thread = std.Thread;
-const AtomicBool = @import("atomic.zig").Bool;
 const print = std.debug.print;
 
-fn doot(stop: *AtomicBool) void {
-    while (!stop.get()) {
-        print("doot\n", .{});
-        time.sleep(time.ns_per_s / 4);
-    }
-}
+const usb = @cImport({
+    @cInclude("libusb-1.0/libusb.h");
+});
 
-pub fn main() !void {
-    var stop = AtomicBool.init(false);
-    const thread1 = try Thread.spawn(&stop, doot);
+pub fn main() void {
+    var ctx: ?*usb.libusb_context = null;
+    _ = usb.libusb_init(&ctx);
+    defer usb.libusb_exit(ctx);
 
-    time.sleep(time.ns_per_s * 2);
-
-    stop.set(true);
-    thread1.wait();
+    print("Hello World!\n", .{});
 }
