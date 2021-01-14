@@ -35,6 +35,11 @@ pub fn build(b: *Builder) void {
     exe.setBuildMode(mode);
     exe.install();
 
+    copyDlls(b, target_triple_str) catch |err| {
+        std.debug.warn("{} error while trying to copy dlls", .{err});
+        std.os.exit(1);
+    };
+
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
 
@@ -42,15 +47,21 @@ pub fn build(b: *Builder) void {
     run_step.dependOn(&run_cmd.step);
 }
 
-fn copyDlls(b: *Builder) !void {
-    var src = try std.fs.cwd().openDir("src", .{ .iterate = true });
-    defer src.close();
+fn copyDlls(b: *Builder, target_triple_str: []const u8) !void {
+    var lib = try std.fs.cwd().openDir("lib", .{});
+    defer lib.close();
 
-    var files = src.iterate();
+    var triple_lib = try lib.openDir(target_triple_str, .{ .iterate = true });
+    defer triple_lib.close();
+
+    var exe_dir = try std.fs.cwd().openDir(b.exe_dir, .{});
+    defer exe_dir.close();
+
+    var files = triple_lib.iterate();
     while (try files.next()) |file| {
         const extension = fileExtension(file.name) orelse continue;
-        if (std.mem.eql(u8, extension, ".zig")) {
-            std.debug.print("{}\n", .{file.name});
+        if (std.mem.eql(u8, extension, ".dll")) {
+            try triple_lib.copyFile(file.name, exe_dir, file.name, .{});
         }
     }
 }
