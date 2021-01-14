@@ -12,4 +12,13 @@ pub fn main() void {
     print("Hello World!\n", .{});
     print("libusb_context: {p}\n", .{ctx});
     print("vJoyEnabled: {}\n", .{c.vJoyEnabled()});
+
+    const screen_width = 800;
+    const screen_height = 640;
+
+    c.InitWindow(screen_width, screen_height, "raylib window");
+
+    std.time.sleep(std.time.ns_per_s);
+
+    c.CloseWindow();
 }
