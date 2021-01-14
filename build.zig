@@ -30,6 +30,7 @@ pub fn build(b: *Builder) void {
 
     exe.linkLibC();
     exe.linkSystemLibrary("libusb-1.0");
+    exe.linkSystemLibrary("vJoyInterface");
 
     exe.setTarget(target);
     exe.setBuildMode(mode);
