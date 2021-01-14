@@ -20,14 +20,14 @@
 ///////////////////////////// vJoy device (collection) status ////////////////////////////////////////////
 #ifndef VJDSTAT
 #define VJDSTAT
-enum VjdStat  /* Declares an enumeration data type */
+typedef enum VjdStat  /* Declares an enumeration data type */
 {
 	VJD_STAT_OWN,	// The  vJoy Device is owned by this application.
 	VJD_STAT_FREE,	// The  vJoy Device is NOT owned by any application (including this one).
 	VJD_STAT_BUSY,	// The  vJoy Device is owned by another application. It cannot be acquired by this application.
 	VJD_STAT_MISS,	// The  vJoy Device is missing. It either does not exist or the driver is down.
 	VJD_STAT_UNKN	// Unknown
-}; 
+} VjdStat; 
 
 /* Error codes for some of the functions */
 #define NO_HANDLE_BY_INDEX				 -1
@@ -63,7 +63,7 @@ enum VjdStat  /* Declares an enumeration data type */
 #define Ffb_h_Eff_Const Ffb_h_Eff_Report
 
 // Device Axis/POVs/Buttons
-struct DEVCTRLS {
+typedef struct DEVCTRLS {
 	BOOL Init;
 	BOOL	Rudder;
 	BOOL	Aileron;
@@ -85,32 +85,32 @@ struct DEVCTRLS {
 	INT		nButtons;	
 	INT		nDescHats;
 	INT		nContHats;
-};
+} DEVCTRLS;
 
-struct DeviceStat {
+typedef struct DeviceStat {
 	HANDLE h;								// Handle to the PDO interface that represents the virtual device
 	VjdStat stat;							// Status of the device
 	JOYSTICK_POSITION_V2 position;			// Current Position of the device
 	HDEVNOTIFY hDeviceNotifyHandle;			// Device Notification Handle
 	DEVCTRLS	DeviceControls;				// Structure Holding the data about the device's controls
 	PVOID		 pPreParsedData;	// structure contains a top-level collection's preparsed data.
-};
+} DeviceStat;
 
-struct DEV_INFO {
+typedef struct DEV_INFO {
 	BYTE	DeviceID;		// Device ID: Valid values are 1-16
 	BYTE	nImplemented;	// Number of implemented device: Valid values are 1-16
 	BYTE	isImplemented;	// Is this device implemented?
 	BYTE	MaxDevices;		// Maximum number of devices that may be implemented (16)
 	BYTE	DriverFFB;		// Does this driver support FFB (False)
 	BYTE	DeviceFFB;		// Does this device support FFB (False)
-} ;
+} DEV_INFO;
 
 
 
 typedef void (CALLBACK *RemovalCB)(BOOL, BOOL, PVOID);
 
 
-enum FFBEType // FFB Effect Type
+typedef enum FFBEType // FFB Effect Type
 {
 
 	// Effect Type
@@ -127,9 +127,9 @@ enum FFBEType // FFB Effect Type
 	ET_INRT		=	10,   //    Inertia
 	ET_FRCTN	=	11,   //    Friction
 	ET_CSTM		=	12,   //    Custom Force Data
-};
+} FFBEType;
 
-enum FFBPType // FFB Packet Type
+typedef enum FFBPType // FFB Packet Type
 {
 	// Write
 	PT_EFFREP	=  HID_ID_EFFREP,	// Usage Set Effect Report
@@ -150,16 +150,16 @@ enum FFBPType // FFB Packet Type
 	PT_NEWEFREP	=  HID_ID_NEWEFREP+0x10,	// Usage Create New Effect Report
 	PT_BLKLDREP	=  HID_ID_BLKLDREP+0x10,	// Usage Block Load Report
 	PT_POOLREP	=  HID_ID_POOLREP+0x10,		// Usage PID Pool Report
-};
+} FFBPType;
 
-enum FFBOP
+typedef enum FFBOP
 {
 	EFF_START	= 1, // EFFECT START
 	EFF_SOLO	= 2, // EFFECT SOLO START
 	EFF_STOP	= 3, // EFFECT STOP
-};
+} FFBOP;
 
-enum FFB_CTRL
+typedef enum FFB_CTRL
 {
 	CTRL_ENACT		= 1,	// Enable all device actuators.
 	CTRL_DISACT		= 2,	// Disable all the device actuators.
@@ -167,9 +167,9 @@ enum FFB_CTRL
 	CTRL_DEVRST		= 4,	// Device Reset� Clears any device paused condition, enables all actuators and clears all effects from memory.
 	CTRL_DEVPAUSE	= 5,	// Device Pause� The all effects on the device are paused at the current time step.
 	CTRL_DEVCONT	= 6,	// Device Continue� The all effects that running when the device was paused are restarted from their last time step.
-};
+} FFB_CTRL;
 
-enum FFB_EFFECTS {
+typedef enum FFB_EFFECTS {
 	Constant	= 0x0001,
 	Ramp		= 0x0002,
 	Square		= 0x0004,
@@ -182,7 +182,7 @@ enum FFB_EFFECTS {
 	Inertia		= 0x0200,
 	Friction	= 0x0400,
 	Custom		= 0x0800,
-};
+} FFB_EFFECTS;
 
 typedef struct _FFB_DATA {
 	ULONG	size;
@@ -260,7 +260,7 @@ typedef void (CALLBACK *FfbGenCB)(PVOID, PVOID);
 
 
 #ifndef STATIC
-	extern "C" {
+	// extern "C" {
 #else
 namespace vJoyNS {
 #endif
@@ -362,7 +362,7 @@ namespace vJoyNS {
 
 #pragma warning( pop )
 #ifndef STATIC
-	} // extern "C"
+	// } // extern "C"
 #else
 } // Namespace vJoyNS
 #endif

@@ -14,5 +14,5 @@ pub fn main() void {
 
     print("Hello World!\n", .{});
     print("libusb_context: {p}!\n", .{ctx});
-    print("vJoyEnabled: {p}!\n", .{c.vJoyEnabled()});
+    print("vJoyEnabled: {}!\n", .{c.vJoyEnabled()});
 }
