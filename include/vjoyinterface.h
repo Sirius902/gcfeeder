@@ -17,6 +17,10 @@
 
 #include "public.h"
 
+// Define these since we're compiling with `NOUSER`.
+typedef  PVOID           HDEVNOTIFY;
+typedef  HDEVNOTIFY     *PHDEVNOTIFY;
+
 ///////////////////////////// vJoy device (collection) status ////////////////////////////////////////////
 #ifndef VJDSTAT
 #define VJDSTAT
