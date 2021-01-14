@@ -16,6 +16,7 @@ pub fn main() void {
     const screen_width = 800;
     const screen_height = 640;
 
+    c.SetTraceLogLevel(c.LOG_NONE);
     c.InitWindow(screen_width, screen_height, "raylib window");
 
     std.time.sleep(std.time.ns_per_s);
