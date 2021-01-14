@@ -18,8 +18,15 @@ pub fn main() void {
 
     c.SetTraceLogLevel(c.LOG_NONE);
     c.InitWindow(screen_width, screen_height, "raylib window");
+    c.SetTargetFPS(60);
 
-    std.time.sleep(std.time.ns_per_s);
+    while (!c.WindowShouldClose()) {
+        c.BeginDrawing();
+        defer c.EndDrawing();
+
+        c.ClearBackground(c.RAYWHITE);
+        c.DrawText("Congrats! You created your first window!", 190, 200, 20, c.LIGHTGRAY);
+    }
 
     c.CloseWindow();
 }

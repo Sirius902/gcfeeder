@@ -38,6 +38,8 @@ pub usingnamespace @cImport({
     @cDefine("NOPROFILER", "");
     @cDefine("NODEFERWINDOWPOS", "");
     @cDefine("NOMCX", "");
+    // Define this so raylib won't define a bool enum.
+    @cDefine("__STDC__", "199901L");
     @cInclude("raylib.h");
     @cInclude("libusb-1.0/libusb.h");
     @cInclude("vjoyinterface.h");
