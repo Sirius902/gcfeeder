@@ -1,4 +1,3 @@
-const std = @import("std");
 const c = @import("c.zig");
 
 pub const Error = error{
@@ -53,8 +52,53 @@ pub const Context = struct {
     }
 };
 
+pub const Direction = enum {
+    In,
+    Out,
+};
+
+pub const EndpointDescriptor = struct {
+    descriptor: *const c.libusb_endpoint_descriptor,
+
+    pub fn direction(self: EndpointDescriptor) Direction {
+        return switch (self.descriptor.*.bEndpointAddress & c.LIBUSB_ENDPOINT_DIR_MASK) {
+            c.LIBUSB_ENDPOINT_OUT => Direction.Out,
+            c.LIBUSB_ENDPOINT_IN => Direction.In,
+            else => Direction.In,
+        };
+    }
+
+    pub fn number(self: EndpointDescriptor) u8 {
+        return self.descriptor.*.bEndpointAddress & 0x07;
+    }
+
+    pub fn address(self: EndpointDescriptor) u8 {
+        return self.descriptor.*.bEndpointAddress;
+    }
+};
+
+pub const EndpointDescriptors = struct {
+    iter: []const c.libusb_endpoint_descriptor,
+    index: usize,
+
+    pub fn next(self: *EndpointDescriptors) ?EndpointDescriptor {
+        if (self.index < self.iter.len) {
+            defer self.index += 1;
+            return EndpointDescriptor{ .descriptor = &self.iter[index] };
+        } else {
+            return null;
+        }
+    }
+};
+
 pub const InterfaceDescriptor = struct {
     descriptor: *const c.libusb_interface_descriptor,
+
+    pub fn endpointDescriptors(self: InterfaceDescriptor) EndpointDescriptors {
+        return EndpointDescriptors{
+            .iter = self.descriptor.*.endpoint[0..self.descriptor.*.bNumEndpoints],
+        };
+    }
 };
 
 pub const InterfaceDescriptors = struct {
