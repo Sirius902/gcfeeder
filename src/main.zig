@@ -24,16 +24,17 @@ pub fn main() !void {
     c.InitWindow(screen_width, screen_height, "gcfeeder");
     c.SetTargetFPS(60);
 
-    var gen = std.rand.Xoroshiro128.init(@bitCast(u64, @truncate(i64, std.time.nanoTimestamp())));
-    const rand = &gen.random;
-
     while (!c.WindowShouldClose()) {
         c.BeginDrawing();
         defer c.EndDrawing();
 
         const input = (try adapter.readInputs())[0];
 
-        const disp = if (input) |in| try std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x}) else "stick_x: -";
+        const disp = if (input) |in|
+            try std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
+        else
+            "stick_x: -";
+
         defer allocator.free(disp);
 
         c.ClearBackground(c.DARKGRAY);
