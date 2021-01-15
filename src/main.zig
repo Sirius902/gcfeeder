@@ -4,9 +4,7 @@ const print = std.debug.print;
 
 const c = @import("c.zig");
 const usb = @import("usb.zig");
-
-const gc_vid = 0x057E;
-const gc_pid = 0x0337;
+const Adapter = @import("adapter.zig").Adapter;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -16,40 +14,8 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    var handle = try ctx.openDeviceWithVidPid(gc_vid, gc_pid);
-    defer handle.deinit();
+    var adapter = try Adapter.init(&ctx);
+    defer adapter.deinit();
 
-    try handle.claimInterface(0);
-
-    const device = handle.device();
-    defer device.deinit();
-
-    const config = try device.configDescriptor(0);
-    defer config.deinit();
-
-    var endpoint_in: u8 = 0;
-    var endpoint_out: u8 = 0;
-
-    var i = config.interfaces();
-    while (i.next()) |iface| {
-        var ii = iface.descriptors();
-        while (ii.next()) |descriptor| {
-            var iii = descriptor.endpointDescriptors();
-            while (iii.next()) |endpoint| {
-                switch (endpoint.direction()) {
-                    usb.Direction.In => {
-                        endpoint_in = endpoint.address();
-                    },
-                    usb.Direction.Out => {
-                        endpoint_out = endpoint.address();
-                    },
-                }
-            }
-        }
-    }
-
-    print("in: {}\n", .{endpoint_in});
-    print("out: {}\n", .{endpoint_out});
-
-    print("{}\n", .{config});
+    print("{}\n", .{adapter.endpoints});
 }
