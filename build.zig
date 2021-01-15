@@ -18,12 +18,12 @@ pub fn build(b: *Builder) void {
     exe.addIncludeDir("include");
 
     const target_triple_str = target.linuxTriple(b.allocator) catch |err| {
-        std.debug.warn("{} error while trying to stringify the target triple", .{err});
+        std.debug.warn("{} error while trying to stringify the target triple\n", .{err});
         std.os.exit(1);
     };
 
     const lib_dir = std.fs.path.join(b.allocator, &[_][]const u8{ "lib", target_triple_str }) catch |err| {
-        std.debug.warn("{} error while trying to render library path", .{err});
+        std.debug.warn("{} error while trying to render library path\n", .{err});
         std.os.exit(1);
     };
 
@@ -39,7 +39,7 @@ pub fn build(b: *Builder) void {
     exe.install();
 
     copyDlls(b, target_triple_str) catch |err| {
-        std.debug.warn("{} error while trying to copy dlls", .{err});
+        std.debug.warn("{} error while trying to copy dlls\n", .{err});
         std.os.exit(1);
     };
 
