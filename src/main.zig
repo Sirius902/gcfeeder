@@ -3,49 +3,29 @@ const time = std.time;
 const print = std.debug.print;
 
 const c = @import("c.zig");
+const usb = @import("usb.zig");
+
+const gc_vid = 0x057E;
+const gc_pid = 0x0337;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = &gpa.allocator;
 
-    var ctx: ?*c.libusb_context = null;
-    _ = c.libusb_init(&ctx);
-    defer c.libusb_exit(ctx);
+    var ctx = try usb.Context.init();
+    defer ctx.deinit();
 
-    print("Hello World!\n", .{});
-    print("libusb_context: {p}\n", .{ctx});
-    print("vJoyEnabled: {}\n", .{c.vJoyEnabled()});
+    var handle = try ctx.openDeviceWithVidPid(gc_vid, gc_pid);
+    defer handle.deinit();
 
-    const screen_width = 800;
-    const screen_height = 640;
+    try handle.claimInterface(0);
 
-    c.SetTraceLogLevel(c.LOG_NONE);
-    c.InitWindow(screen_width, screen_height, "gcfeeder");
-    c.SetTargetFPS(60);
+    const device = handle.device();
+    defer device.deinit();
 
-    var buffer = std.ArrayList(u8).init(allocator);
-    defer buffer.deinit();
+    const config = try device.configDescriptor(0);
+    defer config.deinit();
 
-    // Add null-terminator.
-    try buffer.append(0);
-
-    var gen = std.rand.Xoroshiro128.init(@bitCast(u64, @truncate(i64, std.time.nanoTimestamp())));
-    const rand = &gen.random;
-
-    while (!c.WindowShouldClose()) {
-        c.BeginDrawing();
-        defer c.EndDrawing();
-
-        if (c.IsKeyDown(c.KEY_UP)) {
-            const letter = rand.intRangeLessThan(u8, 0, 26);
-            const base: u8 = if (rand.boolean()) 'a' else 'A';
-            try buffer.insert(buffer.items.len - 1, letter + base);
-        }
-
-        c.ClearBackground(c.DARKGRAY);
-        c.DrawText(buffer.items.ptr, 190, 200, 20, c.LIGHTGRAY);
-    }
-
-    c.CloseWindow();
+    print("{}\n", .{config});
 }
