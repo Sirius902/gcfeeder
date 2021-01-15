@@ -2,6 +2,8 @@ const std = @import("std");
 const c = @import("c.zig");
 const usb = @import("usb.zig");
 
+pub const Error = error{Payload} || usb.Error;
+
 pub const Adapter = struct {
     const gc_vid = 0x057E;
     const gc_pid = 0x0337;
@@ -18,7 +20,7 @@ pub const Adapter = struct {
     handle: usb.DeviceHandle,
     endpoints: Endpoints,
 
-    pub fn init(ctx: *usb.Context) usb.Error!Adapter {
+    pub fn init(ctx: *usb.Context) Error!Adapter {
         var handle = try ctx.openDeviceWithVidPid(gc_vid, gc_pid);
 
         try handle.claimInterface(0);
@@ -43,7 +45,7 @@ pub const Adapter = struct {
         self.handle.deinit();
     }
 
-    fn findEndpoints(handle: usb.DeviceHandle) usb.Error!Endpoints {
+    fn findEndpoints(handle: usb.DeviceHandle) Error!Endpoints {
         const device = handle.device();
         defer device.deinit();
 
@@ -74,7 +76,7 @@ pub const Adapter = struct {
         return Endpoints{ .in = in, .out = out };
     }
 
-    fn readPayload(self: Adapter) (error{Payload} || usb.Error)![payload_len]u8 {
+    fn readPayload(self: Adapter) Error![payload_len]u8 {
         var payload: [payload_len]u8 = undefined;
 
         const bytes_read = try self.handle.readInterrupt(
@@ -84,7 +86,7 @@ pub const Adapter = struct {
         );
 
         if (bytes_read != payload_len or payload[0] != c.LIBUSB_DT_HID) {
-            return error.Payload;
+            return Error.Payload;
         }
 
         return payload;
