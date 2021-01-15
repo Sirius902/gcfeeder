@@ -1,3 +1,4 @@
+const std = @import("std");
 const c = @import("c.zig");
 
 pub const Error = error{
@@ -52,11 +53,73 @@ pub const Context = struct {
     }
 };
 
+pub const InterfaceDescriptor = struct {
+    descriptor: *const c.libusb_interface_descriptor,
+};
+
+pub const InterfaceDescriptors = struct {
+    iter: []const c.libusb_interface_descriptor,
+    index: usize,
+
+    pub fn next(self: *InterfaceDescriptors) ?InterfaceDescriptor {
+        if (self.index < self.iter.len) {
+            defer self.index += 1;
+            return InterfaceDescriptor{ .descriptor = &self.iter[self.index] };
+        } else {
+            return null;
+        }
+    }
+};
+
+pub const Interface = struct {
+    iter: []const c.libusb_interface_descriptor,
+
+    pub fn number(self: Interface) u8 {
+        return self.iter[0].bInterfaceNumber;
+    }
+
+    pub fn descriptors(self: Interface) InterfaceDescriptors {
+        return InterfaceDescriptors{
+            .iter = self.iter,
+            .index = 0,
+        };
+    }
+};
+
+pub const Interfaces = struct {
+    interfaces: []const c.libusb_interface,
+    index: usize,
+
+    pub fn next(self: *Interfaces) ?Interface {
+        if (self.index < self.interfaces.len) {
+            defer self.index += 1;
+
+            const len = std.math.cast(
+                usize,
+                self.interfaces[self.index].num_altsetting,
+            ) catch unreachable;
+
+            return Interface{
+                .iter = self.interfaces[self.index].altsetting[0..len],
+            };
+        } else {
+            return null;
+        }
+    }
+};
+
 pub const ConfigDescriptor = struct {
     descriptor: *c.libusb_config_descriptor,
 
     pub fn deinit(self: ConfigDescriptor) void {
         _ = c.libusb_free_config_descriptor(self.descriptor);
+    }
+
+    pub fn interfaces(self: ConfigDescriptor) Interfaces {
+        return Interfaces{
+            .interfaces = self.descriptor.*.interface[0..self.descriptor.*.bNumInterfaces],
+            .index = 0,
+        };
     }
 };
 

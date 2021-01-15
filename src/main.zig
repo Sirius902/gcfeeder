@@ -27,5 +27,13 @@ pub fn main() !void {
     const config = try device.configDescriptor(0);
     defer config.deinit();
 
+    var i = config.interfaces();
+    while (i.next()) |iface| {
+        var ii = iface.descriptors();
+        while (ii.next()) |descriptor| {
+            print("{}\n", .{descriptor});
+        }
+    }
+
     print("{}\n", .{config});
 }
