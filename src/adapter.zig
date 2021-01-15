@@ -2,6 +2,8 @@ const std = @import("std");
 const c = @import("c.zig");
 const usb = @import("usb.zig");
 
+const payload_len = 37;
+
 pub const Error = error{Payload} || usb.Error;
 
 pub const Adapter = struct {
@@ -14,8 +16,6 @@ pub const Adapter = struct {
         in: u8,
         out: u8,
     };
-
-    pub const payload_len = 37;
 
     handle: usb.DeviceHandle,
     endpoints: Endpoints,
@@ -43,6 +43,27 @@ pub const Adapter = struct {
 
     pub fn deinit(self: Adapter) void {
         self.handle.deinit();
+    }
+
+    pub fn readInputs(self: Adapter) Error![4]?Input {
+        const payload = try self.readPayload();
+        var inputs = [_]?Input{null} ** 4;
+
+        for (Port.all()) |port| {
+            const chan = port.channel();
+            // type is 0 if no controller is plugged, 1 if wired, and 2 if wireless
+            const controller_type = payload[1 + (9 * chan)] >> 4;
+            const connected = controller_type != 0;
+
+            if (!connected) {
+                // self.calibrations[chan] = null;
+                continue;
+            }
+
+            inputs[chan] = Input.fromPayload(&payload, port);
+        }
+
+        return inputs;
     }
 
     fn findEndpoints(handle: usb.DeviceHandle) Error!Endpoints {
@@ -90,5 +111,79 @@ pub const Adapter = struct {
         }
 
         return payload;
+    }
+};
+
+pub const Port = enum {
+    One,
+    Two,
+    Three,
+    Four,
+
+    pub fn channel(self: Port) usize {
+        return switch (self) {
+            .One => 0,
+            .Two => 1,
+            .Three => 2,
+            .Four => 3,
+        };
+    }
+
+    pub fn all() [4]Port {
+        return [_]Port{ .One, .Two, .Three, .Four };
+    }
+};
+
+pub const Input = struct {
+    button_a: bool,
+    button_b: bool,
+    button_x: bool,
+    button_y: bool,
+
+    button_left: bool,
+    button_right: bool,
+    button_down: bool,
+    button_up: bool,
+
+    button_start: bool,
+    button_z: bool,
+    button_r: bool,
+    button_l: bool,
+
+    stick_x: u8,
+    stick_y: u8,
+    substick_x: u8,
+    substick_y: u8,
+    trigger_left: u8,
+    trigger_right: u8,
+
+    fn fromPayload(payload: *const [payload_len]u8, port: Port) Input {
+        const chan = port.channel();
+        const b1 = payload[1 + (9 * chan) + 1];
+        const b2 = payload[1 + (9 * chan) + 2];
+
+        return Input{
+            .button_a = (b1 & (1 << 0)) != 0,
+            .button_b = (b1 & (1 << 1)) != 0,
+            .button_x = (b1 & (1 << 2)) != 0,
+            .button_y = (b1 & (1 << 3)) != 0,
+
+            .button_left = (b1 & (1 << 4)) != 0,
+            .button_right = (b1 & (1 << 5)) != 0,
+            .button_down = (b1 & (1 << 6)) != 0,
+            .button_up = (b1 & (1 << 7)) != 0,
+
+            .button_start = (b2 & (1 << 0)) != 0,
+            .button_z = (b2 & (1 << 1)) != 0,
+            .button_r = (b2 & (1 << 2)) != 0,
+            .button_l = (b2 & (1 << 3)) != 0,
+
+            .stick_x = payload[1 + (9 * chan) + 3],
+            .stick_y = payload[1 + (9 * chan) + 4],
+            .substick_x = payload[1 + (9 * chan) + 5],
+            .substick_y = payload[1 + (9 * chan) + 6],
+            .trigger_left = payload[1 + (9 * chan) + 7],
+            .trigger_right = payload[1 + (9 * chan) + 8],
+        };
     }
 };
