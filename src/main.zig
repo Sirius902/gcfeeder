@@ -17,5 +17,9 @@ pub fn main() !void {
     var adapter = try Adapter.init(&ctx);
     defer adapter.deinit();
 
-    print("{}\n", .{adapter.endpoints});
+    _ = try adapter.handle.writeInterrupt(adapter.endpoints.out, &[_]u8{ 0x11, 0x01, 0x01, 0x01, 0x01 }, 16);
+
+    std.time.sleep(std.time.ns_per_s);
+
+    _ = try adapter.handle.writeInterrupt(adapter.endpoints.out, &[_]u8{ 0x11, 0x00, 0x00, 0x00, 0x00 }, 16);
 }

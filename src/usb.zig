@@ -264,6 +264,36 @@ pub const DeviceHandle = struct {
         }
     }
 
+    pub fn readInterrupt(
+        self: DeviceHandle,
+        endpoint: u8,
+        buf: []u8,
+        timeout_ms: u64,
+    ) (error{Overflow} || Error)!usize {
+        if (endpoint & c.LIBUSB_ENDPOINT_DIR_MASK != c.LIBUSB_ENDPOINT_IN) {
+            return Error.InvalidParam;
+        }
+
+        var transferred: c_int = undefined;
+
+        const ret = c.libusb_interrupt_transfer(
+            self.handle,
+            endpoint,
+            buf.ptr,
+            try std.math.cast(c_int, buf.len),
+            &transferred,
+            try std.math.cast(c_uint, timeout_ms),
+        );
+
+        const utrans = std.math.cast(usize, transferred) catch unreachable;
+
+        return switch (ret) {
+            0 => utrans,
+            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) utrans else errorFromLibusb(ret),
+            else => errorFromLibusb(ret),
+        };
+    }
+
     pub fn writeInterrupt(
         self: DeviceHandle,
         endpoint: u8,
