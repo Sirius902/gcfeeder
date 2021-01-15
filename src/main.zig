@@ -28,17 +28,31 @@ pub fn main() !void {
         c.BeginDrawing();
         defer c.EndDrawing();
 
+        c.ClearBackground(c.DARKGRAY);
+
         const input = (try adapter.readInputs())[0];
 
-        const disp = if (input) |in|
-            try std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
-        else
-            "stick_x: -";
+        {
+            const disp = if (input) |in|
+                try std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
+            else
+                "stick_x: -" ++ [_]u8{0};
 
-        defer allocator.free(disp);
+            defer allocator.free(disp);
 
-        c.ClearBackground(c.DARKGRAY);
-        c.DrawText(disp, 190, 200, 20, c.LIGHTGRAY);
+            c.DrawText(disp, 190, 200, 20, c.LIGHTGRAY);
+        }
+
+        {
+            const disp = if (input) |in|
+                try std.fmt.allocPrintZ(allocator, "stick_y: {}", .{in.stick_y})
+            else
+                "stick_y: -" ++ [_]u8{0};
+
+            defer allocator.free(disp);
+
+            c.DrawText(disp, 190, 225, 20, c.LIGHTGRAY);
+        }
     }
 
     c.CloseWindow();
