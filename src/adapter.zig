@@ -19,6 +19,7 @@ pub const Adapter = struct {
 
     handle: usb.DeviceHandle,
     endpoints: Endpoints,
+    calibrations: [4]?Calibration,
 
     pub fn init(ctx: *usb.Context) Error!Adapter {
         var handle = try ctx.openDeviceWithVidPid(gc_vid, gc_pid);
@@ -38,6 +39,7 @@ pub const Adapter = struct {
         return Adapter{
             .handle = handle,
             .endpoints = endpoints,
+            .calibrations = [_]?Calibration{null} ** 4,
         };
     }
 
@@ -45,7 +47,7 @@ pub const Adapter = struct {
         self.handle.deinit();
     }
 
-    pub fn readInputs(self: Adapter) Error![4]?Input {
+    pub fn readInputs(self: *Adapter) Error![4]?Input {
         const payload = try self.readPayload();
         var inputs = [_]?Input{null} ** 4;
 
@@ -56,11 +58,19 @@ pub const Adapter = struct {
             const connected = controller_type != 0;
 
             if (!connected) {
-                // self.calibrations[chan] = null;
+                self.calibrations[chan] = null;
                 continue;
             }
 
-            inputs[chan] = Input.fromPayload(&payload, port);
+            const raw = Input.fromPayload(&payload, port);
+
+            if (self.calibrations[chan]) |calibration| {
+                inputs[chan] = calibration.correct(raw);
+            } else {
+                const calibration = Calibration.init(raw);
+                inputs[chan] = calibration.correct(raw);
+                self.calibrations[chan] = calibration;
+            }
         }
 
         return inputs;
@@ -131,6 +141,87 @@ pub const Port = enum {
 
     pub fn all() [4]Port {
         return [_]Port{ .One, .Two, .Three, .Four };
+    }
+};
+
+const Vec2 = struct {
+    x: u8,
+    y: u8,
+};
+
+pub const StickRange = struct {
+    center: u8,
+    radius: u8,
+
+    pub fn restrict(self: StickRange, x: i9, y: i9) Vec2 {
+        const center = @as(i9, self.center);
+        const radius = @as(i9, self.radius);
+
+        const xx = std.math.clamp(x, center - radius, center + radius);
+        const yy = std.math.clamp(y, center - radius, center + radius);
+
+        return Vec2{
+            .x = std.math.cast(u8, xx) catch unreachable,
+            .y = std.math.cast(u8, yy) catch unreachable,
+        };
+    }
+};
+
+pub const AnalogRange = struct {
+    min: u8,
+    max: u8,
+
+    pub fn restrict(self: AnalogRange, n: i9) u8 {
+        const nn = std.math.clamp(n, @as(i9, self.min), @as(i9, self.min));
+
+        return std.math.cast(u8, nn) catch unreachable;
+    }
+};
+
+pub const Calibration = struct {
+    const main_stick = StickRange{ .center = 0x80, .radius = 0x7F };
+    const c_stick = StickRange{ .center = 0x80, .radius = 0x7F };
+    const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
+
+    stick_x: i9,
+    stick_y: i9,
+    substick_x: i9,
+    substick_y: i9,
+    trigger_left: i9,
+    trigger_right: i9,
+
+    pub fn init(initial: Input) Calibration {
+        return Calibration{
+            .stick_x = @as(i9, main_stick.center) - @as(i9, initial.stick_x),
+            .stick_y = @as(i9, main_stick.center) - @as(i9, initial.stick_y),
+            .substick_x = @as(i9, c_stick.center) - @as(i9, initial.substick_x),
+            .substick_y = @as(i9, c_stick.center) - @as(i9, initial.substick_y),
+            .trigger_left = @as(i9, trigger_range.min) - @as(i9, initial.trigger_left),
+            .trigger_right = @as(i9, trigger_range.min) - @as(i9, initial.trigger_right),
+        };
+    }
+
+    pub fn correct(self: Calibration, input: Input) Input {
+        var in = input;
+
+        const stick = main_stick.restrict(
+            @as(i9, in.stick_x) + self.stick_x,
+            @as(i9, in.stick_y) + self.stick_y,
+        );
+
+        const substick = c_stick.restrict(
+            @as(i9, in.substick_x) + self.substick_x,
+            @as(i9, in.substick_y) + self.substick_y,
+        );
+
+        in.stick_x = stick.x;
+        in.stick_y = stick.y;
+        in.substick_x = substick.x;
+        in.substick_y = substick.y;
+        in.trigger_left = trigger_range.restrict(@as(i9, in.trigger_left) + self.trigger_left);
+        in.trigger_right = trigger_range.restrict(@as(i9, in.trigger_right) + self.trigger_right);
+
+        return in;
     }
 };
 
