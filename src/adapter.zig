@@ -149,7 +149,7 @@ const Vec2 = struct {
     y: u8,
 };
 
-pub const StickRange = struct {
+const StickRange = struct {
     center: u8,
     radius: u8,
 
@@ -167,7 +167,7 @@ pub const StickRange = struct {
     }
 };
 
-pub const AnalogRange = struct {
+const AnalogRange = struct {
     min: u8,
     max: u8,
 
