@@ -285,11 +285,11 @@ pub const DeviceHandle = struct {
             try std.math.cast(c_uint, timeout_ms),
         );
 
-        const tr = std.math.cast(usize, transferred) catch unreachable;
+        const utrans = std.math.cast(usize, transferred) catch unreachable;
 
         return switch (ret) {
-            0 => tr,
-            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) tr else errorFromLibusb(ret),
+            0 => utrans,
+            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) utrans else errorFromLibusb(ret),
             else => errorFromLibusb(ret),
         };
     }
