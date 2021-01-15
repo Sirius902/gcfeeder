@@ -27,13 +27,29 @@ pub fn main() !void {
     const config = try device.configDescriptor(0);
     defer config.deinit();
 
+    var endpoint_in: u8 = 0;
+    var endpoint_out: u8 = 0;
+
     var i = config.interfaces();
     while (i.next()) |iface| {
         var ii = iface.descriptors();
         while (ii.next()) |descriptor| {
-            print("{}\n", .{descriptor});
+            var iii = descriptor.endpointDescriptors();
+            while (iii.next()) |endpoint| {
+                switch (endpoint.direction()) {
+                    usb.Direction.In => {
+                        endpoint_in = endpoint.address();
+                    },
+                    usb.Direction.Out => {
+                        endpoint_out = endpoint.address();
+                    },
+                }
+            }
         }
     }
+
+    print("in: {}\n", .{endpoint_in});
+    print("out: {}\n", .{endpoint_out});
 
     print("{}\n", .{config});
 }

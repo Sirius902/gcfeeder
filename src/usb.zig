@@ -1,3 +1,4 @@
+const std = @import("std");
 const c = @import("c.zig");
 
 pub const Error = error{
@@ -84,7 +85,7 @@ pub const EndpointDescriptors = struct {
     pub fn next(self: *EndpointDescriptors) ?EndpointDescriptor {
         if (self.index < self.iter.len) {
             defer self.index += 1;
-            return EndpointDescriptor{ .descriptor = &self.iter[index] };
+            return EndpointDescriptor{ .descriptor = &self.iter[self.index] };
         } else {
             return null;
         }
@@ -97,6 +98,7 @@ pub const InterfaceDescriptor = struct {
     pub fn endpointDescriptors(self: InterfaceDescriptor) EndpointDescriptors {
         return EndpointDescriptors{
             .iter = self.descriptor.*.endpoint[0..self.descriptor.*.bNumEndpoints],
+            .index = 0,
         };
     }
 };
