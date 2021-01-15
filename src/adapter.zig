@@ -1,8 +1,11 @@
+const std = @import("std");
 const usb = @import("usb.zig");
 
 pub const Adapter = struct {
     const gc_vid = 0x057E;
     const gc_pid = 0x0337;
+
+    const allowed_timeout = 16;
 
     const Endpoints = struct {
         in: u8,
@@ -17,9 +20,19 @@ pub const Adapter = struct {
 
         try handle.claimInterface(0);
 
+        const endpoints = try findEndpoints(handle);
+
+        // From Dolphin:
+        // This call makes Nyko-brand (and perhaps other) adapters work.
+        // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
+        _ = handle.writeControl(0x21, 11, 0x0001, 0, &[_]u8{}, std.time.ms_per_s) catch {};
+
+        // Not sure what this does but Dolphin does it
+        _ = handle.writeInterrupt(endpoints.out, &[_]u8{0x13}, allowed_timeout) catch {};
+
         return Adapter{
             .handle = handle,
-            .endpoints = try findEndpoints(handle),
+            .endpoints = endpoints,
         };
     }
 

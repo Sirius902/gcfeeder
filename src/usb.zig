@@ -232,6 +232,67 @@ pub const DeviceHandle = struct {
             unreachable;
         }
     }
+
+    pub fn writeControl(
+        self: DeviceHandle,
+        requestType: u8,
+        request: u8,
+        value: u16,
+        index: u16,
+        buf: []const u8,
+        timeout_ms: u64,
+    ) (error{Overflow} || Error)!usize {
+        if (requestType & c.LIBUSB_ENDPOINT_DIR_MASK != c.LIBUSB_ENDPOINT_OUT) {
+            return Error.InvalidParam;
+        }
+
+        const res = c.libusb_control_transfer(
+            self.handle,
+            requestType,
+            request,
+            value,
+            index,
+            @intToPtr([*c]u8, @ptrToInt(buf.ptr)),
+            try std.math.cast(u16, buf.len),
+            try std.math.cast(c_uint, timeout_ms),
+        );
+
+        if (res < 0) {
+            return errorFromLibusb(res);
+        } else {
+            return std.math.cast(usize, res) catch unreachable;
+        }
+    }
+
+    pub fn writeInterrupt(
+        self: DeviceHandle,
+        endpoint: u8,
+        buf: []const u8,
+        timeout_ms: u64,
+    ) (error{Overflow} || Error)!usize {
+        if (endpoint & c.LIBUSB_ENDPOINT_DIR_MASK != c.LIBUSB_ENDPOINT_OUT) {
+            return Error.InvalidParam;
+        }
+
+        var transferred: c_int = undefined;
+
+        const ret = c.libusb_interrupt_transfer(
+            self.handle,
+            endpoint,
+            @intToPtr([*c]u8, @ptrToInt(buf.ptr)),
+            try std.math.cast(c_int, buf.len),
+            &transferred,
+            try std.math.cast(c_uint, timeout_ms),
+        );
+
+        const tr = std.math.cast(usize, transferred) catch unreachable;
+
+        return switch (ret) {
+            0 => tr,
+            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) tr else errorFromLibusb(ret),
+            else => errorFromLibusb(ret),
+        };
+    }
 };
 
 fn errorFromLibusb(err: c_int) Error {
