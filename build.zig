@@ -14,6 +14,7 @@ pub fn build(b: *Builder) void {
 
     const exe = b.addExecutable("gcfeeder", "src/main.zig");
 
+    exe.c_std = .C99;
     exe.addIncludeDir("include");
 
     const target_triple_str = target.linuxTriple(b.allocator) catch |err| {
