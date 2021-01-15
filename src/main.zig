@@ -30,13 +30,14 @@ pub fn main() !void {
 
         c.ClearBackground(c.DARKGRAY);
 
-        const input = (try adapter.readInputs())[0];
+        const inputs = adapter.readInputs() catch null;
+        const input = if (inputs) |in| in[0] else null;
 
         {
-            const disp = if (input) |in|
-                try std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
+            const disp = try if (input) |in|
+                std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
             else
-                "stick_x: -" ++ [_]u8{0};
+                std.fmt.allocPrintZ(allocator, "stick_x: -", .{});
 
             defer allocator.free(disp);
 
@@ -44,10 +45,10 @@ pub fn main() !void {
         }
 
         {
-            const disp = if (input) |in|
-                try std.fmt.allocPrintZ(allocator, "stick_y: {}", .{in.stick_y})
+            const disp = try if (input) |in|
+                std.fmt.allocPrintZ(allocator, "stick_y: {}", .{in.stick_y})
             else
-                "stick_y: -" ++ [_]u8{0};
+                std.fmt.allocPrintZ(allocator, "stick_y: -", .{});
 
             defer allocator.free(disp);
 
