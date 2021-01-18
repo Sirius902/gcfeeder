@@ -22,10 +22,10 @@ pub const Context = struct {
     ctx: *c.libusb_context,
 
     pub fn init() Error!Context {
-        var ctx: ?*c.libusb_context = null;
-        try failable(c.libusb_init(&ctx));
+        var ctx_opt: ?*c.libusb_context = null;
+        try failable(c.libusb_init(&ctx_opt));
 
-        return Context{ .ctx = ctx.? };
+        return Context{ .ctx = ctx_opt.? };
     }
 
     pub fn deinit(self: Context) void {
@@ -174,16 +174,16 @@ pub const Device = struct {
     }
 
     pub fn configDescriptor(self: Device, config_index: u8) Error!ConfigDescriptor {
-        var config: ?*c.libusb_config_descriptor = null;
+        var descriptor_opt: ?*c.libusb_config_descriptor = null;
 
         try failable(c.libusb_get_config_descriptor(
             self.device,
             config_index,
-            &config,
+            &descriptor_opt,
         ));
 
-        if (config) |conf| {
-            return ConfigDescriptor{ .descriptor = conf };
+        if (descriptor_opt) |descriptor| {
+            return ConfigDescriptor{ .descriptor = descriptor };
         } else {
             unreachable;
         }
