@@ -4,7 +4,10 @@ const usb = @import("usb.zig");
 
 const payload_len = 37;
 
-pub const Error = error{Payload} || usb.Error;
+pub const Error = error{
+    Unplugged,
+    Payload,
+} || usb.Error;
 
 pub const Adapter = struct {
     const gc_vid = 0x057E;
@@ -22,7 +25,9 @@ pub const Adapter = struct {
     calibrations: [4]?Calibration,
 
     pub fn init(ctx: *usb.Context) Error!Adapter {
-        var handle = try ctx.openDeviceWithVidPid(gc_vid, gc_pid);
+        var handle = (try ctx.openDeviceWithVidPid(gc_vid, gc_pid)) orelse {
+            return Error.Unplugged;
+        };
 
         try handle.claimInterface(0);
 

@@ -25,11 +25,7 @@ pub const Context = struct {
         var ctx: ?*c.libusb_context = null;
         try failable(c.libusb_init(&ctx));
 
-        if (ctx) |non_null| {
-            return Context{ .ctx = non_null };
-        } else {
-            unreachable;
-        }
+        return Context{ .ctx = ctx.? };
     }
 
     pub fn deinit(self: Context) void {
@@ -40,7 +36,7 @@ pub const Context = struct {
         self: Context,
         vendor_id: u16,
         product_id: u16,
-    ) Error!DeviceHandle {
+    ) Error!?DeviceHandle {
         if (c.libusb_open_device_with_vid_pid(self.ctx, vendor_id, product_id)) |handle| {
             return DeviceHandle{
                 .ctx = self.ctx,
@@ -48,7 +44,7 @@ pub const Context = struct {
                 .interfaces = 0,
             };
         } else {
-            return Error.NoDevice;
+            return null;
         }
     }
 };
