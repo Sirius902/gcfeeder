@@ -76,12 +76,12 @@ pub const EndpointDescriptor = struct {
 
 pub const EndpointDescriptors = struct {
     iter: []const c.libusb_endpoint_descriptor,
-    index: usize,
+    i: usize,
 
     pub fn next(self: *EndpointDescriptors) ?EndpointDescriptor {
-        if (self.index < self.iter.len) {
-            defer self.index += 1;
-            return EndpointDescriptor{ .descriptor = &self.iter[self.index] };
+        if (self.i < self.iter.len) {
+            defer self.i += 1;
+            return EndpointDescriptor{ .descriptor = &self.iter[self.i] };
         } else {
             return null;
         }
@@ -94,19 +94,19 @@ pub const InterfaceDescriptor = struct {
     pub fn endpointDescriptors(self: InterfaceDescriptor) EndpointDescriptors {
         return EndpointDescriptors{
             .iter = self.descriptor.*.endpoint[0..self.descriptor.*.bNumEndpoints],
-            .index = 0,
+            .i = 0,
         };
     }
 };
 
 pub const InterfaceDescriptors = struct {
     iter: []const c.libusb_interface_descriptor,
-    index: usize,
+    i: usize,
 
     pub fn next(self: *InterfaceDescriptors) ?InterfaceDescriptor {
-        if (self.index < self.iter.len) {
-            defer self.index += 1;
-            return InterfaceDescriptor{ .descriptor = &self.iter[self.index] };
+        if (self.i < self.iter.len) {
+            defer self.i += 1;
+            return InterfaceDescriptor{ .descriptor = &self.iter[self.i] };
         } else {
             return null;
         }
@@ -123,26 +123,26 @@ pub const Interface = struct {
     pub fn descriptors(self: Interface) InterfaceDescriptors {
         return InterfaceDescriptors{
             .iter = self.iter,
-            .index = 0,
+            .i = 0,
         };
     }
 };
 
 pub const Interfaces = struct {
     interfaces: []const c.libusb_interface,
-    index: usize,
+    i: usize,
 
     pub fn next(self: *Interfaces) ?Interface {
-        if (self.index < self.interfaces.len) {
-            defer self.index += 1;
+        if (self.i < self.interfaces.len) {
+            defer self.i += 1;
 
             const len = std.math.cast(
                 usize,
-                self.interfaces[self.index].num_altsetting,
+                self.interfaces[self.i].num_altsetting,
             ) catch unreachable;
 
             return Interface{
-                .iter = self.interfaces[self.index].altsetting[0..len],
+                .iter = self.interfaces[self.i].altsetting[0..len],
             };
         } else {
             return null;
@@ -160,7 +160,7 @@ pub const ConfigDescriptor = struct {
     pub fn interfaces(self: ConfigDescriptor) Interfaces {
         return Interfaces{
             .interfaces = self.descriptor.*.interface[0..self.descriptor.*.bNumInterfaces],
-            .index = 0,
+            .i = 0,
         };
     }
 };
