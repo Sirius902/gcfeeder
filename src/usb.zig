@@ -50,6 +50,13 @@ pub const Direction = enum {
     Out,
 };
 
+pub const TransferType = enum {
+    Control,
+    Isochronous,
+    Bulk,
+    Interrupt,
+};
+
 pub const EndpointDescriptor = struct {
     descriptor: *const c.libusb_endpoint_descriptor,
 
@@ -58,6 +65,16 @@ pub const EndpointDescriptor = struct {
             c.LIBUSB_ENDPOINT_OUT => Direction.Out,
             c.LIBUSB_ENDPOINT_IN => Direction.In,
             else => Direction.In,
+        };
+    }
+
+    pub fn transferType(self: EndpointDescriptor) TransferType {
+        return switch (self.descriptor.*.bmAttributes & c.LIBUSB_TRANSFER_TYPE_MASK) {
+            c.LIBUSB_TRANSFER_TYPE_CONTROL => TransferType.Control,
+            c.LIBUSB_TRANSFER_TYPE_ISOCHRONOUS => TransferType.Isochronous,
+            c.LIBUSB_TRANSFER_TYPE_BULK => TransferType.Bulk,
+            c.LIBUSB_TRANSFER_TYPE_INTERRUPT => TransferType.Interrupt,
+            else => TransferType.Interrupt,
         };
     }
 
