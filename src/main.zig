@@ -21,8 +21,7 @@ pub fn main() !void {
     var vjd = try vjoy.Device.init(1);
     defer vjd.deinit();
 
-    var pos: vjoy.JoystickPosition = undefined;
-    @memset(@ptrCast([*]u8, &pos), 0, @sizeOf(@TypeOf(pos)));
+    var pos = std.mem.zeroes(vjoy.JoystickPosition);
 
     const screen_width = 800;
     const screen_height = 640;
