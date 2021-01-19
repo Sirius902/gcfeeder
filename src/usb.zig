@@ -38,11 +38,7 @@ pub const Context = struct {
         product_id: u16,
     ) Error!?DeviceHandle {
         if (c.libusb_open_device_with_vid_pid(self.ctx, vendor_id, product_id)) |handle| {
-            return DeviceHandle{
-                .ctx = self.ctx,
-                .handle = handle,
-                .interfaces = 0,
-            };
+            return DeviceHandle.fromLibusb(self.ctx, handle);
         } else {
             return null;
         }
@@ -185,6 +181,13 @@ pub const Device = struct {
         return ConfigDescriptor{ .descriptor = descriptor.? };
     }
 
+    pub fn open(self: Device) Error!DeviceHandle {
+        var handle: ?*c.libusb_device_handle = null;
+        try failable(c.libusb_open(self.device, &handle));
+
+        return DeviceHandle.fromLibusb(self.ctx, handle.?);
+    }
+
     fn fromLibusb(ctx: *c.libusb_context, device: *c.libusb_device) Device {
         _ = c.libusb_ref_device(device);
         return Device{ .ctx = ctx, .device = device };
@@ -309,6 +312,14 @@ pub const DeviceHandle = struct {
             0 => utrans,
             c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) utrans else errorFromLibusb(ret),
             else => errorFromLibusb(ret),
+        };
+    }
+
+    fn fromLibusb(ctx: *c.libusb_context, handle: *c.libusb_device_handle) DeviceHandle {
+        return DeviceHandle{
+            .ctx = ctx,
+            .handle = handle,
+            .interfaces = 0,
         };
     }
 };

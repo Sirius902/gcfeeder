@@ -10,8 +10,8 @@ pub const Error = error{
 } || usb.Error;
 
 pub const Adapter = struct {
-    const gc_vid = 0x057E;
-    const gc_pid = 0x0337;
+    pub const gc_vid = 0x057E;
+    pub const gc_pid = 0x0337;
 
     const allowed_timeout_ms = 16;
 
