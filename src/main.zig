@@ -18,8 +18,6 @@ pub fn main() !void {
     var feeder = try Feeder.init(&ctx);
     defer feeder.deinit();
 
-    var pos = std.mem.zeroes(vjoy.JoystickPosition);
-
     const screen_width = 800;
     const screen_height = 640;
 
