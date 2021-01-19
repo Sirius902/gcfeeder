@@ -177,7 +177,7 @@ const AnalogRange = struct {
     max: u8,
 
     pub fn restrict(self: AnalogRange, n: i10) u8 {
-        const nn = std.math.clamp(n, @as(i10, self.min), @as(i10, self.min));
+        const nn = std.math.clamp(n, @as(i10, self.min), @as(i10, self.max));
 
         return std.math.cast(u8, nn) catch unreachable;
     }
