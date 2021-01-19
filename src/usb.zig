@@ -75,13 +75,11 @@ pub fn Transfer(comptime T: type) type {
                 transfer.*.length = std.math.cast(c_int, buf.len) catch @panic("Length too large");
                 transfer.*.callback = callbackRaw;
 
-                var self = Self{
+                return Self{
                     .transfer = transfer,
                     .user_data = user_data,
                     .callback = callback,
                 };
-
-                return self;
             } else {
                 return Error.OutOfMemory;
             }
