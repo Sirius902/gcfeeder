@@ -18,6 +18,82 @@ pub const Error = error{
     Other,
 };
 
+pub fn Transfer(comptime T: type) type {
+    return struct {
+        const Self = @This();
+
+        const libusb_transfer = extern struct {
+            dev_handle: *c.libusb_device_handle,
+            flags: u8,
+            endpoint: u8,
+            @"type": u8,
+            timeout: c_uint,
+            status: c.libusb_transfer_status,
+            length: c_int,
+            actual_length: c_int,
+            callback: fn (*libusb_transfer) callconv(.C) void,
+            user_data: ?*c_void,
+            buffer: [*c]u8,
+            num_iso_packets: c_int,
+            // iso_packet_desc: oh no,
+        };
+
+        transfer: *libusb_transfer,
+        user_data: T,
+        callback: fn (*Self) void,
+
+        pub fn deinit(self: Self) void {
+            c.libusb_free_transfer(self.transfer);
+        }
+
+        pub fn submit(self: *Self) Error!void {
+            self.transfer.user_data = self;
+            try failable(c.libusb_submit_transfer(@ptrCast(*c.libusb_transfer, self.transfer)));
+        }
+
+        pub fn buffer(self: Self) []u8 {
+            const length = std.math.cast(usize, self.transfer.length) catch @panic("Buffer length too large");
+            return self.transfer.buffer[0..length];
+        }
+
+        pub fn fillInterrupt(
+            handle: *DeviceHandle,
+            endpoint: u8,
+            buf: []u8,
+            callback: fn (*Self) void,
+            user_data: T,
+            timeout: u64,
+        ) Error!Self {
+            const transfer_opt = @intToPtr(?*libusb_transfer, @ptrToInt(c.libusb_alloc_transfer(0)));
+
+            if (transfer_opt) |transfer| {
+                transfer.*.dev_handle = handle.handle;
+                transfer.*.endpoint = endpoint;
+                transfer.*.@"type" = c.LIBUSB_TRANSFER_TYPE_INTERRUPT;
+                transfer.*.timeout = std.math.cast(c_uint, timeout) catch @panic("Timeout too large");
+                transfer.*.buffer = buf.ptr;
+                transfer.*.length = std.math.cast(c_int, buf.len) catch @panic("Length too large");
+                transfer.*.callback = callbackRaw;
+
+                var self = Self{
+                    .transfer = transfer,
+                    .user_data = user_data,
+                    .callback = callback,
+                };
+
+                return self;
+            } else {
+                return Error.OutOfMemory;
+            }
+        }
+
+        export fn callbackRaw(transfer: *libusb_transfer) void {
+            const self = @intToPtr(*Self, @ptrToInt(transfer.user_data.?));
+            self.callback(self);
+        }
+    };
+}
+
 pub const Context = struct {
     ctx: *c.libusb_context,
 
