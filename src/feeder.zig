@@ -2,16 +2,15 @@ const std = @import("std");
 const ad = @import("adapter.zig");
 const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
-const Adapter = ad.Adapter;
 
 pub const Error = ad.Error || vjoy.Error;
 
 pub const Feeder = struct {
-    adapter: Adapter,
+    adapter: ad.Adapter,
     device: vjoy.Device,
 
     pub fn init(ctx: *usb.Context) Error!Feeder {
-        const adapter = try Adapter.init(ctx);
+        const adapter = try ad.Adapter.init(ctx);
         errdefer adapter.deinit();
 
         const device = try vjoy.Device.init(1);
