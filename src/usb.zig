@@ -1,5 +1,6 @@
 const std = @import("std");
 const c = @import("c.zig");
+const Allocator = std.mem.Allocator;
 
 pub const Error = error{
     Io,
@@ -38,12 +39,14 @@ pub fn Transfer(comptime T: type) type {
             // iso_packet_desc: oh no,
         };
 
+        allocator: *Allocator,
         transfer: *libusb_transfer,
         user_data: T,
         callback: fn (*Self) void,
 
-        pub fn deinit(self: Self) void {
+        pub fn deinit(self: *const Self) void {
             c.libusb_free_transfer(self.transfer);
+            self.allocator.destroy(self);
         }
 
         pub fn submit(self: *Self) Error!void {
@@ -57,13 +60,14 @@ pub fn Transfer(comptime T: type) type {
         }
 
         pub fn fillInterrupt(
+            allocator: *Allocator,
             handle: *DeviceHandle,
             endpoint: u8,
             buf: []u8,
             callback: fn (*Self) void,
             user_data: T,
             timeout: u64,
-        ) Error!Self {
+        ) (Allocator.Error || Error)!*Self {
             const transfer_opt = @intToPtr(?*libusb_transfer, @ptrToInt(c.libusb_alloc_transfer(0)));
 
             if (transfer_opt) |transfer| {
@@ -75,11 +79,15 @@ pub fn Transfer(comptime T: type) type {
                 transfer.*.length = std.math.cast(c_int, buf.len) catch @panic("Length too large");
                 transfer.*.callback = callbackRaw;
 
-                return Self{
+                var self = try allocator.create(Self);
+                self.* = Self{
+                    .allocator = allocator,
                     .transfer = transfer,
                     .user_data = user_data,
                     .callback = callback,
                 };
+
+                return self;
             } else {
                 return Error.OutOfMemory;
             }
