@@ -22,7 +22,7 @@ pub fn main() !void {
     defer vjd.deinit();
 
     var pos: vjoy.JoystickPosition = undefined;
-    @memset(@intToPtr([*]u8, @ptrToInt(&pos)), 0, @sizeOf(@TypeOf(pos)));
+    @memset(@ptrCast([*]u8, &pos), 0, @sizeOf(@TypeOf(pos)));
 
     const screen_width = 800;
     const screen_height = 640;
