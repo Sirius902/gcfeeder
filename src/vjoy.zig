@@ -17,9 +17,9 @@ pub const Stat = enum {
 };
 
 pub const Device = struct {
-    id: u32,
+    id: u8,
 
-    pub fn init(id: u32) Error!Device {
+    pub fn init(id: u8) Error!Device {
         if (id < 1 or id > 15) @panic("Invalid device id");
 
         if (c.AcquireVJD(id) == c.TRUE) {
@@ -35,7 +35,7 @@ pub const Device = struct {
 
     pub fn update(self: Device, position: JoystickPosition) Error!void {
         var pos = position;
-        pos.bDevice = std.math.cast(u8, self.id) catch unreachable;
+        pos.bDevice = self.id;
 
         if (c.UpdateVJD(self.id, &pos) == c.FALSE) {
             return Error.Update;
