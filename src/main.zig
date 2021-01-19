@@ -1,11 +1,11 @@
 const std = @import("std");
-const time = std.time;
-const print = std.debug.print;
-
 const c = @import("c.zig");
 const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
+const Feeder = @import("feeder.zig").Feeder;
+const time = std.time;
+const print = std.debug.print;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -15,11 +15,8 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    var adapter = try Adapter.init(&ctx);
-    defer adapter.deinit();
-
-    var vjd = try vjoy.Device.init(1);
-    defer vjd.deinit();
+    var feeder = try Feeder.init(&ctx);
+    defer feeder.deinit();
 
     var pos = std.mem.zeroes(vjoy.JoystickPosition);
 
@@ -36,21 +33,13 @@ pub fn main() !void {
 
         c.ClearBackground(c.DARKGRAY);
 
-        const inputs = adapter.readInputs() catch null;
-        const input = if (inputs) |in| in[0] else null;
-
-        if (input) |in| {
-            pos.wAxisX = @as(c_long, in.stick_x) * 0x7F;
-            pos.wAxisY = @as(c_long, ~in.stick_y) * 0x7F;
-
-            _ = vjd.update(pos) catch {};
-        }
+        const input = feeder.feed();
 
         {
             const disp = try if (input) |in|
-                std.fmt.allocPrintZ(allocator, "stick_x: {}", .{in.stick_x})
+                std.fmt.allocPrintZ(allocator, "trigger_left: {}", .{in.trigger_left})
             else
-                std.fmt.allocPrintZ(allocator, "stick_x: -", .{});
+                std.fmt.allocPrintZ(allocator, "trigger_left: -", .{});
 
             defer allocator.free(disp);
 
@@ -59,9 +48,9 @@ pub fn main() !void {
 
         {
             const disp = try if (input) |in|
-                std.fmt.allocPrintZ(allocator, "stick_y: {}", .{in.stick_y})
+                std.fmt.allocPrintZ(allocator, "trigger_right: {}", .{in.trigger_right})
             else
-                std.fmt.allocPrintZ(allocator, "stick_y: -", .{});
+                std.fmt.allocPrintZ(allocator, "trigger_right: -", .{});
 
             defer allocator.free(disp);
 
