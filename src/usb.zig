@@ -68,6 +68,10 @@ pub const EndpointDescriptor = struct {
     pub fn address(self: EndpointDescriptor) u8 {
         return self.descriptor.*.bEndpointAddress;
     }
+
+    pub fn interval(self: EndpointDescriptor) u8 {
+        return self.descriptor.*.bInterval;
+    }
 };
 
 pub const EndpointDescriptors = struct {
