@@ -4,6 +4,7 @@ const print = std.debug.print;
 
 const c = @import("c.zig");
 const usb = @import("usb.zig");
+const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 
 pub fn main() !void {
@@ -16,6 +17,12 @@ pub fn main() !void {
 
     var adapter = try Adapter.init(&ctx);
     defer adapter.deinit();
+
+    var vjd = try vjoy.Device.init(1);
+    defer vjd.deinit();
+
+    var pos: vjoy.JoystickPosition = undefined;
+    @memset(@intToPtr([*]u8, @ptrToInt(&pos)), 0, @sizeOf(@TypeOf(pos)));
 
     const screen_width = 800;
     const screen_height = 640;
@@ -32,6 +39,13 @@ pub fn main() !void {
 
         const inputs = adapter.readInputs() catch null;
         const input = if (inputs) |in| in[0] else null;
+
+        if (input) |in| {
+            pos.wAxisX = @as(c_long, in.stick_x) * 0x7F;
+            pos.wAxisY = @as(c_long, ~in.stick_y) * 0x7F;
+
+            _ = vjd.update(pos) catch {};
+        }
 
         {
             const disp = try if (input) |in|
