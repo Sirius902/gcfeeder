@@ -25,14 +25,13 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder) ?Input {
-        const inputs = self.adapter.readInputs() catch null;
-        const input = if (inputs) |ins| ins[0] else null;
+    pub fn feed(self: *Feeder) Error!?Input {
+        const inputs = try self.adapter.readInputs();
 
-        if (input) |in| {
-            self.device.update(toVJoy(in)) catch {};
+        if (inputs[0]) |input| {
+            try self.device.update(toVJoy(input));
 
-            return in;
+            return input;
         } else {
             return null;
         }
