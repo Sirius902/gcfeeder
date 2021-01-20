@@ -383,13 +383,11 @@ pub const DeviceHandle = struct {
             try std.math.cast(c_uint, timeout_ms),
         );
 
-        const utrans = std.math.cast(usize, transferred) catch unreachable;
-
-        return switch (ret) {
-            0 => utrans,
-            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) utrans else errorFromLibusb(ret),
-            else => errorFromLibusb(ret),
-        };
+        if (ret == 0 or ret == c.LIBUSB_ERROR_INTERRUPTED and transferred > 0) {
+            return std.math.cast(usize, transferred) catch unreachable;
+        } else {
+            return errorFromLibusb(ret);
+        }
     }
 
     pub fn writeInterrupt(
@@ -413,13 +411,11 @@ pub const DeviceHandle = struct {
             try std.math.cast(c_uint, timeout_ms),
         );
 
-        const utrans = std.math.cast(usize, transferred) catch unreachable;
-
-        return switch (ret) {
-            0 => utrans,
-            c.LIBUSB_ERROR_INTERRUPTED => if (transferred > 0) utrans else errorFromLibusb(ret),
-            else => errorFromLibusb(ret),
-        };
+        if (ret == 0 or ret == c.LIBUSB_ERROR_INTERRUPTED and transferred > 0) {
+            return std.math.cast(usize, transferred) catch unreachable;
+        } else {
+            return errorFromLibusb(ret);
+        }
     }
 
     fn fromLibusb(ctx: *c.libusb_context, handle: *c.libusb_device_handle) DeviceHandle {
