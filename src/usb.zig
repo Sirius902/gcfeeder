@@ -72,9 +72,9 @@ pub fn Transfer(comptime T: type) type {
             user_data: T,
             timeout: u64,
         ) (Allocator.Error || Error)!*Self {
-            const transfer_opt = @intToPtr(?*libusb_transfer, @ptrToInt(c.libusb_alloc_transfer(0)));
+            const opt_transfer = @intToPtr(?*libusb_transfer, @ptrToInt(c.libusb_alloc_transfer(0)));
 
-            if (transfer_opt) |transfer| {
+            if (opt_transfer) |transfer| {
                 transfer.*.dev_handle = handle.handle;
                 transfer.*.endpoint = endpoint;
                 transfer.*.@"type" = c.LIBUSB_TRANSFER_TYPE_INTERRUPT;
