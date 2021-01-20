@@ -15,11 +15,9 @@ pub const Context = struct {
 
 fn feederLoop(context: Context) void {
     const feeder = context.feeder;
-    const interval = @as(u64, feeder.adapter.endpoints.in_interval) * std.time.ns_per_ms;
 
     while (!context.stop.load(.SeqCst)) {
         _ = feeder.feed();
-        std.time.sleep(interval);
     }
 }
 
