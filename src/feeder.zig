@@ -30,7 +30,7 @@ pub const Feeder = struct {
         const input = if (inputs) |ins| ins[0] else null;
 
         if (input) |in| {
-            _ = self.device.update(toVJoy(in)) catch {};
+            self.device.update(toVJoy(in)) catch {};
 
             return in;
         } else {
