@@ -36,6 +36,7 @@ pub fn main() !void {
     const screen_height = 640;
 
     c.SetTraceLogLevel(c.LOG_NONE);
+    c.SetConfigFlags(c.FLAG_VSYNC_HINT);
     c.InitWindow(screen_width, screen_height, "gcfeeder");
     defer c.CloseWindow();
     c.SetTargetFPS(60);

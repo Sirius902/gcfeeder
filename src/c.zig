@@ -40,6 +40,9 @@ pub usingnamespace @cImport({
     @cDefine("NOMCX", "");
     // Define this so raylib won't define a bool enum.
     @cDefine("__STDC__", "1");
+    // Define this so hopefully raylib won't hog the CPU. Not sure if this is
+    // really making a difference.
+    @cDefine("SUPPORT_BUSY_WAIT_LOOP", "");
     @cInclude("raylib.h");
     @cInclude("libusb-1.0/libusb.h");
     @cInclude("vjoyinterface.h");
