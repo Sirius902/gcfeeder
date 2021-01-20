@@ -4,14 +4,14 @@ const usb = @import("usb.zig");
 
 const payload_len = 37;
 
-pub const Error = error{
-    Unplugged,
-    Payload,
-} || usb.Error;
-
 pub const Adapter = struct {
     pub const gc_vid = 0x057E;
     pub const gc_pid = 0x0337;
+
+    pub const Error = error{
+        Unplugged,
+        Payload,
+    } || usb.Error;
 
     const allowed_timeout_ms = 16;
 

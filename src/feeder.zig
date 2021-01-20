@@ -2,15 +2,17 @@ const std = @import("std");
 const ad = @import("adapter.zig");
 const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
-
-pub const Error = ad.Error || vjoy.Error;
+const Adapter = ad.Adapter;
+const Input = ad.Input;
 
 pub const Feeder = struct {
-    adapter: ad.Adapter,
+    pub const Error = Adapter.Error || vjoy.Error;
+
+    adapter: Adapter,
     device: vjoy.Device,
 
     pub fn init(ctx: *usb.Context) Error!Feeder {
-        const adapter = try ad.Adapter.init(ctx);
+        const adapter = try Adapter.init(ctx);
         errdefer adapter.deinit();
 
         const device = try vjoy.Device.init(1);
@@ -23,7 +25,7 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder) ?ad.Input {
+    pub fn feed(self: *Feeder) ?Input {
         const inputs = self.adapter.readInputs() catch null;
         const input = if (inputs) |ins| ins[0] else null;
 
@@ -36,7 +38,7 @@ pub const Feeder = struct {
         }
     }
 
-    fn toVJoy(input: ad.Input) vjoy.JoystickPosition {
+    fn toVJoy(input: Input) vjoy.JoystickPosition {
         const MULT = 0x7F;
 
         var pos = std.mem.zeroes(vjoy.JoystickPosition);
