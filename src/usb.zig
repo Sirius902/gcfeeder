@@ -54,6 +54,10 @@ pub fn Transfer(comptime T: type) type {
             try failable(c.libusb_submit_transfer(@ptrCast(*c.libusb_transfer, self.transfer)));
         }
 
+        pub fn cancel(self: *Self) Error!void {
+            try failable(c.libusb_cancel_transfer(@ptrCast(*c.libusb_transfer, self.transfer)));
+        }
+
         pub fn buffer(self: Self) []u8 {
             const length = std.math.cast(usize, self.transfer.length) catch @panic("Buffer length too large");
             return self.transfer.buffer[0..length];
