@@ -23,6 +23,7 @@ pub fn main() !void {
 
     c.SetTraceLogLevel(c.LOG_NONE);
     c.InitWindow(screen_width, screen_height, "gcfeeder");
+    defer c.CloseWindow();
     c.SetTargetFPS(60);
 
     while (!c.WindowShouldClose()) {
@@ -55,6 +56,4 @@ pub fn main() !void {
             c.DrawText(disp, 190, 225, 20, c.LIGHTGRAY);
         }
     }
-
-    c.CloseWindow();
 }
