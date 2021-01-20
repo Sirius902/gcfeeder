@@ -1,11 +1,6 @@
 const std = @import("std");
 const c = @import("c.zig");
 
-pub const Error = error{
-    Acquire,
-    Update,
-};
-
 pub const JoystickPosition = c.JOYSTICK_POSITION_V2;
 
 pub const Stat = enum {
@@ -17,6 +12,11 @@ pub const Stat = enum {
 };
 
 pub const Device = struct {
+    pub const Error = error{
+        Acquire,
+        Update,
+    };
+
     id: u8,
 
     pub fn init(id: u8) Error!Device {

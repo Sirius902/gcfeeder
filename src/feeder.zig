@@ -6,7 +6,7 @@ const Adapter = ad.Adapter;
 const Input = ad.Input;
 
 pub const Feeder = struct {
-    pub const Error = Adapter.Error || vjoy.Error;
+    pub const Error = Adapter.Error || vjoy.Device.Error;
 
     adapter: Adapter,
     device: vjoy.Device,
