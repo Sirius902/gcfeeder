@@ -36,7 +36,7 @@ pub fn Transfer(comptime T: type) type {
             user_data: ?*c_void,
             buffer: [*c]u8,
             num_iso_packets: c_int,
-            // iso_packet_desc: oh no,
+            iso_packet_desc: [0]c.libusb_iso_packet_descriptor, // TODO: Variable Length Array
         };
 
         allocator: *Allocator,
