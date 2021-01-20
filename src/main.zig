@@ -15,9 +15,27 @@ pub const Context = struct {
 
 fn feederLoop(context: Context) void {
     const feeder = context.feeder;
+    var was_error = false;
 
     while (!context.stop.load(.SeqCst)) {
-        _ = feeder.feed();
+        if (was_error) {
+            was_error = false;
+            var ctx = usb.Context{ .ctx = feeder.adapter.handle.ctx };
+
+            if (Adapter.init(&ctx)) |adapter| {
+                feeder.adapter.deinit();
+                feeder.adapter = adapter;
+            } else |_| {
+                was_error = true;
+            }
+        } else {
+            _ = feeder.feed() catch |err| {
+                switch (err) {
+                    usb.Error.Io => was_error = true,
+                    else => {},
+                }
+            };
+        }
     }
 }
 
