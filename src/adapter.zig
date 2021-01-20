@@ -17,7 +17,9 @@ pub const Adapter = struct {
 
     const Endpoints = struct {
         in: u8,
+        in_interval: u8,
         out: u8,
+        out_interval: u8,
     };
 
     handle: usb.DeviceHandle,
@@ -89,7 +91,9 @@ pub const Adapter = struct {
         defer config.deinit();
 
         var in: u8 = 0;
+        var in_interval: u8 = 0;
         var out: u8 = 0;
+        var out_interval: u8 = 0;
 
         var interfaces = config.interfaces();
         while (interfaces.next()) |iface| {
@@ -100,16 +104,23 @@ pub const Adapter = struct {
                     switch (endpoint.direction()) {
                         usb.Direction.In => {
                             in = endpoint.address();
+                            in_interval = endpoint.interval();
                         },
                         usb.Direction.Out => {
                             out = endpoint.address();
+                            out_interval = endpoint.interval();
                         },
                     }
                 }
             }
         }
 
-        return Endpoints{ .in = in, .out = out };
+        return Endpoints{
+            .in = in,
+            .in_interval = in_interval,
+            .out = out,
+            .out_interval = out_interval,
+        };
     }
 
     fn readPayload(self: Adapter) Error![payload_len]u8 {

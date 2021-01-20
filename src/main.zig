@@ -4,8 +4,24 @@ const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Feeder = @import("feeder.zig").Feeder;
+const atomic = std.atomic;
 const time = std.time;
 const print = std.debug.print;
+
+pub const Context = struct {
+    feeder: *Feeder,
+    stop: *atomic.Bool,
+};
+
+fn feederLoop(context: Context) void {
+    const feeder = context.feeder;
+    const interval = @as(u64, feeder.adapter.endpoints.in_interval) * std.time.ns_per_ms;
+
+    while (!context.stop.load(.SeqCst)) {
+        _ = feeder.feed();
+        std.time.sleep(interval);
+    }
+}
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -26,34 +42,18 @@ pub fn main() !void {
     defer c.CloseWindow();
     c.SetTargetFPS(60);
 
+    var stop = atomic.Bool.init(false);
+
+    var thread = try std.Thread.spawn(Context{ .feeder = &feeder, .stop = &stop }, feederLoop);
+    defer {
+        stop.store(true, .SeqCst);
+        thread.wait();
+    }
+
     while (!c.WindowShouldClose()) {
         c.BeginDrawing();
         defer c.EndDrawing();
 
         c.ClearBackground(c.DARKGRAY);
-
-        const input = feeder.feed();
-
-        {
-            const disp = try if (input) |in|
-                std.fmt.allocPrintZ(allocator, "trigger_left: {}", .{in.trigger_left})
-            else
-                std.fmt.allocPrintZ(allocator, "trigger_left: -", .{});
-
-            defer allocator.free(disp);
-
-            c.DrawText(disp, 190, 200, 20, c.LIGHTGRAY);
-        }
-
-        {
-            const disp = try if (input) |in|
-                std.fmt.allocPrintZ(allocator, "trigger_right: {}", .{in.trigger_right})
-            else
-                std.fmt.allocPrintZ(allocator, "trigger_right: -", .{});
-
-            defer allocator.free(disp);
-
-            c.DrawText(disp, 190, 225, 20, c.LIGHTGRAY);
-        }
     }
 }
