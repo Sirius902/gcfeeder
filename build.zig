@@ -57,7 +57,7 @@ const DllStep = struct {
     pub fn create(b: *Builder, target_triple_str: []const u8) *DllStep {
         var self = b.allocator.create(DllStep) catch unreachable;
         self.* = DllStep{
-            .step = Step.init(.TopLevel, "dll", b.allocator, make),
+            .step = Step.init(.Custom, "dll", b.allocator, make),
             .builder = b,
             .target_triple_str = target_triple_str,
         };
