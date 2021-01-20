@@ -10,32 +10,14 @@ const print = std.debug.print;
 
 pub const Context = struct {
     feeder: *Feeder,
-    stop: *atomic.Bool,
+    stop: atomic.Bool,
 };
 
-fn feederLoop(context: Context) void {
+fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
-    var was_error = false;
 
     while (!context.stop.load(.SeqCst)) {
-        if (was_error) {
-            was_error = false;
-            var ctx = usb.Context{ .ctx = feeder.adapter.handle.ctx };
-
-            if (Adapter.init(&ctx)) |adapter| {
-                feeder.adapter.deinit();
-                feeder.adapter = adapter;
-            } else |_| {
-                was_error = true;
-            }
-        } else {
-            _ = feeder.feed() catch |err| {
-                switch (err) {
-                    usb.Error.Io => was_error = true,
-                    else => {},
-                }
-            };
-        }
+        _ = feeder.feed() catch {};
     }
 }
 
@@ -59,11 +41,11 @@ pub fn main() !void {
     defer c.CloseWindow();
     c.SetTargetFPS(60);
 
-    var stop = atomic.Bool.init(false);
+    var thread_ctx = Context{ .feeder = &feeder, .stop = atomic.Bool.init(false) };
 
-    var thread = try std.Thread.spawn(Context{ .feeder = &feeder, .stop = &stop }, feederLoop);
+    var thread = try std.Thread.spawn(&thread_ctx, inputLoop);
     defer {
-        stop.store(true, .SeqCst);
+        thread_ctx.stop.store(true, .SeqCst);
         thread.wait();
     }
 
