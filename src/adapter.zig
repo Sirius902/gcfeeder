@@ -81,6 +81,26 @@ pub const Adapter = struct {
         return inputs;
     }
 
+    pub fn setRumble(self: Adapter, states: [4]Rumble) Error!void {
+        const payload = [5]u8{
+            0x11,
+            states[0].toByte(),
+            states[1].toByte(),
+            states[2].toByte(),
+            states[3].toByte(),
+        };
+
+        _ = try self.handle.writeInterrupt(
+            self.endpoints.out,
+            &payload,
+            allowed_timeout_ms,
+        );
+    }
+
+    pub fn resetRumble(self: Adapter) Error!void {
+        try self.setRumble(.{ .Off, .Off, .Off, .Off });
+    }
+
     fn findEndpoints(handle: usb.DeviceHandle) Error!Endpoints {
         const device = handle.device();
         defer device.deinit();
@@ -126,6 +146,18 @@ pub const Adapter = struct {
         }
 
         return payload;
+    }
+};
+
+pub const Rumble = enum {
+    On,
+    Off,
+
+    pub fn toByte(self: Rumble) u8 {
+        return switch (self) {
+            .Off => 0,
+            .On => 1,
+        };
     }
 };
 
