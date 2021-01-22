@@ -83,8 +83,7 @@ pub const FFBPacket = union(enum) {
 };
 
 pub const FFBReciever = struct {
-    const queue_len = 10;
-    const Fifo = LinearFifo(FFBPacket, .{ .Static = queue_len });
+    const Fifo = LinearFifo(FFBPacket, .{ .Static = 10 });
 
     allocator: *Allocator,
     mutex: Mutex,
@@ -118,9 +117,9 @@ pub const FFBReciever = struct {
         const held = self.mutex.acquire();
         defer held.release();
 
-        if (self.queue.count == queue_len) {
+        self.queue.ensureUnusedCapacity(1) catch {
             self.queue.discard(1);
-        }
+        };
 
         self.queue.writeItemAssumeCapacity(packet);
     }
