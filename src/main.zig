@@ -27,7 +27,7 @@ fn rumbleLoop(context: *Context) void {
     const reciever = context.reciever;
 
     while (!context.stop.load(.SeqCst)) {
-        while (reciever.get()) |packet| {
+        if (reciever.get()) |packet| {
             print("{}\n", .{packet});
         }
 
