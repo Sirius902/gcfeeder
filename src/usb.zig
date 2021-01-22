@@ -318,6 +318,26 @@ pub const ConfigDescriptor = struct {
     }
 };
 
+pub const DeviceDescriptor = struct {
+    descriptor: c.libusb_device_descriptor,
+
+    pub fn classCode(self: DeviceDescriptor) u8 {
+        return self.descriptor.bDeviceClass;
+    }
+
+    pub fn subClassCode(self: DeviceDescriptor) u8 {
+        return self.descriptor.bDeviceSubClass;
+    }
+
+    pub fn vendorId(self: DeviceDescriptor) u16 {
+        return self.descriptor.idVendor;
+    }
+
+    pub fn productId(self: DeviceDescriptor) u16 {
+        return self.descriptor.idProduct;
+    }
+};
+
 pub const Device = struct {
     ctx: *c.libusb_context,
     device: *c.libusb_device,
@@ -336,6 +356,17 @@ pub const Device = struct {
         ));
 
         return ConfigDescriptor{ .descriptor = descriptor.? };
+    }
+
+    pub fn deviceDescriptor(self: Device) Error!DeviceDescriptor {
+        var descriptor: c.libusb_device_descriptor = undefined;
+
+        try failable(c.libusb_get_device_descriptor(
+            self.device,
+            &descriptor,
+        ));
+
+        return DeviceDescriptor{ .descriptor = descriptor };
     }
 
     pub fn open(self: Device) Error!DeviceHandle {
