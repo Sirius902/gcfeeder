@@ -84,6 +84,7 @@ pub const FFBReciever = struct {
     const Node = std.TailQueue(FFBPacket).Node;
 
     allocator: *Allocator,
+    // TODO: Replace with std.fifo.LinearFifo.
     queue: atomic.Queue(FFBPacket),
     prev_popped: ?*Node,
 
