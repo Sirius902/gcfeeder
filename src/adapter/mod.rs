@@ -176,8 +176,8 @@ impl StickRange {
     pub fn restrict(self, x: i16, y: i16) -> (u8, u8) {
         let (center, radius) = (self.center as i16, self.radius as i16);
 
-        let xx = clamp(x, center - radius, center + radius);
-        let yy = clamp(y, center - radius, center + radius);
+        let xx = x.clamp(center - radius, center + radius);
+        let yy = y.clamp(center - radius, center + radius);
 
         (xx as u8, yy as u8)
     }
@@ -197,7 +197,7 @@ impl AnalogRange {
     pub fn restrict(self, n: i16) -> u8 {
         let (min, max) = (self.min as i16, self.max as i16);
 
-        clamp(n, min, max) as u8
+        n.clamp(min, max) as u8
     }
 }
 
@@ -331,16 +331,5 @@ impl Default for Input {
             trigger_left: 0,
             trigger_right: 0,
         }
-    }
-}
-
-fn clamp(n: i16, min: i16, max: i16) -> i16 {
-    assert!(min <= max);
-    if n < min {
-        min
-    } else if n > max {
-        max
-    } else {
-        n
     }
 }
