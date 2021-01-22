@@ -10,6 +10,7 @@ const print = std.debug.print;
 
 pub const Context = struct {
     feeder: *Feeder,
+    reciever: *vjoy.FFBReciever,
     stop: atomic.Bool,
 };
 
@@ -18,6 +19,19 @@ fn inputLoop(context: *Context) void {
 
     while (!context.stop.load(.SeqCst)) {
         _ = feeder.feed() catch {};
+    }
+}
+
+fn rumbleLoop(context: *Context) void {
+    const feeder = context.feeder;
+    const reciever = context.reciever;
+
+    while (!context.stop.load(.SeqCst)) {
+        while (reciever.get()) |packet| {
+            print("{}\n", .{packet});
+        }
+
+        std.time.sleep(std.time.ns_per_s / 2);
     }
 }
 
@@ -32,6 +46,9 @@ pub fn main() !void {
     var feeder = try Feeder.init(&ctx);
     defer feeder.deinit();
 
+    var reciever = try vjoy.FFBReciever.init(allocator);
+    defer reciever.deinit();
+
     const screen_width = 800;
     const screen_height = 640;
 
@@ -41,12 +58,23 @@ pub fn main() !void {
     defer c.CloseWindow();
     c.SetTargetFPS(60);
 
-    var thread_ctx = Context{ .feeder = &feeder, .stop = atomic.Bool.init(false) };
+    var thread_ctx = Context{
+        .feeder = &feeder,
+        .reciever = reciever,
+        .stop = atomic.Bool.init(false),
+    };
 
-    var thread = try std.Thread.spawn(&thread_ctx, inputLoop);
+    var threads = [_]*std.Thread{
+        try std.Thread.spawn(&thread_ctx, inputLoop),
+        try std.Thread.spawn(&thread_ctx, rumbleLoop),
+    };
+
     defer {
         thread_ctx.stop.store(true, .SeqCst);
-        thread.wait();
+
+        for (threads) |thread| {
+            thread.wait();
+        }
     }
 
     while (!c.WindowShouldClose()) {
