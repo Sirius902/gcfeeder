@@ -2,6 +2,8 @@ const std = @import("std");
 const c = @import("c.zig");
 const atomic = std.atomic;
 const Allocator = std.mem.Allocator;
+const LinearFifo = std.fifo.LinearFifo;
+const Mutex = std.Thread.Mutex;
 
 pub const JoystickPosition = c.JOYSTICK_POSITION_V2;
 
@@ -81,19 +83,19 @@ pub const FFBPacket = union(enum) {
 };
 
 pub const FFBReciever = struct {
-    const Node = atomic.Queue(FFBPacket).Node;
+    const queue_len = 10;
+    const Fifo = LinearFifo(FFBPacket, .{ .Static = queue_len });
 
     allocator: *Allocator,
-    // TODO: Replace with std.fifo.LinearFifo.
-    queue: atomic.Queue(FFBPacket),
-    prev_popped: ?*Node,
+    mutex: Mutex,
+    queue: Fifo,
 
     pub fn init(allocator: *Allocator) Allocator.Error!*FFBReciever {
         var self = try allocator.create(FFBReciever);
         self.* = FFBReciever{
             .allocator = allocator,
-            .queue = atomic.Queue(FFBPacket).init(),
-            .prev_popped = null,
+            .mutex = Mutex{},
+            .queue = Fifo.init(),
         };
 
         c.FfbRegisterGenCB(ffbCallback, self);
@@ -102,30 +104,25 @@ pub const FFBReciever = struct {
     }
 
     pub fn deinit(self: *FFBReciever) void {
-        if (self.prev_popped) |prev| {
-            self.allocator.destroy(prev);
-        }
-
-        while (self.queue.get()) |node| {
-            _ = self.queue.remove(node);
-            self.allocator.destroy(node);
-        }
-
         self.allocator.destroy(self);
     }
 
     pub fn get(self: *FFBReciever) ?FFBPacket {
-        if (self.prev_popped) |prev| {
-            self.allocator.destroy(prev);
-            self.prev_popped = null;
+        const held = self.mutex.acquire();
+        defer held.release();
+
+        return self.queue.readItem();
+    }
+
+    fn put(self: *FFBReciever, packet: FFBPacket) void {
+        const held = self.mutex.acquire();
+        defer held.release();
+
+        if (self.queue.count == queue_len) {
+            self.queue.discard(1);
         }
 
-        if (self.queue.get()) |node| {
-            self.prev_popped = node;
-            return node.data;
-        } else {
-            return null;
-        }
+        self.queue.writeItemAssumeCapacity(packet);
     }
 
     export fn ffbCallback(data: ?*c_void, userdata: ?*c_void) void {
@@ -140,35 +137,27 @@ pub const FFBReciever = struct {
                     var operation: c.FFB_EFF_OP = undefined;
 
                     if (c.Ffb_h_EffOp(ffb_data, &operation) == c.ERROR_SEVERITY_SUCCESS) {
-                        var node = self.allocator.create(Node) catch unreachable;
-                        node.* = Node{
-                            .data = FFBPacket{
-                                .effect_operation = .{
-                                    .device_id = std.math.cast(u8, id) catch unreachable,
-                                    .operation = operation,
-                                    .timestamp_ms = std.time.milliTimestamp(),
-                                },
+                        self.put(FFBPacket{
+                            .effect_operation = .{
+                                .device_id = std.math.cast(u8, id) catch unreachable,
+                                .operation = operation,
+                                .timestamp_ms = std.time.milliTimestamp(),
                             },
-                        };
-
-                        self.queue.put(node);
+                        });
                     }
                 },
                 .PT_EFFREP => {
                     var report: c.FFB_EFF_REPORT = undefined;
 
                     if (c.Ffb_h_Eff_Report(ffb_data, &report) == c.ERROR_SEVERITY_SUCCESS) {
-                        var node = self.allocator.create(Node) catch unreachable;
-                        node.* = Node{
-                            .data = FFBPacket{
+                        self.put(
+                            FFBPacket{
                                 .effect_report = .{
                                     .device_id = std.math.cast(u8, id) catch unreachable,
                                     .report = report,
                                 },
                             },
-                        };
-
-                        self.queue.put(node);
+                        );
                     }
                 },
                 else => {},
