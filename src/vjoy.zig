@@ -116,11 +116,14 @@ pub const FFBReciever = struct {
     pub fn get(self: *FFBReciever) ?*const FFBPacket {
         if (self.prev_popped) |prev| {
             self.allocator.destroy(prev);
+            self.prev_popped = null;
         }
 
         if (self.queue.get()) |node| {
             self.prev_popped = node;
             return &node.data;
+        } else {
+            return null;
         }
     }
 
@@ -132,7 +135,7 @@ pub const FFBReciever = struct {
 
         if (c.Ffb_h_DeviceID(ffb_data, &id) == c.ERROR_SEVERITY_SUCCESS and c.Ffb_h_Type(ffb_data, &ffb_type) == c.ERROR_SEVERITY_SUCCESS) {
             switch (ffb_type) {
-                .PT_BLKFRREP => {
+                .PT_EFOPREP => {
                     var operation: c.FFB_EFF_OP = undefined;
 
                     if (c.Ffb_h_EffOp(ffb_data, &operation) == c.ERROR_SEVERITY_SUCCESS) {
