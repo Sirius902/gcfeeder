@@ -28,7 +28,18 @@ fn rumbleLoop(context: *Context) void {
 
     while (!context.stop.load(.SeqCst)) {
         if (reciever.get()) |packet| {
-            print("{}\n", .{packet});
+            switch (packet) {
+                .effect_operation => |eff_op| {
+                    if (eff_op.device_id == 1) {
+                        print("operation {}\n", .{packet});
+                    }
+                },
+                .effect_report => |eff_rep| {
+                    if (eff_rep.device_id == 1) {
+                        print("report {}\n", .{packet});
+                    }
+                },
+            }
         }
 
         std.time.sleep(std.time.ns_per_s / 2);

@@ -81,7 +81,7 @@ pub const FFBPacket = union(enum) {
 };
 
 pub const FFBReciever = struct {
-    const Node = std.TailQueue(FFBPacket).Node;
+    const Node = atomic.Queue(FFBPacket).Node;
 
     allocator: *Allocator,
     // TODO: Replace with std.fifo.LinearFifo.
@@ -114,7 +114,7 @@ pub const FFBReciever = struct {
         self.allocator.destroy(self);
     }
 
-    pub fn get(self: *FFBReciever) ?*const FFBPacket {
+    pub fn get(self: *FFBReciever) ?FFBPacket {
         if (self.prev_popped) |prev| {
             self.allocator.destroy(prev);
             self.prev_popped = null;
@@ -122,7 +122,7 @@ pub const FFBReciever = struct {
 
         if (self.queue.get()) |node| {
             self.prev_popped = node;
-            return &node.data;
+            return node.data;
         } else {
             return null;
         }
