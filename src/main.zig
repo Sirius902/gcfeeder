@@ -40,8 +40,7 @@ fn rumbleLoop(context: *Context) void {
                         };
 
                         if (last_timestamp) |last| {
-                            if (eff_op.timestamp_ms - last < 1) {
-                                print("Quick packet detected!\n", .{});
+                            if (eff_op.timestamp_ms - last < 2) {
                                 rumble = Rumble.Off;
                             }
                         }
