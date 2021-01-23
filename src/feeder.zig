@@ -1,9 +1,8 @@
 const std = @import("std");
-const ad = @import("adapter.zig");
 const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
-const Adapter = ad.Adapter;
-const Input = ad.Input;
+const Adapter = @import("adapter.zig").Adapter;
+const Input = @import("adapter.zig").Input;
 
 pub const Feeder = struct {
     pub const Error = Adapter.Error || vjoy.Device.Error;
