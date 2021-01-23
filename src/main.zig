@@ -3,6 +3,7 @@ const c = @import("c.zig");
 const usb = @import("usb.zig");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
+const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
 const atomic = std.atomic;
 const time = std.time;
@@ -25,24 +26,34 @@ fn inputLoop(context: *Context) void {
 fn rumbleLoop(context: *Context) void {
     const feeder = context.feeder;
     const reciever = context.reciever;
+    var last_timestamp: ?i64 = null;
+    var rumble = Rumble.Off;
 
     while (!context.stop.load(.SeqCst)) {
         if (reciever.get()) |packet| {
             switch (packet) {
                 .effect_operation => |eff_op| {
                     if (eff_op.device_id == 1) {
-                        print("operation {}\n", .{packet});
+                        rumble = switch (eff_op.operation.EffectOp) {
+                            .EFF_STOP => Rumble.Off,
+                            else => Rumble.On,
+                        };
+
+                        if (last_timestamp) |last| {
+                            if (eff_op.timestamp_ms - last < 1) {
+                                print("Quick packet detected!\n", .{});
+                                rumble = Rumble.Off;
+                            }
+                        }
+
+                        last_timestamp = eff_op.timestamp_ms;
                     }
                 },
-                .effect_report => |eff_rep| {
-                    if (eff_rep.device_id == 1) {
-                        print("report {}\n", .{packet});
-                    }
-                },
+                else => {},
             }
         }
 
-        std.time.sleep(std.time.ns_per_s / 2);
+        feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch {};
     }
 }
 
