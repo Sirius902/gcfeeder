@@ -148,6 +148,8 @@ pub const FFBReciever = struct {
         if (c.Ffb_h_DeviceID(ffb_data, &c_id) == c.ERROR_SEVERITY_SUCCESS and c.Ffb_h_Type(ffb_data, &ffb_type) == c.ERROR_SEVERITY_SUCCESS) {
             const id = std.math.cast(u8, c_id) catch unreachable;
 
+            const timestamp = std.time.milliTimestamp();
+
             switch (ffb_type) {
                 .PT_EFOPREP => {
                     var operation: c.FFB_EFF_OP = undefined;
@@ -156,7 +158,7 @@ pub const FFBReciever = struct {
                         self.put(FFBPacket{
                             .device_id = id,
                             .effect = EffectOperation.fromVJoy(operation),
-                            .timestamp_ms = std.time.milliTimestamp(),
+                            .timestamp_ms = timestamp,
                         });
                     }
                 },
