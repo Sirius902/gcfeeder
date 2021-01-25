@@ -38,7 +38,7 @@ fn rumbleLoop(context: *Context) void {
                 };
 
                 if (last_timestamp) |last| {
-                    if (packet.timestamp_ms - last < 2) {
+                    if (packet.timestamp_ms - last < 1) {
                         rumble = Rumble.Off;
                     }
                 }
