@@ -38,11 +38,14 @@ pub fn build(b: *Builder) void {
     exe.setBuildMode(mode);
     exe.install();
 
+    if (exe.install_step) |install_step| {
+        const dll_step = DllStep.create(b, target_triple_str);
+        dll_step.step.dependOn(&install_step.step);
+        b.default_step.dependOn(&dll_step.step);
+    }
+
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
-
-    const dll_step = DllStep.create(b, target_triple_str);
-    run_cmd.step.dependOn(&dll_step.step);
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
