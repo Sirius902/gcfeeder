@@ -31,7 +31,6 @@ pub fn build(b: *Builder) void {
     exe.addLibPath(lib_dir);
 
     exe.linkLibC();
-    exe.linkSystemLibrary("raylibdll");
     exe.linkSystemLibrary("libusb-1.0");
     exe.linkSystemLibrary("vJoyInterface");
 

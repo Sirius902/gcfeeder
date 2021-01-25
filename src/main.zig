@@ -65,15 +65,6 @@ pub fn main() !void {
     var reciever = try vjoy.FFBReciever.init(allocator);
     defer reciever.deinit();
 
-    const screen_width = 800;
-    const screen_height = 640;
-
-    c.SetTraceLogLevel(c.LOG_NONE);
-    c.SetConfigFlags(c.FLAG_VSYNC_HINT);
-    c.InitWindow(screen_width, screen_height, "gcfeeder");
-    defer c.CloseWindow();
-    c.SetTargetFPS(60);
-
     var thread_ctx = Context{
         .feeder = &feeder,
         .reciever = reciever,
@@ -93,10 +84,8 @@ pub fn main() !void {
         }
     }
 
-    while (!c.WindowShouldClose()) {
-        c.BeginDrawing();
-        defer c.EndDrawing();
+    print("Feeding. Press any key to exit...\n", .{});
 
-        c.ClearBackground(c.DARKGRAY);
-    }
+    var reader = std.io.getStdIn().reader();
+    _ = try reader.readByte();
 }
