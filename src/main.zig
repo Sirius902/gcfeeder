@@ -31,24 +31,19 @@ fn rumbleLoop(context: *Context) void {
 
     while (!context.stop.load(.Acquire)) {
         if (reciever.get()) |packet| {
-            switch (packet) {
-                .effect_operation => |eff_op| {
-                    if (eff_op.device_id == 1) {
-                        rumble = switch (eff_op.operation.EffectOp) {
-                            .EFF_STOP => Rumble.Off,
-                            else => Rumble.On,
-                        };
+            if (packet.device_id == 1) {
+                rumble = switch (packet.effect.operation) {
+                    .Stop => Rumble.Off,
+                    else => Rumble.On,
+                };
 
-                        if (last_timestamp) |last| {
-                            if (eff_op.timestamp_ms - last < 2) {
-                                rumble = Rumble.Off;
-                            }
-                        }
-
-                        last_timestamp = eff_op.timestamp_ms;
+                if (last_timestamp) |last| {
+                    if (packet.timestamp_ms - last < 2) {
+                        rumble = Rumble.Off;
                     }
-                },
-                else => {},
+                }
+
+                last_timestamp = packet.timestamp_ms;
             }
         }
 

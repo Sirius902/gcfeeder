@@ -66,20 +66,35 @@ pub fn driverEnabled() bool {
     return c.vJoyEnabled() == c.TRUE;
 }
 
-pub const FFBPacket = union(enum) {
-    pub const EffectOperation = struct {
-        device_id: u8,
-        operation: c.FFB_EFF_OP,
-        timestamp_ms: i64,
-    };
+pub const Operation = enum {
+    Start,
+    Solo,
+    Stop,
+};
 
-    pub const EffectReport = struct {
-        device_id: u8,
-        report: c.FFB_EFF_REPORT,
-    };
+pub const EffectOperation = struct {
+    block_index: u8,
+    operation: Operation,
+    loop_count: u8,
 
-    effect_operation: EffectOperation,
-    effect_report: EffectReport
+    fn fromVJoy(eff_op: c.FFB_EFF_OP) EffectOperation {
+        return EffectOperation{
+            .block_index = eff_op.EffectBlockIndex,
+            .operation = switch (eff_op.EffectOp) {
+                .EFF_START => .Start,
+                .EFF_SOLO => .Solo,
+                .EFF_STOP => .Stop,
+                else => unreachable,
+            },
+            .loop_count = eff_op.LoopCount,
+        };
+    }
+};
+
+pub const FFBPacket = struct {
+    device_id: u8,
+    effect: EffectOperation,
+    timestamp_ms: i64,
 };
 
 pub const FFBReciever = struct {
@@ -127,36 +142,22 @@ pub const FFBReciever = struct {
     export fn ffbCallback(data: ?*c_void, userdata: ?*c_void) void {
         const ffb_data = @intToPtr(*c.FFB_DATA, @ptrToInt(data.?));
         const self = @intToPtr(*FFBReciever, @ptrToInt(userdata.?));
-        var id: c_int = undefined;
+        var c_id: c_int = undefined;
         var ffb_type: c.FFBPType = undefined;
 
-        if (c.Ffb_h_DeviceID(ffb_data, &id) == c.ERROR_SEVERITY_SUCCESS and c.Ffb_h_Type(ffb_data, &ffb_type) == c.ERROR_SEVERITY_SUCCESS) {
+        if (c.Ffb_h_DeviceID(ffb_data, &c_id) == c.ERROR_SEVERITY_SUCCESS and c.Ffb_h_Type(ffb_data, &ffb_type) == c.ERROR_SEVERITY_SUCCESS) {
+            const id = std.math.cast(u8, c_id) catch unreachable;
+
             switch (ffb_type) {
                 .PT_EFOPREP => {
                     var operation: c.FFB_EFF_OP = undefined;
 
                     if (c.Ffb_h_EffOp(ffb_data, &operation) == c.ERROR_SEVERITY_SUCCESS) {
                         self.put(FFBPacket{
-                            .effect_operation = .{
-                                .device_id = std.math.cast(u8, id) catch unreachable,
-                                .operation = operation,
-                                .timestamp_ms = std.time.milliTimestamp(),
-                            },
+                            .device_id = id,
+                            .effect = EffectOperation.fromVJoy(operation),
+                            .timestamp_ms = std.time.milliTimestamp(),
                         });
-                    }
-                },
-                .PT_EFFREP => {
-                    var report: c.FFB_EFF_REPORT = undefined;
-
-                    if (c.Ffb_h_Eff_Report(ffb_data, &report) == c.ERROR_SEVERITY_SUCCESS) {
-                        self.put(
-                            FFBPacket{
-                                .effect_report = .{
-                                    .device_id = std.math.cast(u8, id) catch unreachable,
-                                    .report = report,
-                                },
-                            },
-                        );
                     }
                 },
                 else => {},
