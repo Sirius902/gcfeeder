@@ -18,7 +18,7 @@ pub const Context = struct {
 fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
 
-    while (!context.stop.load(.SeqCst)) {
+    while (!context.stop.load(.Acquire)) {
         _ = feeder.feed() catch {};
     }
 }
@@ -29,7 +29,7 @@ fn rumbleLoop(context: *Context) void {
     var last_timestamp: ?i64 = null;
     var rumble = Rumble.Off;
 
-    while (!context.stop.load(.SeqCst)) {
+    while (!context.stop.load(.Acquire)) {
         if (reciever.get()) |packet| {
             switch (packet) {
                 .effect_operation => |eff_op| {
@@ -91,7 +91,7 @@ pub fn main() !void {
     };
 
     defer {
-        thread_ctx.stop.store(true, .SeqCst);
+        thread_ctx.stop.store(true, .Release);
 
         for (threads) |thread| {
             thread.wait();
