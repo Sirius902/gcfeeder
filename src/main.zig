@@ -84,7 +84,7 @@ pub fn main() !void {
         }
     }
 
-    print("Feeding. Press any key to exit...\n", .{});
+    print("Feeding. Press enter to exit...\n", .{});
 
     var reader = std.io.getStdIn().reader();
     _ = try reader.readByte();
