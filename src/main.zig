@@ -19,7 +19,9 @@ fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
 
     while (!context.stop.load(.Acquire)) {
-        _ = feeder.feed() catch {};
+        _ = feeder.feed() catch |err| {
+            print("{} error in input thread\n", .{err});
+        };
     }
 }
 
@@ -47,7 +49,9 @@ fn rumbleLoop(context: *Context) void {
             }
         }
 
-        feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch {};
+        feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
+            print("{} error in rumble thread\n", .{err});
+        };
     }
 }
 
