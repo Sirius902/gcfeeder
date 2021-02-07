@@ -1,11 +1,12 @@
 const c = @import("c.zig");
 const ConfigDescriptor = @import("config_descriptor.zig").ConfigDescriptor;
+const Context = @import("context.zig").Context;
 const fromLibusb = @import("constructor.zig").fromLibusb;
 
 usingnamespace @import("error.zig");
 
 pub const Device = struct {
-    ctx: *c.libusb_context,
+    ctx: *Context,
     raw: *c.libusb_device,
 
     pub fn deinit(self: Device) void {

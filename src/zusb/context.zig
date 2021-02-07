@@ -24,12 +24,12 @@ pub const Context = struct {
     }
 
     pub fn openDeviceWithVidPid(
-        self: Context,
+        self: *Context,
         vendor_id: u16,
         product_id: u16,
     ) Error!?DeviceHandle {
         if (c.libusb_open_device_with_vid_pid(self.raw, vendor_id, product_id)) |handle| {
-            return fromLibusb(DeviceHandle, .{ self.raw, handle });
+            return fromLibusb(DeviceHandle, .{ self, handle });
         } else {
             return null;
         }

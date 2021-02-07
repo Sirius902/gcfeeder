@@ -1,12 +1,13 @@
 const c = @import("c.zig");
 const std = @import("std");
+const Context = @import("context.zig").Context;
 const Device = @import("device.zig").Device;
 const fromLibusb = @import("constructor.zig").fromLibusb;
 
 usingnamespace @import("error.zig");
 
 pub const DeviceHandle = struct {
-    ctx: *c.libusb_context,
+    ctx: *Context,
     raw: *c.libusb_device_handle,
     interfaces: u256,
 
