@@ -44,7 +44,7 @@ pub const Device = struct {
     }
 
     pub fn open(self: Device) Error!DeviceHandle {
-        var rwa: ?*c.libusb_device_handle = null;
+        var handle: ?*c.libusb_device_handle = null;
         try failable(c.libusb_open(self.raw, &handle));
 
         return fromLibusb(DeviceHandle, .{ self.ctx, handle.? });
