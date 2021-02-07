@@ -2,22 +2,9 @@ const std = @import("std");
 const c = @import("c.zig");
 const Allocator = std.mem.Allocator;
 
-pub const Error = error{
-    Io,
-    InvalidParam,
-    Access,
-    NoDevice,
-    NotFound,
-    Busy,
-    Timeout,
-    Overflow,
-    Pipe,
-    Interrupted,
-    OutOfMemory,
-    NotSupported,
-    BadDescriptor,
-    Other,
-};
+pub usingnamespace @import("error.zig");
+
+pub const dt_hid = c.LIBUSB_DT_HID;
 
 pub fn Transfer(comptime T: type) type {
     return struct {

@@ -1,6 +1,6 @@
 const std = @import("std");
 const c = @import("c.zig");
-const usb = @import("usb.zig");
+const usb = @import("zusb/zusb.zig");
 
 const payload_len = 37;
 
@@ -141,7 +141,7 @@ pub const Adapter = struct {
             allowed_timeout_ms,
         );
 
-        if (bytes_read != payload_len or payload[0] != c.LIBUSB_DT_HID) {
+        if (bytes_read != payload_len or payload[0] != usb.dt_hid) {
             return Error.Payload;
         }
 

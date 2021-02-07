@@ -1,4 +1,4 @@
 pub usingnamespace @cImport({
-    @cInclude("libusb-1.0/libusb.h");
+    @cInclude("windows.h");
     @cInclude("vjoyinterface.h");
 });
