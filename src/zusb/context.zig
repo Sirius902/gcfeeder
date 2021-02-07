@@ -6,17 +6,17 @@ const fromLibusb = @import("constructor.zig").fromLibusb;
 usingnamespace @import("error.zig");
 
 pub const Context = struct {
-    ctx: *c.libusb_context,
+    raw: *c.libusb_context,
 
     pub fn init() Error!Context {
         var ctx: ?*c.libusb_context = null;
         try failable(c.libusb_init(&ctx));
 
-        return Context{ .ctx = ctx.? };
+        return Context{ .raw = ctx.? };
     }
 
     pub fn deinit(self: Context) void {
-        _ = c.libusb_exit(self.ctx);
+        _ = c.libusb_exit(self.raw);
     }
 
     pub fn devices(self: *Context) Error!DeviceList {
@@ -28,8 +28,8 @@ pub const Context = struct {
         vendor_id: u16,
         product_id: u16,
     ) Error!?DeviceHandle {
-        if (c.libusb_open_device_with_vid_pid(self.ctx, vendor_id, product_id)) |handle| {
-            return fromLibusb(DeviceHandle, .{ self.ctx, handle });
+        if (c.libusb_open_device_with_vid_pid(self.raw, vendor_id, product_id)) |handle| {
+            return fromLibusb(DeviceHandle, .{ self.raw, handle });
         } else {
             return null;
         }

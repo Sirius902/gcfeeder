@@ -7,32 +7,32 @@ usingnamespace @import("error.zig");
 
 pub const DeviceHandle = struct {
     ctx: *c.libusb_context,
-    handle: *c.libusb_device_handle,
+    raw: *c.libusb_device_handle,
     interfaces: u256,
 
     pub fn deinit(self: DeviceHandle) void {
         var iface: u9 = 0;
         while (iface < 256) : (iface += 1) {
             if ((self.interfaces >> @truncate(u8, iface)) & 1 == 1) {
-                _ = c.libusb_release_interface(self.handle, @as(c_int, iface));
+                _ = c.libusb_release_interface(self.raw, @as(c_int, iface));
             }
         }
 
-        c.libusb_close(self.handle);
+        c.libusb_close(self.raw);
     }
 
     pub fn claimInterface(self: *DeviceHandle, iface: u8) Error!void {
-        try failable(c.libusb_claim_interface(self.handle, @as(c_int, iface)));
+        try failable(c.libusb_claim_interface(self.raw, @as(c_int, iface)));
         self.interfaces |= @as(u256, 1) << iface;
     }
 
     pub fn releaseInterface(self: *DeviceHandle, iface: u8) Error!void {
-        try failable(c.libusb_release_interface(self.handle, @as(c_int, iface)));
+        try failable(c.libusb_release_interface(self.raw, @as(c_int, iface)));
         self.interfaces &= ~(@as(u256, 1) << iface);
     }
 
     pub fn device(self: DeviceHandle) Device {
-        return fromLibusb(Device, .{ self.ctx, c.libusb_get_device(self.handle).? });
+        return fromLibusb(Device, .{ self.ctx, c.libusb_get_device(self.raw).? });
     }
 
     pub fn writeControl(
@@ -49,7 +49,7 @@ pub const DeviceHandle = struct {
         }
 
         const res = c.libusb_control_transfer(
-            self.handle,
+            self.raw,
             requestType,
             request,
             value,
@@ -79,7 +79,7 @@ pub const DeviceHandle = struct {
         var transferred: c_int = undefined;
 
         const ret = c.libusb_interrupt_transfer(
-            self.handle,
+            self.raw,
             endpoint,
             buf.ptr,
             try std.math.cast(c_int, buf.len),
@@ -107,7 +107,7 @@ pub const DeviceHandle = struct {
         var transferred: c_int = undefined;
 
         const ret = c.libusb_interrupt_transfer(
-            self.handle,
+            self.raw,
             endpoint,
             @intToPtr([*c]u8, @ptrToInt(buf.ptr)),
             try std.math.cast(c_int, buf.len),

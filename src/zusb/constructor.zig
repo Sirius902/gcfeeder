@@ -9,13 +9,13 @@ pub fn fromLibusb(comptime T: type, args: anytype) T {
             _ = c.libusb_ref_device(args.@"1");
             return .{
                 .ctx = args.@"0",
-                .device = args.@"1",
+                .raw = args.@"1",
             };
         },
         DeviceHandle => {
             return .{
                 .ctx = args.@"0",
-                .handle = args.@"1",
+                .raw = args.@"1",
                 .interfaces = 0,
             };
         },
