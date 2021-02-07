@@ -25,7 +25,7 @@ pub const DeviceList = struct {
     list: [*c]?*c.libusb_device,
     len: usize,
 
-    pub fn init(ctx: *Context) (error{Overflow} || Error)!DeviceList {
+    pub fn init(ctx: *Context) Error!DeviceList {
         var list: [*c]?*c.libusb_device = undefined;
         const n = c.libusb_get_device_list(ctx.ctx, &list);
 
