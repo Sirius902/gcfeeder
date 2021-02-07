@@ -1,5 +1,9 @@
 const c = @import("c.zig");
+const std = @import("std");
+const Context = @import("context.zig").Context;
 const fromLibusb = @import("constructor.zig").fromLibusb;
+
+usingnamespace @import("error.zig");
 
 pub const Devices = struct {
     ctx: *Context,
@@ -21,7 +25,7 @@ pub const DeviceList = struct {
     list: [*c]?*c.libusb_device,
     len: usize,
 
-    pub fn init(ctx: *Context) !DeviceList {
+    pub fn init(ctx: *Context) (error{Overflow} || Error)!DeviceList {
         var list: [*c]?*c.libusb_device = undefined;
         const n = c.libusb_get_device_list(ctx.ctx, &list);
 

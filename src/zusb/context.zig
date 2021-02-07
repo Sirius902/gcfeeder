@@ -1,5 +1,6 @@
 const c = @import("c.zig");
 const DeviceHandle = @import("device_handle.zig").DeviceHandle;
+const DeviceList = @import("device_list.zig").DeviceList;
 const fromLibusb = @import("constructor.zig").fromLibusb;
 
 usingnamespace @import("error.zig");
@@ -16,6 +17,10 @@ pub const Context = struct {
 
     pub fn deinit(self: Context) void {
         _ = c.libusb_exit(self.ctx);
+    }
+
+    pub fn devices(self: *Context) Error!DeviceList {
+        return DeviceList.init(self);
     }
 
     pub fn openDeviceWithVidPid(
