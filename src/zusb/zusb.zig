@@ -1,3 +1,5 @@
+const c = @import("c.zig");
+
 pub usingnamespace @import("config_descriptor.zig");
 pub usingnamespace @import("context.zig");
 pub usingnamespace @import("device_descriptor.zig");
