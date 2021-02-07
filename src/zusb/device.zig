@@ -1,5 +1,6 @@
 const c = @import("c.zig");
 const ConfigDescriptor = @import("config_descriptor.zig").ConfigDescriptor;
+const fromLibusb = @import("constructor.zig").fromLibusb;
 
 usingnamespace @import("error.zig");
 
@@ -38,6 +39,6 @@ pub const Device = struct {
         var handle: ?*c.libusb_device_handle = null;
         try failable(c.libusb_open(self.device, &handle));
 
-        return DeviceHandle.fromLibusb(self.ctx, handle.?);
+        return fromLibusb(DeviceHandle, .{ self.ctx, handle.? });
     }
 };
