@@ -2,7 +2,6 @@ const c = @import("c.zig");
 const std = @import("std");
 const Device = @import("device.zig").Device;
 const DeviceHandle = @import("device_handle.zig").DeviceHandle;
-const assert = std.debug.assert;
 
 pub fn fromLibusb(comptime T: type, args: anytype) T {
     switch (T) {
