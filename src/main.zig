@@ -2,6 +2,7 @@ const std = @import("std");
 const c = @import("c.zig");
 const usb = @import("zusb/zusb.zig");
 const vjoy = @import("vjoy.zig");
+const Allocator = std.mem.Allocator;
 const Adapter = @import("adapter.zig").Adapter;
 const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
@@ -13,13 +14,14 @@ pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
     stop: atomic.Bool,
+    ess_adapter: bool,
 };
 
 fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
 
     while (!context.stop.load(.Acquire)) {
-        _ = feeder.feed() catch |err| {
+        _ = feeder.feed(context.ess_adapter) catch |err| {
             print("{} error in input thread\n", .{err});
         };
     }
@@ -55,6 +57,22 @@ fn rumbleLoop(context: *Context) void {
     }
 }
 
+pub fn parseArgs(allocator: *Allocator) !bool {
+    var ess_adapter = false;
+
+    var iter = std.process.args();
+    while (iter.next(allocator)) |arg| {
+        const argument = try arg;
+        defer allocator.free(argument);
+
+        if (std.mem.eql(u8, argument, "-e")) {
+            ess_adapter = true;
+        }
+    }
+
+    return ess_adapter;
+}
+
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -73,6 +91,7 @@ pub fn main() !void {
         .feeder = &feeder,
         .reciever = reciever,
         .stop = atomic.Bool.init(false),
+        .ess_adapter = try parseArgs(allocator),
     };
 
     var threads = [_]*std.Thread{

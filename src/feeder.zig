@@ -1,4 +1,5 @@
 const std = @import("std");
+const ess = @import("ess/ess.zig");
 const usb = @import("zusb/zusb.zig");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
@@ -24,11 +25,15 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder) Error!?Input {
+    pub fn feed(self: *Feeder, ess_adapter: bool) Error!?Input {
         const inputs = try self.adapter.readInputs();
 
         if (inputs[0]) |input| {
-            try self.device.update(toVJoy(input));
+            if (ess_adapter) {
+                try self.device.update(toVJoy(ess.map(input)));
+            } else {
+                try self.device.update(toVJoy(input));
+            }
 
             return input;
         } else {

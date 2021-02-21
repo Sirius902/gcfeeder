@@ -34,6 +34,9 @@ pub fn build(b: *Builder) void {
     exe.linkSystemLibrary("libusb-1.0");
     exe.linkSystemLibrary("vJoyInterface");
 
+    exe.addIncludeDir("src/ess");
+    exe.addCSourceFile("src/ess/ESS.c", &[_][]const u8{});
+
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
