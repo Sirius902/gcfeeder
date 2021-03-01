@@ -4,6 +4,9 @@ const usb = @import("zusb/zusb.zig");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
+const main_stick = @import("adapter.zig").Calibration.main_stick;
+const c_stick = @import("adapter.zig").Calibration.c_stick;
+const trigger_range = @import("adapter.zig").Calibration.trigger_range;
 
 pub const Feeder = struct {
     pub const Error = Adapter.Error || vjoy.Device.Error;
@@ -42,7 +45,7 @@ pub const Feeder = struct {
     }
 
     fn toVJoy(input: Input) vjoy.JoystickPosition {
-        const MULT = 0x7F;
+        const MAX = 32767;
 
         var pos = std.mem.zeroes(vjoy.JoystickPosition);
 
@@ -63,14 +66,14 @@ pub const Feeder = struct {
 
         pos.lButtons = buttons.sliceCast(u12).get(0);
 
-        pos.wAxisX = @as(c_long, input.stick_x) * MULT;
-        pos.wAxisY = @as(c_long, ~input.stick_y) * MULT;
+        pos.wAxisX = @floatToInt(c_long, std.math.ceil(main_stick.normalize(input.stick_x) * MAX));
+        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - main_stick.normalize(input.stick_y)) * MAX));
 
-        pos.wAxisXRot = @as(c_long, input.substick_x) * MULT;
-        pos.wAxisYRot = @as(c_long, ~input.substick_y) * MULT;
+        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(c_stick.normalize(input.substick_x) * MAX));
+        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - c_stick.normalize(input.substick_y)) * MAX));
 
-        pos.wAxisZ = @as(c_long, input.trigger_left) * MULT;
-        pos.wAxisZRot = @as(c_long, input.trigger_right) * MULT;
+        pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * MAX));
+        pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * MAX));
 
         return pos;
     }

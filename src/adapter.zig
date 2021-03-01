@@ -202,6 +202,10 @@ const StickRange = struct {
             .y = std.math.cast(u8, yy) catch unreachable,
         };
     }
+
+    pub fn normalize(self: StickRange, axis: u8) f64 {
+        return @intToFloat(f64, axis) / @intToFloat(f64, self.center + self.radius);
+    }
 };
 
 const AnalogRange = struct {
@@ -213,12 +217,16 @@ const AnalogRange = struct {
 
         return std.math.cast(u8, nn) catch unreachable;
     }
+
+    pub fn normalize(self: AnalogRange, axis: u8) f64 {
+        return @intToFloat(f64, axis + self.min) / @intToFloat(f64, self.max - self.min);
+    }
 };
 
 pub const Calibration = struct {
-    const main_stick = StickRange{ .center = 0x80, .radius = 0x7F };
-    const c_stick = StickRange{ .center = 0x80, .radius = 0x7F };
-    const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
+    pub const main_stick = StickRange{ .center = 0x80, .radius = 0x7F };
+    pub const c_stick = StickRange{ .center = 0x80, .radius = 0x7F };
+    pub const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
 
     stick_x: i10,
     stick_y: i10,
