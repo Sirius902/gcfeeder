@@ -95,8 +95,8 @@ pub fn main() !void {
     };
 
     var threads = [_]*std.Thread{
-        try std.Thread.spawn(&thread_ctx, inputLoop),
-        try std.Thread.spawn(&thread_ctx, rumbleLoop),
+        try std.Thread.spawn(inputLoop, &thread_ctx),
+        try std.Thread.spawn(rumbleLoop, &thread_ctx),
     };
 
     defer {
