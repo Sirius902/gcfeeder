@@ -45,7 +45,7 @@ pub const Feeder = struct {
     }
 
     fn toVJoy(input: Input) vjoy.JoystickPosition {
-        const MAX = 32767;
+        const windows_max = 32767;
 
         var pos = std.mem.zeroes(vjoy.JoystickPosition);
 
@@ -66,14 +66,14 @@ pub const Feeder = struct {
 
         pos.lButtons = buttons.sliceCast(u12).get(0);
 
-        pos.wAxisX = @floatToInt(c_long, std.math.ceil(main_stick.normalize(input.stick_x) * MAX));
-        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - main_stick.normalize(input.stick_y)) * MAX));
+        pos.wAxisX = @floatToInt(c_long, std.math.ceil(main_stick.normalize(input.stick_x) * windows_max));
+        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - main_stick.normalize(input.stick_y)) * windows_max));
 
-        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(c_stick.normalize(input.substick_x) * MAX));
-        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - c_stick.normalize(input.substick_y)) * MAX));
+        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(c_stick.normalize(input.substick_x) * windows_max));
+        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - c_stick.normalize(input.substick_y)) * windows_max));
 
-        pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * MAX));
-        pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * MAX));
+        pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * windows_max));
+        pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * windows_max));
 
         return pos;
     }
