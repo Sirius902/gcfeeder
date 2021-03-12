@@ -91,5 +91,5 @@ pub fn show() !void {
 fn framebufferSizeCallback(window: *glfw.Window, width: i32, height: i32) callconv(.C) void {
     const gl = @ptrCast(*glad.gl, @alignCast(8, glfw.getWindowUserPointer(window) catch unreachable));
     print("window size changed: {} {}\n", .{ width, height });
-    gl.Viewport.?(0, 0, window_x, window_y);
+    gl.Viewport.?(0, 0, @intCast(u32, width), @intCast(u32, height));
 }
