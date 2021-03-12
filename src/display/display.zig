@@ -74,8 +74,8 @@ pub fn show() !void {
         gl.BindVertexArray.?(vao);
         gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 3);
 
-        try glfw.swapBuffers(window);
         try glfw.pollEvents();
+        try glfw.swapBuffers(window);
     }
 }
 
