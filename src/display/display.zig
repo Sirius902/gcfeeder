@@ -44,12 +44,9 @@ pub fn show() !void {
 
     const vertices = [_]f32{
         // positions colors
-        -0.5, -0.5, 1.0,  0.0, 0.0,
-        0.5,  -0.5, 0.0,  1.0, 0.0,
-        -0.5, 0.5,  0.0,  0.0, 1.0,
-        0.5,  -0.5, 0.0,  1.0, 0.0,
-        -0.5, 0.5,  0.0,  0.0, 1.0,
-        0.5,  0.5,  0.75, 0.0, 1.0,
+        0.0,  0.5,  1.0, 0.0, 0.0,
+        -0.5, -0.5, 0.0, 1.0, 0.0,
+        0.5,  -0.5, 0.0, 0.0, 1.0,
     };
 
     const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
@@ -81,7 +78,7 @@ pub fn show() !void {
 
         gl.UseProgram.?(shader_program);
         gl.BindVertexArray.?(vao);
-        gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 6);
+        gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 3);
 
         try glfw.swapBuffers(window);
         try glfw.pollEvents();
