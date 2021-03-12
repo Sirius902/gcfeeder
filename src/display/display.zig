@@ -4,8 +4,8 @@ const glfw = @import("glfw.zig");
 const Input = @import("../adapter.zig").Input;
 const print = std.debug.print;
 
-const window_x = 800;
-const window_y = 600;
+const window_x = 480;
+const window_y = 300;
 
 pub fn show() !void {
     try glfw.init();
@@ -76,15 +76,15 @@ pub fn show() !void {
     gl.BindVertexArray.?(0);
 
     while (!try glfw.windowShouldClose(window)) {
-        gl.ClearColor.?(0.2, 0.3, 0.3, 1.0);
+        gl.ClearColor.?(0.0, 0.0, 0.0, 1.0);
         gl.Clear.?(glad.GL_COLOR_BUFFER_BIT);
 
         gl.UseProgram.?(shader_program);
         gl.BindVertexArray.?(vao);
         gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 6);
 
-        try glfw.pollEvents();
         try glfw.swapBuffers(window);
+        try glfw.pollEvents();
     }
 }
 
