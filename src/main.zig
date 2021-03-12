@@ -1,5 +1,6 @@
 const std = @import("std");
 const c = @import("c.zig");
+const display = @import("display/display.zig");
 const usb = @import("zusb/zusb.zig");
 const vjoy = @import("vjoy.zig");
 const Allocator = std.mem.Allocator;
@@ -107,8 +108,10 @@ pub fn main() !void {
         }
     }
 
-    print("Feeding. Press enter to exit...\n", .{});
+    // print("Feeding. Press enter to exit...\n", .{});
 
-    var reader = std.io.getStdIn().reader();
-    _ = try reader.readByte();
+    // var reader = std.io.getStdIn().reader();
+    // _ = try reader.readByte();
+
+    try display.show();
 }
