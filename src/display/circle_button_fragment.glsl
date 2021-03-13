@@ -9,7 +9,8 @@ uniform vec3 color;
 uniform bool pressed;
 
 void main() {
-    float sq_dist = (radius * radius) - ((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
+    vec2 dist = v_pos - center;
+    float sq_dist = (radius * radius) - ((dist.x * dist.x) + (dist.y * dist.y));
 
     if (sq_dist < 0.0 || (!pressed && sqrt(sq_dist) >= 0.25)) {
         discard;
