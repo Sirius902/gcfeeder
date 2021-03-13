@@ -5,7 +5,7 @@ const Input = @import("../adapter.zig").Input;
 const print = std.debug.print;
 
 const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
-const b_button_color = [_]f32{ 1.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
+const b_button_color = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
 const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
 const c_stick_color = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 };
 
