@@ -4,6 +4,11 @@ const glfw = @import("glfw.zig");
 const Input = @import("../adapter.zig").Input;
 const print = std.debug.print;
 
+const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
+const b_button_color = [_]f32{ 1.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
+const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
+const c_stick_color = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 };
+
 const window_x = 480;
 const window_y = 300;
 
@@ -43,10 +48,13 @@ pub fn show() !void {
     gl.DeleteShader.?(fragment_shader);
 
     const vertices = [_]f32{
-        // positions colors
-        0.0,  0.5,  1.0, 0.0, 0.0,
-        -0.5, -0.5, 0.0, 1.0, 0.0,
-        0.5,  -0.5, 0.0, 0.0, 1.0,
+        // positions
+        -0.5, 0.5,
+        -0.5, -0.5,
+        0.5,  -0.5,
+        -0.5, 0.5,
+        0.5,  0.5,
+        0.5,  -0.5,
     };
 
     const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
@@ -62,12 +70,8 @@ pub fn show() !void {
     gl.BufferData.?(glad.GL_ARRAY_BUFFER, vertex_bytes.len, vertex_bytes.ptr, glad.GL_STATIC_DRAW);
 
     // position attribute
-    gl.VertexAttribPointer.?(0, 3, glad.GL_FLOAT, glad.GL_FALSE, 5 * @sizeOf(f32), @intToPtr(?*const c_void, 0));
+    gl.VertexAttribPointer.?(0, 2, glad.GL_FLOAT, glad.GL_FALSE, 2 * @sizeOf(f32), @intToPtr(?*const c_void, 0));
     gl.EnableVertexAttribArray.?(0);
-
-    // color attribute
-    gl.VertexAttribPointer.?(1, 3, glad.GL_FLOAT, glad.GL_FALSE, 5 * @sizeOf(f32), @intToPtr(?*const c_void, 2 * @sizeOf(f32)));
-    gl.EnableVertexAttribArray.?(1);
 
     gl.BindBuffer.?(glad.GL_ARRAY_BUFFER, 0);
     gl.BindVertexArray.?(0);
@@ -77,8 +81,10 @@ pub fn show() !void {
         gl.Clear.?(glad.GL_COLOR_BUFFER_BIT);
 
         gl.UseProgram.?(shader_program);
+        const x: [*:0]const u8 = "object_color";
+        gl.Uniform3fv.?(gl.GetUniformLocation.?(shader_program, x), 1, &z_button_color);
         gl.BindVertexArray.?(vao);
-        gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 3);
+        gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 6);
 
         try glfw.swapBuffers(window);
         try glfw.pollEvents();
