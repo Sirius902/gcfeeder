@@ -11,8 +11,9 @@ uniform bool pressed;
 void main() {
     vec2 dist = v_pos - center;
     float sq_dist = (radius * radius) - ((dist.x * dist.x) + (dist.y * dist.y));
+    float border_thickness = 0.25;
 
-    if (sq_dist < 0.0 || (!pressed && sqrt(sq_dist) >= 0.25)) {
+    if (sq_dist < 0.0 || (!pressed && sq_dist >= border_thickness * border_thickness)) {
         discard;
     }
 
