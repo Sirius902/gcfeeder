@@ -2,6 +2,7 @@ const std = @import("std");
 const glad = @import("glad.zig");
 const glfw = @import("glfw.zig");
 const Input = @import("../adapter.zig").Input;
+const Context = @import("root").Context;
 const print = std.debug.print;
 
 const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
@@ -9,10 +10,10 @@ const b_button_color = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
 const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
 const c_stick_color = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 };
 
-const window_x = 480;
-const window_y = 300;
+const window_x = 512;
+const window_y = 512;
 
-pub fn show() !void {
+pub fn show(context: *const Context) !void {
     try glfw.init();
     defer glfw.terminate() catch unreachable;
 
@@ -34,7 +35,7 @@ pub fn show() !void {
     gl.ShaderSource.?(vertex_shader, 1, &vertex_shader_source, null);
     gl.CompileShader.?(vertex_shader);
 
-    const fragment_shader_source: [*:0]const u8 = @embedFile("fragment.glsl");
+    const fragment_shader_source: [*:0]const u8 = @embedFile("circle_button_fragment.glsl");
     const fragment_shader = gl.CreateShader.?(glad.GL_FRAGMENT_SHADER);
     gl.ShaderSource.?(fragment_shader, 1, &fragment_shader_source, null);
     gl.CompileShader.?(fragment_shader);
@@ -81,8 +82,35 @@ pub fn show() !void {
         gl.Clear.?(glad.GL_COLOR_BUFFER_BIT);
 
         gl.UseProgram.?(shader_program);
-        const x: [*:0]const u8 = "object_color";
-        gl.Uniform3fv.?(gl.GetUniformLocation.?(shader_program, x), 1, &z_button_color);
+
+        {
+            const x: [*:0]const u8 = "center";
+            gl.Uniform2f.?(gl.GetUniformLocation.?(shader_program, x), 0.0, 0.0);
+        }
+
+        {
+            const x: [*:0]const u8 = "radius";
+            gl.Uniform1f.?(gl.GetUniformLocation.?(shader_program, x), 0.5);
+        }
+
+        {
+            const x: [*:0]const u8 = "color";
+            gl.Uniform3fv.?(gl.GetUniformLocation.?(shader_program, x), 1, &a_button_color);
+        }
+
+        {
+            const is_pressed = blk: {
+                if (context.last_input) |last| {
+                    break :blk last.button_a;
+                } else {
+                    break :blk false;
+                }
+            };
+
+            const x: [*:0]const u8 = "pressed";
+            gl.Uniform1i.?(gl.GetUniformLocation.?(shader_program, x), @boolToInt(is_pressed));
+        }
+
         gl.BindVertexArray.?(vao);
         gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 6);
 

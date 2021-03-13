@@ -5,6 +5,7 @@ const usb = @import("zusb/zusb.zig");
 const vjoy = @import("vjoy.zig");
 const Allocator = std.mem.Allocator;
 const Adapter = @import("adapter.zig").Adapter;
+const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
 const atomic = std.atomic;
@@ -15,6 +16,7 @@ pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
     stop: atomic.Bool,
+    last_input: ?Input = null,
     ess_adapter: bool,
 };
 
@@ -22,8 +24,9 @@ fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
 
     while (!context.stop.load(.Acquire)) {
-        _ = feeder.feed(context.ess_adapter) catch |err| {
+        context.last_input = feeder.feed(context.ess_adapter) catch |err| blk: {
             print("{} error in input thread\n", .{err});
+            break :blk null;
         };
     }
 }
@@ -113,5 +116,5 @@ pub fn main() !void {
     // var reader = std.io.getStdIn().reader();
     // _ = try reader.readByte();
 
-    try display.show();
+    try display.show(&thread_ctx);
 }
