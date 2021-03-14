@@ -116,16 +116,6 @@ pub fn show(context: *const Context) !void {
         gl.UseProgram(shader_program);
 
         {
-            const x: [*:0]const u8 = "center";
-            gl.Uniform2f(gl.GetUniformLocation(shader_program, x), 0.0, 0.0);
-        }
-
-        {
-            const x: [*:0]const u8 = "size";
-            gl.Uniform1f(gl.GetUniformLocation(shader_program, x), 0.5);
-        }
-
-        {
             const x: [*:0]const u8 = "color";
             gl.Uniform3fv(gl.GetUniformLocation(shader_program, x), 1, &a_button_color);
         }
