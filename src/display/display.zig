@@ -49,26 +49,35 @@ pub fn show(context: *const Context) !void {
     gl.DeleteShader.?(fragment_shader);
 
     const vertices = [_]f32{
-        // positions
-        -0.5, 0.5,
-        -0.5, -0.5,
-        0.5,  -0.5,
-        -0.5, 0.5,
-        0.5,  0.5,
-        0.5,  -0.5,
+        // positions \ texture coords
+        -0.5, 0.5, // 0.0, 1.0,
+        -0.5, -0.5, // 0.0, 0.0,
+        0.5, -0.5, // 0.0, 0.0,
+        0.5, 0.5, // 0.0, 0.0,
+    };
+
+    const indices = [_]c_uint{
+        0, 1, 2,
+        0, 3, 2,
     };
 
     const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
-    gl.BufferData.?(glad.GL_ARRAY_BUFFER, vertex_bytes.len, vertex_bytes.ptr, glad.GL_STATIC_DRAW);
+    const indices_bytes: []const u8 = std.mem.sliceAsBytes(&indices);
 
     var vbo: u32 = undefined;
     var vao: u32 = undefined;
+    var ebo: u32 = undefined;
     gl.GenVertexArrays.?(1, &vao);
     gl.GenBuffers.?(1, &vbo);
+    gl.GenBuffers.?(1, &ebo);
+
     gl.BindVertexArray.?(vao);
 
     gl.BindBuffer.?(glad.GL_ARRAY_BUFFER, vbo);
     gl.BufferData.?(glad.GL_ARRAY_BUFFER, vertex_bytes.len, vertex_bytes.ptr, glad.GL_STATIC_DRAW);
+
+    gl.BindBuffer.?(glad.GL_ELEMENT_ARRAY_BUFFER, ebo);
+    gl.BufferData.?(glad.GL_ELEMENT_ARRAY_BUFFER, indices_bytes.len, indices_bytes.ptr, glad.GL_STATIC_DRAW);
 
     // position attribute
     gl.VertexAttribPointer.?(0, 2, glad.GL_FLOAT, glad.GL_FALSE, 2 * @sizeOf(f32), @intToPtr(?*const c_void, 0));
@@ -112,7 +121,7 @@ pub fn show(context: *const Context) !void {
         }
 
         gl.BindVertexArray.?(vao);
-        gl.DrawArrays.?(glad.GL_TRIANGLES, 0, 6);
+        gl.DrawElements.?(glad.GL_TRIANGLES, 6, glad.GL_UNSIGNED_INT, @intToPtr(?*const c_void, 0));
 
         try glfw.swapBuffers(window);
         try glfw.pollEvents();
