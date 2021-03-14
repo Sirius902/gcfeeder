@@ -35,7 +35,7 @@ pub fn show(context: *const Context) !void {
     gl.ShaderSource.?(vertex_shader, 1, &vertex_shader_source, null);
     gl.CompileShader.?(vertex_shader);
 
-    const fragment_shader_source: [*:0]const u8 = @embedFile("bean_button_fragment.glsl");
+    const fragment_shader_source: [*:0]const u8 = @embedFile("sdf_button_fragment.glsl");
     const fragment_shader = gl.CreateShader.?(glad.GL_FRAGMENT_SHADER);
     gl.ShaderSource.?(fragment_shader, 1, &fragment_shader_source, null);
     gl.CompileShader.?(fragment_shader);
@@ -47,6 +47,23 @@ pub fn show(context: *const Context) !void {
 
     gl.DeleteShader.?(vertex_shader);
     gl.DeleteShader.?(fragment_shader);
+
+    // skip 14-byte bmp header
+    const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
+
+    var bean_texture: u32 = undefined;
+    gl.GenTextures.?(1, &bean_texture);
+    gl.BindTexture.?(glad.GL_TEXTURE_2D, bean_texture);
+    gl.TexParameteri.?(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_WRAP_S, glad.GL_CLAMP_TO_BORDER);
+    gl.TexParameteri.?(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_WRAP_T, glad.GL_CLAMP_TO_BORDER);
+    gl.TexParameteri.?(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_MIN_FILTER, glad.GL_LINEAR);
+    gl.TexParameteri.?(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_MAG_FILTER, glad.GL_LINEAR);
+
+    gl.TexImage2D.?(glad.GL_TEXTURE_2D, 0, glad.GL_RED, 64, 64, 0, glad.GL_RED, glad.GL_UNSIGNED_BYTE, bean_sdf.ptr);
+    gl.GenerateMipmap.?(glad.GL_TEXTURE_2D);
+
+    gl.ActiveTexture.?(glad.GL_TEXTURE0);
+    gl.BindTexture.?(glad.GL_TEXTURE_2D, bean_texture);
 
     const vertices = [_]f32{
         // positions \ texture coords
