@@ -50,10 +50,10 @@ pub fn show(context: *const Context) !void {
 
     const vertices = [_]f32{
         // positions \ texture coords
-        -0.5, 0.5, // 0.0, 1.0,
-        -0.5, -0.5, // 0.0, 0.0,
-        0.5, -0.5, // 0.0, 0.0,
-        0.5, 0.5, // 0.0, 0.0,
+        -0.5, 0.5,  0.0, 1.0,
+        -0.5, -0.5, 0.0, 0.0,
+        0.5,  -0.5, 1.0, 0.0,
+        0.5,  0.5,  1.0, 1.0,
     };
 
     const indices = [_]c_uint{
@@ -80,8 +80,12 @@ pub fn show(context: *const Context) !void {
     gl.BufferData.?(glad.GL_ELEMENT_ARRAY_BUFFER, indices_bytes.len, indices_bytes.ptr, glad.GL_STATIC_DRAW);
 
     // position attribute
-    gl.VertexAttribPointer.?(0, 2, glad.GL_FLOAT, glad.GL_FALSE, 2 * @sizeOf(f32), @intToPtr(?*const c_void, 0));
+    gl.VertexAttribPointer.?(0, 2, glad.GL_FLOAT, glad.GL_FALSE, 4 * @sizeOf(f32), @intToPtr(?*const c_void, 0));
     gl.EnableVertexAttribArray.?(0);
+
+    // texture coords attribute
+    gl.VertexAttribPointer.?(1, 2, glad.GL_FLOAT, glad.GL_FALSE, 4 * @sizeOf(f32), @intToPtr(?*const c_void, 2 * @sizeOf(f32)));
+    gl.EnableVertexAttribArray.?(1);
 
     gl.BindBuffer.?(glad.GL_ARRAY_BUFFER, 0);
     gl.BindVertexArray.?(0);
