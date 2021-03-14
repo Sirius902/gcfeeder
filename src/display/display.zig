@@ -24,6 +24,9 @@ pub fn show(context: *const Context) !void {
     const window = try glfw.createWindow(window_x, window_y, "Input Viewer", null, null);
     try glfw.makeContextCurrent(window);
 
+    // wait for vsync to reduce cpu usage
+    try glfw.swapInterval(1);
+
     var gl: glad.gl = .{};
     try gl.load(glfw.GLFWError, glfw.getProcAddress);
     try glfw.setWindowUserPointer(window, &gl);
