@@ -48,7 +48,6 @@ pub fn show(context: *const Context) !void {
     gl.DeleteShader.?(vertex_shader);
     gl.DeleteShader.?(fragment_shader);
 
-    // skip 14-byte bmp header
     const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
 
     var bean_texture: u32 = undefined;
