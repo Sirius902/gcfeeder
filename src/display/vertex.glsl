@@ -10,5 +10,5 @@ void main() {
     gl_Position = vec4(a_pos, 0.0, 1.0);
     v_pos = a_pos;
     v_tex_coord = a_tex_coord;
-    border_width = 0.05;
+    border_width = 0.1;
 }
