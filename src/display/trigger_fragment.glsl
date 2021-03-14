@@ -5,14 +5,14 @@ in float border_width;
 layout (location = 0) out vec4 frag_color;
 
 uniform vec3 color;
-uniform bool pressed;
+uniform float fill;
 
 const float radius = 0.5;
 
 void main() {
     float sq_dist = (radius * radius) - ((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
 
-    if (sq_dist < 0.0 || (!pressed && sq_dist >= border_width * border_width)) {
+    if (sq_dist < 0.0 || ((sq_dist >= border_width * border_width) && (v_pos.x + 0.5 > clamp(fill, 0.0, 0.8) * (1.0 / 0.8)))) {
         discard;
     }
 

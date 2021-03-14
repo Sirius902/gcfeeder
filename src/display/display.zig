@@ -38,7 +38,7 @@ pub fn show(context: *const Context) !void {
     gl.ShaderSource(vertex_shader, 1, &vertex_shader_source, null);
     gl.CompileShader(vertex_shader);
 
-    const fragment_shader_source: [*:0]const u8 = @embedFile("sdf_button_fragment.glsl");
+    const fragment_shader_source: [*:0]const u8 = @embedFile("trigger_fragment.glsl");
     const fragment_shader = gl.CreateShader(glad.GL_FRAGMENT_SHADER);
     gl.ShaderSource(fragment_shader, 1, &fragment_shader_source, null);
     gl.CompileShader(fragment_shader);
@@ -121,16 +121,16 @@ pub fn show(context: *const Context) !void {
         }
 
         {
-            const is_pressed = blk: {
+            const fill: f32 = blk: {
                 if (context.last_input) |last| {
-                    break :blk last.button_a;
+                    break :blk @intToFloat(f32, last.trigger_left) / 255.0;
                 } else {
-                    break :blk false;
+                    break :blk 0.0;
                 }
             };
 
-            const x: [*:0]const u8 = "pressed";
-            gl.Uniform1i(gl.GetUniformLocation(shader_program, x), @boolToInt(is_pressed));
+            const x: [*:0]const u8 = "fill";
+            gl.Uniform1f(gl.GetUniformLocation(shader_program, x), fill);
         }
 
         gl.BindVertexArray(vao);
