@@ -7069,7 +7069,7 @@ pub const GL_ZERO_TO_ONE: u32 = 0x935F;
 pub const GL_Z_EXT: u32 = 0x87D7;
 
 pub const gl = struct {
-    const Features = struct {
+    pub const Features = packed struct {
         GL_VERSION_1_0: bool = true,
         GL_VERSION_1_1: bool = true,
         GL_VERSION_1_2: bool = true,
