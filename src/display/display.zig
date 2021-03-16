@@ -111,7 +111,7 @@ pub fn show(context: *const Context) !void {
 
         zgl.useProgram(shader_program);
 
-        zgl.programUniform3f(shader_program, zgl.getUniformLocation(shader_program, "color"), a_button_color[0], a_button_color[1], a_button_color[2]);
+        glad.gl_context.Uniform3fv(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "color"), 1, &a_button_color);
 
         {
             const xp: f32 = blk: {
@@ -130,8 +130,7 @@ pub fn show(context: *const Context) !void {
                 }
             };
 
-            const name: [*:0]const u8 = "pos";
-            glad.gl_context.Uniform2f(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), name), 1.0 - xp, 1.0 - yp);
+            glad.gl_context.Uniform2f(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pos"), 1.0 - xp, 1.0 - yp);
         }
 
         zgl.bindVertexArray(vao);
