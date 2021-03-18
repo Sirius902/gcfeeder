@@ -18,27 +18,26 @@ pub fn show(context: *const Context) !void {
     try glfw.init();
     defer glfw.terminate() catch unreachable;
 
-    try glfw.windowHint(glfw.WindowHint.ContextVersionMajor, 3);
-    try glfw.windowHint(glfw.WindowHint.ContextVersionMinor, 3);
-    try glfw.windowHint(glfw.WindowHint.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
+    try glfw.windowHint(.ContextVersionMajor, 3);
+    try glfw.windowHint(.ContextVersionMinor, 3);
+    try glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
 
     const window = try glfw.createWindow(window_x, window_y, "Input Viewer", null, null);
     try glfw.makeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
     try glfw.swapInterval(1);
+    _ = try glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
     try glad.gl_context.load(glfw.GLFWError, glfw.getProcAddress);
 
-    _ = try glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
-
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
-    const vertex_shader = zgl.Shader.create(zgl.ShaderType.vertex);
+    const vertex_shader = zgl.Shader.create(.vertex);
     vertex_shader.source(1, &vertex_shader_source);
     vertex_shader.compile();
 
     const fragment_shader_source: []const u8 = @embedFile("stick_fragment.glsl");
-    const fragment_shader = zgl.Shader.create(zgl.ShaderType.fragment);
+    const fragment_shader = zgl.Shader.create(.fragment);
     fragment_shader.source(1, &fragment_shader_source);
     fragment_shader.compile();
 
@@ -50,9 +49,9 @@ pub fn show(context: *const Context) !void {
     vertex_shader.delete();
     fragment_shader.delete();
 
-    // const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
+    const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
+    const bean_texture = zgl.Texture.create(.@"2d");
 
-    // var bean_texture: u32 = undefined;
     // gl.GenTextures(1, &bean_texture);
     // gl.BindTexture(glad.GL_TEXTURE_2D, bean_texture);
     // gl.TexParameteri(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_WRAP_S, glad.GL_CLAMP_TO_BORDER);
@@ -74,7 +73,7 @@ pub fn show(context: *const Context) !void {
         0.5,  0.5,  1.0, 1.0,
     };
 
-    const indices = [_]c_uint{
+    const indices = [_]u32{
         0, 1, 2,
         0, 3, 2,
     };
@@ -82,24 +81,24 @@ pub fn show(context: *const Context) !void {
     const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
     const indices_bytes: []const u8 = std.mem.sliceAsBytes(&indices);
 
-    var vbo = zgl.Buffer.gen();
-    var vao = zgl.VertexArray.gen();
-    var ebo = zgl.Buffer.gen();
+    const vbo = zgl.Buffer.gen();
+    const vao = zgl.VertexArray.gen();
+    const ebo = zgl.Buffer.gen();
 
     vao.bind();
 
-    vbo.bind(zgl.BufferTarget.array_buffer);
-    vbo.data(u8, vertex_bytes, zgl.BufferUsage.static_draw);
+    vbo.bind(.array_buffer);
+    vbo.data(u8, vertex_bytes, .static_draw);
 
-    ebo.bind(zgl.BufferTarget.element_array_buffer);
-    ebo.data(u8, indices_bytes, zgl.BufferUsage.static_draw);
+    ebo.bind(.element_array_buffer);
+    ebo.data(u8, indices_bytes, .static_draw);
 
     // position attribute
-    zgl.vertexAttribPointer(0, 2, zgl.Type.float, false, 4 * @sizeOf(f32), 0);
+    zgl.vertexAttribPointer(0, 2, .float, false, 4 * @sizeOf(f32), 0);
     zgl.enableVertexAttribArray(0);
 
     // texture coords attribute
-    zgl.vertexAttribPointer(1, 2, zgl.Type.float, false, 4 * @sizeOf(f32), 2 * @sizeOf(f32));
+    zgl.vertexAttribPointer(1, 2, .float, false, 4 * @sizeOf(f32), 2 * @sizeOf(f32));
     zgl.enableVertexAttribArray(1);
 
     while (!try glfw.windowShouldClose(window)) {
@@ -131,7 +130,7 @@ pub fn show(context: *const Context) !void {
         }
 
         vao.bind();
-        zgl.drawElements(zgl.PrimitiveType.triangles, 6, zgl.ElementType.u32, null);
+        zgl.drawElements(.triangles, 6, .u32, null);
 
         try glfw.swapBuffers(window);
         try glfw.pollEvents();
