@@ -33,22 +33,22 @@ pub fn show(context: *const Context) !void {
     _ = try glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
-    const vertex_shader = zgl.createShader(zgl.ShaderType.vertex);
-    zgl.shaderSource(vertex_shader, 1, &vertex_shader_source);
-    zgl.compileShader(vertex_shader);
+    const vertex_shader = zgl.Shader.create(zgl.ShaderType.vertex);
+    vertex_shader.source(1, &vertex_shader_source);
+    vertex_shader.compile();
 
     const fragment_shader_source: []const u8 = @embedFile("stick_fragment.glsl");
-    const fragment_shader = zgl.createShader(zgl.ShaderType.fragment);
-    zgl.shaderSource(fragment_shader, 1, &fragment_shader_source);
-    zgl.compileShader(fragment_shader);
+    const fragment_shader = zgl.Shader.create(zgl.ShaderType.fragment);
+    fragment_shader.source(1, &fragment_shader_source);
+    fragment_shader.compile();
 
-    const shader_program = zgl.createProgram();
-    zgl.attachShader(shader_program, vertex_shader);
-    zgl.attachShader(shader_program, fragment_shader);
-    zgl.linkProgram(shader_program);
+    const shader_program = zgl.Program.create();
+    shader_program.attach(vertex_shader);
+    shader_program.attach(fragment_shader);
+    shader_program.link();
 
-    zgl.deleteShader(vertex_shader);
-    zgl.deleteShader(fragment_shader);
+    vertex_shader.delete();
+    fragment_shader.delete();
 
     // const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
 
@@ -82,17 +82,17 @@ pub fn show(context: *const Context) !void {
     const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
     const indices_bytes: []const u8 = std.mem.sliceAsBytes(&indices);
 
-    var vbo = zgl.genBuffer();
-    var vao = zgl.genVertexArray();
-    var ebo = zgl.genBuffer();
+    var vbo = zgl.Buffer.gen();
+    var vao = zgl.VertexArray.gen();
+    var ebo = zgl.Buffer.gen();
 
-    zgl.bindVertexArray(vao);
+    vao.bind();
 
-    zgl.bindBuffer(vbo, zgl.BufferTarget.array_buffer);
-    zgl.bufferData(zgl.BufferTarget.array_buffer, u8, vertex_bytes, zgl.BufferUsage.static_draw);
+    vbo.bind(zgl.BufferTarget.array_buffer);
+    vbo.data(u8, vertex_bytes, zgl.BufferUsage.static_draw);
 
-    zgl.bindBuffer(ebo, zgl.BufferTarget.element_array_buffer);
-    zgl.bufferData(zgl.BufferTarget.element_array_buffer, u8, indices_bytes, zgl.BufferUsage.static_draw);
+    ebo.bind(zgl.BufferTarget.element_array_buffer);
+    ebo.data(u8, indices_bytes, zgl.BufferUsage.static_draw);
 
     // position attribute
     zgl.vertexAttribPointer(0, 2, zgl.Type.float, false, 4 * @sizeOf(f32), 0);
@@ -102,14 +102,11 @@ pub fn show(context: *const Context) !void {
     zgl.vertexAttribPointer(1, 2, zgl.Type.float, false, 4 * @sizeOf(f32), 2 * @sizeOf(f32));
     zgl.enableVertexAttribArray(1);
 
-    zgl.bindBuffer(zgl.Buffer.invalid, zgl.BufferTarget.array_buffer);
-    zgl.bindVertexArray(zgl.VertexArray.invalid);
-
     while (!try glfw.windowShouldClose(window)) {
         zgl.clearColor(0.0, 0.0, 0.0, 1.0);
         zgl.clear(.{ .color = true });
 
-        zgl.useProgram(shader_program);
+        shader_program.use();
 
         glad.gl_context.Uniform3fv(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "color"), 1, &a_button_color);
 
@@ -133,7 +130,7 @@ pub fn show(context: *const Context) !void {
             glad.gl_context.Uniform2f(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pos"), 1.0 - xp, 1.0 - yp);
         }
 
-        zgl.bindVertexArray(vao);
+        vao.bind();
         zgl.drawElements(zgl.PrimitiveType.triangles, 6, zgl.ElementType.u32, null);
 
         try glfw.swapBuffers(window);
@@ -142,6 +139,5 @@ pub fn show(context: *const Context) !void {
 }
 
 fn framebufferSizeCallback(window: *glfw.Window, width: i32, height: i32) callconv(.C) void {
-    print("window size changed: {} {}\n", .{ width, height });
     zgl.viewport(0, 0, @intCast(u32, width), @intCast(u32, height));
 }
