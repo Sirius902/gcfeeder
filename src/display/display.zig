@@ -36,7 +36,7 @@ pub fn show(context: *const Context) !void {
     vertex_shader.source(1, &vertex_shader_source);
     vertex_shader.compile();
 
-    const fragment_shader_source: []const u8 = @embedFile("stick_fragment.glsl");
+    const fragment_shader_source: []const u8 = @embedFile("sdf_button_fragment.glsl");
     const fragment_shader = zgl.Shader.create(.fragment);
     fragment_shader.source(1, &fragment_shader_source);
     fragment_shader.compile();
@@ -51,19 +51,13 @@ pub fn show(context: *const Context) !void {
 
     const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
     const bean_texture = zgl.Texture.create(.@"2d");
-
-    // gl.GenTextures(1, &bean_texture);
-    // gl.BindTexture(glad.GL_TEXTURE_2D, bean_texture);
-    // gl.TexParameteri(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_WRAP_S, glad.GL_CLAMP_TO_BORDER);
-    // gl.TexParameteri(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_WRAP_T, glad.GL_CLAMP_TO_BORDER);
-    // gl.TexParameteri(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_MIN_FILTER, glad.GL_LINEAR);
-    // gl.TexParameteri(glad.GL_TEXTURE_2D, glad.GL_TEXTURE_MAG_FILTER, glad.GL_LINEAR);
-
-    // gl.TexImage2D(glad.GL_TEXTURE_2D, 0, glad.GL_RED, 64, 64, 0, glad.GL_RED, glad.GL_UNSIGNED_BYTE, bean_sdf.ptr);
-    // gl.GenerateMipmap(glad.GL_TEXTURE_2D);
-
-    // gl.ActiveTexture(glad.GL_TEXTURE0);
-    // gl.BindTexture(glad.GL_TEXTURE_2D, bean_texture);
+    bean_texture.bindTo(0);
+    bean_texture.parameter(.wrap_s, .clamp_to_border);
+    bean_texture.parameter(.wrap_t, .clamp_to_border);
+    bean_texture.parameter(.min_filter, .linear);
+    bean_texture.parameter(.mag_filter, .linear);
+    bean_texture.storage2D(1, .r8, 64, 64);
+    bean_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, bean_sdf.ptr);
 
     const vertices = [_]f32{
         // positions \ texture coords
@@ -107,27 +101,50 @@ pub fn show(context: *const Context) !void {
 
         shader_program.use();
 
-        glad.gl_context.Uniform3fv(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "color"), 1, &a_button_color);
+        glad.gl_context.Uniform3fv(
+            glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "color"),
+            1,
+            &a_button_color,
+        );
 
         {
-            const xp: f32 = blk: {
+            const pressed = blk: {
                 if (context.last_input) |last| {
-                    break :blk @intToFloat(f32, last.stick_x) / 255.0;
+                    break :blk last.button_a;
                 } else {
-                    break :blk 0.0;
+                    break :blk false;
                 }
             };
 
-            const yp: f32 = blk: {
-                if (context.last_input) |last| {
-                    break :blk @intToFloat(f32, last.stick_y) / 255.0;
-                } else {
-                    break :blk 0.0;
-                }
-            };
-
-            glad.gl_context.Uniform2f(glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pos"), 1.0 - xp, 1.0 - yp);
+            glad.gl_context.Uniform1i(
+                glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pressed"),
+                @boolToInt(pressed),
+            );
         }
+
+        // {
+        //     const xp: f32 = blk: {
+        //         if (context.last_input) |last| {
+        //             break :blk @intToFloat(f32, last.stick_x) / 255.0;
+        //         } else {
+        //             break :blk 0.0;
+        //         }
+        //     };
+
+        //     const yp: f32 = blk: {
+        //         if (context.last_input) |last| {
+        //             break :blk @intToFloat(f32, last.stick_y) / 255.0;
+        //         } else {
+        //             break :blk 0.0;
+        //         }
+        //     };
+
+        //     glad.gl_context.Uniform2f(
+        //         glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pos"),
+        //         1.0 - xp,
+        //         1.0 - yp,
+        //     );
+        // }
 
         vao.bind();
         zgl.drawElements(.triangles, 6, .u32, null);
