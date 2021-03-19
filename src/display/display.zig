@@ -72,9 +72,6 @@ pub fn show(context: *const Context) !void {
         0, 3, 2,
     };
 
-    const vertex_bytes: []const u8 = std.mem.sliceAsBytes(&vertices);
-    const indices_bytes: []const u8 = std.mem.sliceAsBytes(&indices);
-
     const vbo = zgl.Buffer.gen();
     const vao = zgl.VertexArray.gen();
     const ebo = zgl.Buffer.gen();
@@ -82,10 +79,10 @@ pub fn show(context: *const Context) !void {
     vao.bind();
 
     vbo.bind(.array_buffer);
-    vbo.data(u8, vertex_bytes, .static_draw);
+    vbo.data(f32, &vertices, .static_draw);
 
     ebo.bind(.element_array_buffer);
-    ebo.data(u8, indices_bytes, .static_draw);
+    ebo.data(u32, &indices, .static_draw);
 
     // position attribute
     zgl.vertexAttribPointer(0, 2, .float, false, 4 * @sizeOf(f32), 0);
