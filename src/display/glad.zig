@@ -7070,324 +7070,324 @@ pub const GL_Z_EXT: u32 = 0x87D7;
 
 pub const gl = struct {
     pub const Features = packed struct {
-        GL_VERSION_1_0: bool = true,
-        GL_VERSION_1_1: bool = true,
-        GL_VERSION_1_2: bool = true,
-        GL_VERSION_1_3: bool = true,
-        GL_VERSION_1_4: bool = true,
-        GL_VERSION_1_5: bool = true,
-        GL_VERSION_2_0: bool = true,
-        GL_VERSION_2_1: bool = true,
-        GL_VERSION_3_0: bool = true,
-        GL_VERSION_3_1: bool = true,
-        GL_VERSION_3_2: bool = true,
-        GL_VERSION_3_3: bool = true,
-        GL_3DFX_tbuffer: bool = true,
-        GL_AMD_debug_output: bool = true,
-        GL_AMD_draw_buffers_blend: bool = true,
-        GL_AMD_framebuffer_multisample_advanced: bool = true,
-        GL_AMD_framebuffer_sample_positions: bool = true,
-        GL_AMD_gpu_shader_int64: bool = true,
-        GL_AMD_interleaved_elements: bool = true,
-        GL_AMD_multi_draw_indirect: bool = true,
-        GL_AMD_name_gen_delete: bool = true,
-        GL_AMD_occlusion_query_event: bool = true,
-        GL_AMD_performance_monitor: bool = true,
-        GL_AMD_sample_positions: bool = true,
-        GL_AMD_sparse_texture: bool = true,
-        GL_AMD_stencil_operation_extended: bool = true,
-        GL_AMD_vertex_shader_tessellator: bool = true,
-        GL_APPLE_element_array: bool = true,
-        GL_APPLE_fence: bool = true,
-        GL_APPLE_flush_buffer_range: bool = true,
-        GL_APPLE_object_purgeable: bool = true,
-        GL_APPLE_texture_range: bool = true,
-        GL_APPLE_vertex_array_object: bool = true,
-        GL_APPLE_vertex_array_range: bool = true,
-        GL_APPLE_vertex_program_evaluators: bool = true,
-        GL_ARB_ES2_compatibility: bool = true,
-        GL_ARB_ES3_1_compatibility: bool = true,
-        GL_ARB_ES3_2_compatibility: bool = true,
-        GL_ARB_base_instance: bool = true,
-        GL_ARB_bindless_texture: bool = true,
-        GL_ARB_blend_func_extended: bool = true,
-        GL_ARB_buffer_storage: bool = true,
-        GL_ARB_cl_event: bool = true,
-        GL_ARB_clear_buffer_object: bool = true,
-        GL_ARB_clear_texture: bool = true,
-        GL_ARB_clip_control: bool = true,
-        GL_ARB_color_buffer_float: bool = true,
-        GL_ARB_compute_shader: bool = true,
-        GL_ARB_compute_variable_group_size: bool = true,
-        GL_ARB_copy_buffer: bool = true,
-        GL_ARB_copy_image: bool = true,
-        GL_ARB_debug_output: bool = true,
-        GL_ARB_direct_state_access: bool = true,
-        GL_ARB_draw_buffers: bool = true,
-        GL_ARB_draw_buffers_blend: bool = true,
-        GL_ARB_draw_elements_base_vertex: bool = true,
-        GL_ARB_draw_indirect: bool = true,
-        GL_ARB_draw_instanced: bool = true,
-        GL_ARB_fragment_program: bool = true,
-        GL_ARB_framebuffer_no_attachments: bool = true,
-        GL_ARB_framebuffer_object: bool = true,
-        GL_ARB_geometry_shader4: bool = true,
-        GL_ARB_get_program_binary: bool = true,
-        GL_ARB_get_texture_sub_image: bool = true,
-        GL_ARB_gl_spirv: bool = true,
-        GL_ARB_gpu_shader_fp64: bool = true,
-        GL_ARB_gpu_shader_int64: bool = true,
-        GL_ARB_imaging: bool = true,
-        GL_ARB_indirect_parameters: bool = true,
-        GL_ARB_instanced_arrays: bool = true,
-        GL_ARB_internalformat_query: bool = true,
-        GL_ARB_internalformat_query2: bool = true,
-        GL_ARB_invalidate_subdata: bool = true,
-        GL_ARB_map_buffer_range: bool = true,
-        GL_ARB_matrix_palette: bool = true,
-        GL_ARB_multi_bind: bool = true,
-        GL_ARB_multi_draw_indirect: bool = true,
-        GL_ARB_multisample: bool = true,
-        GL_ARB_multitexture: bool = true,
-        GL_ARB_occlusion_query: bool = true,
-        GL_ARB_parallel_shader_compile: bool = true,
-        GL_ARB_point_parameters: bool = true,
-        GL_ARB_polygon_offset_clamp: bool = true,
-        GL_ARB_program_interface_query: bool = true,
-        GL_ARB_provoking_vertex: bool = true,
-        GL_ARB_robustness: bool = true,
-        GL_ARB_sample_locations: bool = true,
-        GL_ARB_sample_shading: bool = true,
-        GL_ARB_sampler_objects: bool = true,
-        GL_ARB_separate_shader_objects: bool = true,
-        GL_ARB_shader_atomic_counters: bool = true,
-        GL_ARB_shader_image_load_store: bool = true,
-        GL_ARB_shader_objects: bool = true,
-        GL_ARB_shader_storage_buffer_object: bool = true,
-        GL_ARB_shader_subroutine: bool = true,
-        GL_ARB_shading_language_include: bool = true,
-        GL_ARB_sparse_buffer: bool = true,
-        GL_ARB_sparse_texture: bool = true,
-        GL_ARB_sync: bool = true,
-        GL_ARB_tessellation_shader: bool = true,
-        GL_ARB_texture_barrier: bool = true,
-        GL_ARB_texture_buffer_object: bool = true,
-        GL_ARB_texture_buffer_range: bool = true,
-        GL_ARB_texture_compression: bool = true,
-        GL_ARB_texture_multisample: bool = true,
-        GL_ARB_texture_storage: bool = true,
-        GL_ARB_texture_storage_multisample: bool = true,
-        GL_ARB_texture_view: bool = true,
-        GL_ARB_timer_query: bool = true,
-        GL_ARB_transform_feedback2: bool = true,
-        GL_ARB_transform_feedback3: bool = true,
-        GL_ARB_transform_feedback_instanced: bool = true,
-        GL_ARB_transpose_matrix: bool = true,
-        GL_ARB_uniform_buffer_object: bool = true,
-        GL_ARB_vertex_array_object: bool = true,
-        GL_ARB_vertex_attrib_64bit: bool = true,
-        GL_ARB_vertex_attrib_binding: bool = true,
-        GL_ARB_vertex_blend: bool = true,
-        GL_ARB_vertex_buffer_object: bool = true,
-        GL_ARB_vertex_program: bool = true,
-        GL_ARB_vertex_shader: bool = true,
-        GL_ARB_vertex_type_2_10_10_10_rev: bool = true,
-        GL_ARB_viewport_array: bool = true,
-        GL_ARB_window_pos: bool = true,
-        GL_ATI_draw_buffers: bool = true,
-        GL_ATI_element_array: bool = true,
-        GL_ATI_envmap_bumpmap: bool = true,
-        GL_ATI_fragment_shader: bool = true,
-        GL_ATI_map_object_buffer: bool = true,
-        GL_ATI_pn_triangles: bool = true,
-        GL_ATI_separate_stencil: bool = true,
-        GL_ATI_vertex_array_object: bool = true,
-        GL_ATI_vertex_attrib_array_object: bool = true,
-        GL_ATI_vertex_streams: bool = true,
-        GL_EXT_EGL_image_storage: bool = true,
-        GL_EXT_bindable_uniform: bool = true,
-        GL_EXT_blend_color: bool = true,
-        GL_EXT_blend_equation_separate: bool = true,
-        GL_EXT_blend_func_separate: bool = true,
-        GL_EXT_blend_minmax: bool = true,
-        GL_EXT_color_subtable: bool = true,
-        GL_EXT_compiled_vertex_array: bool = true,
-        GL_EXT_convolution: bool = true,
-        GL_EXT_coordinate_frame: bool = true,
-        GL_EXT_copy_texture: bool = true,
-        GL_EXT_cull_vertex: bool = true,
-        GL_EXT_debug_label: bool = true,
-        GL_EXT_debug_marker: bool = true,
-        GL_EXT_depth_bounds_test: bool = true,
-        GL_EXT_direct_state_access: bool = true,
-        GL_EXT_draw_buffers2: bool = true,
-        GL_EXT_draw_instanced: bool = true,
-        GL_EXT_draw_range_elements: bool = true,
-        GL_EXT_external_buffer: bool = true,
-        GL_EXT_fog_coord: bool = true,
-        GL_EXT_framebuffer_blit: bool = true,
-        GL_EXT_framebuffer_multisample: bool = true,
-        GL_EXT_framebuffer_object: bool = true,
-        GL_EXT_geometry_shader4: bool = true,
-        GL_EXT_gpu_program_parameters: bool = true,
-        GL_EXT_gpu_shader4: bool = true,
-        GL_EXT_histogram: bool = true,
-        GL_EXT_index_func: bool = true,
-        GL_EXT_index_material: bool = true,
-        GL_EXT_light_texture: bool = true,
-        GL_EXT_memory_object: bool = true,
-        GL_EXT_memory_object_fd: bool = true,
-        GL_EXT_memory_object_win32: bool = true,
-        GL_EXT_multi_draw_arrays: bool = true,
-        GL_EXT_multisample: bool = true,
-        GL_EXT_paletted_texture: bool = true,
-        GL_EXT_pixel_transform: bool = true,
-        GL_EXT_point_parameters: bool = true,
-        GL_EXT_polygon_offset: bool = true,
-        GL_EXT_polygon_offset_clamp: bool = true,
-        GL_EXT_provoking_vertex: bool = true,
-        GL_EXT_raster_multisample: bool = true,
-        GL_EXT_secondary_color: bool = true,
-        GL_EXT_semaphore: bool = true,
-        GL_EXT_semaphore_fd: bool = true,
-        GL_EXT_semaphore_win32: bool = true,
-        GL_EXT_separate_shader_objects: bool = true,
-        GL_EXT_shader_framebuffer_fetch_non_coherent: bool = true,
-        GL_EXT_shader_image_load_store: bool = true,
-        GL_EXT_stencil_clear_tag: bool = true,
-        GL_EXT_stencil_two_side: bool = true,
-        GL_EXT_subtexture: bool = true,
-        GL_EXT_texture3D: bool = true,
-        GL_EXT_texture_array: bool = true,
-        GL_EXT_texture_buffer_object: bool = true,
-        GL_EXT_texture_integer: bool = true,
-        GL_EXT_texture_object: bool = true,
-        GL_EXT_texture_perturb_normal: bool = true,
-        GL_EXT_timer_query: bool = true,
-        GL_EXT_transform_feedback: bool = true,
-        GL_EXT_vertex_array: bool = true,
-        GL_EXT_vertex_attrib_64bit: bool = true,
-        GL_EXT_vertex_shader: bool = true,
-        GL_EXT_vertex_weighting: bool = true,
-        GL_EXT_win32_keyed_mutex: bool = true,
-        GL_EXT_window_rectangles: bool = true,
-        GL_EXT_x11_sync_object: bool = true,
-        GL_GREMEDY_frame_terminator: bool = true,
-        GL_GREMEDY_string_marker: bool = true,
-        GL_HP_image_transform: bool = true,
-        GL_IBM_multimode_draw_arrays: bool = true,
-        GL_IBM_static_data: bool = true,
-        GL_IBM_vertex_array_lists: bool = true,
-        GL_INGR_blend_func_separate: bool = true,
-        GL_INTEL_framebuffer_CMAA: bool = true,
-        GL_INTEL_map_texture: bool = true,
-        GL_INTEL_parallel_arrays: bool = true,
-        GL_INTEL_performance_query: bool = true,
-        GL_KHR_blend_equation_advanced: bool = true,
-        GL_KHR_debug: bool = true,
-        GL_KHR_parallel_shader_compile: bool = true,
-        GL_KHR_robustness: bool = true,
-        GL_MESA_framebuffer_flip_y: bool = true,
-        GL_MESA_resize_buffers: bool = true,
-        GL_MESA_window_pos: bool = true,
-        GL_NVX_conditional_render: bool = true,
-        GL_NVX_gpu_multicast2: bool = true,
-        GL_NVX_linked_gpu_multicast: bool = true,
-        GL_NVX_progress_fence: bool = true,
-        GL_NV_alpha_to_coverage_dither_control: bool = true,
-        GL_NV_bindless_multi_draw_indirect: bool = true,
-        GL_NV_bindless_multi_draw_indirect_count: bool = true,
-        GL_NV_bindless_texture: bool = true,
-        GL_NV_blend_equation_advanced: bool = true,
-        GL_NV_clip_space_w_scaling: bool = true,
-        GL_NV_command_list: bool = true,
-        GL_NV_conditional_render: bool = true,
-        GL_NV_conservative_raster: bool = true,
-        GL_NV_conservative_raster_dilate: bool = true,
-        GL_NV_conservative_raster_pre_snap_triangles: bool = true,
-        GL_NV_copy_image: bool = true,
-        GL_NV_depth_buffer_float: bool = true,
-        GL_NV_draw_texture: bool = true,
-        GL_NV_draw_vulkan_image: bool = true,
-        GL_NV_evaluators: bool = true,
-        GL_NV_explicit_multisample: bool = true,
-        GL_NV_fence: bool = true,
-        GL_NV_fragment_coverage_to_color: bool = true,
-        GL_NV_fragment_program: bool = true,
-        GL_NV_framebuffer_mixed_samples: bool = true,
-        GL_NV_framebuffer_multisample_coverage: bool = true,
-        GL_NV_geometry_program4: bool = true,
-        GL_NV_gpu_multicast: bool = true,
-        GL_NV_gpu_program4: bool = true,
-        GL_NV_gpu_program5: bool = true,
-        GL_NV_gpu_shader5: bool = true,
-        GL_NV_half_float: bool = true,
-        GL_NV_internalformat_sample_query: bool = true,
-        GL_NV_memory_attachment: bool = true,
-        GL_NV_memory_object_sparse: bool = true,
-        GL_NV_mesh_shader: bool = true,
-        GL_NV_occlusion_query: bool = true,
-        GL_NV_parameter_buffer_object: bool = true,
-        GL_NV_path_rendering: bool = true,
-        GL_NV_pixel_data_range: bool = true,
-        GL_NV_point_sprite: bool = true,
-        GL_NV_present_video: bool = true,
-        GL_NV_primitive_restart: bool = true,
-        GL_NV_query_resource: bool = true,
-        GL_NV_query_resource_tag: bool = true,
-        GL_NV_register_combiners: bool = true,
-        GL_NV_register_combiners2: bool = true,
-        GL_NV_sample_locations: bool = true,
-        GL_NV_scissor_exclusive: bool = true,
-        GL_NV_shader_buffer_load: bool = true,
-        GL_NV_shading_rate_image: bool = true,
-        GL_NV_texture_barrier: bool = true,
-        GL_NV_texture_multisample: bool = true,
-        GL_NV_timeline_semaphore: bool = true,
-        GL_NV_transform_feedback: bool = true,
-        GL_NV_transform_feedback2: bool = true,
-        GL_NV_vdpau_interop: bool = true,
-        GL_NV_vdpau_interop2: bool = true,
-        GL_NV_vertex_array_range: bool = true,
-        GL_NV_vertex_attrib_integer_64bit: bool = true,
-        GL_NV_vertex_buffer_unified_memory: bool = true,
-        GL_NV_vertex_program: bool = true,
-        GL_NV_vertex_program4: bool = true,
-        GL_NV_video_capture: bool = true,
-        GL_NV_viewport_swizzle: bool = true,
-        GL_OES_byte_coordinates: bool = true,
-        GL_OES_fixed_point: bool = true,
-        GL_OES_query_matrix: bool = true,
-        GL_OES_single_precision: bool = true,
-        GL_OVR_multiview: bool = true,
-        GL_PGI_misc_hints: bool = true,
-        GL_SGIS_detail_texture: bool = true,
-        GL_SGIS_fog_function: bool = true,
-        GL_SGIS_multisample: bool = true,
-        GL_SGIS_pixel_texture: bool = true,
-        GL_SGIS_point_parameters: bool = true,
-        GL_SGIS_sharpen_texture: bool = true,
-        GL_SGIS_texture4D: bool = true,
-        GL_SGIS_texture_color_mask: bool = true,
-        GL_SGIS_texture_filter4: bool = true,
-        GL_SGIX_async: bool = true,
-        GL_SGIX_flush_raster: bool = true,
-        GL_SGIX_fragment_lighting: bool = true,
-        GL_SGIX_framezoom: bool = true,
-        GL_SGIX_igloo_interface: bool = true,
-        GL_SGIX_instruments: bool = true,
-        GL_SGIX_list_priority: bool = true,
-        GL_SGIX_pixel_texture: bool = true,
-        GL_SGIX_polynomial_ffd: bool = true,
-        GL_SGIX_reference_plane: bool = true,
-        GL_SGIX_sprite: bool = true,
-        GL_SGIX_tag_sample_buffer: bool = true,
-        GL_SGI_color_table: bool = true,
-        GL_SUNX_constant_data: bool = true,
-        GL_SUN_global_alpha: bool = true,
-        GL_SUN_mesh_array: bool = true,
-        GL_SUN_triangle_list: bool = true,
-        GL_SUN_vertex: bool = true,
+        GL_VERSION_1_0: bool = false,
+        GL_VERSION_1_1: bool = false,
+        GL_VERSION_1_2: bool = false,
+        GL_VERSION_1_3: bool = false,
+        GL_VERSION_1_4: bool = false,
+        GL_VERSION_1_5: bool = false,
+        GL_VERSION_2_0: bool = false,
+        GL_VERSION_2_1: bool = false,
+        GL_VERSION_3_0: bool = false,
+        GL_VERSION_3_1: bool = false,
+        GL_VERSION_3_2: bool = false,
+        GL_VERSION_3_3: bool = false,
+        GL_3DFX_tbuffer: bool = false,
+        GL_AMD_debug_output: bool = false,
+        GL_AMD_draw_buffers_blend: bool = false,
+        GL_AMD_framebuffer_multisample_advanced: bool = false,
+        GL_AMD_framebuffer_sample_positions: bool = false,
+        GL_AMD_gpu_shader_int64: bool = false,
+        GL_AMD_interleaved_elements: bool = false,
+        GL_AMD_multi_draw_indirect: bool = false,
+        GL_AMD_name_gen_delete: bool = false,
+        GL_AMD_occlusion_query_event: bool = false,
+        GL_AMD_performance_monitor: bool = false,
+        GL_AMD_sample_positions: bool = false,
+        GL_AMD_sparse_texture: bool = false,
+        GL_AMD_stencil_operation_extended: bool = false,
+        GL_AMD_vertex_shader_tessellator: bool = false,
+        GL_APPLE_element_array: bool = false,
+        GL_APPLE_fence: bool = false,
+        GL_APPLE_flush_buffer_range: bool = false,
+        GL_APPLE_object_purgeable: bool = false,
+        GL_APPLE_texture_range: bool = false,
+        GL_APPLE_vertex_array_object: bool = false,
+        GL_APPLE_vertex_array_range: bool = false,
+        GL_APPLE_vertex_program_evaluators: bool = false,
+        GL_ARB_ES2_compatibility: bool = false,
+        GL_ARB_ES3_1_compatibility: bool = false,
+        GL_ARB_ES3_2_compatibility: bool = false,
+        GL_ARB_base_instance: bool = false,
+        GL_ARB_bindless_texture: bool = false,
+        GL_ARB_blend_func_extended: bool = false,
+        GL_ARB_buffer_storage: bool = false,
+        GL_ARB_cl_event: bool = false,
+        GL_ARB_clear_buffer_object: bool = false,
+        GL_ARB_clear_texture: bool = false,
+        GL_ARB_clip_control: bool = false,
+        GL_ARB_color_buffer_float: bool = false,
+        GL_ARB_compute_shader: bool = false,
+        GL_ARB_compute_variable_group_size: bool = false,
+        GL_ARB_copy_buffer: bool = false,
+        GL_ARB_copy_image: bool = false,
+        GL_ARB_debug_output: bool = false,
+        GL_ARB_direct_state_access: bool = false,
+        GL_ARB_draw_buffers: bool = false,
+        GL_ARB_draw_buffers_blend: bool = false,
+        GL_ARB_draw_elements_base_vertex: bool = false,
+        GL_ARB_draw_indirect: bool = false,
+        GL_ARB_draw_instanced: bool = false,
+        GL_ARB_fragment_program: bool = false,
+        GL_ARB_framebuffer_no_attachments: bool = false,
+        GL_ARB_framebuffer_object: bool = false,
+        GL_ARB_geometry_shader4: bool = false,
+        GL_ARB_get_program_binary: bool = false,
+        GL_ARB_get_texture_sub_image: bool = false,
+        GL_ARB_gl_spirv: bool = false,
+        GL_ARB_gpu_shader_fp64: bool = false,
+        GL_ARB_gpu_shader_int64: bool = false,
+        GL_ARB_imaging: bool = false,
+        GL_ARB_indirect_parameters: bool = false,
+        GL_ARB_instanced_arrays: bool = false,
+        GL_ARB_internalformat_query: bool = false,
+        GL_ARB_internalformat_query2: bool = false,
+        GL_ARB_invalidate_subdata: bool = false,
+        GL_ARB_map_buffer_range: bool = false,
+        GL_ARB_matrix_palette: bool = false,
+        GL_ARB_multi_bind: bool = false,
+        GL_ARB_multi_draw_indirect: bool = false,
+        GL_ARB_multisample: bool = false,
+        GL_ARB_multitexture: bool = false,
+        GL_ARB_occlusion_query: bool = false,
+        GL_ARB_parallel_shader_compile: bool = false,
+        GL_ARB_point_parameters: bool = false,
+        GL_ARB_polygon_offset_clamp: bool = false,
+        GL_ARB_program_interface_query: bool = false,
+        GL_ARB_provoking_vertex: bool = false,
+        GL_ARB_robustness: bool = false,
+        GL_ARB_sample_locations: bool = false,
+        GL_ARB_sample_shading: bool = false,
+        GL_ARB_sampler_objects: bool = false,
+        GL_ARB_separate_shader_objects: bool = false,
+        GL_ARB_shader_atomic_counters: bool = false,
+        GL_ARB_shader_image_load_store: bool = false,
+        GL_ARB_shader_objects: bool = false,
+        GL_ARB_shader_storage_buffer_object: bool = false,
+        GL_ARB_shader_subroutine: bool = false,
+        GL_ARB_shading_language_include: bool = false,
+        GL_ARB_sparse_buffer: bool = false,
+        GL_ARB_sparse_texture: bool = false,
+        GL_ARB_sync: bool = false,
+        GL_ARB_tessellation_shader: bool = false,
+        GL_ARB_texture_barrier: bool = false,
+        GL_ARB_texture_buffer_object: bool = false,
+        GL_ARB_texture_buffer_range: bool = false,
+        GL_ARB_texture_compression: bool = false,
+        GL_ARB_texture_multisample: bool = false,
+        GL_ARB_texture_storage: bool = false,
+        GL_ARB_texture_storage_multisample: bool = false,
+        GL_ARB_texture_view: bool = false,
+        GL_ARB_timer_query: bool = false,
+        GL_ARB_transform_feedback2: bool = false,
+        GL_ARB_transform_feedback3: bool = false,
+        GL_ARB_transform_feedback_instanced: bool = false,
+        GL_ARB_transpose_matrix: bool = false,
+        GL_ARB_uniform_buffer_object: bool = false,
+        GL_ARB_vertex_array_object: bool = false,
+        GL_ARB_vertex_attrib_64bit: bool = false,
+        GL_ARB_vertex_attrib_binding: bool = false,
+        GL_ARB_vertex_blend: bool = false,
+        GL_ARB_vertex_buffer_object: bool = false,
+        GL_ARB_vertex_program: bool = false,
+        GL_ARB_vertex_shader: bool = false,
+        GL_ARB_vertex_type_2_10_10_10_rev: bool = false,
+        GL_ARB_viewport_array: bool = false,
+        GL_ARB_window_pos: bool = false,
+        GL_ATI_draw_buffers: bool = false,
+        GL_ATI_element_array: bool = false,
+        GL_ATI_envmap_bumpmap: bool = false,
+        GL_ATI_fragment_shader: bool = false,
+        GL_ATI_map_object_buffer: bool = false,
+        GL_ATI_pn_triangles: bool = false,
+        GL_ATI_separate_stencil: bool = false,
+        GL_ATI_vertex_array_object: bool = false,
+        GL_ATI_vertex_attrib_array_object: bool = false,
+        GL_ATI_vertex_streams: bool = false,
+        GL_EXT_EGL_image_storage: bool = false,
+        GL_EXT_bindable_uniform: bool = false,
+        GL_EXT_blend_color: bool = false,
+        GL_EXT_blend_equation_separate: bool = false,
+        GL_EXT_blend_func_separate: bool = false,
+        GL_EXT_blend_minmax: bool = false,
+        GL_EXT_color_subtable: bool = false,
+        GL_EXT_compiled_vertex_array: bool = false,
+        GL_EXT_convolution: bool = false,
+        GL_EXT_coordinate_frame: bool = false,
+        GL_EXT_copy_texture: bool = false,
+        GL_EXT_cull_vertex: bool = false,
+        GL_EXT_debug_label: bool = false,
+        GL_EXT_debug_marker: bool = false,
+        GL_EXT_depth_bounds_test: bool = false,
+        GL_EXT_direct_state_access: bool = false,
+        GL_EXT_draw_buffers2: bool = false,
+        GL_EXT_draw_instanced: bool = false,
+        GL_EXT_draw_range_elements: bool = false,
+        GL_EXT_external_buffer: bool = false,
+        GL_EXT_fog_coord: bool = false,
+        GL_EXT_framebuffer_blit: bool = false,
+        GL_EXT_framebuffer_multisample: bool = false,
+        GL_EXT_framebuffer_object: bool = false,
+        GL_EXT_geometry_shader4: bool = false,
+        GL_EXT_gpu_program_parameters: bool = false,
+        GL_EXT_gpu_shader4: bool = false,
+        GL_EXT_histogram: bool = false,
+        GL_EXT_index_func: bool = false,
+        GL_EXT_index_material: bool = false,
+        GL_EXT_light_texture: bool = false,
+        GL_EXT_memory_object: bool = false,
+        GL_EXT_memory_object_fd: bool = false,
+        GL_EXT_memory_object_win32: bool = false,
+        GL_EXT_multi_draw_arrays: bool = false,
+        GL_EXT_multisample: bool = false,
+        GL_EXT_paletted_texture: bool = false,
+        GL_EXT_pixel_transform: bool = false,
+        GL_EXT_point_parameters: bool = false,
+        GL_EXT_polygon_offset: bool = false,
+        GL_EXT_polygon_offset_clamp: bool = false,
+        GL_EXT_provoking_vertex: bool = false,
+        GL_EXT_raster_multisample: bool = false,
+        GL_EXT_secondary_color: bool = false,
+        GL_EXT_semaphore: bool = false,
+        GL_EXT_semaphore_fd: bool = false,
+        GL_EXT_semaphore_win32: bool = false,
+        GL_EXT_separate_shader_objects: bool = false,
+        GL_EXT_shader_framebuffer_fetch_non_coherent: bool = false,
+        GL_EXT_shader_image_load_store: bool = false,
+        GL_EXT_stencil_clear_tag: bool = false,
+        GL_EXT_stencil_two_side: bool = false,
+        GL_EXT_subtexture: bool = false,
+        GL_EXT_texture3D: bool = false,
+        GL_EXT_texture_array: bool = false,
+        GL_EXT_texture_buffer_object: bool = false,
+        GL_EXT_texture_integer: bool = false,
+        GL_EXT_texture_object: bool = false,
+        GL_EXT_texture_perturb_normal: bool = false,
+        GL_EXT_timer_query: bool = false,
+        GL_EXT_transform_feedback: bool = false,
+        GL_EXT_vertex_array: bool = false,
+        GL_EXT_vertex_attrib_64bit: bool = false,
+        GL_EXT_vertex_shader: bool = false,
+        GL_EXT_vertex_weighting: bool = false,
+        GL_EXT_win32_keyed_mutex: bool = false,
+        GL_EXT_window_rectangles: bool = false,
+        GL_EXT_x11_sync_object: bool = false,
+        GL_GREMEDY_frame_terminator: bool = false,
+        GL_GREMEDY_string_marker: bool = false,
+        GL_HP_image_transform: bool = false,
+        GL_IBM_multimode_draw_arrays: bool = false,
+        GL_IBM_static_data: bool = false,
+        GL_IBM_vertex_array_lists: bool = false,
+        GL_INGR_blend_func_separate: bool = false,
+        GL_INTEL_framebuffer_CMAA: bool = false,
+        GL_INTEL_map_texture: bool = false,
+        GL_INTEL_parallel_arrays: bool = false,
+        GL_INTEL_performance_query: bool = false,
+        GL_KHR_blend_equation_advanced: bool = false,
+        GL_KHR_debug: bool = false,
+        GL_KHR_parallel_shader_compile: bool = false,
+        GL_KHR_robustness: bool = false,
+        GL_MESA_framebuffer_flip_y: bool = false,
+        GL_MESA_resize_buffers: bool = false,
+        GL_MESA_window_pos: bool = false,
+        GL_NVX_conditional_render: bool = false,
+        GL_NVX_gpu_multicast2: bool = false,
+        GL_NVX_linked_gpu_multicast: bool = false,
+        GL_NVX_progress_fence: bool = false,
+        GL_NV_alpha_to_coverage_dither_control: bool = false,
+        GL_NV_bindless_multi_draw_indirect: bool = false,
+        GL_NV_bindless_multi_draw_indirect_count: bool = false,
+        GL_NV_bindless_texture: bool = false,
+        GL_NV_blend_equation_advanced: bool = false,
+        GL_NV_clip_space_w_scaling: bool = false,
+        GL_NV_command_list: bool = false,
+        GL_NV_conditional_render: bool = false,
+        GL_NV_conservative_raster: bool = false,
+        GL_NV_conservative_raster_dilate: bool = false,
+        GL_NV_conservative_raster_pre_snap_triangles: bool = false,
+        GL_NV_copy_image: bool = false,
+        GL_NV_depth_buffer_float: bool = false,
+        GL_NV_draw_texture: bool = false,
+        GL_NV_draw_vulkan_image: bool = false,
+        GL_NV_evaluators: bool = false,
+        GL_NV_explicit_multisample: bool = false,
+        GL_NV_fence: bool = false,
+        GL_NV_fragment_coverage_to_color: bool = false,
+        GL_NV_fragment_program: bool = false,
+        GL_NV_framebuffer_mixed_samples: bool = false,
+        GL_NV_framebuffer_multisample_coverage: bool = false,
+        GL_NV_geometry_program4: bool = false,
+        GL_NV_gpu_multicast: bool = false,
+        GL_NV_gpu_program4: bool = false,
+        GL_NV_gpu_program5: bool = false,
+        GL_NV_gpu_shader5: bool = false,
+        GL_NV_half_float: bool = false,
+        GL_NV_internalformat_sample_query: bool = false,
+        GL_NV_memory_attachment: bool = false,
+        GL_NV_memory_object_sparse: bool = false,
+        GL_NV_mesh_shader: bool = false,
+        GL_NV_occlusion_query: bool = false,
+        GL_NV_parameter_buffer_object: bool = false,
+        GL_NV_path_rendering: bool = false,
+        GL_NV_pixel_data_range: bool = false,
+        GL_NV_point_sprite: bool = false,
+        GL_NV_present_video: bool = false,
+        GL_NV_primitive_restart: bool = false,
+        GL_NV_query_resource: bool = false,
+        GL_NV_query_resource_tag: bool = false,
+        GL_NV_register_combiners: bool = false,
+        GL_NV_register_combiners2: bool = false,
+        GL_NV_sample_locations: bool = false,
+        GL_NV_scissor_exclusive: bool = false,
+        GL_NV_shader_buffer_load: bool = false,
+        GL_NV_shading_rate_image: bool = false,
+        GL_NV_texture_barrier: bool = false,
+        GL_NV_texture_multisample: bool = false,
+        GL_NV_timeline_semaphore: bool = false,
+        GL_NV_transform_feedback: bool = false,
+        GL_NV_transform_feedback2: bool = false,
+        GL_NV_vdpau_interop: bool = false,
+        GL_NV_vdpau_interop2: bool = false,
+        GL_NV_vertex_array_range: bool = false,
+        GL_NV_vertex_attrib_integer_64bit: bool = false,
+        GL_NV_vertex_buffer_unified_memory: bool = false,
+        GL_NV_vertex_program: bool = false,
+        GL_NV_vertex_program4: bool = false,
+        GL_NV_video_capture: bool = false,
+        GL_NV_viewport_swizzle: bool = false,
+        GL_OES_byte_coordinates: bool = false,
+        GL_OES_fixed_point: bool = false,
+        GL_OES_query_matrix: bool = false,
+        GL_OES_single_precision: bool = false,
+        GL_OVR_multiview: bool = false,
+        GL_PGI_misc_hints: bool = false,
+        GL_SGIS_detail_texture: bool = false,
+        GL_SGIS_fog_function: bool = false,
+        GL_SGIS_multisample: bool = false,
+        GL_SGIS_pixel_texture: bool = false,
+        GL_SGIS_point_parameters: bool = false,
+        GL_SGIS_sharpen_texture: bool = false,
+        GL_SGIS_texture4D: bool = false,
+        GL_SGIS_texture_color_mask: bool = false,
+        GL_SGIS_texture_filter4: bool = false,
+        GL_SGIX_async: bool = false,
+        GL_SGIX_flush_raster: bool = false,
+        GL_SGIX_fragment_lighting: bool = false,
+        GL_SGIX_framezoom: bool = false,
+        GL_SGIX_igloo_interface: bool = false,
+        GL_SGIX_instruments: bool = false,
+        GL_SGIX_list_priority: bool = false,
+        GL_SGIX_pixel_texture: bool = false,
+        GL_SGIX_polynomial_ffd: bool = false,
+        GL_SGIX_reference_plane: bool = false,
+        GL_SGIX_sprite: bool = false,
+        GL_SGIX_tag_sample_buffer: bool = false,
+        GL_SGI_color_table: bool = false,
+        GL_SUNX_constant_data: bool = false,
+        GL_SUN_global_alpha: bool = false,
+        GL_SUN_mesh_array: bool = false,
+        GL_SUN_triangle_list: bool = false,
+        GL_SUN_vertex: bool = false,
     };
 
     features: Features = .{},
@@ -9918,13645 +9918,15236 @@ pub const gl = struct {
     }
 
     pub fn missingFunctionPanic() callconv(.C) noreturn {
-        @panic("This function isn't supported by the GL drivers!");
+        @panic("The gl drivers or implementation on this system don't support this function!");
     }
 
     pub fn load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        try self.load_GL_VERSION_1_0(errors, loader);
+        try self.load_GL_VERSION_1_1(errors, loader);
+        try self.load_GL_VERSION_1_2(errors, loader);
+        try self.load_GL_VERSION_1_3(errors, loader);
+        try self.load_GL_VERSION_1_4(errors, loader);
+        try self.load_GL_VERSION_1_5(errors, loader);
+        try self.load_GL_VERSION_2_0(errors, loader);
+        try self.load_GL_VERSION_2_1(errors, loader);
+        try self.load_GL_VERSION_3_0(errors, loader);
+        try self.load_GL_VERSION_3_1(errors, loader);
+        try self.load_GL_VERSION_3_2(errors, loader);
+        try self.load_GL_VERSION_3_3(errors, loader);
+        try self.load_GL_3DFX_tbuffer(errors, loader);
+        try self.load_GL_AMD_debug_output(errors, loader);
+        try self.load_GL_AMD_draw_buffers_blend(errors, loader);
+        try self.load_GL_AMD_framebuffer_multisample_advanced(errors, loader);
+        try self.load_GL_AMD_framebuffer_sample_positions(errors, loader);
+        try self.load_GL_AMD_gpu_shader_int64(errors, loader);
+        try self.load_GL_AMD_interleaved_elements(errors, loader);
+        try self.load_GL_AMD_multi_draw_indirect(errors, loader);
+        try self.load_GL_AMD_name_gen_delete(errors, loader);
+        try self.load_GL_AMD_occlusion_query_event(errors, loader);
+        try self.load_GL_AMD_performance_monitor(errors, loader);
+        try self.load_GL_AMD_sample_positions(errors, loader);
+        try self.load_GL_AMD_sparse_texture(errors, loader);
+        try self.load_GL_AMD_stencil_operation_extended(errors, loader);
+        try self.load_GL_AMD_vertex_shader_tessellator(errors, loader);
+        try self.load_GL_APPLE_element_array(errors, loader);
+        try self.load_GL_APPLE_fence(errors, loader);
+        try self.load_GL_APPLE_flush_buffer_range(errors, loader);
+        try self.load_GL_APPLE_object_purgeable(errors, loader);
+        try self.load_GL_APPLE_texture_range(errors, loader);
+        try self.load_GL_APPLE_vertex_array_object(errors, loader);
+        try self.load_GL_APPLE_vertex_array_range(errors, loader);
+        try self.load_GL_APPLE_vertex_program_evaluators(errors, loader);
+        try self.load_GL_ARB_ES2_compatibility(errors, loader);
+        try self.load_GL_ARB_ES3_1_compatibility(errors, loader);
+        try self.load_GL_ARB_ES3_2_compatibility(errors, loader);
+        try self.load_GL_ARB_base_instance(errors, loader);
+        try self.load_GL_ARB_bindless_texture(errors, loader);
+        try self.load_GL_ARB_blend_func_extended(errors, loader);
+        try self.load_GL_ARB_buffer_storage(errors, loader);
+        try self.load_GL_ARB_cl_event(errors, loader);
+        try self.load_GL_ARB_clear_buffer_object(errors, loader);
+        try self.load_GL_ARB_clear_texture(errors, loader);
+        try self.load_GL_ARB_clip_control(errors, loader);
+        try self.load_GL_ARB_color_buffer_float(errors, loader);
+        try self.load_GL_ARB_compute_shader(errors, loader);
+        try self.load_GL_ARB_compute_variable_group_size(errors, loader);
+        try self.load_GL_ARB_copy_buffer(errors, loader);
+        try self.load_GL_ARB_copy_image(errors, loader);
+        try self.load_GL_ARB_debug_output(errors, loader);
+        try self.load_GL_ARB_direct_state_access(errors, loader);
+        try self.load_GL_ARB_draw_buffers(errors, loader);
+        try self.load_GL_ARB_draw_buffers_blend(errors, loader);
+        try self.load_GL_ARB_draw_elements_base_vertex(errors, loader);
+        try self.load_GL_ARB_draw_indirect(errors, loader);
+        try self.load_GL_ARB_draw_instanced(errors, loader);
+        try self.load_GL_ARB_fragment_program(errors, loader);
+        try self.load_GL_ARB_framebuffer_no_attachments(errors, loader);
+        try self.load_GL_ARB_framebuffer_object(errors, loader);
+        try self.load_GL_ARB_geometry_shader4(errors, loader);
+        try self.load_GL_ARB_get_program_binary(errors, loader);
+        try self.load_GL_ARB_get_texture_sub_image(errors, loader);
+        try self.load_GL_ARB_gl_spirv(errors, loader);
+        try self.load_GL_ARB_gpu_shader_fp64(errors, loader);
+        try self.load_GL_ARB_gpu_shader_int64(errors, loader);
+        try self.load_GL_ARB_imaging(errors, loader);
+        try self.load_GL_ARB_indirect_parameters(errors, loader);
+        try self.load_GL_ARB_instanced_arrays(errors, loader);
+        try self.load_GL_ARB_internalformat_query(errors, loader);
+        try self.load_GL_ARB_internalformat_query2(errors, loader);
+        try self.load_GL_ARB_invalidate_subdata(errors, loader);
+        try self.load_GL_ARB_map_buffer_range(errors, loader);
+        try self.load_GL_ARB_matrix_palette(errors, loader);
+        try self.load_GL_ARB_multi_bind(errors, loader);
+        try self.load_GL_ARB_multi_draw_indirect(errors, loader);
+        try self.load_GL_ARB_multisample(errors, loader);
+        try self.load_GL_ARB_multitexture(errors, loader);
+        try self.load_GL_ARB_occlusion_query(errors, loader);
+        try self.load_GL_ARB_parallel_shader_compile(errors, loader);
+        try self.load_GL_ARB_point_parameters(errors, loader);
+        try self.load_GL_ARB_polygon_offset_clamp(errors, loader);
+        try self.load_GL_ARB_program_interface_query(errors, loader);
+        try self.load_GL_ARB_provoking_vertex(errors, loader);
+        try self.load_GL_ARB_robustness(errors, loader);
+        try self.load_GL_ARB_sample_locations(errors, loader);
+        try self.load_GL_ARB_sample_shading(errors, loader);
+        try self.load_GL_ARB_sampler_objects(errors, loader);
+        try self.load_GL_ARB_separate_shader_objects(errors, loader);
+        try self.load_GL_ARB_shader_atomic_counters(errors, loader);
+        try self.load_GL_ARB_shader_image_load_store(errors, loader);
+        try self.load_GL_ARB_shader_objects(errors, loader);
+        try self.load_GL_ARB_shader_storage_buffer_object(errors, loader);
+        try self.load_GL_ARB_shader_subroutine(errors, loader);
+        try self.load_GL_ARB_shading_language_include(errors, loader);
+        try self.load_GL_ARB_sparse_buffer(errors, loader);
+        try self.load_GL_ARB_sparse_texture(errors, loader);
+        try self.load_GL_ARB_sync(errors, loader);
+        try self.load_GL_ARB_tessellation_shader(errors, loader);
+        try self.load_GL_ARB_texture_barrier(errors, loader);
+        try self.load_GL_ARB_texture_buffer_object(errors, loader);
+        try self.load_GL_ARB_texture_buffer_range(errors, loader);
+        try self.load_GL_ARB_texture_compression(errors, loader);
+        try self.load_GL_ARB_texture_multisample(errors, loader);
+        try self.load_GL_ARB_texture_storage(errors, loader);
+        try self.load_GL_ARB_texture_storage_multisample(errors, loader);
+        try self.load_GL_ARB_texture_view(errors, loader);
+        try self.load_GL_ARB_timer_query(errors, loader);
+        try self.load_GL_ARB_transform_feedback2(errors, loader);
+        try self.load_GL_ARB_transform_feedback3(errors, loader);
+        try self.load_GL_ARB_transform_feedback_instanced(errors, loader);
+        try self.load_GL_ARB_transpose_matrix(errors, loader);
+        try self.load_GL_ARB_uniform_buffer_object(errors, loader);
+        try self.load_GL_ARB_vertex_array_object(errors, loader);
+        try self.load_GL_ARB_vertex_attrib_64bit(errors, loader);
+        try self.load_GL_ARB_vertex_attrib_binding(errors, loader);
+        try self.load_GL_ARB_vertex_blend(errors, loader);
+        try self.load_GL_ARB_vertex_buffer_object(errors, loader);
+        try self.load_GL_ARB_vertex_program(errors, loader);
+        try self.load_GL_ARB_vertex_shader(errors, loader);
+        try self.load_GL_ARB_vertex_type_2_10_10_10_rev(errors, loader);
+        try self.load_GL_ARB_viewport_array(errors, loader);
+        try self.load_GL_ARB_window_pos(errors, loader);
+        try self.load_GL_ATI_draw_buffers(errors, loader);
+        try self.load_GL_ATI_element_array(errors, loader);
+        try self.load_GL_ATI_envmap_bumpmap(errors, loader);
+        try self.load_GL_ATI_fragment_shader(errors, loader);
+        try self.load_GL_ATI_map_object_buffer(errors, loader);
+        try self.load_GL_ATI_pn_triangles(errors, loader);
+        try self.load_GL_ATI_separate_stencil(errors, loader);
+        try self.load_GL_ATI_vertex_array_object(errors, loader);
+        try self.load_GL_ATI_vertex_attrib_array_object(errors, loader);
+        try self.load_GL_ATI_vertex_streams(errors, loader);
+        try self.load_GL_EXT_EGL_image_storage(errors, loader);
+        try self.load_GL_EXT_bindable_uniform(errors, loader);
+        try self.load_GL_EXT_blend_color(errors, loader);
+        try self.load_GL_EXT_blend_equation_separate(errors, loader);
+        try self.load_GL_EXT_blend_func_separate(errors, loader);
+        try self.load_GL_EXT_blend_minmax(errors, loader);
+        try self.load_GL_EXT_color_subtable(errors, loader);
+        try self.load_GL_EXT_compiled_vertex_array(errors, loader);
+        try self.load_GL_EXT_convolution(errors, loader);
+        try self.load_GL_EXT_coordinate_frame(errors, loader);
+        try self.load_GL_EXT_copy_texture(errors, loader);
+        try self.load_GL_EXT_cull_vertex(errors, loader);
+        try self.load_GL_EXT_debug_label(errors, loader);
+        try self.load_GL_EXT_debug_marker(errors, loader);
+        try self.load_GL_EXT_depth_bounds_test(errors, loader);
+        try self.load_GL_EXT_direct_state_access(errors, loader);
+        try self.load_GL_EXT_draw_buffers2(errors, loader);
+        try self.load_GL_EXT_draw_instanced(errors, loader);
+        try self.load_GL_EXT_draw_range_elements(errors, loader);
+        try self.load_GL_EXT_external_buffer(errors, loader);
+        try self.load_GL_EXT_fog_coord(errors, loader);
+        try self.load_GL_EXT_framebuffer_blit(errors, loader);
+        try self.load_GL_EXT_framebuffer_multisample(errors, loader);
+        try self.load_GL_EXT_framebuffer_object(errors, loader);
+        try self.load_GL_EXT_geometry_shader4(errors, loader);
+        try self.load_GL_EXT_gpu_program_parameters(errors, loader);
+        try self.load_GL_EXT_gpu_shader4(errors, loader);
+        try self.load_GL_EXT_histogram(errors, loader);
+        try self.load_GL_EXT_index_func(errors, loader);
+        try self.load_GL_EXT_index_material(errors, loader);
+        try self.load_GL_EXT_light_texture(errors, loader);
+        try self.load_GL_EXT_memory_object(errors, loader);
+        try self.load_GL_EXT_memory_object_fd(errors, loader);
+        try self.load_GL_EXT_memory_object_win32(errors, loader);
+        try self.load_GL_EXT_multi_draw_arrays(errors, loader);
+        try self.load_GL_EXT_multisample(errors, loader);
+        try self.load_GL_EXT_paletted_texture(errors, loader);
+        try self.load_GL_EXT_pixel_transform(errors, loader);
+        try self.load_GL_EXT_point_parameters(errors, loader);
+        try self.load_GL_EXT_polygon_offset(errors, loader);
+        try self.load_GL_EXT_polygon_offset_clamp(errors, loader);
+        try self.load_GL_EXT_provoking_vertex(errors, loader);
+        try self.load_GL_EXT_raster_multisample(errors, loader);
+        try self.load_GL_EXT_secondary_color(errors, loader);
+        try self.load_GL_EXT_semaphore(errors, loader);
+        try self.load_GL_EXT_semaphore_fd(errors, loader);
+        try self.load_GL_EXT_semaphore_win32(errors, loader);
+        try self.load_GL_EXT_separate_shader_objects(errors, loader);
+        try self.load_GL_EXT_shader_framebuffer_fetch_non_coherent(errors, loader);
+        try self.load_GL_EXT_shader_image_load_store(errors, loader);
+        try self.load_GL_EXT_stencil_clear_tag(errors, loader);
+        try self.load_GL_EXT_stencil_two_side(errors, loader);
+        try self.load_GL_EXT_subtexture(errors, loader);
+        try self.load_GL_EXT_texture3D(errors, loader);
+        try self.load_GL_EXT_texture_array(errors, loader);
+        try self.load_GL_EXT_texture_buffer_object(errors, loader);
+        try self.load_GL_EXT_texture_integer(errors, loader);
+        try self.load_GL_EXT_texture_object(errors, loader);
+        try self.load_GL_EXT_texture_perturb_normal(errors, loader);
+        try self.load_GL_EXT_timer_query(errors, loader);
+        try self.load_GL_EXT_transform_feedback(errors, loader);
+        try self.load_GL_EXT_vertex_array(errors, loader);
+        try self.load_GL_EXT_vertex_attrib_64bit(errors, loader);
+        try self.load_GL_EXT_vertex_shader(errors, loader);
+        try self.load_GL_EXT_vertex_weighting(errors, loader);
+        try self.load_GL_EXT_win32_keyed_mutex(errors, loader);
+        try self.load_GL_EXT_window_rectangles(errors, loader);
+        try self.load_GL_EXT_x11_sync_object(errors, loader);
+        try self.load_GL_GREMEDY_frame_terminator(errors, loader);
+        try self.load_GL_GREMEDY_string_marker(errors, loader);
+        try self.load_GL_HP_image_transform(errors, loader);
+        try self.load_GL_IBM_multimode_draw_arrays(errors, loader);
+        try self.load_GL_IBM_static_data(errors, loader);
+        try self.load_GL_IBM_vertex_array_lists(errors, loader);
+        try self.load_GL_INGR_blend_func_separate(errors, loader);
+        try self.load_GL_INTEL_framebuffer_CMAA(errors, loader);
+        try self.load_GL_INTEL_map_texture(errors, loader);
+        try self.load_GL_INTEL_parallel_arrays(errors, loader);
+        try self.load_GL_INTEL_performance_query(errors, loader);
+        try self.load_GL_KHR_blend_equation_advanced(errors, loader);
+        try self.load_GL_KHR_debug(errors, loader);
+        try self.load_GL_KHR_parallel_shader_compile(errors, loader);
+        try self.load_GL_KHR_robustness(errors, loader);
+        try self.load_GL_MESA_framebuffer_flip_y(errors, loader);
+        try self.load_GL_MESA_resize_buffers(errors, loader);
+        try self.load_GL_MESA_window_pos(errors, loader);
+        try self.load_GL_NVX_conditional_render(errors, loader);
+        try self.load_GL_NVX_gpu_multicast2(errors, loader);
+        try self.load_GL_NVX_linked_gpu_multicast(errors, loader);
+        try self.load_GL_NVX_progress_fence(errors, loader);
+        try self.load_GL_NV_alpha_to_coverage_dither_control(errors, loader);
+        try self.load_GL_NV_bindless_multi_draw_indirect(errors, loader);
+        try self.load_GL_NV_bindless_multi_draw_indirect_count(errors, loader);
+        try self.load_GL_NV_bindless_texture(errors, loader);
+        try self.load_GL_NV_blend_equation_advanced(errors, loader);
+        try self.load_GL_NV_clip_space_w_scaling(errors, loader);
+        try self.load_GL_NV_command_list(errors, loader);
+        try self.load_GL_NV_conditional_render(errors, loader);
+        try self.load_GL_NV_conservative_raster(errors, loader);
+        try self.load_GL_NV_conservative_raster_dilate(errors, loader);
+        try self.load_GL_NV_conservative_raster_pre_snap_triangles(errors, loader);
+        try self.load_GL_NV_copy_image(errors, loader);
+        try self.load_GL_NV_depth_buffer_float(errors, loader);
+        try self.load_GL_NV_draw_texture(errors, loader);
+        try self.load_GL_NV_draw_vulkan_image(errors, loader);
+        try self.load_GL_NV_evaluators(errors, loader);
+        try self.load_GL_NV_explicit_multisample(errors, loader);
+        try self.load_GL_NV_fence(errors, loader);
+        try self.load_GL_NV_fragment_coverage_to_color(errors, loader);
+        try self.load_GL_NV_fragment_program(errors, loader);
+        try self.load_GL_NV_framebuffer_mixed_samples(errors, loader);
+        try self.load_GL_NV_framebuffer_multisample_coverage(errors, loader);
+        try self.load_GL_NV_geometry_program4(errors, loader);
+        try self.load_GL_NV_gpu_multicast(errors, loader);
+        try self.load_GL_NV_gpu_program4(errors, loader);
+        try self.load_GL_NV_gpu_program5(errors, loader);
+        try self.load_GL_NV_gpu_shader5(errors, loader);
+        try self.load_GL_NV_half_float(errors, loader);
+        try self.load_GL_NV_internalformat_sample_query(errors, loader);
+        try self.load_GL_NV_memory_attachment(errors, loader);
+        try self.load_GL_NV_memory_object_sparse(errors, loader);
+        try self.load_GL_NV_mesh_shader(errors, loader);
+        try self.load_GL_NV_occlusion_query(errors, loader);
+        try self.load_GL_NV_parameter_buffer_object(errors, loader);
+        try self.load_GL_NV_path_rendering(errors, loader);
+        try self.load_GL_NV_pixel_data_range(errors, loader);
+        try self.load_GL_NV_point_sprite(errors, loader);
+        try self.load_GL_NV_present_video(errors, loader);
+        try self.load_GL_NV_primitive_restart(errors, loader);
+        try self.load_GL_NV_query_resource(errors, loader);
+        try self.load_GL_NV_query_resource_tag(errors, loader);
+        try self.load_GL_NV_register_combiners(errors, loader);
+        try self.load_GL_NV_register_combiners2(errors, loader);
+        try self.load_GL_NV_sample_locations(errors, loader);
+        try self.load_GL_NV_scissor_exclusive(errors, loader);
+        try self.load_GL_NV_shader_buffer_load(errors, loader);
+        try self.load_GL_NV_shading_rate_image(errors, loader);
+        try self.load_GL_NV_texture_barrier(errors, loader);
+        try self.load_GL_NV_texture_multisample(errors, loader);
+        try self.load_GL_NV_timeline_semaphore(errors, loader);
+        try self.load_GL_NV_transform_feedback(errors, loader);
+        try self.load_GL_NV_transform_feedback2(errors, loader);
+        try self.load_GL_NV_vdpau_interop(errors, loader);
+        try self.load_GL_NV_vdpau_interop2(errors, loader);
+        try self.load_GL_NV_vertex_array_range(errors, loader);
+        try self.load_GL_NV_vertex_attrib_integer_64bit(errors, loader);
+        try self.load_GL_NV_vertex_buffer_unified_memory(errors, loader);
+        try self.load_GL_NV_vertex_program(errors, loader);
+        try self.load_GL_NV_vertex_program4(errors, loader);
+        try self.load_GL_NV_video_capture(errors, loader);
+        try self.load_GL_NV_viewport_swizzle(errors, loader);
+        try self.load_GL_OES_byte_coordinates(errors, loader);
+        try self.load_GL_OES_fixed_point(errors, loader);
+        try self.load_GL_OES_query_matrix(errors, loader);
+        try self.load_GL_OES_single_precision(errors, loader);
+        try self.load_GL_OVR_multiview(errors, loader);
+        try self.load_GL_PGI_misc_hints(errors, loader);
+        try self.load_GL_SGIS_detail_texture(errors, loader);
+        try self.load_GL_SGIS_fog_function(errors, loader);
+        try self.load_GL_SGIS_multisample(errors, loader);
+        try self.load_GL_SGIS_pixel_texture(errors, loader);
+        try self.load_GL_SGIS_point_parameters(errors, loader);
+        try self.load_GL_SGIS_sharpen_texture(errors, loader);
+        try self.load_GL_SGIS_texture4D(errors, loader);
+        try self.load_GL_SGIS_texture_color_mask(errors, loader);
+        try self.load_GL_SGIS_texture_filter4(errors, loader);
+        try self.load_GL_SGIX_async(errors, loader);
+        try self.load_GL_SGIX_flush_raster(errors, loader);
+        try self.load_GL_SGIX_fragment_lighting(errors, loader);
+        try self.load_GL_SGIX_framezoom(errors, loader);
+        try self.load_GL_SGIX_igloo_interface(errors, loader);
+        try self.load_GL_SGIX_instruments(errors, loader);
+        try self.load_GL_SGIX_list_priority(errors, loader);
+        try self.load_GL_SGIX_pixel_texture(errors, loader);
+        try self.load_GL_SGIX_polynomial_ffd(errors, loader);
+        try self.load_GL_SGIX_reference_plane(errors, loader);
+        try self.load_GL_SGIX_sprite(errors, loader);
+        try self.load_GL_SGIX_tag_sample_buffer(errors, loader);
+        try self.load_GL_SGI_color_table(errors, loader);
+        try self.load_GL_SUNX_constant_data(errors, loader);
+        try self.load_GL_SUN_global_alpha(errors, loader);
+        try self.load_GL_SUN_mesh_array(errors, loader);
+        try self.load_GL_SUN_triangle_list(errors, loader);
+        try self.load_GL_SUN_vertex(errors, loader);
+    }
+
+    fn load_GL_VERSION_1_0(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendFunc, try loader("glBlendFunc"))) |ptr| {
             self.BlendFunc = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClear, try loader("glClear"))) |ptr| {
             self.Clear = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearColor, try loader("glClearColor"))) |ptr| {
             self.ClearColor = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearDepth, try loader("glClearDepth"))) |ptr| {
             self.ClearDepth = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearStencil, try loader("glClearStencil"))) |ptr| {
             self.ClearStencil = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorMask, try loader("glColorMask"))) |ptr| {
             self.ColorMask = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCullFace, try loader("glCullFace"))) |ptr| {
             self.CullFace = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthFunc, try loader("glDepthFunc"))) |ptr| {
             self.DepthFunc = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthMask, try loader("glDepthMask"))) |ptr| {
             self.DepthMask = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRange, try loader("glDepthRange"))) |ptr| {
             self.DepthRange = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisable, try loader("glDisable"))) |ptr| {
             self.Disable = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawBuffer, try loader("glDrawBuffer"))) |ptr| {
             self.DrawBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnable, try loader("glEnable"))) |ptr| {
             self.Enable = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinish, try loader("glFinish"))) |ptr| {
             self.Finish = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFlush, try loader("glFlush"))) |ptr| {
             self.Flush = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFrontFace, try loader("glFrontFace"))) |ptr| {
             self.FrontFace = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBooleanv, try loader("glGetBooleanv"))) |ptr| {
             self.GetBooleanv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDoublev, try loader("glGetDoublev"))) |ptr| {
             self.GetDoublev = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetError, try loader("glGetError"))) |ptr| {
             self.GetError = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFloatv, try loader("glGetFloatv"))) |ptr| {
             self.GetFloatv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegerv, try loader("glGetIntegerv"))) |ptr| {
             self.GetIntegerv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetString, try loader("glGetString"))) |ptr| {
             self.GetString = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexImage, try loader("glGetTexImage"))) |ptr| {
             self.GetTexImage = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexLevelParameterfv, try loader("glGetTexLevelParameterfv"))) |ptr| {
             self.GetTexLevelParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexLevelParameteriv, try loader("glGetTexLevelParameteriv"))) |ptr| {
             self.GetTexLevelParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterfv, try loader("glGetTexParameterfv"))) |ptr| {
             self.GetTexParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameteriv, try loader("glGetTexParameteriv"))) |ptr| {
             self.GetTexParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glHint, try loader("glHint"))) |ptr| {
             self.Hint = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsEnabled, try loader("glIsEnabled"))) |ptr| {
             self.IsEnabled = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glLineWidth, try loader("glLineWidth"))) |ptr| {
             self.LineWidth = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glLogicOp, try loader("glLogicOp"))) |ptr| {
             self.LogicOp = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelStoref, try loader("glPixelStoref"))) |ptr| {
             self.PixelStoref = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelStorei, try loader("glPixelStorei"))) |ptr| {
             self.PixelStorei = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointSize, try loader("glPointSize"))) |ptr| {
             self.PointSize = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPolygonMode, try loader("glPolygonMode"))) |ptr| {
             self.PolygonMode = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glReadBuffer, try loader("glReadBuffer"))) |ptr| {
             self.ReadBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glReadPixels, try loader("glReadPixels"))) |ptr| {
             self.ReadPixels = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glScissor, try loader("glScissor"))) |ptr| {
             self.Scissor = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilFunc, try loader("glStencilFunc"))) |ptr| {
             self.StencilFunc = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilMask, try loader("glStencilMask"))) |ptr| {
             self.StencilMask = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilOp, try loader("glStencilOp"))) |ptr| {
             self.StencilOp = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage1D, try loader("glTexImage1D"))) |ptr| {
             self.TexImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage2D, try loader("glTexImage2D"))) |ptr| {
             self.TexImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterf, try loader("glTexParameterf"))) |ptr| {
             self.TexParameterf = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterfv, try loader("glTexParameterfv"))) |ptr| {
             self.TexParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameteri, try loader("glTexParameteri"))) |ptr| {
             self.TexParameteri = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameteriv, try loader("glTexParameteriv"))) |ptr| {
             self.TexParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glViewport, try loader("glViewport"))) |ptr| {
             self.Viewport = ptr;
         } else {
-            self.features.GL_VERSION_1_0 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_0 = loaded;
+    }
+    fn load_GL_VERSION_1_1(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindTexture, try loader("glBindTexture"))) |ptr| {
             self.BindTexture = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexImage1D, try loader("glCopyTexImage1D"))) |ptr| {
             self.CopyTexImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexImage2D, try loader("glCopyTexImage2D"))) |ptr| {
             self.CopyTexImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexSubImage1D, try loader("glCopyTexSubImage1D"))) |ptr| {
             self.CopyTexSubImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexSubImage2D, try loader("glCopyTexSubImage2D"))) |ptr| {
             self.CopyTexSubImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteTextures, try loader("glDeleteTextures"))) |ptr| {
             self.DeleteTextures = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawArrays, try loader("glDrawArrays"))) |ptr| {
             self.DrawArrays = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElements, try loader("glDrawElements"))) |ptr| {
             self.DrawElements = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenTextures, try loader("glGenTextures"))) |ptr| {
             self.GenTextures = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPointerv, try loader("glGetPointerv"))) |ptr| {
             self.GetPointerv = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTexture, try loader("glIsTexture"))) |ptr| {
             self.IsTexture = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPolygonOffset, try loader("glPolygonOffset"))) |ptr| {
             self.PolygonOffset = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage1D, try loader("glTexSubImage1D"))) |ptr| {
             self.TexSubImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage2D, try loader("glTexSubImage2D"))) |ptr| {
             self.TexSubImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_1 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_1 = loaded;
+    }
+    fn load_GL_VERSION_1_2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyTexSubImage3D, try loader("glCopyTexSubImage3D"))) |ptr| {
             self.CopyTexSubImage3D = ptr;
         } else {
-            self.features.GL_VERSION_1_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawRangeElements, try loader("glDrawRangeElements"))) |ptr| {
             self.DrawRangeElements = ptr;
         } else {
-            self.features.GL_VERSION_1_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage3D, try loader("glTexImage3D"))) |ptr| {
             self.TexImage3D = ptr;
         } else {
-            self.features.GL_VERSION_1_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage3D, try loader("glTexSubImage3D"))) |ptr| {
             self.TexSubImage3D = ptr;
         } else {
-            self.features.GL_VERSION_1_2 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_2 = loaded;
+    }
+    fn load_GL_VERSION_1_3(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveTexture, try loader("glActiveTexture"))) |ptr| {
             self.ActiveTexture = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexImage1D, try loader("glCompressedTexImage1D"))) |ptr| {
             self.CompressedTexImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexImage2D, try loader("glCompressedTexImage2D"))) |ptr| {
             self.CompressedTexImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexImage3D, try loader("glCompressedTexImage3D"))) |ptr| {
             self.CompressedTexImage3D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage1D, try loader("glCompressedTexSubImage1D"))) |ptr| {
             self.CompressedTexSubImage1D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage2D, try loader("glCompressedTexSubImage2D"))) |ptr| {
             self.CompressedTexSubImage2D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage3D, try loader("glCompressedTexSubImage3D"))) |ptr| {
             self.CompressedTexSubImage3D = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCompressedTexImage, try loader("glGetCompressedTexImage"))) |ptr| {
             self.GetCompressedTexImage = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSampleCoverage, try loader("glSampleCoverage"))) |ptr| {
             self.SampleCoverage = ptr;
         } else {
-            self.features.GL_VERSION_1_3 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_3 = loaded;
+    }
+    fn load_GL_VERSION_1_4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendColor, try loader("glBlendColor"))) |ptr| {
             self.BlendColor = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendEquation, try loader("glBlendEquation"))) |ptr| {
             self.BlendEquation = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendFuncSeparate, try loader("glBlendFuncSeparate"))) |ptr| {
             self.BlendFuncSeparate = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawArrays, try loader("glMultiDrawArrays"))) |ptr| {
             self.MultiDrawArrays = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElements, try loader("glMultiDrawElements"))) |ptr| {
             self.MultiDrawElements = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterf, try loader("glPointParameterf"))) |ptr| {
             self.PointParameterf = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterfv, try loader("glPointParameterfv"))) |ptr| {
             self.PointParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameteri, try loader("glPointParameteri"))) |ptr| {
             self.PointParameteri = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameteriv, try loader("glPointParameteriv"))) |ptr| {
             self.PointParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_1_4 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_4 = loaded;
+    }
+    fn load_GL_VERSION_1_5(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginQuery, try loader("glBeginQuery"))) |ptr| {
             self.BeginQuery = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBuffer, try loader("glBindBuffer"))) |ptr| {
             self.BindBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBufferData, try loader("glBufferData"))) |ptr| {
             self.BufferData = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBufferSubData, try loader("glBufferSubData"))) |ptr| {
             self.BufferSubData = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteBuffers, try loader("glDeleteBuffers"))) |ptr| {
             self.DeleteBuffers = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteQueries, try loader("glDeleteQueries"))) |ptr| {
             self.DeleteQueries = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndQuery, try loader("glEndQuery"))) |ptr| {
             self.EndQuery = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenBuffers, try loader("glGenBuffers"))) |ptr| {
             self.GenBuffers = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenQueries, try loader("glGenQueries"))) |ptr| {
             self.GenQueries = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferParameteriv, try loader("glGetBufferParameteriv"))) |ptr| {
             self.GetBufferParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferPointerv, try loader("glGetBufferPointerv"))) |ptr| {
             self.GetBufferPointerv = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferSubData, try loader("glGetBufferSubData"))) |ptr| {
             self.GetBufferSubData = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectiv, try loader("glGetQueryObjectiv"))) |ptr| {
             self.GetQueryObjectiv = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectuiv, try loader("glGetQueryObjectuiv"))) |ptr| {
             self.GetQueryObjectuiv = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryiv, try loader("glGetQueryiv"))) |ptr| {
             self.GetQueryiv = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsBuffer, try loader("glIsBuffer"))) |ptr| {
             self.IsBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsQuery, try loader("glIsQuery"))) |ptr| {
             self.IsQuery = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapBuffer, try loader("glMapBuffer"))) |ptr| {
             self.MapBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapBuffer, try loader("glUnmapBuffer"))) |ptr| {
             self.UnmapBuffer = ptr;
         } else {
-            self.features.GL_VERSION_1_5 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_1_5 = loaded;
+    }
+    fn load_GL_VERSION_2_0(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAttachShader, try loader("glAttachShader"))) |ptr| {
             self.AttachShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindAttribLocation, try loader("glBindAttribLocation"))) |ptr| {
             self.BindAttribLocation = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendEquationSeparate, try loader("glBlendEquationSeparate"))) |ptr| {
             self.BlendEquationSeparate = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompileShader, try loader("glCompileShader"))) |ptr| {
             self.CompileShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateProgram, try loader("glCreateProgram"))) |ptr| {
             self.CreateProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateShader, try loader("glCreateShader"))) |ptr| {
             self.CreateShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteProgram, try loader("glDeleteProgram"))) |ptr| {
             self.DeleteProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteShader, try loader("glDeleteShader"))) |ptr| {
             self.DeleteShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDetachShader, try loader("glDetachShader"))) |ptr| {
             self.DetachShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexAttribArray, try loader("glDisableVertexAttribArray"))) |ptr| {
             self.DisableVertexAttribArray = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawBuffers, try loader("glDrawBuffers"))) |ptr| {
             self.DrawBuffers = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexAttribArray, try loader("glEnableVertexAttribArray"))) |ptr| {
             self.EnableVertexAttribArray = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveAttrib, try loader("glGetActiveAttrib"))) |ptr| {
             self.GetActiveAttrib = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniform, try loader("glGetActiveUniform"))) |ptr| {
             self.GetActiveUniform = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetAttachedShaders, try loader("glGetAttachedShaders"))) |ptr| {
             self.GetAttachedShaders = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetAttribLocation, try loader("glGetAttribLocation"))) |ptr| {
             self.GetAttribLocation = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramInfoLog, try loader("glGetProgramInfoLog"))) |ptr| {
             self.GetProgramInfoLog = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramiv, try loader("glGetProgramiv"))) |ptr| {
             self.GetProgramiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShaderInfoLog, try loader("glGetShaderInfoLog"))) |ptr| {
             self.GetShaderInfoLog = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShaderSource, try loader("glGetShaderSource"))) |ptr| {
             self.GetShaderSource = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShaderiv, try loader("glGetShaderiv"))) |ptr| {
             self.GetShaderiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformLocation, try loader("glGetUniformLocation"))) |ptr| {
             self.GetUniformLocation = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformfv, try loader("glGetUniformfv"))) |ptr| {
             self.GetUniformfv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformiv, try loader("glGetUniformiv"))) |ptr| {
             self.GetUniformiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribPointerv, try loader("glGetVertexAttribPointerv"))) |ptr| {
             self.GetVertexAttribPointerv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribdv, try loader("glGetVertexAttribdv"))) |ptr| {
             self.GetVertexAttribdv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribfv, try loader("glGetVertexAttribfv"))) |ptr| {
             self.GetVertexAttribfv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribiv, try loader("glGetVertexAttribiv"))) |ptr| {
             self.GetVertexAttribiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsProgram, try loader("glIsProgram"))) |ptr| {
             self.IsProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsShader, try loader("glIsShader"))) |ptr| {
             self.IsShader = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glLinkProgram, try loader("glLinkProgram"))) |ptr| {
             self.LinkProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderSource, try loader("glShaderSource"))) |ptr| {
             self.ShaderSource = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilFuncSeparate, try loader("glStencilFuncSeparate"))) |ptr| {
             self.StencilFuncSeparate = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilMaskSeparate, try loader("glStencilMaskSeparate"))) |ptr| {
             self.StencilMaskSeparate = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilOpSeparate, try loader("glStencilOpSeparate"))) |ptr| {
             self.StencilOpSeparate = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1f, try loader("glUniform1f"))) |ptr| {
             self.Uniform1f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1fv, try loader("glUniform1fv"))) |ptr| {
             self.Uniform1fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i, try loader("glUniform1i"))) |ptr| {
             self.Uniform1i = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1iv, try loader("glUniform1iv"))) |ptr| {
             self.Uniform1iv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2f, try loader("glUniform2f"))) |ptr| {
             self.Uniform2f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2fv, try loader("glUniform2fv"))) |ptr| {
             self.Uniform2fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i, try loader("glUniform2i"))) |ptr| {
             self.Uniform2i = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2iv, try loader("glUniform2iv"))) |ptr| {
             self.Uniform2iv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3f, try loader("glUniform3f"))) |ptr| {
             self.Uniform3f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3fv, try loader("glUniform3fv"))) |ptr| {
             self.Uniform3fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i, try loader("glUniform3i"))) |ptr| {
             self.Uniform3i = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3iv, try loader("glUniform3iv"))) |ptr| {
             self.Uniform3iv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4f, try loader("glUniform4f"))) |ptr| {
             self.Uniform4f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4fv, try loader("glUniform4fv"))) |ptr| {
             self.Uniform4fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i, try loader("glUniform4i"))) |ptr| {
             self.Uniform4i = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4iv, try loader("glUniform4iv"))) |ptr| {
             self.Uniform4iv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2fv, try loader("glUniformMatrix2fv"))) |ptr| {
             self.UniformMatrix2fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3fv, try loader("glUniformMatrix3fv"))) |ptr| {
             self.UniformMatrix3fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4fv, try loader("glUniformMatrix4fv"))) |ptr| {
             self.UniformMatrix4fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUseProgram, try loader("glUseProgram"))) |ptr| {
             self.UseProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glValidateProgram, try loader("glValidateProgram"))) |ptr| {
             self.ValidateProgram = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1d, try loader("glVertexAttrib1d"))) |ptr| {
             self.VertexAttrib1d = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dv, try loader("glVertexAttrib1dv"))) |ptr| {
             self.VertexAttrib1dv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1f, try loader("glVertexAttrib1f"))) |ptr| {
             self.VertexAttrib1f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fv, try loader("glVertexAttrib1fv"))) |ptr| {
             self.VertexAttrib1fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1s, try loader("glVertexAttrib1s"))) |ptr| {
             self.VertexAttrib1s = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1sv, try loader("glVertexAttrib1sv"))) |ptr| {
             self.VertexAttrib1sv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2d, try loader("glVertexAttrib2d"))) |ptr| {
             self.VertexAttrib2d = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dv, try loader("glVertexAttrib2dv"))) |ptr| {
             self.VertexAttrib2dv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2f, try loader("glVertexAttrib2f"))) |ptr| {
             self.VertexAttrib2f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fv, try loader("glVertexAttrib2fv"))) |ptr| {
             self.VertexAttrib2fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2s, try loader("glVertexAttrib2s"))) |ptr| {
             self.VertexAttrib2s = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2sv, try loader("glVertexAttrib2sv"))) |ptr| {
             self.VertexAttrib2sv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3d, try loader("glVertexAttrib3d"))) |ptr| {
             self.VertexAttrib3d = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dv, try loader("glVertexAttrib3dv"))) |ptr| {
             self.VertexAttrib3dv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3f, try loader("glVertexAttrib3f"))) |ptr| {
             self.VertexAttrib3f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fv, try loader("glVertexAttrib3fv"))) |ptr| {
             self.VertexAttrib3fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3s, try loader("glVertexAttrib3s"))) |ptr| {
             self.VertexAttrib3s = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3sv, try loader("glVertexAttrib3sv"))) |ptr| {
             self.VertexAttrib3sv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nbv, try loader("glVertexAttrib4Nbv"))) |ptr| {
             self.VertexAttrib4Nbv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Niv, try loader("glVertexAttrib4Niv"))) |ptr| {
             self.VertexAttrib4Niv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nsv, try loader("glVertexAttrib4Nsv"))) |ptr| {
             self.VertexAttrib4Nsv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nub, try loader("glVertexAttrib4Nub"))) |ptr| {
             self.VertexAttrib4Nub = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nubv, try loader("glVertexAttrib4Nubv"))) |ptr| {
             self.VertexAttrib4Nubv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nuiv, try loader("glVertexAttrib4Nuiv"))) |ptr| {
             self.VertexAttrib4Nuiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4Nusv, try loader("glVertexAttrib4Nusv"))) |ptr| {
             self.VertexAttrib4Nusv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4bv, try loader("glVertexAttrib4bv"))) |ptr| {
             self.VertexAttrib4bv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4d, try loader("glVertexAttrib4d"))) |ptr| {
             self.VertexAttrib4d = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dv, try loader("glVertexAttrib4dv"))) |ptr| {
             self.VertexAttrib4dv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4f, try loader("glVertexAttrib4f"))) |ptr| {
             self.VertexAttrib4f = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fv, try loader("glVertexAttrib4fv"))) |ptr| {
             self.VertexAttrib4fv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4iv, try loader("glVertexAttrib4iv"))) |ptr| {
             self.VertexAttrib4iv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4s, try loader("glVertexAttrib4s"))) |ptr| {
             self.VertexAttrib4s = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4sv, try loader("glVertexAttrib4sv"))) |ptr| {
             self.VertexAttrib4sv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ubv, try loader("glVertexAttrib4ubv"))) |ptr| {
             self.VertexAttrib4ubv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4uiv, try loader("glVertexAttrib4uiv"))) |ptr| {
             self.VertexAttrib4uiv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4usv, try loader("glVertexAttrib4usv"))) |ptr| {
             self.VertexAttrib4usv = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribPointer, try loader("glVertexAttribPointer"))) |ptr| {
             self.VertexAttribPointer = ptr;
         } else {
-            self.features.GL_VERSION_2_0 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_2_0 = loaded;
+    }
+    fn load_GL_VERSION_2_1(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glUniformMatrix2x3fv, try loader("glUniformMatrix2x3fv"))) |ptr| {
             self.UniformMatrix2x3fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2x4fv, try loader("glUniformMatrix2x4fv"))) |ptr| {
             self.UniformMatrix2x4fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3x2fv, try loader("glUniformMatrix3x2fv"))) |ptr| {
             self.UniformMatrix3x2fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3x4fv, try loader("glUniformMatrix3x4fv"))) |ptr| {
             self.UniformMatrix3x4fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4x2fv, try loader("glUniformMatrix4x2fv"))) |ptr| {
             self.UniformMatrix4x2fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4x3fv, try loader("glUniformMatrix4x3fv"))) |ptr| {
             self.UniformMatrix4x3fv = ptr;
         } else {
-            self.features.GL_VERSION_2_1 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_2_1 = loaded;
+    }
+    fn load_GL_VERSION_3_0(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginConditionalRender, try loader("glBeginConditionalRender"))) |ptr| {
             self.BeginConditionalRender = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBeginTransformFeedback, try loader("glBeginTransformFeedback"))) |ptr| {
             self.BeginTransformFeedback = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferBase, try loader("glBindBufferBase"))) |ptr| {
             self.BindBufferBase = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferRange, try loader("glBindBufferRange"))) |ptr| {
             self.BindBufferRange = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindFragDataLocation, try loader("glBindFragDataLocation"))) |ptr| {
             self.BindFragDataLocation = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindFramebuffer, try loader("glBindFramebuffer"))) |ptr| {
             self.BindFramebuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindRenderbuffer, try loader("glBindRenderbuffer"))) |ptr| {
             self.BindRenderbuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindVertexArray, try loader("glBindVertexArray"))) |ptr| {
             self.BindVertexArray = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlitFramebuffer, try loader("glBlitFramebuffer"))) |ptr| {
             self.BlitFramebuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCheckFramebufferStatus, try loader("glCheckFramebufferStatus"))) |ptr| {
             self.CheckFramebufferStatus = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClampColor, try loader("glClampColor"))) |ptr| {
             self.ClampColor = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearBufferfi, try loader("glClearBufferfi"))) |ptr| {
             self.ClearBufferfi = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearBufferfv, try loader("glClearBufferfv"))) |ptr| {
             self.ClearBufferfv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearBufferiv, try loader("glClearBufferiv"))) |ptr| {
             self.ClearBufferiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearBufferuiv, try loader("glClearBufferuiv"))) |ptr| {
             self.ClearBufferuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorMaski, try loader("glColorMaski"))) |ptr| {
             self.ColorMaski = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteFramebuffers, try loader("glDeleteFramebuffers"))) |ptr| {
             self.DeleteFramebuffers = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteRenderbuffers, try loader("glDeleteRenderbuffers"))) |ptr| {
             self.DeleteRenderbuffers = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteVertexArrays, try loader("glDeleteVertexArrays"))) |ptr| {
             self.DeleteVertexArrays = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisablei, try loader("glDisablei"))) |ptr| {
             self.Disablei = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnablei, try loader("glEnablei"))) |ptr| {
             self.Enablei = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndConditionalRender, try loader("glEndConditionalRender"))) |ptr| {
             self.EndConditionalRender = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndTransformFeedback, try loader("glEndTransformFeedback"))) |ptr| {
             self.EndTransformFeedback = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFlushMappedBufferRange, try loader("glFlushMappedBufferRange"))) |ptr| {
             self.FlushMappedBufferRange = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferRenderbuffer, try loader("glFramebufferRenderbuffer"))) |ptr| {
             self.FramebufferRenderbuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture1D, try loader("glFramebufferTexture1D"))) |ptr| {
             self.FramebufferTexture1D = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture2D, try loader("glFramebufferTexture2D"))) |ptr| {
             self.FramebufferTexture2D = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture3D, try loader("glFramebufferTexture3D"))) |ptr| {
             self.FramebufferTexture3D = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureLayer, try loader("glFramebufferTextureLayer"))) |ptr| {
             self.FramebufferTextureLayer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFramebuffers, try loader("glGenFramebuffers"))) |ptr| {
             self.GenFramebuffers = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenRenderbuffers, try loader("glGenRenderbuffers"))) |ptr| {
             self.GenRenderbuffers = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenVertexArrays, try loader("glGenVertexArrays"))) |ptr| {
             self.GenVertexArrays = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateMipmap, try loader("glGenerateMipmap"))) |ptr| {
             self.GenerateMipmap = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBooleani_v, try loader("glGetBooleani_v"))) |ptr| {
             self.GetBooleani_v = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragDataLocation, try loader("glGetFragDataLocation"))) |ptr| {
             self.GetFragDataLocation = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferAttachmentParameteriv, try loader("glGetFramebufferAttachmentParameteriv"))) |ptr| {
             self.GetFramebufferAttachmentParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegeri_v, try loader("glGetIntegeri_v"))) |ptr| {
             self.GetIntegeri_v = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetRenderbufferParameteriv, try loader("glGetRenderbufferParameteriv"))) |ptr| {
             self.GetRenderbufferParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetStringi, try loader("glGetStringi"))) |ptr| {
             self.GetStringi = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterIiv, try loader("glGetTexParameterIiv"))) |ptr| {
             self.GetTexParameterIiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterIuiv, try loader("glGetTexParameterIuiv"))) |ptr| {
             self.GetTexParameterIuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbackVarying, try loader("glGetTransformFeedbackVarying"))) |ptr| {
             self.GetTransformFeedbackVarying = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformuiv, try loader("glGetUniformuiv"))) |ptr| {
             self.GetUniformuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribIiv, try loader("glGetVertexAttribIiv"))) |ptr| {
             self.GetVertexAttribIiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribIuiv, try loader("glGetVertexAttribIuiv"))) |ptr| {
             self.GetVertexAttribIuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsEnabledi, try loader("glIsEnabledi"))) |ptr| {
             self.IsEnabledi = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsFramebuffer, try loader("glIsFramebuffer"))) |ptr| {
             self.IsFramebuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsRenderbuffer, try loader("glIsRenderbuffer"))) |ptr| {
             self.IsRenderbuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsVertexArray, try loader("glIsVertexArray"))) |ptr| {
             self.IsVertexArray = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapBufferRange, try loader("glMapBufferRange"))) |ptr| {
             self.MapBufferRange = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorage, try loader("glRenderbufferStorage"))) |ptr| {
             self.RenderbufferStorage = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorageMultisample, try loader("glRenderbufferStorageMultisample"))) |ptr| {
             self.RenderbufferStorageMultisample = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterIiv, try loader("glTexParameterIiv"))) |ptr| {
             self.TexParameterIiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterIuiv, try loader("glTexParameterIuiv"))) |ptr| {
             self.TexParameterIuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackVaryings, try loader("glTransformFeedbackVaryings"))) |ptr| {
             self.TransformFeedbackVaryings = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui, try loader("glUniform1ui"))) |ptr| {
             self.Uniform1ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1uiv, try loader("glUniform1uiv"))) |ptr| {
             self.Uniform1uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui, try loader("glUniform2ui"))) |ptr| {
             self.Uniform2ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2uiv, try loader("glUniform2uiv"))) |ptr| {
             self.Uniform2uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui, try loader("glUniform3ui"))) |ptr| {
             self.Uniform3ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3uiv, try loader("glUniform3uiv"))) |ptr| {
             self.Uniform3uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui, try loader("glUniform4ui"))) |ptr| {
             self.Uniform4ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4uiv, try loader("glUniform4uiv"))) |ptr| {
             self.Uniform4uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1i, try loader("glVertexAttribI1i"))) |ptr| {
             self.VertexAttribI1i = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1iv, try loader("glVertexAttribI1iv"))) |ptr| {
             self.VertexAttribI1iv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1ui, try loader("glVertexAttribI1ui"))) |ptr| {
             self.VertexAttribI1ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1uiv, try loader("glVertexAttribI1uiv"))) |ptr| {
             self.VertexAttribI1uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2i, try loader("glVertexAttribI2i"))) |ptr| {
             self.VertexAttribI2i = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2iv, try loader("glVertexAttribI2iv"))) |ptr| {
             self.VertexAttribI2iv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2ui, try loader("glVertexAttribI2ui"))) |ptr| {
             self.VertexAttribI2ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2uiv, try loader("glVertexAttribI2uiv"))) |ptr| {
             self.VertexAttribI2uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3i, try loader("glVertexAttribI3i"))) |ptr| {
             self.VertexAttribI3i = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3iv, try loader("glVertexAttribI3iv"))) |ptr| {
             self.VertexAttribI3iv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3ui, try loader("glVertexAttribI3ui"))) |ptr| {
             self.VertexAttribI3ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3uiv, try loader("glVertexAttribI3uiv"))) |ptr| {
             self.VertexAttribI3uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4bv, try loader("glVertexAttribI4bv"))) |ptr| {
             self.VertexAttribI4bv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4i, try loader("glVertexAttribI4i"))) |ptr| {
             self.VertexAttribI4i = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4iv, try loader("glVertexAttribI4iv"))) |ptr| {
             self.VertexAttribI4iv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4sv, try loader("glVertexAttribI4sv"))) |ptr| {
             self.VertexAttribI4sv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4ubv, try loader("glVertexAttribI4ubv"))) |ptr| {
             self.VertexAttribI4ubv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4ui, try loader("glVertexAttribI4ui"))) |ptr| {
             self.VertexAttribI4ui = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4uiv, try loader("glVertexAttribI4uiv"))) |ptr| {
             self.VertexAttribI4uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4usv, try loader("glVertexAttribI4usv"))) |ptr| {
             self.VertexAttribI4usv = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribIPointer, try loader("glVertexAttribIPointer"))) |ptr| {
             self.VertexAttribIPointer = ptr;
         } else {
-            self.features.GL_VERSION_3_0 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_3_0 = loaded;
+    }
+    fn load_GL_VERSION_3_1(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindBufferBase, try loader("glBindBufferBase"))) |ptr| {
             self.BindBufferBase = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferRange, try loader("glBindBufferRange"))) |ptr| {
             self.BindBufferRange = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyBufferSubData, try loader("glCopyBufferSubData"))) |ptr| {
             self.CopyBufferSubData = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawArraysInstanced, try loader("glDrawArraysInstanced"))) |ptr| {
             self.DrawArraysInstanced = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstanced, try loader("glDrawElementsInstanced"))) |ptr| {
             self.DrawElementsInstanced = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformBlockName, try loader("glGetActiveUniformBlockName"))) |ptr| {
             self.GetActiveUniformBlockName = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformBlockiv, try loader("glGetActiveUniformBlockiv"))) |ptr| {
             self.GetActiveUniformBlockiv = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformName, try loader("glGetActiveUniformName"))) |ptr| {
             self.GetActiveUniformName = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformsiv, try loader("glGetActiveUniformsiv"))) |ptr| {
             self.GetActiveUniformsiv = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegeri_v, try loader("glGetIntegeri_v"))) |ptr| {
             self.GetIntegeri_v = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformBlockIndex, try loader("glGetUniformBlockIndex"))) |ptr| {
             self.GetUniformBlockIndex = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformIndices, try loader("glGetUniformIndices"))) |ptr| {
             self.GetUniformIndices = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPrimitiveRestartIndex, try loader("glPrimitiveRestartIndex"))) |ptr| {
             self.PrimitiveRestartIndex = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexBuffer, try loader("glTexBuffer"))) |ptr| {
             self.TexBuffer = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformBlockBinding, try loader("glUniformBlockBinding"))) |ptr| {
             self.UniformBlockBinding = ptr;
         } else {
-            self.features.GL_VERSION_3_1 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_3_1 = loaded;
+    }
+    fn load_GL_VERSION_3_2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClientWaitSync, try loader("glClientWaitSync"))) |ptr| {
             self.ClientWaitSync = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteSync, try loader("glDeleteSync"))) |ptr| {
             self.DeleteSync = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsBaseVertex, try loader("glDrawElementsBaseVertex"))) |ptr| {
             self.DrawElementsBaseVertex = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedBaseVertex, try loader("glDrawElementsInstancedBaseVertex"))) |ptr| {
             self.DrawElementsInstancedBaseVertex = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawRangeElementsBaseVertex, try loader("glDrawRangeElementsBaseVertex"))) |ptr| {
             self.DrawRangeElementsBaseVertex = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFenceSync, try loader("glFenceSync"))) |ptr| {
             self.FenceSync = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture, try loader("glFramebufferTexture"))) |ptr| {
             self.FramebufferTexture = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferParameteri64v, try loader("glGetBufferParameteri64v"))) |ptr| {
             self.GetBufferParameteri64v = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInteger64i_v, try loader("glGetInteger64i_v"))) |ptr| {
             self.GetInteger64i_v = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInteger64v, try loader("glGetInteger64v"))) |ptr| {
             self.GetInteger64v = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultisamplefv, try loader("glGetMultisamplefv"))) |ptr| {
             self.GetMultisamplefv = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSynciv, try loader("glGetSynciv"))) |ptr| {
             self.GetSynciv = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsSync, try loader("glIsSync"))) |ptr| {
             self.IsSync = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsBaseVertex, try loader("glMultiDrawElementsBaseVertex"))) |ptr| {
             self.MultiDrawElementsBaseVertex = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProvokingVertex, try loader("glProvokingVertex"))) |ptr| {
             self.ProvokingVertex = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSampleMaski, try loader("glSampleMaski"))) |ptr| {
             self.SampleMaski = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage2DMultisample, try loader("glTexImage2DMultisample"))) |ptr| {
             self.TexImage2DMultisample = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage3DMultisample, try loader("glTexImage3DMultisample"))) |ptr| {
             self.TexImage3DMultisample = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glWaitSync, try loader("glWaitSync"))) |ptr| {
             self.WaitSync = ptr;
         } else {
-            self.features.GL_VERSION_3_2 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_3_2 = loaded;
+    }
+    fn load_GL_VERSION_3_3(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindFragDataLocationIndexed, try loader("glBindFragDataLocationIndexed"))) |ptr| {
             self.BindFragDataLocationIndexed = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindSampler, try loader("glBindSampler"))) |ptr| {
             self.BindSampler = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteSamplers, try loader("glDeleteSamplers"))) |ptr| {
             self.DeleteSamplers = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenSamplers, try loader("glGenSamplers"))) |ptr| {
             self.GenSamplers = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragDataIndex, try loader("glGetFragDataIndex"))) |ptr| {
             self.GetFragDataIndex = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjecti64v, try loader("glGetQueryObjecti64v"))) |ptr| {
             self.GetQueryObjecti64v = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectui64v, try loader("glGetQueryObjectui64v"))) |ptr| {
             self.GetQueryObjectui64v = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterIiv, try loader("glGetSamplerParameterIiv"))) |ptr| {
             self.GetSamplerParameterIiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterIuiv, try loader("glGetSamplerParameterIuiv"))) |ptr| {
             self.GetSamplerParameterIuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterfv, try loader("glGetSamplerParameterfv"))) |ptr| {
             self.GetSamplerParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameteriv, try loader("glGetSamplerParameteriv"))) |ptr| {
             self.GetSamplerParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsSampler, try loader("glIsSampler"))) |ptr| {
             self.IsSampler = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glQueryCounter, try loader("glQueryCounter"))) |ptr| {
             self.QueryCounter = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterIiv, try loader("glSamplerParameterIiv"))) |ptr| {
             self.SamplerParameterIiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterIuiv, try loader("glSamplerParameterIuiv"))) |ptr| {
             self.SamplerParameterIuiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterf, try loader("glSamplerParameterf"))) |ptr| {
             self.SamplerParameterf = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterfv, try loader("glSamplerParameterfv"))) |ptr| {
             self.SamplerParameterfv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameteri, try loader("glSamplerParameteri"))) |ptr| {
             self.SamplerParameteri = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameteriv, try loader("glSamplerParameteriv"))) |ptr| {
             self.SamplerParameteriv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribDivisor, try loader("glVertexAttribDivisor"))) |ptr| {
             self.VertexAttribDivisor = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP1ui, try loader("glVertexAttribP1ui"))) |ptr| {
             self.VertexAttribP1ui = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP1uiv, try loader("glVertexAttribP1uiv"))) |ptr| {
             self.VertexAttribP1uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP2ui, try loader("glVertexAttribP2ui"))) |ptr| {
             self.VertexAttribP2ui = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP2uiv, try loader("glVertexAttribP2uiv"))) |ptr| {
             self.VertexAttribP2uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP3ui, try loader("glVertexAttribP3ui"))) |ptr| {
             self.VertexAttribP3ui = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP3uiv, try loader("glVertexAttribP3uiv"))) |ptr| {
             self.VertexAttribP3uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP4ui, try loader("glVertexAttribP4ui"))) |ptr| {
             self.VertexAttribP4ui = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP4uiv, try loader("glVertexAttribP4uiv"))) |ptr| {
             self.VertexAttribP4uiv = ptr;
         } else {
-            self.features.GL_VERSION_3_3 = false;
+            loaded = false;
         }
+        self.features.GL_VERSION_3_3 = loaded;
+    }
+    fn load_GL_3DFX_tbuffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTbufferMask3DFX, try loader("glTbufferMask3DFX"))) |ptr| {
             self.TbufferMask3DFX = ptr;
         } else {
-            self.features.GL_3DFX_tbuffer = false;
+            loaded = false;
         }
+        self.features.GL_3DFX_tbuffer = loaded;
+    }
+    fn load_GL_AMD_debug_output(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDebugMessageCallbackAMD, try loader("glDebugMessageCallbackAMD"))) |ptr| {
             self.DebugMessageCallbackAMD = ptr;
         } else {
-            self.features.GL_AMD_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageEnableAMD, try loader("glDebugMessageEnableAMD"))) |ptr| {
             self.DebugMessageEnableAMD = ptr;
         } else {
-            self.features.GL_AMD_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageInsertAMD, try loader("glDebugMessageInsertAMD"))) |ptr| {
             self.DebugMessageInsertAMD = ptr;
         } else {
-            self.features.GL_AMD_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDebugMessageLogAMD, try loader("glGetDebugMessageLogAMD"))) |ptr| {
             self.GetDebugMessageLogAMD = ptr;
         } else {
-            self.features.GL_AMD_debug_output = false;
+            loaded = false;
         }
+        self.features.GL_AMD_debug_output = loaded;
+    }
+    fn load_GL_AMD_draw_buffers_blend(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendEquationIndexedAMD, try loader("glBlendEquationIndexedAMD"))) |ptr| {
             self.BlendEquationIndexedAMD = ptr;
         } else {
-            self.features.GL_AMD_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendEquationSeparateIndexedAMD, try loader("glBlendEquationSeparateIndexedAMD"))) |ptr| {
             self.BlendEquationSeparateIndexedAMD = ptr;
         } else {
-            self.features.GL_AMD_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendFuncIndexedAMD, try loader("glBlendFuncIndexedAMD"))) |ptr| {
             self.BlendFuncIndexedAMD = ptr;
         } else {
-            self.features.GL_AMD_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendFuncSeparateIndexedAMD, try loader("glBlendFuncSeparateIndexedAMD"))) |ptr| {
             self.BlendFuncSeparateIndexedAMD = ptr;
         } else {
-            self.features.GL_AMD_draw_buffers_blend = false;
+            loaded = false;
         }
+        self.features.GL_AMD_draw_buffers_blend = loaded;
+    }
+    fn load_GL_AMD_framebuffer_multisample_advanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glNamedRenderbufferStorageMultisampleAdvancedAMD, try loader("glNamedRenderbufferStorageMultisampleAdvancedAMD"))) |ptr| {
             self.NamedRenderbufferStorageMultisampleAdvancedAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_multisample_advanced = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorageMultisampleAdvancedAMD, try loader("glRenderbufferStorageMultisampleAdvancedAMD"))) |ptr| {
             self.RenderbufferStorageMultisampleAdvancedAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_multisample_advanced = false;
+            loaded = false;
         }
+        self.features.GL_AMD_framebuffer_multisample_advanced = loaded;
+    }
+    fn load_GL_AMD_framebuffer_sample_positions(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferSamplePositionsfvAMD, try loader("glFramebufferSamplePositionsfvAMD"))) |ptr| {
             self.FramebufferSamplePositionsfvAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_sample_positions = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferParameterfvAMD, try loader("glGetFramebufferParameterfvAMD"))) |ptr| {
             self.GetFramebufferParameterfvAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_sample_positions = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedFramebufferParameterfvAMD, try loader("glGetNamedFramebufferParameterfvAMD"))) |ptr| {
             self.GetNamedFramebufferParameterfvAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_sample_positions = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferSamplePositionsfvAMD, try loader("glNamedFramebufferSamplePositionsfvAMD"))) |ptr| {
             self.NamedFramebufferSamplePositionsfvAMD = ptr;
         } else {
-            self.features.GL_AMD_framebuffer_sample_positions = false;
+            loaded = false;
         }
+        self.features.GL_AMD_framebuffer_sample_positions = loaded;
+    }
+    fn load_GL_AMD_gpu_shader_int64(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetUniformi64vNV, try loader("glGetUniformi64vNV"))) |ptr| {
             self.GetUniformi64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformui64vNV, try loader("glGetUniformui64vNV"))) |ptr| {
             self.GetUniformui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64NV, try loader("glProgramUniform1i64NV"))) |ptr| {
             self.ProgramUniform1i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64vNV, try loader("glProgramUniform1i64vNV"))) |ptr| {
             self.ProgramUniform1i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64NV, try loader("glProgramUniform1ui64NV"))) |ptr| {
             self.ProgramUniform1ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64vNV, try loader("glProgramUniform1ui64vNV"))) |ptr| {
             self.ProgramUniform1ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64NV, try loader("glProgramUniform2i64NV"))) |ptr| {
             self.ProgramUniform2i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64vNV, try loader("glProgramUniform2i64vNV"))) |ptr| {
             self.ProgramUniform2i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64NV, try loader("glProgramUniform2ui64NV"))) |ptr| {
             self.ProgramUniform2ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64vNV, try loader("glProgramUniform2ui64vNV"))) |ptr| {
             self.ProgramUniform2ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64NV, try loader("glProgramUniform3i64NV"))) |ptr| {
             self.ProgramUniform3i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64vNV, try loader("glProgramUniform3i64vNV"))) |ptr| {
             self.ProgramUniform3i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64NV, try loader("glProgramUniform3ui64NV"))) |ptr| {
             self.ProgramUniform3ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64vNV, try loader("glProgramUniform3ui64vNV"))) |ptr| {
             self.ProgramUniform3ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64NV, try loader("glProgramUniform4i64NV"))) |ptr| {
             self.ProgramUniform4i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64vNV, try loader("glProgramUniform4i64vNV"))) |ptr| {
             self.ProgramUniform4i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64NV, try loader("glProgramUniform4ui64NV"))) |ptr| {
             self.ProgramUniform4ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64vNV, try loader("glProgramUniform4ui64vNV"))) |ptr| {
             self.ProgramUniform4ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64NV, try loader("glUniform1i64NV"))) |ptr| {
             self.Uniform1i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64vNV, try loader("glUniform1i64vNV"))) |ptr| {
             self.Uniform1i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64NV, try loader("glUniform1ui64NV"))) |ptr| {
             self.Uniform1ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64vNV, try loader("glUniform1ui64vNV"))) |ptr| {
             self.Uniform1ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64NV, try loader("glUniform2i64NV"))) |ptr| {
             self.Uniform2i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64vNV, try loader("glUniform2i64vNV"))) |ptr| {
             self.Uniform2i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64NV, try loader("glUniform2ui64NV"))) |ptr| {
             self.Uniform2ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64vNV, try loader("glUniform2ui64vNV"))) |ptr| {
             self.Uniform2ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64NV, try loader("glUniform3i64NV"))) |ptr| {
             self.Uniform3i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64vNV, try loader("glUniform3i64vNV"))) |ptr| {
             self.Uniform3i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64NV, try loader("glUniform3ui64NV"))) |ptr| {
             self.Uniform3ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64vNV, try loader("glUniform3ui64vNV"))) |ptr| {
             self.Uniform3ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64NV, try loader("glUniform4i64NV"))) |ptr| {
             self.Uniform4i64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64vNV, try loader("glUniform4i64vNV"))) |ptr| {
             self.Uniform4i64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64NV, try loader("glUniform4ui64NV"))) |ptr| {
             self.Uniform4ui64NV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64vNV, try loader("glUniform4ui64vNV"))) |ptr| {
             self.Uniform4ui64vNV = ptr;
         } else {
-            self.features.GL_AMD_gpu_shader_int64 = false;
+            loaded = false;
         }
+        self.features.GL_AMD_gpu_shader_int64 = loaded;
+    }
+    fn load_GL_AMD_interleaved_elements(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVertexAttribParameteriAMD, try loader("glVertexAttribParameteriAMD"))) |ptr| {
             self.VertexAttribParameteriAMD = ptr;
         } else {
-            self.features.GL_AMD_interleaved_elements = false;
+            loaded = false;
         }
+        self.features.GL_AMD_interleaved_elements = loaded;
+    }
+    fn load_GL_AMD_multi_draw_indirect(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysIndirectAMD, try loader("glMultiDrawArraysIndirectAMD"))) |ptr| {
             self.MultiDrawArraysIndirectAMD = ptr;
         } else {
-            self.features.GL_AMD_multi_draw_indirect = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsIndirectAMD, try loader("glMultiDrawElementsIndirectAMD"))) |ptr| {
             self.MultiDrawElementsIndirectAMD = ptr;
         } else {
-            self.features.GL_AMD_multi_draw_indirect = false;
+            loaded = false;
         }
+        self.features.GL_AMD_multi_draw_indirect = loaded;
+    }
+    fn load_GL_AMD_name_gen_delete(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeleteNamesAMD, try loader("glDeleteNamesAMD"))) |ptr| {
             self.DeleteNamesAMD = ptr;
         } else {
-            self.features.GL_AMD_name_gen_delete = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenNamesAMD, try loader("glGenNamesAMD"))) |ptr| {
             self.GenNamesAMD = ptr;
         } else {
-            self.features.GL_AMD_name_gen_delete = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsNameAMD, try loader("glIsNameAMD"))) |ptr| {
             self.IsNameAMD = ptr;
         } else {
-            self.features.GL_AMD_name_gen_delete = false;
+            loaded = false;
         }
+        self.features.GL_AMD_name_gen_delete = loaded;
+    }
+    fn load_GL_AMD_occlusion_query_event(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glQueryObjectParameteruiAMD, try loader("glQueryObjectParameteruiAMD"))) |ptr| {
             self.QueryObjectParameteruiAMD = ptr;
         } else {
-            self.features.GL_AMD_occlusion_query_event = false;
+            loaded = false;
         }
+        self.features.GL_AMD_occlusion_query_event = loaded;
+    }
+    fn load_GL_AMD_performance_monitor(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginPerfMonitorAMD, try loader("glBeginPerfMonitorAMD"))) |ptr| {
             self.BeginPerfMonitorAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeletePerfMonitorsAMD, try loader("glDeletePerfMonitorsAMD"))) |ptr| {
             self.DeletePerfMonitorsAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndPerfMonitorAMD, try loader("glEndPerfMonitorAMD"))) |ptr| {
             self.EndPerfMonitorAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenPerfMonitorsAMD, try loader("glGenPerfMonitorsAMD"))) |ptr| {
             self.GenPerfMonitorsAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorCounterDataAMD, try loader("glGetPerfMonitorCounterDataAMD"))) |ptr| {
             self.GetPerfMonitorCounterDataAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorCounterInfoAMD, try loader("glGetPerfMonitorCounterInfoAMD"))) |ptr| {
             self.GetPerfMonitorCounterInfoAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorCounterStringAMD, try loader("glGetPerfMonitorCounterStringAMD"))) |ptr| {
             self.GetPerfMonitorCounterStringAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorCountersAMD, try loader("glGetPerfMonitorCountersAMD"))) |ptr| {
             self.GetPerfMonitorCountersAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorGroupStringAMD, try loader("glGetPerfMonitorGroupStringAMD"))) |ptr| {
             self.GetPerfMonitorGroupStringAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfMonitorGroupsAMD, try loader("glGetPerfMonitorGroupsAMD"))) |ptr| {
             self.GetPerfMonitorGroupsAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
         if (@ptrCast(?glSelectPerfMonitorCountersAMD, try loader("glSelectPerfMonitorCountersAMD"))) |ptr| {
             self.SelectPerfMonitorCountersAMD = ptr;
         } else {
-            self.features.GL_AMD_performance_monitor = false;
+            loaded = false;
         }
+        self.features.GL_AMD_performance_monitor = loaded;
+    }
+    fn load_GL_AMD_sample_positions(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSetMultisamplefvAMD, try loader("glSetMultisamplefvAMD"))) |ptr| {
             self.SetMultisamplefvAMD = ptr;
         } else {
-            self.features.GL_AMD_sample_positions = false;
+            loaded = false;
         }
+        self.features.GL_AMD_sample_positions = loaded;
+    }
+    fn load_GL_AMD_sparse_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexStorageSparseAMD, try loader("glTexStorageSparseAMD"))) |ptr| {
             self.TexStorageSparseAMD = ptr;
         } else {
-            self.features.GL_AMD_sparse_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageSparseAMD, try loader("glTextureStorageSparseAMD"))) |ptr| {
             self.TextureStorageSparseAMD = ptr;
         } else {
-            self.features.GL_AMD_sparse_texture = false;
+            loaded = false;
         }
+        self.features.GL_AMD_sparse_texture = loaded;
+    }
+    fn load_GL_AMD_stencil_operation_extended(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glStencilOpValueAMD, try loader("glStencilOpValueAMD"))) |ptr| {
             self.StencilOpValueAMD = ptr;
         } else {
-            self.features.GL_AMD_stencil_operation_extended = false;
+            loaded = false;
         }
+        self.features.GL_AMD_stencil_operation_extended = loaded;
+    }
+    fn load_GL_AMD_vertex_shader_tessellator(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTessellationFactorAMD, try loader("glTessellationFactorAMD"))) |ptr| {
             self.TessellationFactorAMD = ptr;
         } else {
-            self.features.GL_AMD_vertex_shader_tessellator = false;
+            loaded = false;
         }
         if (@ptrCast(?glTessellationModeAMD, try loader("glTessellationModeAMD"))) |ptr| {
             self.TessellationModeAMD = ptr;
         } else {
-            self.features.GL_AMD_vertex_shader_tessellator = false;
+            loaded = false;
         }
+        self.features.GL_AMD_vertex_shader_tessellator = loaded;
+    }
+    fn load_GL_APPLE_element_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawElementArrayAPPLE, try loader("glDrawElementArrayAPPLE"))) |ptr| {
             self.DrawElementArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawRangeElementArrayAPPLE, try loader("glDrawRangeElementArrayAPPLE"))) |ptr| {
             self.DrawRangeElementArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glElementPointerAPPLE, try loader("glElementPointerAPPLE"))) |ptr| {
             self.ElementPointerAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementArrayAPPLE, try loader("glMultiDrawElementArrayAPPLE"))) |ptr| {
             self.MultiDrawElementArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawRangeElementArrayAPPLE, try loader("glMultiDrawRangeElementArrayAPPLE"))) |ptr| {
             self.MultiDrawRangeElementArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_element_array = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_element_array = loaded;
+    }
+    fn load_GL_APPLE_fence(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeleteFencesAPPLE, try loader("glDeleteFencesAPPLE"))) |ptr| {
             self.DeleteFencesAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinishFenceAPPLE, try loader("glFinishFenceAPPLE"))) |ptr| {
             self.FinishFenceAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinishObjectAPPLE, try loader("glFinishObjectAPPLE"))) |ptr| {
             self.FinishObjectAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFencesAPPLE, try loader("glGenFencesAPPLE"))) |ptr| {
             self.GenFencesAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsFenceAPPLE, try loader("glIsFenceAPPLE"))) |ptr| {
             self.IsFenceAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glSetFenceAPPLE, try loader("glSetFenceAPPLE"))) |ptr| {
             self.SetFenceAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glTestFenceAPPLE, try loader("glTestFenceAPPLE"))) |ptr| {
             self.TestFenceAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glTestObjectAPPLE, try loader("glTestObjectAPPLE"))) |ptr| {
             self.TestObjectAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_fence = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_fence = loaded;
+    }
+    fn load_GL_APPLE_flush_buffer_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferParameteriAPPLE, try loader("glBufferParameteriAPPLE"))) |ptr| {
             self.BufferParameteriAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_flush_buffer_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glFlushMappedBufferRangeAPPLE, try loader("glFlushMappedBufferRangeAPPLE"))) |ptr| {
             self.FlushMappedBufferRangeAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_flush_buffer_range = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_flush_buffer_range = loaded;
+    }
+    fn load_GL_APPLE_object_purgeable(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetObjectParameterivAPPLE, try loader("glGetObjectParameterivAPPLE"))) |ptr| {
             self.GetObjectParameterivAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_object_purgeable = false;
+            loaded = false;
         }
         if (@ptrCast(?glObjectPurgeableAPPLE, try loader("glObjectPurgeableAPPLE"))) |ptr| {
             self.ObjectPurgeableAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_object_purgeable = false;
+            loaded = false;
         }
         if (@ptrCast(?glObjectUnpurgeableAPPLE, try loader("glObjectUnpurgeableAPPLE"))) |ptr| {
             self.ObjectUnpurgeableAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_object_purgeable = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_object_purgeable = loaded;
+    }
+    fn load_GL_APPLE_texture_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetTexParameterPointervAPPLE, try loader("glGetTexParameterPointervAPPLE"))) |ptr| {
             self.GetTexParameterPointervAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_texture_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureRangeAPPLE, try loader("glTextureRangeAPPLE"))) |ptr| {
             self.TextureRangeAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_texture_range = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_texture_range = loaded;
+    }
+    fn load_GL_APPLE_vertex_array_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindVertexArrayAPPLE, try loader("glBindVertexArrayAPPLE"))) |ptr| {
             self.BindVertexArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteVertexArraysAPPLE, try loader("glDeleteVertexArraysAPPLE"))) |ptr| {
             self.DeleteVertexArraysAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenVertexArraysAPPLE, try loader("glGenVertexArraysAPPLE"))) |ptr| {
             self.GenVertexArraysAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsVertexArrayAPPLE, try loader("glIsVertexArrayAPPLE"))) |ptr| {
             self.IsVertexArrayAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_object = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_vertex_array_object = loaded;
+    }
+    fn load_GL_APPLE_vertex_array_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushVertexArrayRangeAPPLE, try loader("glFlushVertexArrayRangeAPPLE"))) |ptr| {
             self.FlushVertexArrayRangeAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayParameteriAPPLE, try loader("glVertexArrayParameteriAPPLE"))) |ptr| {
             self.VertexArrayParameteriAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayRangeAPPLE, try loader("glVertexArrayRangeAPPLE"))) |ptr| {
             self.VertexArrayRangeAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_array_range = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_vertex_array_range = loaded;
+    }
+    fn load_GL_APPLE_vertex_program_evaluators(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDisableVertexAttribAPPLE, try loader("glDisableVertexAttribAPPLE"))) |ptr| {
             self.DisableVertexAttribAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexAttribAPPLE, try loader("glEnableVertexAttribAPPLE"))) |ptr| {
             self.EnableVertexAttribAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsVertexAttribEnabledAPPLE, try loader("glIsVertexAttribEnabledAPPLE"))) |ptr| {
             self.IsVertexAttribEnabledAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapVertexAttrib1dAPPLE, try loader("glMapVertexAttrib1dAPPLE"))) |ptr| {
             self.MapVertexAttrib1dAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapVertexAttrib1fAPPLE, try loader("glMapVertexAttrib1fAPPLE"))) |ptr| {
             self.MapVertexAttrib1fAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapVertexAttrib2dAPPLE, try loader("glMapVertexAttrib2dAPPLE"))) |ptr| {
             self.MapVertexAttrib2dAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapVertexAttrib2fAPPLE, try loader("glMapVertexAttrib2fAPPLE"))) |ptr| {
             self.MapVertexAttrib2fAPPLE = ptr;
         } else {
-            self.features.GL_APPLE_vertex_program_evaluators = false;
+            loaded = false;
         }
+        self.features.GL_APPLE_vertex_program_evaluators = loaded;
+    }
+    fn load_GL_ARB_ES2_compatibility(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearDepthf, try loader("glClearDepthf"))) |ptr| {
             self.ClearDepthf = ptr;
         } else {
-            self.features.GL_ARB_ES2_compatibility = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangef, try loader("glDepthRangef"))) |ptr| {
             self.DepthRangef = ptr;
         } else {
-            self.features.GL_ARB_ES2_compatibility = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShaderPrecisionFormat, try loader("glGetShaderPrecisionFormat"))) |ptr| {
             self.GetShaderPrecisionFormat = ptr;
         } else {
-            self.features.GL_ARB_ES2_compatibility = false;
+            loaded = false;
         }
         if (@ptrCast(?glReleaseShaderCompiler, try loader("glReleaseShaderCompiler"))) |ptr| {
             self.ReleaseShaderCompiler = ptr;
         } else {
-            self.features.GL_ARB_ES2_compatibility = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderBinary, try loader("glShaderBinary"))) |ptr| {
             self.ShaderBinary = ptr;
         } else {
-            self.features.GL_ARB_ES2_compatibility = false;
+            loaded = false;
         }
+        self.features.GL_ARB_ES2_compatibility = loaded;
+    }
+    fn load_GL_ARB_ES3_1_compatibility(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMemoryBarrierByRegion, try loader("glMemoryBarrierByRegion"))) |ptr| {
             self.MemoryBarrierByRegion = ptr;
         } else {
-            self.features.GL_ARB_ES3_1_compatibility = false;
+            loaded = false;
         }
+        self.features.GL_ARB_ES3_1_compatibility = loaded;
+    }
+    fn load_GL_ARB_ES3_2_compatibility(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPrimitiveBoundingBoxARB, try loader("glPrimitiveBoundingBoxARB"))) |ptr| {
             self.PrimitiveBoundingBoxARB = ptr;
         } else {
-            self.features.GL_ARB_ES3_2_compatibility = false;
+            loaded = false;
         }
+        self.features.GL_ARB_ES3_2_compatibility = loaded;
+    }
+    fn load_GL_ARB_base_instance(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawArraysInstancedBaseInstance, try loader("glDrawArraysInstancedBaseInstance"))) |ptr| {
             self.DrawArraysInstancedBaseInstance = ptr;
         } else {
-            self.features.GL_ARB_base_instance = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedBaseInstance, try loader("glDrawElementsInstancedBaseInstance"))) |ptr| {
             self.DrawElementsInstancedBaseInstance = ptr;
         } else {
-            self.features.GL_ARB_base_instance = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedBaseVertexBaseInstance, try loader("glDrawElementsInstancedBaseVertexBaseInstance"))) |ptr| {
             self.DrawElementsInstancedBaseVertexBaseInstance = ptr;
         } else {
-            self.features.GL_ARB_base_instance = false;
+            loaded = false;
         }
+        self.features.GL_ARB_base_instance = loaded;
+    }
+    fn load_GL_ARB_bindless_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetImageHandleARB, try loader("glGetImageHandleARB"))) |ptr| {
             self.GetImageHandleARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureHandleARB, try loader("glGetTextureHandleARB"))) |ptr| {
             self.GetTextureHandleARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureSamplerHandleARB, try loader("glGetTextureSamplerHandleARB"))) |ptr| {
             self.GetTextureSamplerHandleARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribLui64vARB, try loader("glGetVertexAttribLui64vARB"))) |ptr| {
             self.GetVertexAttribLui64vARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsImageHandleResidentARB, try loader("glIsImageHandleResidentARB"))) |ptr| {
             self.IsImageHandleResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTextureHandleResidentARB, try loader("glIsTextureHandleResidentARB"))) |ptr| {
             self.IsTextureHandleResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeImageHandleNonResidentARB, try loader("glMakeImageHandleNonResidentARB"))) |ptr| {
             self.MakeImageHandleNonResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeImageHandleResidentARB, try loader("glMakeImageHandleResidentARB"))) |ptr| {
             self.MakeImageHandleResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeTextureHandleNonResidentARB, try loader("glMakeTextureHandleNonResidentARB"))) |ptr| {
             self.MakeTextureHandleNonResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeTextureHandleResidentARB, try loader("glMakeTextureHandleResidentARB"))) |ptr| {
             self.MakeTextureHandleResidentARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformHandleui64ARB, try loader("glProgramUniformHandleui64ARB"))) |ptr| {
             self.ProgramUniformHandleui64ARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformHandleui64vARB, try loader("glProgramUniformHandleui64vARB"))) |ptr| {
             self.ProgramUniformHandleui64vARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformHandleui64ARB, try loader("glUniformHandleui64ARB"))) |ptr| {
             self.UniformHandleui64ARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformHandleui64vARB, try loader("glUniformHandleui64vARB"))) |ptr| {
             self.UniformHandleui64vARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1ui64ARB, try loader("glVertexAttribL1ui64ARB"))) |ptr| {
             self.VertexAttribL1ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1ui64vARB, try loader("glVertexAttribL1ui64vARB"))) |ptr| {
             self.VertexAttribL1ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_bindless_texture = false;
+            loaded = false;
         }
+        self.features.GL_ARB_bindless_texture = loaded;
+    }
+    fn load_GL_ARB_blend_func_extended(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindFragDataLocationIndexed, try loader("glBindFragDataLocationIndexed"))) |ptr| {
             self.BindFragDataLocationIndexed = ptr;
         } else {
-            self.features.GL_ARB_blend_func_extended = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragDataIndex, try loader("glGetFragDataIndex"))) |ptr| {
             self.GetFragDataIndex = ptr;
         } else {
-            self.features.GL_ARB_blend_func_extended = false;
+            loaded = false;
         }
+        self.features.GL_ARB_blend_func_extended = loaded;
+    }
+    fn load_GL_ARB_buffer_storage(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferStorage, try loader("glBufferStorage"))) |ptr| {
             self.BufferStorage = ptr;
         } else {
-            self.features.GL_ARB_buffer_storage = false;
+            loaded = false;
         }
+        self.features.GL_ARB_buffer_storage = loaded;
+    }
+    fn load_GL_ARB_cl_event(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCreateSyncFromCLeventARB, try loader("glCreateSyncFromCLeventARB"))) |ptr| {
             self.CreateSyncFromCLeventARB = ptr;
         } else {
-            self.features.GL_ARB_cl_event = false;
+            loaded = false;
         }
+        self.features.GL_ARB_cl_event = loaded;
+    }
+    fn load_GL_ARB_clear_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearBufferData, try loader("glClearBufferData"))) |ptr| {
             self.ClearBufferData = ptr;
         } else {
-            self.features.GL_ARB_clear_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearBufferSubData, try loader("glClearBufferSubData"))) |ptr| {
             self.ClearBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_clear_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_clear_buffer_object = loaded;
+    }
+    fn load_GL_ARB_clear_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearTexImage, try loader("glClearTexImage"))) |ptr| {
             self.ClearTexImage = ptr;
         } else {
-            self.features.GL_ARB_clear_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearTexSubImage, try loader("glClearTexSubImage"))) |ptr| {
             self.ClearTexSubImage = ptr;
         } else {
-            self.features.GL_ARB_clear_texture = false;
+            loaded = false;
         }
+        self.features.GL_ARB_clear_texture = loaded;
+    }
+    fn load_GL_ARB_clip_control(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClipControl, try loader("glClipControl"))) |ptr| {
             self.ClipControl = ptr;
         } else {
-            self.features.GL_ARB_clip_control = false;
+            loaded = false;
         }
+        self.features.GL_ARB_clip_control = loaded;
+    }
+    fn load_GL_ARB_color_buffer_float(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClampColorARB, try loader("glClampColorARB"))) |ptr| {
             self.ClampColorARB = ptr;
         } else {
-            self.features.GL_ARB_color_buffer_float = false;
+            loaded = false;
         }
+        self.features.GL_ARB_color_buffer_float = loaded;
+    }
+    fn load_GL_ARB_compute_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDispatchCompute, try loader("glDispatchCompute"))) |ptr| {
             self.DispatchCompute = ptr;
         } else {
-            self.features.GL_ARB_compute_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDispatchComputeIndirect, try loader("glDispatchComputeIndirect"))) |ptr| {
             self.DispatchComputeIndirect = ptr;
         } else {
-            self.features.GL_ARB_compute_shader = false;
+            loaded = false;
         }
+        self.features.GL_ARB_compute_shader = loaded;
+    }
+    fn load_GL_ARB_compute_variable_group_size(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDispatchComputeGroupSizeARB, try loader("glDispatchComputeGroupSizeARB"))) |ptr| {
             self.DispatchComputeGroupSizeARB = ptr;
         } else {
-            self.features.GL_ARB_compute_variable_group_size = false;
+            loaded = false;
         }
+        self.features.GL_ARB_compute_variable_group_size = loaded;
+    }
+    fn load_GL_ARB_copy_buffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyBufferSubData, try loader("glCopyBufferSubData"))) |ptr| {
             self.CopyBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_copy_buffer = false;
+            loaded = false;
         }
+        self.features.GL_ARB_copy_buffer = loaded;
+    }
+    fn load_GL_ARB_copy_image(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyImageSubData, try loader("glCopyImageSubData"))) |ptr| {
             self.CopyImageSubData = ptr;
         } else {
-            self.features.GL_ARB_copy_image = false;
+            loaded = false;
         }
+        self.features.GL_ARB_copy_image = loaded;
+    }
+    fn load_GL_ARB_debug_output(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDebugMessageCallbackARB, try loader("glDebugMessageCallbackARB"))) |ptr| {
             self.DebugMessageCallbackARB = ptr;
         } else {
-            self.features.GL_ARB_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageControlARB, try loader("glDebugMessageControlARB"))) |ptr| {
             self.DebugMessageControlARB = ptr;
         } else {
-            self.features.GL_ARB_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageInsertARB, try loader("glDebugMessageInsertARB"))) |ptr| {
             self.DebugMessageInsertARB = ptr;
         } else {
-            self.features.GL_ARB_debug_output = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDebugMessageLogARB, try loader("glGetDebugMessageLogARB"))) |ptr| {
             self.GetDebugMessageLogARB = ptr;
         } else {
-            self.features.GL_ARB_debug_output = false;
+            loaded = false;
         }
+        self.features.GL_ARB_debug_output = loaded;
+    }
+    fn load_GL_ARB_direct_state_access(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindTextureUnit, try loader("glBindTextureUnit"))) |ptr| {
             self.BindTextureUnit = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlitNamedFramebuffer, try loader("glBlitNamedFramebuffer"))) |ptr| {
             self.BlitNamedFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCheckNamedFramebufferStatus, try loader("glCheckNamedFramebufferStatus"))) |ptr| {
             self.CheckNamedFramebufferStatus = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedBufferData, try loader("glClearNamedBufferData"))) |ptr| {
             self.ClearNamedBufferData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedBufferSubData, try loader("glClearNamedBufferSubData"))) |ptr| {
             self.ClearNamedBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedFramebufferfi, try loader("glClearNamedFramebufferfi"))) |ptr| {
             self.ClearNamedFramebufferfi = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedFramebufferfv, try loader("glClearNamedFramebufferfv"))) |ptr| {
             self.ClearNamedFramebufferfv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedFramebufferiv, try loader("glClearNamedFramebufferiv"))) |ptr| {
             self.ClearNamedFramebufferiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedFramebufferuiv, try loader("glClearNamedFramebufferuiv"))) |ptr| {
             self.ClearNamedFramebufferuiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage1D, try loader("glCompressedTextureSubImage1D"))) |ptr| {
             self.CompressedTextureSubImage1D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage2D, try loader("glCompressedTextureSubImage2D"))) |ptr| {
             self.CompressedTextureSubImage2D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage3D, try loader("glCompressedTextureSubImage3D"))) |ptr| {
             self.CompressedTextureSubImage3D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyNamedBufferSubData, try loader("glCopyNamedBufferSubData"))) |ptr| {
             self.CopyNamedBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage1D, try loader("glCopyTextureSubImage1D"))) |ptr| {
             self.CopyTextureSubImage1D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage2D, try loader("glCopyTextureSubImage2D"))) |ptr| {
             self.CopyTextureSubImage2D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage3D, try loader("glCopyTextureSubImage3D"))) |ptr| {
             self.CopyTextureSubImage3D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateBuffers, try loader("glCreateBuffers"))) |ptr| {
             self.CreateBuffers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateFramebuffers, try loader("glCreateFramebuffers"))) |ptr| {
             self.CreateFramebuffers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateProgramPipelines, try loader("glCreateProgramPipelines"))) |ptr| {
             self.CreateProgramPipelines = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateQueries, try loader("glCreateQueries"))) |ptr| {
             self.CreateQueries = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateRenderbuffers, try loader("glCreateRenderbuffers"))) |ptr| {
             self.CreateRenderbuffers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateSamplers, try loader("glCreateSamplers"))) |ptr| {
             self.CreateSamplers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateTextures, try loader("glCreateTextures"))) |ptr| {
             self.CreateTextures = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateTransformFeedbacks, try loader("glCreateTransformFeedbacks"))) |ptr| {
             self.CreateTransformFeedbacks = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateVertexArrays, try loader("glCreateVertexArrays"))) |ptr| {
             self.CreateVertexArrays = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexArrayAttrib, try loader("glDisableVertexArrayAttrib"))) |ptr| {
             self.DisableVertexArrayAttrib = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexArrayAttrib, try loader("glEnableVertexArrayAttrib"))) |ptr| {
             self.EnableVertexArrayAttrib = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glFlushMappedNamedBufferRange, try loader("glFlushMappedNamedBufferRange"))) |ptr| {
             self.FlushMappedNamedBufferRange = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateTextureMipmap, try loader("glGenerateTextureMipmap"))) |ptr| {
             self.GenerateTextureMipmap = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCompressedTextureImage, try loader("glGetCompressedTextureImage"))) |ptr| {
             self.GetCompressedTextureImage = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferParameteri64v, try loader("glGetNamedBufferParameteri64v"))) |ptr| {
             self.GetNamedBufferParameteri64v = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferParameteriv, try loader("glGetNamedBufferParameteriv"))) |ptr| {
             self.GetNamedBufferParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferPointerv, try loader("glGetNamedBufferPointerv"))) |ptr| {
             self.GetNamedBufferPointerv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferSubData, try loader("glGetNamedBufferSubData"))) |ptr| {
             self.GetNamedBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedFramebufferAttachmentParameteriv, try loader("glGetNamedFramebufferAttachmentParameteriv"))) |ptr| {
             self.GetNamedFramebufferAttachmentParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedFramebufferParameteriv, try loader("glGetNamedFramebufferParameteriv"))) |ptr| {
             self.GetNamedFramebufferParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedRenderbufferParameteriv, try loader("glGetNamedRenderbufferParameteriv"))) |ptr| {
             self.GetNamedRenderbufferParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryBufferObjecti64v, try loader("glGetQueryBufferObjecti64v"))) |ptr| {
             self.GetQueryBufferObjecti64v = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryBufferObjectiv, try loader("glGetQueryBufferObjectiv"))) |ptr| {
             self.GetQueryBufferObjectiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryBufferObjectui64v, try loader("glGetQueryBufferObjectui64v"))) |ptr| {
             self.GetQueryBufferObjectui64v = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryBufferObjectuiv, try loader("glGetQueryBufferObjectuiv"))) |ptr| {
             self.GetQueryBufferObjectuiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureImage, try loader("glGetTextureImage"))) |ptr| {
             self.GetTextureImage = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureLevelParameterfv, try loader("glGetTextureLevelParameterfv"))) |ptr| {
             self.GetTextureLevelParameterfv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureLevelParameteriv, try loader("glGetTextureLevelParameteriv"))) |ptr| {
             self.GetTextureLevelParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterIiv, try loader("glGetTextureParameterIiv"))) |ptr| {
             self.GetTextureParameterIiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterIuiv, try loader("glGetTextureParameterIuiv"))) |ptr| {
             self.GetTextureParameterIuiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterfv, try loader("glGetTextureParameterfv"))) |ptr| {
             self.GetTextureParameterfv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameteriv, try loader("glGetTextureParameteriv"))) |ptr| {
             self.GetTextureParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbacki64_v, try loader("glGetTransformFeedbacki64_v"))) |ptr| {
             self.GetTransformFeedbacki64_v = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbacki_v, try loader("glGetTransformFeedbacki_v"))) |ptr| {
             self.GetTransformFeedbacki_v = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbackiv, try loader("glGetTransformFeedbackiv"))) |ptr| {
             self.GetTransformFeedbackiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayIndexed64iv, try loader("glGetVertexArrayIndexed64iv"))) |ptr| {
             self.GetVertexArrayIndexed64iv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayIndexediv, try loader("glGetVertexArrayIndexediv"))) |ptr| {
             self.GetVertexArrayIndexediv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayiv, try loader("glGetVertexArrayiv"))) |ptr| {
             self.GetVertexArrayiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateNamedFramebufferData, try loader("glInvalidateNamedFramebufferData"))) |ptr| {
             self.InvalidateNamedFramebufferData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateNamedFramebufferSubData, try loader("glInvalidateNamedFramebufferSubData"))) |ptr| {
             self.InvalidateNamedFramebufferSubData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapNamedBuffer, try loader("glMapNamedBuffer"))) |ptr| {
             self.MapNamedBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapNamedBufferRange, try loader("glMapNamedBufferRange"))) |ptr| {
             self.MapNamedBufferRange = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferData, try loader("glNamedBufferData"))) |ptr| {
             self.NamedBufferData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferStorage, try loader("glNamedBufferStorage"))) |ptr| {
             self.NamedBufferStorage = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferSubData, try loader("glNamedBufferSubData"))) |ptr| {
             self.NamedBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferDrawBuffer, try loader("glNamedFramebufferDrawBuffer"))) |ptr| {
             self.NamedFramebufferDrawBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferDrawBuffers, try loader("glNamedFramebufferDrawBuffers"))) |ptr| {
             self.NamedFramebufferDrawBuffers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferParameteri, try loader("glNamedFramebufferParameteri"))) |ptr| {
             self.NamedFramebufferParameteri = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferReadBuffer, try loader("glNamedFramebufferReadBuffer"))) |ptr| {
             self.NamedFramebufferReadBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferRenderbuffer, try loader("glNamedFramebufferRenderbuffer"))) |ptr| {
             self.NamedFramebufferRenderbuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTexture, try loader("glNamedFramebufferTexture"))) |ptr| {
             self.NamedFramebufferTexture = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTextureLayer, try loader("glNamedFramebufferTextureLayer"))) |ptr| {
             self.NamedFramebufferTextureLayer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedRenderbufferStorage, try loader("glNamedRenderbufferStorage"))) |ptr| {
             self.NamedRenderbufferStorage = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedRenderbufferStorageMultisample, try loader("glNamedRenderbufferStorageMultisample"))) |ptr| {
             self.NamedRenderbufferStorageMultisample = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureBuffer, try loader("glTextureBuffer"))) |ptr| {
             self.TextureBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureBufferRange, try loader("glTextureBufferRange"))) |ptr| {
             self.TextureBufferRange = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterIiv, try loader("glTextureParameterIiv"))) |ptr| {
             self.TextureParameterIiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterIuiv, try loader("glTextureParameterIuiv"))) |ptr| {
             self.TextureParameterIuiv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterf, try loader("glTextureParameterf"))) |ptr| {
             self.TextureParameterf = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterfv, try loader("glTextureParameterfv"))) |ptr| {
             self.TextureParameterfv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameteri, try loader("glTextureParameteri"))) |ptr| {
             self.TextureParameteri = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameteriv, try loader("glTextureParameteriv"))) |ptr| {
             self.TextureParameteriv = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage1D, try loader("glTextureStorage1D"))) |ptr| {
             self.TextureStorage1D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage2D, try loader("glTextureStorage2D"))) |ptr| {
             self.TextureStorage2D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage2DMultisample, try loader("glTextureStorage2DMultisample"))) |ptr| {
             self.TextureStorage2DMultisample = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage3D, try loader("glTextureStorage3D"))) |ptr| {
             self.TextureStorage3D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage3DMultisample, try loader("glTextureStorage3DMultisample"))) |ptr| {
             self.TextureStorage3DMultisample = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage1D, try loader("glTextureSubImage1D"))) |ptr| {
             self.TextureSubImage1D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage2D, try loader("glTextureSubImage2D"))) |ptr| {
             self.TextureSubImage2D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage3D, try loader("glTextureSubImage3D"))) |ptr| {
             self.TextureSubImage3D = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackBufferBase, try loader("glTransformFeedbackBufferBase"))) |ptr| {
             self.TransformFeedbackBufferBase = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackBufferRange, try loader("glTransformFeedbackBufferRange"))) |ptr| {
             self.TransformFeedbackBufferRange = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapNamedBuffer, try loader("glUnmapNamedBuffer"))) |ptr| {
             self.UnmapNamedBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayAttribBinding, try loader("glVertexArrayAttribBinding"))) |ptr| {
             self.VertexArrayAttribBinding = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayAttribFormat, try loader("glVertexArrayAttribFormat"))) |ptr| {
             self.VertexArrayAttribFormat = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayAttribIFormat, try loader("glVertexArrayAttribIFormat"))) |ptr| {
             self.VertexArrayAttribIFormat = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayAttribLFormat, try loader("glVertexArrayAttribLFormat"))) |ptr| {
             self.VertexArrayAttribLFormat = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayBindingDivisor, try loader("glVertexArrayBindingDivisor"))) |ptr| {
             self.VertexArrayBindingDivisor = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayElementBuffer, try loader("glVertexArrayElementBuffer"))) |ptr| {
             self.VertexArrayElementBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexBuffer, try loader("glVertexArrayVertexBuffer"))) |ptr| {
             self.VertexArrayVertexBuffer = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexBuffers, try loader("glVertexArrayVertexBuffers"))) |ptr| {
             self.VertexArrayVertexBuffers = ptr;
         } else {
-            self.features.GL_ARB_direct_state_access = false;
+            loaded = false;
         }
+        self.features.GL_ARB_direct_state_access = loaded;
+    }
+    fn load_GL_ARB_draw_buffers(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawBuffersARB, try loader("glDrawBuffersARB"))) |ptr| {
             self.DrawBuffersARB = ptr;
         } else {
-            self.features.GL_ARB_draw_buffers = false;
+            loaded = false;
         }
+        self.features.GL_ARB_draw_buffers = loaded;
+    }
+    fn load_GL_ARB_draw_buffers_blend(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendEquationSeparateiARB, try loader("glBlendEquationSeparateiARB"))) |ptr| {
             self.BlendEquationSeparateiARB = ptr;
         } else {
-            self.features.GL_ARB_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendEquationiARB, try loader("glBlendEquationiARB"))) |ptr| {
             self.BlendEquationiARB = ptr;
         } else {
-            self.features.GL_ARB_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendFuncSeparateiARB, try loader("glBlendFuncSeparateiARB"))) |ptr| {
             self.BlendFuncSeparateiARB = ptr;
         } else {
-            self.features.GL_ARB_draw_buffers_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendFunciARB, try loader("glBlendFunciARB"))) |ptr| {
             self.BlendFunciARB = ptr;
         } else {
-            self.features.GL_ARB_draw_buffers_blend = false;
+            loaded = false;
         }
+        self.features.GL_ARB_draw_buffers_blend = loaded;
+    }
+    fn load_GL_ARB_draw_elements_base_vertex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawElementsBaseVertex, try loader("glDrawElementsBaseVertex"))) |ptr| {
             self.DrawElementsBaseVertex = ptr;
         } else {
-            self.features.GL_ARB_draw_elements_base_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedBaseVertex, try loader("glDrawElementsInstancedBaseVertex"))) |ptr| {
             self.DrawElementsInstancedBaseVertex = ptr;
         } else {
-            self.features.GL_ARB_draw_elements_base_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawRangeElementsBaseVertex, try loader("glDrawRangeElementsBaseVertex"))) |ptr| {
             self.DrawRangeElementsBaseVertex = ptr;
         } else {
-            self.features.GL_ARB_draw_elements_base_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsBaseVertex, try loader("glMultiDrawElementsBaseVertex"))) |ptr| {
             self.MultiDrawElementsBaseVertex = ptr;
         } else {
-            self.features.GL_ARB_draw_elements_base_vertex = false;
+            loaded = false;
         }
+        self.features.GL_ARB_draw_elements_base_vertex = loaded;
+    }
+    fn load_GL_ARB_draw_indirect(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawArraysIndirect, try loader("glDrawArraysIndirect"))) |ptr| {
             self.DrawArraysIndirect = ptr;
         } else {
-            self.features.GL_ARB_draw_indirect = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsIndirect, try loader("glDrawElementsIndirect"))) |ptr| {
             self.DrawElementsIndirect = ptr;
         } else {
-            self.features.GL_ARB_draw_indirect = false;
+            loaded = false;
         }
+        self.features.GL_ARB_draw_indirect = loaded;
+    }
+    fn load_GL_ARB_draw_instanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawArraysInstancedARB, try loader("glDrawArraysInstancedARB"))) |ptr| {
             self.DrawArraysInstancedARB = ptr;
         } else {
-            self.features.GL_ARB_draw_instanced = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedARB, try loader("glDrawElementsInstancedARB"))) |ptr| {
             self.DrawElementsInstancedARB = ptr;
         } else {
-            self.features.GL_ARB_draw_instanced = false;
+            loaded = false;
         }
+        self.features.GL_ARB_draw_instanced = loaded;
+    }
+    fn load_GL_ARB_fragment_program(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindProgramARB, try loader("glBindProgramARB"))) |ptr| {
             self.BindProgramARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteProgramsARB, try loader("glDeleteProgramsARB"))) |ptr| {
             self.DeleteProgramsARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenProgramsARB, try loader("glGenProgramsARB"))) |ptr| {
             self.GenProgramsARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramEnvParameterdvARB, try loader("glGetProgramEnvParameterdvARB"))) |ptr| {
             self.GetProgramEnvParameterdvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramEnvParameterfvARB, try loader("glGetProgramEnvParameterfvARB"))) |ptr| {
             self.GetProgramEnvParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterdvARB, try loader("glGetProgramLocalParameterdvARB"))) |ptr| {
             self.GetProgramLocalParameterdvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterfvARB, try loader("glGetProgramLocalParameterfvARB"))) |ptr| {
             self.GetProgramLocalParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramStringARB, try loader("glGetProgramStringARB"))) |ptr| {
             self.GetProgramStringARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramivARB, try loader("glGetProgramivARB"))) |ptr| {
             self.GetProgramivARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsProgramARB, try loader("glIsProgramARB"))) |ptr| {
             self.IsProgramARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4dARB, try loader("glProgramEnvParameter4dARB"))) |ptr| {
             self.ProgramEnvParameter4dARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4dvARB, try loader("glProgramEnvParameter4dvARB"))) |ptr| {
             self.ProgramEnvParameter4dvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4fARB, try loader("glProgramEnvParameter4fARB"))) |ptr| {
             self.ProgramEnvParameter4fARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4fvARB, try loader("glProgramEnvParameter4fvARB"))) |ptr| {
             self.ProgramEnvParameter4fvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4dARB, try loader("glProgramLocalParameter4dARB"))) |ptr| {
             self.ProgramLocalParameter4dARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4dvARB, try loader("glProgramLocalParameter4dvARB"))) |ptr| {
             self.ProgramLocalParameter4dvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4fARB, try loader("glProgramLocalParameter4fARB"))) |ptr| {
             self.ProgramLocalParameter4fARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4fvARB, try loader("glProgramLocalParameter4fvARB"))) |ptr| {
             self.ProgramLocalParameter4fvARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramStringARB, try loader("glProgramStringARB"))) |ptr| {
             self.ProgramStringARB = ptr;
         } else {
-            self.features.GL_ARB_fragment_program = false;
+            loaded = false;
         }
+        self.features.GL_ARB_fragment_program = loaded;
+    }
+    fn load_GL_ARB_framebuffer_no_attachments(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferParameteri, try loader("glFramebufferParameteri"))) |ptr| {
             self.FramebufferParameteri = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_no_attachments = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferParameteriv, try loader("glGetFramebufferParameteriv"))) |ptr| {
             self.GetFramebufferParameteriv = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_no_attachments = false;
+            loaded = false;
         }
+        self.features.GL_ARB_framebuffer_no_attachments = loaded;
+    }
+    fn load_GL_ARB_framebuffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindFramebuffer, try loader("glBindFramebuffer"))) |ptr| {
             self.BindFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindRenderbuffer, try loader("glBindRenderbuffer"))) |ptr| {
             self.BindRenderbuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlitFramebuffer, try loader("glBlitFramebuffer"))) |ptr| {
             self.BlitFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glCheckFramebufferStatus, try loader("glCheckFramebufferStatus"))) |ptr| {
             self.CheckFramebufferStatus = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteFramebuffers, try loader("glDeleteFramebuffers"))) |ptr| {
             self.DeleteFramebuffers = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteRenderbuffers, try loader("glDeleteRenderbuffers"))) |ptr| {
             self.DeleteRenderbuffers = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferRenderbuffer, try loader("glFramebufferRenderbuffer"))) |ptr| {
             self.FramebufferRenderbuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture1D, try loader("glFramebufferTexture1D"))) |ptr| {
             self.FramebufferTexture1D = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture2D, try loader("glFramebufferTexture2D"))) |ptr| {
             self.FramebufferTexture2D = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture3D, try loader("glFramebufferTexture3D"))) |ptr| {
             self.FramebufferTexture3D = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureLayer, try loader("glFramebufferTextureLayer"))) |ptr| {
             self.FramebufferTextureLayer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFramebuffers, try loader("glGenFramebuffers"))) |ptr| {
             self.GenFramebuffers = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenRenderbuffers, try loader("glGenRenderbuffers"))) |ptr| {
             self.GenRenderbuffers = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateMipmap, try loader("glGenerateMipmap"))) |ptr| {
             self.GenerateMipmap = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferAttachmentParameteriv, try loader("glGetFramebufferAttachmentParameteriv"))) |ptr| {
             self.GetFramebufferAttachmentParameteriv = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetRenderbufferParameteriv, try loader("glGetRenderbufferParameteriv"))) |ptr| {
             self.GetRenderbufferParameteriv = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsFramebuffer, try loader("glIsFramebuffer"))) |ptr| {
             self.IsFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsRenderbuffer, try loader("glIsRenderbuffer"))) |ptr| {
             self.IsRenderbuffer = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorage, try loader("glRenderbufferStorage"))) |ptr| {
             self.RenderbufferStorage = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorageMultisample, try loader("glRenderbufferStorageMultisample"))) |ptr| {
             self.RenderbufferStorageMultisample = ptr;
         } else {
-            self.features.GL_ARB_framebuffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_framebuffer_object = loaded;
+    }
+    fn load_GL_ARB_geometry_shader4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferTextureARB, try loader("glFramebufferTextureARB"))) |ptr| {
             self.FramebufferTextureARB = ptr;
         } else {
-            self.features.GL_ARB_geometry_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureFaceARB, try loader("glFramebufferTextureFaceARB"))) |ptr| {
             self.FramebufferTextureFaceARB = ptr;
         } else {
-            self.features.GL_ARB_geometry_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureLayerARB, try loader("glFramebufferTextureLayerARB"))) |ptr| {
             self.FramebufferTextureLayerARB = ptr;
         } else {
-            self.features.GL_ARB_geometry_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameteriARB, try loader("glProgramParameteriARB"))) |ptr| {
             self.ProgramParameteriARB = ptr;
         } else {
-            self.features.GL_ARB_geometry_shader4 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_geometry_shader4 = loaded;
+    }
+    fn load_GL_ARB_get_program_binary(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetProgramBinary, try loader("glGetProgramBinary"))) |ptr| {
             self.GetProgramBinary = ptr;
         } else {
-            self.features.GL_ARB_get_program_binary = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramBinary, try loader("glProgramBinary"))) |ptr| {
             self.ProgramBinary = ptr;
         } else {
-            self.features.GL_ARB_get_program_binary = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameteri, try loader("glProgramParameteri"))) |ptr| {
             self.ProgramParameteri = ptr;
         } else {
-            self.features.GL_ARB_get_program_binary = false;
+            loaded = false;
         }
+        self.features.GL_ARB_get_program_binary = loaded;
+    }
+    fn load_GL_ARB_get_texture_sub_image(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetCompressedTextureSubImage, try loader("glGetCompressedTextureSubImage"))) |ptr| {
             self.GetCompressedTextureSubImage = ptr;
         } else {
-            self.features.GL_ARB_get_texture_sub_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureSubImage, try loader("glGetTextureSubImage"))) |ptr| {
             self.GetTextureSubImage = ptr;
         } else {
-            self.features.GL_ARB_get_texture_sub_image = false;
+            loaded = false;
         }
+        self.features.GL_ARB_get_texture_sub_image = loaded;
+    }
+    fn load_GL_ARB_gl_spirv(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSpecializeShaderARB, try loader("glSpecializeShaderARB"))) |ptr| {
             self.SpecializeShaderARB = ptr;
         } else {
-            self.features.GL_ARB_gl_spirv = false;
+            loaded = false;
         }
+        self.features.GL_ARB_gl_spirv = loaded;
+    }
+    fn load_GL_ARB_gpu_shader_fp64(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetUniformdv, try loader("glGetUniformdv"))) |ptr| {
             self.GetUniformdv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1d, try loader("glUniform1d"))) |ptr| {
             self.Uniform1d = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1dv, try loader("glUniform1dv"))) |ptr| {
             self.Uniform1dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2d, try loader("glUniform2d"))) |ptr| {
             self.Uniform2d = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2dv, try loader("glUniform2dv"))) |ptr| {
             self.Uniform2dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3d, try loader("glUniform3d"))) |ptr| {
             self.Uniform3d = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3dv, try loader("glUniform3dv"))) |ptr| {
             self.Uniform3dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4d, try loader("glUniform4d"))) |ptr| {
             self.Uniform4d = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4dv, try loader("glUniform4dv"))) |ptr| {
             self.Uniform4dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2dv, try loader("glUniformMatrix2dv"))) |ptr| {
             self.UniformMatrix2dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2x3dv, try loader("glUniformMatrix2x3dv"))) |ptr| {
             self.UniformMatrix2x3dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2x4dv, try loader("glUniformMatrix2x4dv"))) |ptr| {
             self.UniformMatrix2x4dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3dv, try loader("glUniformMatrix3dv"))) |ptr| {
             self.UniformMatrix3dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3x2dv, try loader("glUniformMatrix3x2dv"))) |ptr| {
             self.UniformMatrix3x2dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3x4dv, try loader("glUniformMatrix3x4dv"))) |ptr| {
             self.UniformMatrix3x4dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4dv, try loader("glUniformMatrix4dv"))) |ptr| {
             self.UniformMatrix4dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4x2dv, try loader("glUniformMatrix4x2dv"))) |ptr| {
             self.UniformMatrix4x2dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4x3dv, try loader("glUniformMatrix4x3dv"))) |ptr| {
             self.UniformMatrix4x3dv = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_fp64 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_gpu_shader_fp64 = loaded;
+    }
+    fn load_GL_ARB_gpu_shader_int64(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetUniformi64vARB, try loader("glGetUniformi64vARB"))) |ptr| {
             self.GetUniformi64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformui64vARB, try loader("glGetUniformui64vARB"))) |ptr| {
             self.GetUniformui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformi64vARB, try loader("glGetnUniformi64vARB"))) |ptr| {
             self.GetnUniformi64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformui64vARB, try loader("glGetnUniformui64vARB"))) |ptr| {
             self.GetnUniformui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64ARB, try loader("glProgramUniform1i64ARB"))) |ptr| {
             self.ProgramUniform1i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64vARB, try loader("glProgramUniform1i64vARB"))) |ptr| {
             self.ProgramUniform1i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64ARB, try loader("glProgramUniform1ui64ARB"))) |ptr| {
             self.ProgramUniform1ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64vARB, try loader("glProgramUniform1ui64vARB"))) |ptr| {
             self.ProgramUniform1ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64ARB, try loader("glProgramUniform2i64ARB"))) |ptr| {
             self.ProgramUniform2i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64vARB, try loader("glProgramUniform2i64vARB"))) |ptr| {
             self.ProgramUniform2i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64ARB, try loader("glProgramUniform2ui64ARB"))) |ptr| {
             self.ProgramUniform2ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64vARB, try loader("glProgramUniform2ui64vARB"))) |ptr| {
             self.ProgramUniform2ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64ARB, try loader("glProgramUniform3i64ARB"))) |ptr| {
             self.ProgramUniform3i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64vARB, try loader("glProgramUniform3i64vARB"))) |ptr| {
             self.ProgramUniform3i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64ARB, try loader("glProgramUniform3ui64ARB"))) |ptr| {
             self.ProgramUniform3ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64vARB, try loader("glProgramUniform3ui64vARB"))) |ptr| {
             self.ProgramUniform3ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64ARB, try loader("glProgramUniform4i64ARB"))) |ptr| {
             self.ProgramUniform4i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64vARB, try loader("glProgramUniform4i64vARB"))) |ptr| {
             self.ProgramUniform4i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64ARB, try loader("glProgramUniform4ui64ARB"))) |ptr| {
             self.ProgramUniform4ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64vARB, try loader("glProgramUniform4ui64vARB"))) |ptr| {
             self.ProgramUniform4ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64ARB, try loader("glUniform1i64ARB"))) |ptr| {
             self.Uniform1i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64vARB, try loader("glUniform1i64vARB"))) |ptr| {
             self.Uniform1i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64ARB, try loader("glUniform1ui64ARB"))) |ptr| {
             self.Uniform1ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64vARB, try loader("glUniform1ui64vARB"))) |ptr| {
             self.Uniform1ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64ARB, try loader("glUniform2i64ARB"))) |ptr| {
             self.Uniform2i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64vARB, try loader("glUniform2i64vARB"))) |ptr| {
             self.Uniform2i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64ARB, try loader("glUniform2ui64ARB"))) |ptr| {
             self.Uniform2ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64vARB, try loader("glUniform2ui64vARB"))) |ptr| {
             self.Uniform2ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64ARB, try loader("glUniform3i64ARB"))) |ptr| {
             self.Uniform3i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64vARB, try loader("glUniform3i64vARB"))) |ptr| {
             self.Uniform3i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64ARB, try loader("glUniform3ui64ARB"))) |ptr| {
             self.Uniform3ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64vARB, try loader("glUniform3ui64vARB"))) |ptr| {
             self.Uniform3ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64ARB, try loader("glUniform4i64ARB"))) |ptr| {
             self.Uniform4i64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64vARB, try loader("glUniform4i64vARB"))) |ptr| {
             self.Uniform4i64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64ARB, try loader("glUniform4ui64ARB"))) |ptr| {
             self.Uniform4ui64ARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64vARB, try loader("glUniform4ui64vARB"))) |ptr| {
             self.Uniform4ui64vARB = ptr;
         } else {
-            self.features.GL_ARB_gpu_shader_int64 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_gpu_shader_int64 = loaded;
+    }
+    fn load_GL_ARB_imaging(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendColor, try loader("glBlendColor"))) |ptr| {
             self.BlendColor = ptr;
         } else {
-            self.features.GL_ARB_imaging = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendEquation, try loader("glBlendEquation"))) |ptr| {
             self.BlendEquation = ptr;
         } else {
-            self.features.GL_ARB_imaging = false;
+            loaded = false;
         }
+        self.features.GL_ARB_imaging = loaded;
+    }
+    fn load_GL_ARB_indirect_parameters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysIndirectCountARB, try loader("glMultiDrawArraysIndirectCountARB"))) |ptr| {
             self.MultiDrawArraysIndirectCountARB = ptr;
         } else {
-            self.features.GL_ARB_indirect_parameters = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsIndirectCountARB, try loader("glMultiDrawElementsIndirectCountARB"))) |ptr| {
             self.MultiDrawElementsIndirectCountARB = ptr;
         } else {
-            self.features.GL_ARB_indirect_parameters = false;
+            loaded = false;
         }
+        self.features.GL_ARB_indirect_parameters = loaded;
+    }
+    fn load_GL_ARB_instanced_arrays(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVertexAttribDivisorARB, try loader("glVertexAttribDivisorARB"))) |ptr| {
             self.VertexAttribDivisorARB = ptr;
         } else {
-            self.features.GL_ARB_instanced_arrays = false;
+            loaded = false;
         }
+        self.features.GL_ARB_instanced_arrays = loaded;
+    }
+    fn load_GL_ARB_internalformat_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetInternalformativ, try loader("glGetInternalformativ"))) |ptr| {
             self.GetInternalformativ = ptr;
         } else {
-            self.features.GL_ARB_internalformat_query = false;
+            loaded = false;
         }
+        self.features.GL_ARB_internalformat_query = loaded;
+    }
+    fn load_GL_ARB_internalformat_query2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetInternalformati64v, try loader("glGetInternalformati64v"))) |ptr| {
             self.GetInternalformati64v = ptr;
         } else {
-            self.features.GL_ARB_internalformat_query2 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_internalformat_query2 = loaded;
+    }
+    fn load_GL_ARB_invalidate_subdata(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glInvalidateBufferData, try loader("glInvalidateBufferData"))) |ptr| {
             self.InvalidateBufferData = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateBufferSubData, try loader("glInvalidateBufferSubData"))) |ptr| {
             self.InvalidateBufferSubData = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateFramebuffer, try loader("glInvalidateFramebuffer"))) |ptr| {
             self.InvalidateFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateSubFramebuffer, try loader("glInvalidateSubFramebuffer"))) |ptr| {
             self.InvalidateSubFramebuffer = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateTexImage, try loader("glInvalidateTexImage"))) |ptr| {
             self.InvalidateTexImage = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
         if (@ptrCast(?glInvalidateTexSubImage, try loader("glInvalidateTexSubImage"))) |ptr| {
             self.InvalidateTexSubImage = ptr;
         } else {
-            self.features.GL_ARB_invalidate_subdata = false;
+            loaded = false;
         }
+        self.features.GL_ARB_invalidate_subdata = loaded;
+    }
+    fn load_GL_ARB_map_buffer_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushMappedBufferRange, try loader("glFlushMappedBufferRange"))) |ptr| {
             self.FlushMappedBufferRange = ptr;
         } else {
-            self.features.GL_ARB_map_buffer_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapBufferRange, try loader("glMapBufferRange"))) |ptr| {
             self.MapBufferRange = ptr;
         } else {
-            self.features.GL_ARB_map_buffer_range = false;
+            loaded = false;
         }
+        self.features.GL_ARB_map_buffer_range = loaded;
+    }
+    fn load_GL_ARB_matrix_palette(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCurrentPaletteMatrixARB, try loader("glCurrentPaletteMatrixARB"))) |ptr| {
             self.CurrentPaletteMatrixARB = ptr;
         } else {
-            self.features.GL_ARB_matrix_palette = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixIndexPointerARB, try loader("glMatrixIndexPointerARB"))) |ptr| {
             self.MatrixIndexPointerARB = ptr;
         } else {
-            self.features.GL_ARB_matrix_palette = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixIndexubvARB, try loader("glMatrixIndexubvARB"))) |ptr| {
             self.MatrixIndexubvARB = ptr;
         } else {
-            self.features.GL_ARB_matrix_palette = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixIndexuivARB, try loader("glMatrixIndexuivARB"))) |ptr| {
             self.MatrixIndexuivARB = ptr;
         } else {
-            self.features.GL_ARB_matrix_palette = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixIndexusvARB, try loader("glMatrixIndexusvARB"))) |ptr| {
             self.MatrixIndexusvARB = ptr;
         } else {
-            self.features.GL_ARB_matrix_palette = false;
+            loaded = false;
         }
+        self.features.GL_ARB_matrix_palette = loaded;
+    }
+    fn load_GL_ARB_multi_bind(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindBuffersBase, try loader("glBindBuffersBase"))) |ptr| {
             self.BindBuffersBase = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBuffersRange, try loader("glBindBuffersRange"))) |ptr| {
             self.BindBuffersRange = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindImageTextures, try loader("glBindImageTextures"))) |ptr| {
             self.BindImageTextures = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindSamplers, try loader("glBindSamplers"))) |ptr| {
             self.BindSamplers = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindTextures, try loader("glBindTextures"))) |ptr| {
             self.BindTextures = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindVertexBuffers, try loader("glBindVertexBuffers"))) |ptr| {
             self.BindVertexBuffers = ptr;
         } else {
-            self.features.GL_ARB_multi_bind = false;
+            loaded = false;
         }
+        self.features.GL_ARB_multi_bind = loaded;
+    }
+    fn load_GL_ARB_multi_draw_indirect(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysIndirect, try loader("glMultiDrawArraysIndirect"))) |ptr| {
             self.MultiDrawArraysIndirect = ptr;
         } else {
-            self.features.GL_ARB_multi_draw_indirect = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsIndirect, try loader("glMultiDrawElementsIndirect"))) |ptr| {
             self.MultiDrawElementsIndirect = ptr;
         } else {
-            self.features.GL_ARB_multi_draw_indirect = false;
+            loaded = false;
         }
+        self.features.GL_ARB_multi_draw_indirect = loaded;
+    }
+    fn load_GL_ARB_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSampleCoverageARB, try loader("glSampleCoverageARB"))) |ptr| {
             self.SampleCoverageARB = ptr;
         } else {
-            self.features.GL_ARB_multisample = false;
+            loaded = false;
         }
+        self.features.GL_ARB_multisample = loaded;
+    }
+    fn load_GL_ARB_multitexture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveTextureARB, try loader("glActiveTextureARB"))) |ptr| {
             self.ActiveTextureARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glClientActiveTextureARB, try loader("glClientActiveTextureARB"))) |ptr| {
             self.ClientActiveTextureARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1dARB, try loader("glMultiTexCoord1dARB"))) |ptr| {
             self.MultiTexCoord1dARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1dvARB, try loader("glMultiTexCoord1dvARB"))) |ptr| {
             self.MultiTexCoord1dvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1fARB, try loader("glMultiTexCoord1fARB"))) |ptr| {
             self.MultiTexCoord1fARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1fvARB, try loader("glMultiTexCoord1fvARB"))) |ptr| {
             self.MultiTexCoord1fvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1iARB, try loader("glMultiTexCoord1iARB"))) |ptr| {
             self.MultiTexCoord1iARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1ivARB, try loader("glMultiTexCoord1ivARB"))) |ptr| {
             self.MultiTexCoord1ivARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1sARB, try loader("glMultiTexCoord1sARB"))) |ptr| {
             self.MultiTexCoord1sARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1svARB, try loader("glMultiTexCoord1svARB"))) |ptr| {
             self.MultiTexCoord1svARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2dARB, try loader("glMultiTexCoord2dARB"))) |ptr| {
             self.MultiTexCoord2dARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2dvARB, try loader("glMultiTexCoord2dvARB"))) |ptr| {
             self.MultiTexCoord2dvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2fARB, try loader("glMultiTexCoord2fARB"))) |ptr| {
             self.MultiTexCoord2fARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2fvARB, try loader("glMultiTexCoord2fvARB"))) |ptr| {
             self.MultiTexCoord2fvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2iARB, try loader("glMultiTexCoord2iARB"))) |ptr| {
             self.MultiTexCoord2iARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2ivARB, try loader("glMultiTexCoord2ivARB"))) |ptr| {
             self.MultiTexCoord2ivARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2sARB, try loader("glMultiTexCoord2sARB"))) |ptr| {
             self.MultiTexCoord2sARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2svARB, try loader("glMultiTexCoord2svARB"))) |ptr| {
             self.MultiTexCoord2svARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3dARB, try loader("glMultiTexCoord3dARB"))) |ptr| {
             self.MultiTexCoord3dARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3dvARB, try loader("glMultiTexCoord3dvARB"))) |ptr| {
             self.MultiTexCoord3dvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3fARB, try loader("glMultiTexCoord3fARB"))) |ptr| {
             self.MultiTexCoord3fARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3fvARB, try loader("glMultiTexCoord3fvARB"))) |ptr| {
             self.MultiTexCoord3fvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3iARB, try loader("glMultiTexCoord3iARB"))) |ptr| {
             self.MultiTexCoord3iARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3ivARB, try loader("glMultiTexCoord3ivARB"))) |ptr| {
             self.MultiTexCoord3ivARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3sARB, try loader("glMultiTexCoord3sARB"))) |ptr| {
             self.MultiTexCoord3sARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3svARB, try loader("glMultiTexCoord3svARB"))) |ptr| {
             self.MultiTexCoord3svARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4dARB, try loader("glMultiTexCoord4dARB"))) |ptr| {
             self.MultiTexCoord4dARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4dvARB, try loader("glMultiTexCoord4dvARB"))) |ptr| {
             self.MultiTexCoord4dvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4fARB, try loader("glMultiTexCoord4fARB"))) |ptr| {
             self.MultiTexCoord4fARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4fvARB, try loader("glMultiTexCoord4fvARB"))) |ptr| {
             self.MultiTexCoord4fvARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4iARB, try loader("glMultiTexCoord4iARB"))) |ptr| {
             self.MultiTexCoord4iARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4ivARB, try loader("glMultiTexCoord4ivARB"))) |ptr| {
             self.MultiTexCoord4ivARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4sARB, try loader("glMultiTexCoord4sARB"))) |ptr| {
             self.MultiTexCoord4sARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4svARB, try loader("glMultiTexCoord4svARB"))) |ptr| {
             self.MultiTexCoord4svARB = ptr;
         } else {
-            self.features.GL_ARB_multitexture = false;
+            loaded = false;
         }
+        self.features.GL_ARB_multitexture = loaded;
+    }
+    fn load_GL_ARB_occlusion_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginQueryARB, try loader("glBeginQueryARB"))) |ptr| {
             self.BeginQueryARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteQueriesARB, try loader("glDeleteQueriesARB"))) |ptr| {
             self.DeleteQueriesARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndQueryARB, try loader("glEndQueryARB"))) |ptr| {
             self.EndQueryARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenQueriesARB, try loader("glGenQueriesARB"))) |ptr| {
             self.GenQueriesARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectivARB, try loader("glGetQueryObjectivARB"))) |ptr| {
             self.GetQueryObjectivARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectuivARB, try loader("glGetQueryObjectuivARB"))) |ptr| {
             self.GetQueryObjectuivARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryivARB, try loader("glGetQueryivARB"))) |ptr| {
             self.GetQueryivARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsQueryARB, try loader("glIsQueryARB"))) |ptr| {
             self.IsQueryARB = ptr;
         } else {
-            self.features.GL_ARB_occlusion_query = false;
+            loaded = false;
         }
+        self.features.GL_ARB_occlusion_query = loaded;
+    }
+    fn load_GL_ARB_parallel_shader_compile(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMaxShaderCompilerThreadsARB, try loader("glMaxShaderCompilerThreadsARB"))) |ptr| {
             self.MaxShaderCompilerThreadsARB = ptr;
         } else {
-            self.features.GL_ARB_parallel_shader_compile = false;
+            loaded = false;
         }
+        self.features.GL_ARB_parallel_shader_compile = loaded;
+    }
+    fn load_GL_ARB_point_parameters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPointParameterfARB, try loader("glPointParameterfARB"))) |ptr| {
             self.PointParameterfARB = ptr;
         } else {
-            self.features.GL_ARB_point_parameters = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterfvARB, try loader("glPointParameterfvARB"))) |ptr| {
             self.PointParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_point_parameters = false;
+            loaded = false;
         }
+        self.features.GL_ARB_point_parameters = loaded;
+    }
+    fn load_GL_ARB_polygon_offset_clamp(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPolygonOffsetClamp, try loader("glPolygonOffsetClamp"))) |ptr| {
             self.PolygonOffsetClamp = ptr;
         } else {
-            self.features.GL_ARB_polygon_offset_clamp = false;
+            loaded = false;
         }
+        self.features.GL_ARB_polygon_offset_clamp = loaded;
+    }
+    fn load_GL_ARB_program_interface_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetProgramInterfaceiv, try loader("glGetProgramInterfaceiv"))) |ptr| {
             self.GetProgramInterfaceiv = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourceIndex, try loader("glGetProgramResourceIndex"))) |ptr| {
             self.GetProgramResourceIndex = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourceLocation, try loader("glGetProgramResourceLocation"))) |ptr| {
             self.GetProgramResourceLocation = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourceLocationIndex, try loader("glGetProgramResourceLocationIndex"))) |ptr| {
             self.GetProgramResourceLocationIndex = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourceName, try loader("glGetProgramResourceName"))) |ptr| {
             self.GetProgramResourceName = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourceiv, try loader("glGetProgramResourceiv"))) |ptr| {
             self.GetProgramResourceiv = ptr;
         } else {
-            self.features.GL_ARB_program_interface_query = false;
+            loaded = false;
         }
+        self.features.GL_ARB_program_interface_query = loaded;
+    }
+    fn load_GL_ARB_provoking_vertex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glProvokingVertex, try loader("glProvokingVertex"))) |ptr| {
             self.ProvokingVertex = ptr;
         } else {
-            self.features.GL_ARB_provoking_vertex = false;
+            loaded = false;
         }
+        self.features.GL_ARB_provoking_vertex = loaded;
+    }
+    fn load_GL_ARB_robustness(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetGraphicsResetStatusARB, try loader("glGetGraphicsResetStatusARB"))) |ptr| {
             self.GetGraphicsResetStatusARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnCompressedTexImageARB, try loader("glGetnCompressedTexImageARB"))) |ptr| {
             self.GetnCompressedTexImageARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnTexImageARB, try loader("glGetnTexImageARB"))) |ptr| {
             self.GetnTexImageARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformdvARB, try loader("glGetnUniformdvARB"))) |ptr| {
             self.GetnUniformdvARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformfvARB, try loader("glGetnUniformfvARB"))) |ptr| {
             self.GetnUniformfvARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformivARB, try loader("glGetnUniformivARB"))) |ptr| {
             self.GetnUniformivARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformuivARB, try loader("glGetnUniformuivARB"))) |ptr| {
             self.GetnUniformuivARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glReadnPixelsARB, try loader("glReadnPixelsARB"))) |ptr| {
             self.ReadnPixelsARB = ptr;
         } else {
-            self.features.GL_ARB_robustness = false;
+            loaded = false;
         }
+        self.features.GL_ARB_robustness = loaded;
+    }
+    fn load_GL_ARB_sample_locations(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glEvaluateDepthValuesARB, try loader("glEvaluateDepthValuesARB"))) |ptr| {
             self.EvaluateDepthValuesARB = ptr;
         } else {
-            self.features.GL_ARB_sample_locations = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferSampleLocationsfvARB, try loader("glFramebufferSampleLocationsfvARB"))) |ptr| {
             self.FramebufferSampleLocationsfvARB = ptr;
         } else {
-            self.features.GL_ARB_sample_locations = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferSampleLocationsfvARB, try loader("glNamedFramebufferSampleLocationsfvARB"))) |ptr| {
             self.NamedFramebufferSampleLocationsfvARB = ptr;
         } else {
-            self.features.GL_ARB_sample_locations = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sample_locations = loaded;
+    }
+    fn load_GL_ARB_sample_shading(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMinSampleShadingARB, try loader("glMinSampleShadingARB"))) |ptr| {
             self.MinSampleShadingARB = ptr;
         } else {
-            self.features.GL_ARB_sample_shading = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sample_shading = loaded;
+    }
+    fn load_GL_ARB_sampler_objects(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindSampler, try loader("glBindSampler"))) |ptr| {
             self.BindSampler = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteSamplers, try loader("glDeleteSamplers"))) |ptr| {
             self.DeleteSamplers = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenSamplers, try loader("glGenSamplers"))) |ptr| {
             self.GenSamplers = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterIiv, try loader("glGetSamplerParameterIiv"))) |ptr| {
             self.GetSamplerParameterIiv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterIuiv, try loader("glGetSamplerParameterIuiv"))) |ptr| {
             self.GetSamplerParameterIuiv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameterfv, try loader("glGetSamplerParameterfv"))) |ptr| {
             self.GetSamplerParameterfv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSamplerParameteriv, try loader("glGetSamplerParameteriv"))) |ptr| {
             self.GetSamplerParameteriv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsSampler, try loader("glIsSampler"))) |ptr| {
             self.IsSampler = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterIiv, try loader("glSamplerParameterIiv"))) |ptr| {
             self.SamplerParameterIiv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterIuiv, try loader("glSamplerParameterIuiv"))) |ptr| {
             self.SamplerParameterIuiv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterf, try loader("glSamplerParameterf"))) |ptr| {
             self.SamplerParameterf = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameterfv, try loader("glSamplerParameterfv"))) |ptr| {
             self.SamplerParameterfv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameteri, try loader("glSamplerParameteri"))) |ptr| {
             self.SamplerParameteri = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplerParameteriv, try loader("glSamplerParameteriv"))) |ptr| {
             self.SamplerParameteriv = ptr;
         } else {
-            self.features.GL_ARB_sampler_objects = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sampler_objects = loaded;
+    }
+    fn load_GL_ARB_separate_shader_objects(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveShaderProgram, try loader("glActiveShaderProgram"))) |ptr| {
             self.ActiveShaderProgram = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindProgramPipeline, try loader("glBindProgramPipeline"))) |ptr| {
             self.BindProgramPipeline = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateShaderProgramv, try loader("glCreateShaderProgramv"))) |ptr| {
             self.CreateShaderProgramv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteProgramPipelines, try loader("glDeleteProgramPipelines"))) |ptr| {
             self.DeleteProgramPipelines = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenProgramPipelines, try loader("glGenProgramPipelines"))) |ptr| {
             self.GenProgramPipelines = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramPipelineInfoLog, try loader("glGetProgramPipelineInfoLog"))) |ptr| {
             self.GetProgramPipelineInfoLog = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramPipelineiv, try loader("glGetProgramPipelineiv"))) |ptr| {
             self.GetProgramPipelineiv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsProgramPipeline, try loader("glIsProgramPipeline"))) |ptr| {
             self.IsProgramPipeline = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameteri, try loader("glProgramParameteri"))) |ptr| {
             self.ProgramParameteri = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1d, try loader("glProgramUniform1d"))) |ptr| {
             self.ProgramUniform1d = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1dv, try loader("glProgramUniform1dv"))) |ptr| {
             self.ProgramUniform1dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1f, try loader("glProgramUniform1f"))) |ptr| {
             self.ProgramUniform1f = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1fv, try loader("glProgramUniform1fv"))) |ptr| {
             self.ProgramUniform1fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i, try loader("glProgramUniform1i"))) |ptr| {
             self.ProgramUniform1i = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1iv, try loader("glProgramUniform1iv"))) |ptr| {
             self.ProgramUniform1iv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui, try loader("glProgramUniform1ui"))) |ptr| {
             self.ProgramUniform1ui = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1uiv, try loader("glProgramUniform1uiv"))) |ptr| {
             self.ProgramUniform1uiv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2d, try loader("glProgramUniform2d"))) |ptr| {
             self.ProgramUniform2d = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2dv, try loader("glProgramUniform2dv"))) |ptr| {
             self.ProgramUniform2dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2f, try loader("glProgramUniform2f"))) |ptr| {
             self.ProgramUniform2f = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2fv, try loader("glProgramUniform2fv"))) |ptr| {
             self.ProgramUniform2fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i, try loader("glProgramUniform2i"))) |ptr| {
             self.ProgramUniform2i = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2iv, try loader("glProgramUniform2iv"))) |ptr| {
             self.ProgramUniform2iv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui, try loader("glProgramUniform2ui"))) |ptr| {
             self.ProgramUniform2ui = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2uiv, try loader("glProgramUniform2uiv"))) |ptr| {
             self.ProgramUniform2uiv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3d, try loader("glProgramUniform3d"))) |ptr| {
             self.ProgramUniform3d = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3dv, try loader("glProgramUniform3dv"))) |ptr| {
             self.ProgramUniform3dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3f, try loader("glProgramUniform3f"))) |ptr| {
             self.ProgramUniform3f = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3fv, try loader("glProgramUniform3fv"))) |ptr| {
             self.ProgramUniform3fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i, try loader("glProgramUniform3i"))) |ptr| {
             self.ProgramUniform3i = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3iv, try loader("glProgramUniform3iv"))) |ptr| {
             self.ProgramUniform3iv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui, try loader("glProgramUniform3ui"))) |ptr| {
             self.ProgramUniform3ui = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3uiv, try loader("glProgramUniform3uiv"))) |ptr| {
             self.ProgramUniform3uiv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4d, try loader("glProgramUniform4d"))) |ptr| {
             self.ProgramUniform4d = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4dv, try loader("glProgramUniform4dv"))) |ptr| {
             self.ProgramUniform4dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4f, try loader("glProgramUniform4f"))) |ptr| {
             self.ProgramUniform4f = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4fv, try loader("glProgramUniform4fv"))) |ptr| {
             self.ProgramUniform4fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i, try loader("glProgramUniform4i"))) |ptr| {
             self.ProgramUniform4i = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4iv, try loader("glProgramUniform4iv"))) |ptr| {
             self.ProgramUniform4iv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui, try loader("glProgramUniform4ui"))) |ptr| {
             self.ProgramUniform4ui = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4uiv, try loader("glProgramUniform4uiv"))) |ptr| {
             self.ProgramUniform4uiv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2dv, try loader("glProgramUniformMatrix2dv"))) |ptr| {
             self.ProgramUniformMatrix2dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2fv, try loader("glProgramUniformMatrix2fv"))) |ptr| {
             self.ProgramUniformMatrix2fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x3dv, try loader("glProgramUniformMatrix2x3dv"))) |ptr| {
             self.ProgramUniformMatrix2x3dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x3fv, try loader("glProgramUniformMatrix2x3fv"))) |ptr| {
             self.ProgramUniformMatrix2x3fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x4dv, try loader("glProgramUniformMatrix2x4dv"))) |ptr| {
             self.ProgramUniformMatrix2x4dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x4fv, try loader("glProgramUniformMatrix2x4fv"))) |ptr| {
             self.ProgramUniformMatrix2x4fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3dv, try loader("glProgramUniformMatrix3dv"))) |ptr| {
             self.ProgramUniformMatrix3dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3fv, try loader("glProgramUniformMatrix3fv"))) |ptr| {
             self.ProgramUniformMatrix3fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x2dv, try loader("glProgramUniformMatrix3x2dv"))) |ptr| {
             self.ProgramUniformMatrix3x2dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x2fv, try loader("glProgramUniformMatrix3x2fv"))) |ptr| {
             self.ProgramUniformMatrix3x2fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x4dv, try loader("glProgramUniformMatrix3x4dv"))) |ptr| {
             self.ProgramUniformMatrix3x4dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x4fv, try loader("glProgramUniformMatrix3x4fv"))) |ptr| {
             self.ProgramUniformMatrix3x4fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4dv, try loader("glProgramUniformMatrix4dv"))) |ptr| {
             self.ProgramUniformMatrix4dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4fv, try loader("glProgramUniformMatrix4fv"))) |ptr| {
             self.ProgramUniformMatrix4fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x2dv, try loader("glProgramUniformMatrix4x2dv"))) |ptr| {
             self.ProgramUniformMatrix4x2dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x2fv, try loader("glProgramUniformMatrix4x2fv"))) |ptr| {
             self.ProgramUniformMatrix4x2fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x3dv, try loader("glProgramUniformMatrix4x3dv"))) |ptr| {
             self.ProgramUniformMatrix4x3dv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x3fv, try loader("glProgramUniformMatrix4x3fv"))) |ptr| {
             self.ProgramUniformMatrix4x3fv = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUseProgramStages, try loader("glUseProgramStages"))) |ptr| {
             self.UseProgramStages = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glValidateProgramPipeline, try loader("glValidateProgramPipeline"))) |ptr| {
             self.ValidateProgramPipeline = ptr;
         } else {
-            self.features.GL_ARB_separate_shader_objects = false;
+            loaded = false;
         }
+        self.features.GL_ARB_separate_shader_objects = loaded;
+    }
+    fn load_GL_ARB_shader_atomic_counters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetActiveAtomicCounterBufferiv, try loader("glGetActiveAtomicCounterBufferiv"))) |ptr| {
             self.GetActiveAtomicCounterBufferiv = ptr;
         } else {
-            self.features.GL_ARB_shader_atomic_counters = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shader_atomic_counters = loaded;
+    }
+    fn load_GL_ARB_shader_image_load_store(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindImageTexture, try loader("glBindImageTexture"))) |ptr| {
             self.BindImageTexture = ptr;
         } else {
-            self.features.GL_ARB_shader_image_load_store = false;
+            loaded = false;
         }
         if (@ptrCast(?glMemoryBarrier, try loader("glMemoryBarrier"))) |ptr| {
             self.MemoryBarrier = ptr;
         } else {
-            self.features.GL_ARB_shader_image_load_store = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shader_image_load_store = loaded;
+    }
+    fn load_GL_ARB_shader_objects(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAttachObjectARB, try loader("glAttachObjectARB"))) |ptr| {
             self.AttachObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompileShaderARB, try loader("glCompileShaderARB"))) |ptr| {
             self.CompileShaderARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateProgramObjectARB, try loader("glCreateProgramObjectARB"))) |ptr| {
             self.CreateProgramObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateShaderObjectARB, try loader("glCreateShaderObjectARB"))) |ptr| {
             self.CreateShaderObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteObjectARB, try loader("glDeleteObjectARB"))) |ptr| {
             self.DeleteObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glDetachObjectARB, try loader("glDetachObjectARB"))) |ptr| {
             self.DetachObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformARB, try loader("glGetActiveUniformARB"))) |ptr| {
             self.GetActiveUniformARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetAttachedObjectsARB, try loader("glGetAttachedObjectsARB"))) |ptr| {
             self.GetAttachedObjectsARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetHandleARB, try loader("glGetHandleARB"))) |ptr| {
             self.GetHandleARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInfoLogARB, try loader("glGetInfoLogARB"))) |ptr| {
             self.GetInfoLogARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectParameterfvARB, try loader("glGetObjectParameterfvARB"))) |ptr| {
             self.GetObjectParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectParameterivARB, try loader("glGetObjectParameterivARB"))) |ptr| {
             self.GetObjectParameterivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShaderSourceARB, try loader("glGetShaderSourceARB"))) |ptr| {
             self.GetShaderSourceARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformLocationARB, try loader("glGetUniformLocationARB"))) |ptr| {
             self.GetUniformLocationARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformfvARB, try loader("glGetUniformfvARB"))) |ptr| {
             self.GetUniformfvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformivARB, try loader("glGetUniformivARB"))) |ptr| {
             self.GetUniformivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glLinkProgramARB, try loader("glLinkProgramARB"))) |ptr| {
             self.LinkProgramARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderSourceARB, try loader("glShaderSourceARB"))) |ptr| {
             self.ShaderSourceARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1fARB, try loader("glUniform1fARB"))) |ptr| {
             self.Uniform1fARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1fvARB, try loader("glUniform1fvARB"))) |ptr| {
             self.Uniform1fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1iARB, try loader("glUniform1iARB"))) |ptr| {
             self.Uniform1iARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ivARB, try loader("glUniform1ivARB"))) |ptr| {
             self.Uniform1ivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2fARB, try loader("glUniform2fARB"))) |ptr| {
             self.Uniform2fARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2fvARB, try loader("glUniform2fvARB"))) |ptr| {
             self.Uniform2fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2iARB, try loader("glUniform2iARB"))) |ptr| {
             self.Uniform2iARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ivARB, try loader("glUniform2ivARB"))) |ptr| {
             self.Uniform2ivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3fARB, try loader("glUniform3fARB"))) |ptr| {
             self.Uniform3fARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3fvARB, try loader("glUniform3fvARB"))) |ptr| {
             self.Uniform3fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3iARB, try loader("glUniform3iARB"))) |ptr| {
             self.Uniform3iARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ivARB, try loader("glUniform3ivARB"))) |ptr| {
             self.Uniform3ivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4fARB, try loader("glUniform4fARB"))) |ptr| {
             self.Uniform4fARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4fvARB, try loader("glUniform4fvARB"))) |ptr| {
             self.Uniform4fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4iARB, try loader("glUniform4iARB"))) |ptr| {
             self.Uniform4iARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ivARB, try loader("glUniform4ivARB"))) |ptr| {
             self.Uniform4ivARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix2fvARB, try loader("glUniformMatrix2fvARB"))) |ptr| {
             self.UniformMatrix2fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix3fvARB, try loader("glUniformMatrix3fvARB"))) |ptr| {
             self.UniformMatrix3fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformMatrix4fvARB, try loader("glUniformMatrix4fvARB"))) |ptr| {
             self.UniformMatrix4fvARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUseProgramObjectARB, try loader("glUseProgramObjectARB"))) |ptr| {
             self.UseProgramObjectARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glValidateProgramARB, try loader("glValidateProgramARB"))) |ptr| {
             self.ValidateProgramARB = ptr;
         } else {
-            self.features.GL_ARB_shader_objects = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shader_objects = loaded;
+    }
+    fn load_GL_ARB_shader_storage_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glShaderStorageBlockBinding, try loader("glShaderStorageBlockBinding"))) |ptr| {
             self.ShaderStorageBlockBinding = ptr;
         } else {
-            self.features.GL_ARB_shader_storage_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shader_storage_buffer_object = loaded;
+    }
+    fn load_GL_ARB_shader_subroutine(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetActiveSubroutineName, try loader("glGetActiveSubroutineName"))) |ptr| {
             self.GetActiveSubroutineName = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveSubroutineUniformName, try loader("glGetActiveSubroutineUniformName"))) |ptr| {
             self.GetActiveSubroutineUniformName = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveSubroutineUniformiv, try loader("glGetActiveSubroutineUniformiv"))) |ptr| {
             self.GetActiveSubroutineUniformiv = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramStageiv, try loader("glGetProgramStageiv"))) |ptr| {
             self.GetProgramStageiv = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSubroutineIndex, try loader("glGetSubroutineIndex"))) |ptr| {
             self.GetSubroutineIndex = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSubroutineUniformLocation, try loader("glGetSubroutineUniformLocation"))) |ptr| {
             self.GetSubroutineUniformLocation = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformSubroutineuiv, try loader("glGetUniformSubroutineuiv"))) |ptr| {
             self.GetUniformSubroutineuiv = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformSubroutinesuiv, try loader("glUniformSubroutinesuiv"))) |ptr| {
             self.UniformSubroutinesuiv = ptr;
         } else {
-            self.features.GL_ARB_shader_subroutine = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shader_subroutine = loaded;
+    }
+    fn load_GL_ARB_shading_language_include(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCompileShaderIncludeARB, try loader("glCompileShaderIncludeARB"))) |ptr| {
             self.CompileShaderIncludeARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteNamedStringARB, try loader("glDeleteNamedStringARB"))) |ptr| {
             self.DeleteNamedStringARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedStringARB, try loader("glGetNamedStringARB"))) |ptr| {
             self.GetNamedStringARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedStringivARB, try loader("glGetNamedStringivARB"))) |ptr| {
             self.GetNamedStringivARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsNamedStringARB, try loader("glIsNamedStringARB"))) |ptr| {
             self.IsNamedStringARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedStringARB, try loader("glNamedStringARB"))) |ptr| {
             self.NamedStringARB = ptr;
         } else {
-            self.features.GL_ARB_shading_language_include = false;
+            loaded = false;
         }
+        self.features.GL_ARB_shading_language_include = loaded;
+    }
+    fn load_GL_ARB_sparse_buffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferPageCommitmentARB, try loader("glBufferPageCommitmentARB"))) |ptr| {
             self.BufferPageCommitmentARB = ptr;
         } else {
-            self.features.GL_ARB_sparse_buffer = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferPageCommitmentARB, try loader("glNamedBufferPageCommitmentARB"))) |ptr| {
             self.NamedBufferPageCommitmentARB = ptr;
         } else {
-            self.features.GL_ARB_sparse_buffer = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferPageCommitmentEXT, try loader("glNamedBufferPageCommitmentEXT"))) |ptr| {
             self.NamedBufferPageCommitmentEXT = ptr;
         } else {
-            self.features.GL_ARB_sparse_buffer = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sparse_buffer = loaded;
+    }
+    fn load_GL_ARB_sparse_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexPageCommitmentARB, try loader("glTexPageCommitmentARB"))) |ptr| {
             self.TexPageCommitmentARB = ptr;
         } else {
-            self.features.GL_ARB_sparse_texture = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sparse_texture = loaded;
+    }
+    fn load_GL_ARB_sync(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClientWaitSync, try loader("glClientWaitSync"))) |ptr| {
             self.ClientWaitSync = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteSync, try loader("glDeleteSync"))) |ptr| {
             self.DeleteSync = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glFenceSync, try loader("glFenceSync"))) |ptr| {
             self.FenceSync = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInteger64v, try loader("glGetInteger64v"))) |ptr| {
             self.GetInteger64v = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSynciv, try loader("glGetSynciv"))) |ptr| {
             self.GetSynciv = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsSync, try loader("glIsSync"))) |ptr| {
             self.IsSync = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
         if (@ptrCast(?glWaitSync, try loader("glWaitSync"))) |ptr| {
             self.WaitSync = ptr;
         } else {
-            self.features.GL_ARB_sync = false;
+            loaded = false;
         }
+        self.features.GL_ARB_sync = loaded;
+    }
+    fn load_GL_ARB_tessellation_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPatchParameterfv, try loader("glPatchParameterfv"))) |ptr| {
             self.PatchParameterfv = ptr;
         } else {
-            self.features.GL_ARB_tessellation_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glPatchParameteri, try loader("glPatchParameteri"))) |ptr| {
             self.PatchParameteri = ptr;
         } else {
-            self.features.GL_ARB_tessellation_shader = false;
+            loaded = false;
         }
+        self.features.GL_ARB_tessellation_shader = loaded;
+    }
+    fn load_GL_ARB_texture_barrier(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTextureBarrier, try loader("glTextureBarrier"))) |ptr| {
             self.TextureBarrier = ptr;
         } else {
-            self.features.GL_ARB_texture_barrier = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_barrier = loaded;
+    }
+    fn load_GL_ARB_texture_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexBufferARB, try loader("glTexBufferARB"))) |ptr| {
             self.TexBufferARB = ptr;
         } else {
-            self.features.GL_ARB_texture_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_buffer_object = loaded;
+    }
+    fn load_GL_ARB_texture_buffer_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexBufferRange, try loader("glTexBufferRange"))) |ptr| {
             self.TexBufferRange = ptr;
         } else {
-            self.features.GL_ARB_texture_buffer_range = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_buffer_range = loaded;
+    }
+    fn load_GL_ARB_texture_compression(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCompressedTexImage1DARB, try loader("glCompressedTexImage1DARB"))) |ptr| {
             self.CompressedTexImage1DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexImage2DARB, try loader("glCompressedTexImage2DARB"))) |ptr| {
             self.CompressedTexImage2DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexImage3DARB, try loader("glCompressedTexImage3DARB"))) |ptr| {
             self.CompressedTexImage3DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage1DARB, try loader("glCompressedTexSubImage1DARB"))) |ptr| {
             self.CompressedTexSubImage1DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage2DARB, try loader("glCompressedTexSubImage2DARB"))) |ptr| {
             self.CompressedTexSubImage2DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTexSubImage3DARB, try loader("glCompressedTexSubImage3DARB"))) |ptr| {
             self.CompressedTexSubImage3DARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCompressedTexImageARB, try loader("glGetCompressedTexImageARB"))) |ptr| {
             self.GetCompressedTexImageARB = ptr;
         } else {
-            self.features.GL_ARB_texture_compression = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_compression = loaded;
+    }
+    fn load_GL_ARB_texture_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetMultisamplefv, try loader("glGetMultisamplefv"))) |ptr| {
             self.GetMultisamplefv = ptr;
         } else {
-            self.features.GL_ARB_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glSampleMaski, try loader("glSampleMaski"))) |ptr| {
             self.SampleMaski = ptr;
         } else {
-            self.features.GL_ARB_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage2DMultisample, try loader("glTexImage2DMultisample"))) |ptr| {
             self.TexImage2DMultisample = ptr;
         } else {
-            self.features.GL_ARB_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage3DMultisample, try loader("glTexImage3DMultisample"))) |ptr| {
             self.TexImage3DMultisample = ptr;
         } else {
-            self.features.GL_ARB_texture_multisample = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_multisample = loaded;
+    }
+    fn load_GL_ARB_texture_storage(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexStorage1D, try loader("glTexStorage1D"))) |ptr| {
             self.TexStorage1D = ptr;
         } else {
-            self.features.GL_ARB_texture_storage = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorage2D, try loader("glTexStorage2D"))) |ptr| {
             self.TexStorage2D = ptr;
         } else {
-            self.features.GL_ARB_texture_storage = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorage3D, try loader("glTexStorage3D"))) |ptr| {
             self.TexStorage3D = ptr;
         } else {
-            self.features.GL_ARB_texture_storage = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_storage = loaded;
+    }
+    fn load_GL_ARB_texture_storage_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexStorage2DMultisample, try loader("glTexStorage2DMultisample"))) |ptr| {
             self.TexStorage2DMultisample = ptr;
         } else {
-            self.features.GL_ARB_texture_storage_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorage3DMultisample, try loader("glTexStorage3DMultisample"))) |ptr| {
             self.TexStorage3DMultisample = ptr;
         } else {
-            self.features.GL_ARB_texture_storage_multisample = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_storage_multisample = loaded;
+    }
+    fn load_GL_ARB_texture_view(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTextureView, try loader("glTextureView"))) |ptr| {
             self.TextureView = ptr;
         } else {
-            self.features.GL_ARB_texture_view = false;
+            loaded = false;
         }
+        self.features.GL_ARB_texture_view = loaded;
+    }
+    fn load_GL_ARB_timer_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetQueryObjecti64v, try loader("glGetQueryObjecti64v"))) |ptr| {
             self.GetQueryObjecti64v = ptr;
         } else {
-            self.features.GL_ARB_timer_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectui64v, try loader("glGetQueryObjectui64v"))) |ptr| {
             self.GetQueryObjectui64v = ptr;
         } else {
-            self.features.GL_ARB_timer_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glQueryCounter, try loader("glQueryCounter"))) |ptr| {
             self.QueryCounter = ptr;
         } else {
-            self.features.GL_ARB_timer_query = false;
+            loaded = false;
         }
+        self.features.GL_ARB_timer_query = loaded;
+    }
+    fn load_GL_ARB_transform_feedback2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindTransformFeedback, try loader("glBindTransformFeedback"))) |ptr| {
             self.BindTransformFeedback = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteTransformFeedbacks, try loader("glDeleteTransformFeedbacks"))) |ptr| {
             self.DeleteTransformFeedbacks = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawTransformFeedback, try loader("glDrawTransformFeedback"))) |ptr| {
             self.DrawTransformFeedback = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenTransformFeedbacks, try loader("glGenTransformFeedbacks"))) |ptr| {
             self.GenTransformFeedbacks = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTransformFeedback, try loader("glIsTransformFeedback"))) |ptr| {
             self.IsTransformFeedback = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPauseTransformFeedback, try loader("glPauseTransformFeedback"))) |ptr| {
             self.PauseTransformFeedback = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glResumeTransformFeedback, try loader("glResumeTransformFeedback"))) |ptr| {
             self.ResumeTransformFeedback = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback2 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_transform_feedback2 = loaded;
+    }
+    fn load_GL_ARB_transform_feedback3(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginQueryIndexed, try loader("glBeginQueryIndexed"))) |ptr| {
             self.BeginQueryIndexed = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawTransformFeedbackStream, try loader("glDrawTransformFeedbackStream"))) |ptr| {
             self.DrawTransformFeedbackStream = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndQueryIndexed, try loader("glEndQueryIndexed"))) |ptr| {
             self.EndQueryIndexed = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback3 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryIndexediv, try loader("glGetQueryIndexediv"))) |ptr| {
             self.GetQueryIndexediv = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback3 = false;
+            loaded = false;
         }
+        self.features.GL_ARB_transform_feedback3 = loaded;
+    }
+    fn load_GL_ARB_transform_feedback_instanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawTransformFeedbackInstanced, try loader("glDrawTransformFeedbackInstanced"))) |ptr| {
             self.DrawTransformFeedbackInstanced = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback_instanced = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawTransformFeedbackStreamInstanced, try loader("glDrawTransformFeedbackStreamInstanced"))) |ptr| {
             self.DrawTransformFeedbackStreamInstanced = ptr;
         } else {
-            self.features.GL_ARB_transform_feedback_instanced = false;
+            loaded = false;
         }
+        self.features.GL_ARB_transform_feedback_instanced = loaded;
+    }
+    fn load_GL_ARB_transpose_matrix(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glLoadTransposeMatrixdARB, try loader("glLoadTransposeMatrixdARB"))) |ptr| {
             self.LoadTransposeMatrixdARB = ptr;
         } else {
-            self.features.GL_ARB_transpose_matrix = false;
+            loaded = false;
         }
         if (@ptrCast(?glLoadTransposeMatrixfARB, try loader("glLoadTransposeMatrixfARB"))) |ptr| {
             self.LoadTransposeMatrixfARB = ptr;
         } else {
-            self.features.GL_ARB_transpose_matrix = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultTransposeMatrixdARB, try loader("glMultTransposeMatrixdARB"))) |ptr| {
             self.MultTransposeMatrixdARB = ptr;
         } else {
-            self.features.GL_ARB_transpose_matrix = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultTransposeMatrixfARB, try loader("glMultTransposeMatrixfARB"))) |ptr| {
             self.MultTransposeMatrixfARB = ptr;
         } else {
-            self.features.GL_ARB_transpose_matrix = false;
+            loaded = false;
         }
+        self.features.GL_ARB_transpose_matrix = loaded;
+    }
+    fn load_GL_ARB_uniform_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindBufferBase, try loader("glBindBufferBase"))) |ptr| {
             self.BindBufferBase = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferRange, try loader("glBindBufferRange"))) |ptr| {
             self.BindBufferRange = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformBlockName, try loader("glGetActiveUniformBlockName"))) |ptr| {
             self.GetActiveUniformBlockName = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformBlockiv, try loader("glGetActiveUniformBlockiv"))) |ptr| {
             self.GetActiveUniformBlockiv = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformName, try loader("glGetActiveUniformName"))) |ptr| {
             self.GetActiveUniformName = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveUniformsiv, try loader("glGetActiveUniformsiv"))) |ptr| {
             self.GetActiveUniformsiv = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegeri_v, try loader("glGetIntegeri_v"))) |ptr| {
             self.GetIntegeri_v = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformBlockIndex, try loader("glGetUniformBlockIndex"))) |ptr| {
             self.GetUniformBlockIndex = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformIndices, try loader("glGetUniformIndices"))) |ptr| {
             self.GetUniformIndices = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformBlockBinding, try loader("glUniformBlockBinding"))) |ptr| {
             self.UniformBlockBinding = ptr;
         } else {
-            self.features.GL_ARB_uniform_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_uniform_buffer_object = loaded;
+    }
+    fn load_GL_ARB_vertex_array_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindVertexArray, try loader("glBindVertexArray"))) |ptr| {
             self.BindVertexArray = ptr;
         } else {
-            self.features.GL_ARB_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteVertexArrays, try loader("glDeleteVertexArrays"))) |ptr| {
             self.DeleteVertexArrays = ptr;
         } else {
-            self.features.GL_ARB_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenVertexArrays, try loader("glGenVertexArrays"))) |ptr| {
             self.GenVertexArrays = ptr;
         } else {
-            self.features.GL_ARB_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsVertexArray, try loader("glIsVertexArray"))) |ptr| {
             self.IsVertexArray = ptr;
         } else {
-            self.features.GL_ARB_vertex_array_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_array_object = loaded;
+    }
+    fn load_GL_ARB_vertex_attrib_64bit(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVertexAttribLdv, try loader("glGetVertexAttribLdv"))) |ptr| {
             self.GetVertexAttribLdv = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1d, try loader("glVertexAttribL1d"))) |ptr| {
             self.VertexAttribL1d = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1dv, try loader("glVertexAttribL1dv"))) |ptr| {
             self.VertexAttribL1dv = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2d, try loader("glVertexAttribL2d"))) |ptr| {
             self.VertexAttribL2d = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2dv, try loader("glVertexAttribL2dv"))) |ptr| {
             self.VertexAttribL2dv = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3d, try loader("glVertexAttribL3d"))) |ptr| {
             self.VertexAttribL3d = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3dv, try loader("glVertexAttribL3dv"))) |ptr| {
             self.VertexAttribL3dv = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4d, try loader("glVertexAttribL4d"))) |ptr| {
             self.VertexAttribL4d = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4dv, try loader("glVertexAttribL4dv"))) |ptr| {
             self.VertexAttribL4dv = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribLPointer, try loader("glVertexAttribLPointer"))) |ptr| {
             self.VertexAttribLPointer = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_64bit = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_attrib_64bit = loaded;
+    }
+    fn load_GL_ARB_vertex_attrib_binding(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindVertexBuffer, try loader("glBindVertexBuffer"))) |ptr| {
             self.BindVertexBuffer = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribBinding, try loader("glVertexAttribBinding"))) |ptr| {
             self.VertexAttribBinding = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribFormat, try loader("glVertexAttribFormat"))) |ptr| {
             self.VertexAttribFormat = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribIFormat, try loader("glVertexAttribIFormat"))) |ptr| {
             self.VertexAttribIFormat = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribLFormat, try loader("glVertexAttribLFormat"))) |ptr| {
             self.VertexAttribLFormat = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexBindingDivisor, try loader("glVertexBindingDivisor"))) |ptr| {
             self.VertexBindingDivisor = ptr;
         } else {
-            self.features.GL_ARB_vertex_attrib_binding = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_attrib_binding = loaded;
+    }
+    fn load_GL_ARB_vertex_blend(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVertexBlendARB, try loader("glVertexBlendARB"))) |ptr| {
             self.VertexBlendARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightPointerARB, try loader("glWeightPointerARB"))) |ptr| {
             self.WeightPointerARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightbvARB, try loader("glWeightbvARB"))) |ptr| {
             self.WeightbvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightdvARB, try loader("glWeightdvARB"))) |ptr| {
             self.WeightdvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightfvARB, try loader("glWeightfvARB"))) |ptr| {
             self.WeightfvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightivARB, try loader("glWeightivARB"))) |ptr| {
             self.WeightivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightsvARB, try loader("glWeightsvARB"))) |ptr| {
             self.WeightsvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightubvARB, try loader("glWeightubvARB"))) |ptr| {
             self.WeightubvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightuivARB, try loader("glWeightuivARB"))) |ptr| {
             self.WeightuivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightusvARB, try loader("glWeightusvARB"))) |ptr| {
             self.WeightusvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_blend = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_blend = loaded;
+    }
+    fn load_GL_ARB_vertex_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindBufferARB, try loader("glBindBufferARB"))) |ptr| {
             self.BindBufferARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBufferDataARB, try loader("glBufferDataARB"))) |ptr| {
             self.BufferDataARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBufferSubDataARB, try loader("glBufferSubDataARB"))) |ptr| {
             self.BufferSubDataARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteBuffersARB, try loader("glDeleteBuffersARB"))) |ptr| {
             self.DeleteBuffersARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenBuffersARB, try loader("glGenBuffersARB"))) |ptr| {
             self.GenBuffersARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferParameterivARB, try loader("glGetBufferParameterivARB"))) |ptr| {
             self.GetBufferParameterivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferPointervARB, try loader("glGetBufferPointervARB"))) |ptr| {
             self.GetBufferPointervARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBufferSubDataARB, try loader("glGetBufferSubDataARB"))) |ptr| {
             self.GetBufferSubDataARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsBufferARB, try loader("glIsBufferARB"))) |ptr| {
             self.IsBufferARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapBufferARB, try loader("glMapBufferARB"))) |ptr| {
             self.MapBufferARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapBufferARB, try loader("glUnmapBufferARB"))) |ptr| {
             self.UnmapBufferARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_buffer_object = loaded;
+    }
+    fn load_GL_ARB_vertex_program(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindProgramARB, try loader("glBindProgramARB"))) |ptr| {
             self.BindProgramARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteProgramsARB, try loader("glDeleteProgramsARB"))) |ptr| {
             self.DeleteProgramsARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexAttribArrayARB, try loader("glDisableVertexAttribArrayARB"))) |ptr| {
             self.DisableVertexAttribArrayARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexAttribArrayARB, try loader("glEnableVertexAttribArrayARB"))) |ptr| {
             self.EnableVertexAttribArrayARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenProgramsARB, try loader("glGenProgramsARB"))) |ptr| {
             self.GenProgramsARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramEnvParameterdvARB, try loader("glGetProgramEnvParameterdvARB"))) |ptr| {
             self.GetProgramEnvParameterdvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramEnvParameterfvARB, try loader("glGetProgramEnvParameterfvARB"))) |ptr| {
             self.GetProgramEnvParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterdvARB, try loader("glGetProgramLocalParameterdvARB"))) |ptr| {
             self.GetProgramLocalParameterdvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterfvARB, try loader("glGetProgramLocalParameterfvARB"))) |ptr| {
             self.GetProgramLocalParameterfvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramStringARB, try loader("glGetProgramStringARB"))) |ptr| {
             self.GetProgramStringARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramivARB, try loader("glGetProgramivARB"))) |ptr| {
             self.GetProgramivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribPointervARB, try loader("glGetVertexAttribPointervARB"))) |ptr| {
             self.GetVertexAttribPointervARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribdvARB, try loader("glGetVertexAttribdvARB"))) |ptr| {
             self.GetVertexAttribdvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribfvARB, try loader("glGetVertexAttribfvARB"))) |ptr| {
             self.GetVertexAttribfvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribivARB, try loader("glGetVertexAttribivARB"))) |ptr| {
             self.GetVertexAttribivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsProgramARB, try loader("glIsProgramARB"))) |ptr| {
             self.IsProgramARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4dARB, try loader("glProgramEnvParameter4dARB"))) |ptr| {
             self.ProgramEnvParameter4dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4dvARB, try loader("glProgramEnvParameter4dvARB"))) |ptr| {
             self.ProgramEnvParameter4dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4fARB, try loader("glProgramEnvParameter4fARB"))) |ptr| {
             self.ProgramEnvParameter4fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameter4fvARB, try loader("glProgramEnvParameter4fvARB"))) |ptr| {
             self.ProgramEnvParameter4fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4dARB, try loader("glProgramLocalParameter4dARB"))) |ptr| {
             self.ProgramLocalParameter4dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4dvARB, try loader("glProgramLocalParameter4dvARB"))) |ptr| {
             self.ProgramLocalParameter4dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4fARB, try loader("glProgramLocalParameter4fARB"))) |ptr| {
             self.ProgramLocalParameter4fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameter4fvARB, try loader("glProgramLocalParameter4fvARB"))) |ptr| {
             self.ProgramLocalParameter4fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramStringARB, try loader("glProgramStringARB"))) |ptr| {
             self.ProgramStringARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dARB, try loader("glVertexAttrib1dARB"))) |ptr| {
             self.VertexAttrib1dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dvARB, try loader("glVertexAttrib1dvARB"))) |ptr| {
             self.VertexAttrib1dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fARB, try loader("glVertexAttrib1fARB"))) |ptr| {
             self.VertexAttrib1fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fvARB, try loader("glVertexAttrib1fvARB"))) |ptr| {
             self.VertexAttrib1fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1sARB, try loader("glVertexAttrib1sARB"))) |ptr| {
             self.VertexAttrib1sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1svARB, try loader("glVertexAttrib1svARB"))) |ptr| {
             self.VertexAttrib1svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dARB, try loader("glVertexAttrib2dARB"))) |ptr| {
             self.VertexAttrib2dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dvARB, try loader("glVertexAttrib2dvARB"))) |ptr| {
             self.VertexAttrib2dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fARB, try loader("glVertexAttrib2fARB"))) |ptr| {
             self.VertexAttrib2fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fvARB, try loader("glVertexAttrib2fvARB"))) |ptr| {
             self.VertexAttrib2fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2sARB, try loader("glVertexAttrib2sARB"))) |ptr| {
             self.VertexAttrib2sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2svARB, try loader("glVertexAttrib2svARB"))) |ptr| {
             self.VertexAttrib2svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dARB, try loader("glVertexAttrib3dARB"))) |ptr| {
             self.VertexAttrib3dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dvARB, try loader("glVertexAttrib3dvARB"))) |ptr| {
             self.VertexAttrib3dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fARB, try loader("glVertexAttrib3fARB"))) |ptr| {
             self.VertexAttrib3fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fvARB, try loader("glVertexAttrib3fvARB"))) |ptr| {
             self.VertexAttrib3fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3sARB, try loader("glVertexAttrib3sARB"))) |ptr| {
             self.VertexAttrib3sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3svARB, try loader("glVertexAttrib3svARB"))) |ptr| {
             self.VertexAttrib3svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NbvARB, try loader("glVertexAttrib4NbvARB"))) |ptr| {
             self.VertexAttrib4NbvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NivARB, try loader("glVertexAttrib4NivARB"))) |ptr| {
             self.VertexAttrib4NivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NsvARB, try loader("glVertexAttrib4NsvARB"))) |ptr| {
             self.VertexAttrib4NsvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NubARB, try loader("glVertexAttrib4NubARB"))) |ptr| {
             self.VertexAttrib4NubARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NubvARB, try loader("glVertexAttrib4NubvARB"))) |ptr| {
             self.VertexAttrib4NubvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NuivARB, try loader("glVertexAttrib4NuivARB"))) |ptr| {
             self.VertexAttrib4NuivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NusvARB, try loader("glVertexAttrib4NusvARB"))) |ptr| {
             self.VertexAttrib4NusvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4bvARB, try loader("glVertexAttrib4bvARB"))) |ptr| {
             self.VertexAttrib4bvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dARB, try loader("glVertexAttrib4dARB"))) |ptr| {
             self.VertexAttrib4dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dvARB, try loader("glVertexAttrib4dvARB"))) |ptr| {
             self.VertexAttrib4dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fARB, try loader("glVertexAttrib4fARB"))) |ptr| {
             self.VertexAttrib4fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fvARB, try loader("glVertexAttrib4fvARB"))) |ptr| {
             self.VertexAttrib4fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ivARB, try loader("glVertexAttrib4ivARB"))) |ptr| {
             self.VertexAttrib4ivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4sARB, try loader("glVertexAttrib4sARB"))) |ptr| {
             self.VertexAttrib4sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4svARB, try loader("glVertexAttrib4svARB"))) |ptr| {
             self.VertexAttrib4svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ubvARB, try loader("glVertexAttrib4ubvARB"))) |ptr| {
             self.VertexAttrib4ubvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4uivARB, try loader("glVertexAttrib4uivARB"))) |ptr| {
             self.VertexAttrib4uivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4usvARB, try loader("glVertexAttrib4usvARB"))) |ptr| {
             self.VertexAttrib4usvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribPointerARB, try loader("glVertexAttribPointerARB"))) |ptr| {
             self.VertexAttribPointerARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_program = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_program = loaded;
+    }
+    fn load_GL_ARB_vertex_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindAttribLocationARB, try loader("glBindAttribLocationARB"))) |ptr| {
             self.BindAttribLocationARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexAttribArrayARB, try loader("glDisableVertexAttribArrayARB"))) |ptr| {
             self.DisableVertexAttribArrayARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexAttribArrayARB, try loader("glEnableVertexAttribArrayARB"))) |ptr| {
             self.EnableVertexAttribArrayARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveAttribARB, try loader("glGetActiveAttribARB"))) |ptr| {
             self.GetActiveAttribARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetAttribLocationARB, try loader("glGetAttribLocationARB"))) |ptr| {
             self.GetAttribLocationARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribPointervARB, try loader("glGetVertexAttribPointervARB"))) |ptr| {
             self.GetVertexAttribPointervARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribdvARB, try loader("glGetVertexAttribdvARB"))) |ptr| {
             self.GetVertexAttribdvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribfvARB, try loader("glGetVertexAttribfvARB"))) |ptr| {
             self.GetVertexAttribfvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribivARB, try loader("glGetVertexAttribivARB"))) |ptr| {
             self.GetVertexAttribivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dARB, try loader("glVertexAttrib1dARB"))) |ptr| {
             self.VertexAttrib1dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dvARB, try loader("glVertexAttrib1dvARB"))) |ptr| {
             self.VertexAttrib1dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fARB, try loader("glVertexAttrib1fARB"))) |ptr| {
             self.VertexAttrib1fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fvARB, try loader("glVertexAttrib1fvARB"))) |ptr| {
             self.VertexAttrib1fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1sARB, try loader("glVertexAttrib1sARB"))) |ptr| {
             self.VertexAttrib1sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1svARB, try loader("glVertexAttrib1svARB"))) |ptr| {
             self.VertexAttrib1svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dARB, try loader("glVertexAttrib2dARB"))) |ptr| {
             self.VertexAttrib2dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dvARB, try loader("glVertexAttrib2dvARB"))) |ptr| {
             self.VertexAttrib2dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fARB, try loader("glVertexAttrib2fARB"))) |ptr| {
             self.VertexAttrib2fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fvARB, try loader("glVertexAttrib2fvARB"))) |ptr| {
             self.VertexAttrib2fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2sARB, try loader("glVertexAttrib2sARB"))) |ptr| {
             self.VertexAttrib2sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2svARB, try loader("glVertexAttrib2svARB"))) |ptr| {
             self.VertexAttrib2svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dARB, try loader("glVertexAttrib3dARB"))) |ptr| {
             self.VertexAttrib3dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dvARB, try loader("glVertexAttrib3dvARB"))) |ptr| {
             self.VertexAttrib3dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fARB, try loader("glVertexAttrib3fARB"))) |ptr| {
             self.VertexAttrib3fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fvARB, try loader("glVertexAttrib3fvARB"))) |ptr| {
             self.VertexAttrib3fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3sARB, try loader("glVertexAttrib3sARB"))) |ptr| {
             self.VertexAttrib3sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3svARB, try loader("glVertexAttrib3svARB"))) |ptr| {
             self.VertexAttrib3svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NbvARB, try loader("glVertexAttrib4NbvARB"))) |ptr| {
             self.VertexAttrib4NbvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NivARB, try loader("glVertexAttrib4NivARB"))) |ptr| {
             self.VertexAttrib4NivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NsvARB, try loader("glVertexAttrib4NsvARB"))) |ptr| {
             self.VertexAttrib4NsvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NubARB, try loader("glVertexAttrib4NubARB"))) |ptr| {
             self.VertexAttrib4NubARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NubvARB, try loader("glVertexAttrib4NubvARB"))) |ptr| {
             self.VertexAttrib4NubvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NuivARB, try loader("glVertexAttrib4NuivARB"))) |ptr| {
             self.VertexAttrib4NuivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4NusvARB, try loader("glVertexAttrib4NusvARB"))) |ptr| {
             self.VertexAttrib4NusvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4bvARB, try loader("glVertexAttrib4bvARB"))) |ptr| {
             self.VertexAttrib4bvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dARB, try loader("glVertexAttrib4dARB"))) |ptr| {
             self.VertexAttrib4dARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dvARB, try loader("glVertexAttrib4dvARB"))) |ptr| {
             self.VertexAttrib4dvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fARB, try loader("glVertexAttrib4fARB"))) |ptr| {
             self.VertexAttrib4fARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fvARB, try loader("glVertexAttrib4fvARB"))) |ptr| {
             self.VertexAttrib4fvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ivARB, try loader("glVertexAttrib4ivARB"))) |ptr| {
             self.VertexAttrib4ivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4sARB, try loader("glVertexAttrib4sARB"))) |ptr| {
             self.VertexAttrib4sARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4svARB, try loader("glVertexAttrib4svARB"))) |ptr| {
             self.VertexAttrib4svARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ubvARB, try loader("glVertexAttrib4ubvARB"))) |ptr| {
             self.VertexAttrib4ubvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4uivARB, try loader("glVertexAttrib4uivARB"))) |ptr| {
             self.VertexAttrib4uivARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4usvARB, try loader("glVertexAttrib4usvARB"))) |ptr| {
             self.VertexAttrib4usvARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribPointerARB, try loader("glVertexAttribPointerARB"))) |ptr| {
             self.VertexAttribPointerARB = ptr;
         } else {
-            self.features.GL_ARB_vertex_shader = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_shader = loaded;
+    }
+    fn load_GL_ARB_vertex_type_2_10_10_10_rev(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVertexAttribP1ui, try loader("glVertexAttribP1ui"))) |ptr| {
             self.VertexAttribP1ui = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP1uiv, try loader("glVertexAttribP1uiv"))) |ptr| {
             self.VertexAttribP1uiv = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP2ui, try loader("glVertexAttribP2ui"))) |ptr| {
             self.VertexAttribP2ui = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP2uiv, try loader("glVertexAttribP2uiv"))) |ptr| {
             self.VertexAttribP2uiv = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP3ui, try loader("glVertexAttribP3ui"))) |ptr| {
             self.VertexAttribP3ui = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP3uiv, try loader("glVertexAttribP3uiv"))) |ptr| {
             self.VertexAttribP3uiv = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP4ui, try loader("glVertexAttribP4ui"))) |ptr| {
             self.VertexAttribP4ui = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribP4uiv, try loader("glVertexAttribP4uiv"))) |ptr| {
             self.VertexAttribP4uiv = ptr;
         } else {
-            self.features.GL_ARB_vertex_type_2_10_10_10_rev = false;
+            loaded = false;
         }
+        self.features.GL_ARB_vertex_type_2_10_10_10_rev = loaded;
+    }
+    fn load_GL_ARB_viewport_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDepthRangeArraydvNV, try loader("glDepthRangeArraydvNV"))) |ptr| {
             self.DepthRangeArraydvNV = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangeArrayv, try loader("glDepthRangeArrayv"))) |ptr| {
             self.DepthRangeArrayv = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangeIndexed, try loader("glDepthRangeIndexed"))) |ptr| {
             self.DepthRangeIndexed = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangeIndexeddNV, try loader("glDepthRangeIndexeddNV"))) |ptr| {
             self.DepthRangeIndexeddNV = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDoublei_v, try loader("glGetDoublei_v"))) |ptr| {
             self.GetDoublei_v = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFloati_v, try loader("glGetFloati_v"))) |ptr| {
             self.GetFloati_v = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glScissorArrayv, try loader("glScissorArrayv"))) |ptr| {
             self.ScissorArrayv = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glScissorIndexed, try loader("glScissorIndexed"))) |ptr| {
             self.ScissorIndexed = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glScissorIndexedv, try loader("glScissorIndexedv"))) |ptr| {
             self.ScissorIndexedv = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glViewportArrayv, try loader("glViewportArrayv"))) |ptr| {
             self.ViewportArrayv = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glViewportIndexedf, try loader("glViewportIndexedf"))) |ptr| {
             self.ViewportIndexedf = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glViewportIndexedfv, try loader("glViewportIndexedfv"))) |ptr| {
             self.ViewportIndexedfv = ptr;
         } else {
-            self.features.GL_ARB_viewport_array = false;
+            loaded = false;
         }
+        self.features.GL_ARB_viewport_array = loaded;
+    }
+    fn load_GL_ARB_window_pos(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glWindowPos2dARB, try loader("glWindowPos2dARB"))) |ptr| {
             self.WindowPos2dARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2dvARB, try loader("glWindowPos2dvARB"))) |ptr| {
             self.WindowPos2dvARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2fARB, try loader("glWindowPos2fARB"))) |ptr| {
             self.WindowPos2fARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2fvARB, try loader("glWindowPos2fvARB"))) |ptr| {
             self.WindowPos2fvARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2iARB, try loader("glWindowPos2iARB"))) |ptr| {
             self.WindowPos2iARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2ivARB, try loader("glWindowPos2ivARB"))) |ptr| {
             self.WindowPos2ivARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2sARB, try loader("glWindowPos2sARB"))) |ptr| {
             self.WindowPos2sARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2svARB, try loader("glWindowPos2svARB"))) |ptr| {
             self.WindowPos2svARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3dARB, try loader("glWindowPos3dARB"))) |ptr| {
             self.WindowPos3dARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3dvARB, try loader("glWindowPos3dvARB"))) |ptr| {
             self.WindowPos3dvARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3fARB, try loader("glWindowPos3fARB"))) |ptr| {
             self.WindowPos3fARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3fvARB, try loader("glWindowPos3fvARB"))) |ptr| {
             self.WindowPos3fvARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3iARB, try loader("glWindowPos3iARB"))) |ptr| {
             self.WindowPos3iARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3ivARB, try loader("glWindowPos3ivARB"))) |ptr| {
             self.WindowPos3ivARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3sARB, try loader("glWindowPos3sARB"))) |ptr| {
             self.WindowPos3sARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3svARB, try loader("glWindowPos3svARB"))) |ptr| {
             self.WindowPos3svARB = ptr;
         } else {
-            self.features.GL_ARB_window_pos = false;
+            loaded = false;
         }
+        self.features.GL_ARB_window_pos = loaded;
+    }
+    fn load_GL_ATI_draw_buffers(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawBuffersATI, try loader("glDrawBuffersATI"))) |ptr| {
             self.DrawBuffersATI = ptr;
         } else {
-            self.features.GL_ATI_draw_buffers = false;
+            loaded = false;
         }
+        self.features.GL_ATI_draw_buffers = loaded;
+    }
+    fn load_GL_ATI_element_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawElementArrayATI, try loader("glDrawElementArrayATI"))) |ptr| {
             self.DrawElementArrayATI = ptr;
         } else {
-            self.features.GL_ATI_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawRangeElementArrayATI, try loader("glDrawRangeElementArrayATI"))) |ptr| {
             self.DrawRangeElementArrayATI = ptr;
         } else {
-            self.features.GL_ATI_element_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glElementPointerATI, try loader("glElementPointerATI"))) |ptr| {
             self.ElementPointerATI = ptr;
         } else {
-            self.features.GL_ATI_element_array = false;
+            loaded = false;
         }
+        self.features.GL_ATI_element_array = loaded;
+    }
+    fn load_GL_ATI_envmap_bumpmap(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetTexBumpParameterfvATI, try loader("glGetTexBumpParameterfvATI"))) |ptr| {
             self.GetTexBumpParameterfvATI = ptr;
         } else {
-            self.features.GL_ATI_envmap_bumpmap = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexBumpParameterivATI, try loader("glGetTexBumpParameterivATI"))) |ptr| {
             self.GetTexBumpParameterivATI = ptr;
         } else {
-            self.features.GL_ATI_envmap_bumpmap = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexBumpParameterfvATI, try loader("glTexBumpParameterfvATI"))) |ptr| {
             self.TexBumpParameterfvATI = ptr;
         } else {
-            self.features.GL_ATI_envmap_bumpmap = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexBumpParameterivATI, try loader("glTexBumpParameterivATI"))) |ptr| {
             self.TexBumpParameterivATI = ptr;
         } else {
-            self.features.GL_ATI_envmap_bumpmap = false;
+            loaded = false;
         }
+        self.features.GL_ATI_envmap_bumpmap = loaded;
+    }
+    fn load_GL_ATI_fragment_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAlphaFragmentOp1ATI, try loader("glAlphaFragmentOp1ATI"))) |ptr| {
             self.AlphaFragmentOp1ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glAlphaFragmentOp2ATI, try loader("glAlphaFragmentOp2ATI"))) |ptr| {
             self.AlphaFragmentOp2ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glAlphaFragmentOp3ATI, try loader("glAlphaFragmentOp3ATI"))) |ptr| {
             self.AlphaFragmentOp3ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBeginFragmentShaderATI, try loader("glBeginFragmentShaderATI"))) |ptr| {
             self.BeginFragmentShaderATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindFragmentShaderATI, try loader("glBindFragmentShaderATI"))) |ptr| {
             self.BindFragmentShaderATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorFragmentOp1ATI, try loader("glColorFragmentOp1ATI"))) |ptr| {
             self.ColorFragmentOp1ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorFragmentOp2ATI, try loader("glColorFragmentOp2ATI"))) |ptr| {
             self.ColorFragmentOp2ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorFragmentOp3ATI, try loader("glColorFragmentOp3ATI"))) |ptr| {
             self.ColorFragmentOp3ATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteFragmentShaderATI, try loader("glDeleteFragmentShaderATI"))) |ptr| {
             self.DeleteFragmentShaderATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndFragmentShaderATI, try loader("glEndFragmentShaderATI"))) |ptr| {
             self.EndFragmentShaderATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFragmentShadersATI, try loader("glGenFragmentShadersATI"))) |ptr| {
             self.GenFragmentShadersATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glPassTexCoordATI, try loader("glPassTexCoordATI"))) |ptr| {
             self.PassTexCoordATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glSampleMapATI, try loader("glSampleMapATI"))) |ptr| {
             self.SampleMapATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glSetFragmentShaderConstantATI, try loader("glSetFragmentShaderConstantATI"))) |ptr| {
             self.SetFragmentShaderConstantATI = ptr;
         } else {
-            self.features.GL_ATI_fragment_shader = false;
+            loaded = false;
         }
+        self.features.GL_ATI_fragment_shader = loaded;
+    }
+    fn load_GL_ATI_map_object_buffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMapObjectBufferATI, try loader("glMapObjectBufferATI"))) |ptr| {
             self.MapObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_map_object_buffer = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapObjectBufferATI, try loader("glUnmapObjectBufferATI"))) |ptr| {
             self.UnmapObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_map_object_buffer = false;
+            loaded = false;
         }
+        self.features.GL_ATI_map_object_buffer = loaded;
+    }
+    fn load_GL_ATI_pn_triangles(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPNTrianglesfATI, try loader("glPNTrianglesfATI"))) |ptr| {
             self.PNTrianglesfATI = ptr;
         } else {
-            self.features.GL_ATI_pn_triangles = false;
+            loaded = false;
         }
         if (@ptrCast(?glPNTrianglesiATI, try loader("glPNTrianglesiATI"))) |ptr| {
             self.PNTrianglesiATI = ptr;
         } else {
-            self.features.GL_ATI_pn_triangles = false;
+            loaded = false;
         }
+        self.features.GL_ATI_pn_triangles = loaded;
+    }
+    fn load_GL_ATI_separate_stencil(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glStencilFuncSeparateATI, try loader("glStencilFuncSeparateATI"))) |ptr| {
             self.StencilFuncSeparateATI = ptr;
         } else {
-            self.features.GL_ATI_separate_stencil = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilOpSeparateATI, try loader("glStencilOpSeparateATI"))) |ptr| {
             self.StencilOpSeparateATI = ptr;
         } else {
-            self.features.GL_ATI_separate_stencil = false;
+            loaded = false;
         }
+        self.features.GL_ATI_separate_stencil = loaded;
+    }
+    fn load_GL_ATI_vertex_array_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glArrayObjectATI, try loader("glArrayObjectATI"))) |ptr| {
             self.ArrayObjectATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFreeObjectBufferATI, try loader("glFreeObjectBufferATI"))) |ptr| {
             self.FreeObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetArrayObjectfvATI, try loader("glGetArrayObjectfvATI"))) |ptr| {
             self.GetArrayObjectfvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetArrayObjectivATI, try loader("glGetArrayObjectivATI"))) |ptr| {
             self.GetArrayObjectivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectBufferfvATI, try loader("glGetObjectBufferfvATI"))) |ptr| {
             self.GetObjectBufferfvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectBufferivATI, try loader("glGetObjectBufferivATI"))) |ptr| {
             self.GetObjectBufferivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantArrayObjectfvATI, try loader("glGetVariantArrayObjectfvATI"))) |ptr| {
             self.GetVariantArrayObjectfvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantArrayObjectivATI, try loader("glGetVariantArrayObjectivATI"))) |ptr| {
             self.GetVariantArrayObjectivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsObjectBufferATI, try loader("glIsObjectBufferATI"))) |ptr| {
             self.IsObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glNewObjectBufferATI, try loader("glNewObjectBufferATI"))) |ptr| {
             self.NewObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glUpdateObjectBufferATI, try loader("glUpdateObjectBufferATI"))) |ptr| {
             self.UpdateObjectBufferATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantArrayObjectATI, try loader("glVariantArrayObjectATI"))) |ptr| {
             self.VariantArrayObjectATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_array_object = false;
+            loaded = false;
         }
+        self.features.GL_ATI_vertex_array_object = loaded;
+    }
+    fn load_GL_ATI_vertex_attrib_array_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVertexAttribArrayObjectfvATI, try loader("glGetVertexAttribArrayObjectfvATI"))) |ptr| {
             self.GetVertexAttribArrayObjectfvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_attrib_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribArrayObjectivATI, try loader("glGetVertexAttribArrayObjectivATI"))) |ptr| {
             self.GetVertexAttribArrayObjectivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_attrib_array_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribArrayObjectATI, try loader("glVertexAttribArrayObjectATI"))) |ptr| {
             self.VertexAttribArrayObjectATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_attrib_array_object = false;
+            loaded = false;
         }
+        self.features.GL_ATI_vertex_attrib_array_object = loaded;
+    }
+    fn load_GL_ATI_vertex_streams(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClientActiveVertexStreamATI, try loader("glClientActiveVertexStreamATI"))) |ptr| {
             self.ClientActiveVertexStreamATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3bATI, try loader("glNormalStream3bATI"))) |ptr| {
             self.NormalStream3bATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3bvATI, try loader("glNormalStream3bvATI"))) |ptr| {
             self.NormalStream3bvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3dATI, try loader("glNormalStream3dATI"))) |ptr| {
             self.NormalStream3dATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3dvATI, try loader("glNormalStream3dvATI"))) |ptr| {
             self.NormalStream3dvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3fATI, try loader("glNormalStream3fATI"))) |ptr| {
             self.NormalStream3fATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3fvATI, try loader("glNormalStream3fvATI"))) |ptr| {
             self.NormalStream3fvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3iATI, try loader("glNormalStream3iATI"))) |ptr| {
             self.NormalStream3iATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3ivATI, try loader("glNormalStream3ivATI"))) |ptr| {
             self.NormalStream3ivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3sATI, try loader("glNormalStream3sATI"))) |ptr| {
             self.NormalStream3sATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalStream3svATI, try loader("glNormalStream3svATI"))) |ptr| {
             self.NormalStream3svATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexBlendEnvfATI, try loader("glVertexBlendEnvfATI"))) |ptr| {
             self.VertexBlendEnvfATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexBlendEnviATI, try loader("glVertexBlendEnviATI"))) |ptr| {
             self.VertexBlendEnviATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1dATI, try loader("glVertexStream1dATI"))) |ptr| {
             self.VertexStream1dATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1dvATI, try loader("glVertexStream1dvATI"))) |ptr| {
             self.VertexStream1dvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1fATI, try loader("glVertexStream1fATI"))) |ptr| {
             self.VertexStream1fATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1fvATI, try loader("glVertexStream1fvATI"))) |ptr| {
             self.VertexStream1fvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1iATI, try loader("glVertexStream1iATI"))) |ptr| {
             self.VertexStream1iATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1ivATI, try loader("glVertexStream1ivATI"))) |ptr| {
             self.VertexStream1ivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1sATI, try loader("glVertexStream1sATI"))) |ptr| {
             self.VertexStream1sATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream1svATI, try loader("glVertexStream1svATI"))) |ptr| {
             self.VertexStream1svATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2dATI, try loader("glVertexStream2dATI"))) |ptr| {
             self.VertexStream2dATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2dvATI, try loader("glVertexStream2dvATI"))) |ptr| {
             self.VertexStream2dvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2fATI, try loader("glVertexStream2fATI"))) |ptr| {
             self.VertexStream2fATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2fvATI, try loader("glVertexStream2fvATI"))) |ptr| {
             self.VertexStream2fvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2iATI, try loader("glVertexStream2iATI"))) |ptr| {
             self.VertexStream2iATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2ivATI, try loader("glVertexStream2ivATI"))) |ptr| {
             self.VertexStream2ivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2sATI, try loader("glVertexStream2sATI"))) |ptr| {
             self.VertexStream2sATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream2svATI, try loader("glVertexStream2svATI"))) |ptr| {
             self.VertexStream2svATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3dATI, try loader("glVertexStream3dATI"))) |ptr| {
             self.VertexStream3dATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3dvATI, try loader("glVertexStream3dvATI"))) |ptr| {
             self.VertexStream3dvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3fATI, try loader("glVertexStream3fATI"))) |ptr| {
             self.VertexStream3fATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3fvATI, try loader("glVertexStream3fvATI"))) |ptr| {
             self.VertexStream3fvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3iATI, try loader("glVertexStream3iATI"))) |ptr| {
             self.VertexStream3iATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3ivATI, try loader("glVertexStream3ivATI"))) |ptr| {
             self.VertexStream3ivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3sATI, try loader("glVertexStream3sATI"))) |ptr| {
             self.VertexStream3sATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream3svATI, try loader("glVertexStream3svATI"))) |ptr| {
             self.VertexStream3svATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4dATI, try loader("glVertexStream4dATI"))) |ptr| {
             self.VertexStream4dATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4dvATI, try loader("glVertexStream4dvATI"))) |ptr| {
             self.VertexStream4dvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4fATI, try loader("glVertexStream4fATI"))) |ptr| {
             self.VertexStream4fATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4fvATI, try loader("glVertexStream4fvATI"))) |ptr| {
             self.VertexStream4fvATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4iATI, try loader("glVertexStream4iATI"))) |ptr| {
             self.VertexStream4iATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4ivATI, try loader("glVertexStream4ivATI"))) |ptr| {
             self.VertexStream4ivATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4sATI, try loader("glVertexStream4sATI"))) |ptr| {
             self.VertexStream4sATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexStream4svATI, try loader("glVertexStream4svATI"))) |ptr| {
             self.VertexStream4svATI = ptr;
         } else {
-            self.features.GL_ATI_vertex_streams = false;
+            loaded = false;
         }
+        self.features.GL_ATI_vertex_streams = loaded;
+    }
+    fn load_GL_EXT_EGL_image_storage(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glEGLImageTargetTexStorageEXT, try loader("glEGLImageTargetTexStorageEXT"))) |ptr| {
             self.EGLImageTargetTexStorageEXT = ptr;
         } else {
-            self.features.GL_EXT_EGL_image_storage = false;
+            loaded = false;
         }
         if (@ptrCast(?glEGLImageTargetTextureStorageEXT, try loader("glEGLImageTargetTextureStorageEXT"))) |ptr| {
             self.EGLImageTargetTextureStorageEXT = ptr;
         } else {
-            self.features.GL_EXT_EGL_image_storage = false;
+            loaded = false;
         }
+        self.features.GL_EXT_EGL_image_storage = loaded;
+    }
+    fn load_GL_EXT_bindable_uniform(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetUniformBufferSizeEXT, try loader("glGetUniformBufferSizeEXT"))) |ptr| {
             self.GetUniformBufferSizeEXT = ptr;
         } else {
-            self.features.GL_EXT_bindable_uniform = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformOffsetEXT, try loader("glGetUniformOffsetEXT"))) |ptr| {
             self.GetUniformOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_bindable_uniform = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformBufferEXT, try loader("glUniformBufferEXT"))) |ptr| {
             self.UniformBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_bindable_uniform = false;
+            loaded = false;
         }
+        self.features.GL_EXT_bindable_uniform = loaded;
+    }
+    fn load_GL_EXT_blend_color(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendColorEXT, try loader("glBlendColorEXT"))) |ptr| {
             self.BlendColorEXT = ptr;
         } else {
-            self.features.GL_EXT_blend_color = false;
+            loaded = false;
         }
+        self.features.GL_EXT_blend_color = loaded;
+    }
+    fn load_GL_EXT_blend_equation_separate(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendEquationSeparateEXT, try loader("glBlendEquationSeparateEXT"))) |ptr| {
             self.BlendEquationSeparateEXT = ptr;
         } else {
-            self.features.GL_EXT_blend_equation_separate = false;
+            loaded = false;
         }
+        self.features.GL_EXT_blend_equation_separate = loaded;
+    }
+    fn load_GL_EXT_blend_func_separate(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendFuncSeparateEXT, try loader("glBlendFuncSeparateEXT"))) |ptr| {
             self.BlendFuncSeparateEXT = ptr;
         } else {
-            self.features.GL_EXT_blend_func_separate = false;
+            loaded = false;
         }
+        self.features.GL_EXT_blend_func_separate = loaded;
+    }
+    fn load_GL_EXT_blend_minmax(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendEquationEXT, try loader("glBlendEquationEXT"))) |ptr| {
             self.BlendEquationEXT = ptr;
         } else {
-            self.features.GL_EXT_blend_minmax = false;
+            loaded = false;
         }
+        self.features.GL_EXT_blend_minmax = loaded;
+    }
+    fn load_GL_EXT_color_subtable(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorSubTableEXT, try loader("glColorSubTableEXT"))) |ptr| {
             self.ColorSubTableEXT = ptr;
         } else {
-            self.features.GL_EXT_color_subtable = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyColorSubTableEXT, try loader("glCopyColorSubTableEXT"))) |ptr| {
             self.CopyColorSubTableEXT = ptr;
         } else {
-            self.features.GL_EXT_color_subtable = false;
+            loaded = false;
         }
+        self.features.GL_EXT_color_subtable = loaded;
+    }
+    fn load_GL_EXT_compiled_vertex_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glLockArraysEXT, try loader("glLockArraysEXT"))) |ptr| {
             self.LockArraysEXT = ptr;
         } else {
-            self.features.GL_EXT_compiled_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnlockArraysEXT, try loader("glUnlockArraysEXT"))) |ptr| {
             self.UnlockArraysEXT = ptr;
         } else {
-            self.features.GL_EXT_compiled_vertex_array = false;
+            loaded = false;
         }
+        self.features.GL_EXT_compiled_vertex_array = loaded;
+    }
+    fn load_GL_EXT_convolution(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glConvolutionFilter1DEXT, try loader("glConvolutionFilter1DEXT"))) |ptr| {
             self.ConvolutionFilter1DEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionFilter2DEXT, try loader("glConvolutionFilter2DEXT"))) |ptr| {
             self.ConvolutionFilter2DEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameterfEXT, try loader("glConvolutionParameterfEXT"))) |ptr| {
             self.ConvolutionParameterfEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameterfvEXT, try loader("glConvolutionParameterfvEXT"))) |ptr| {
             self.ConvolutionParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameteriEXT, try loader("glConvolutionParameteriEXT"))) |ptr| {
             self.ConvolutionParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameterivEXT, try loader("glConvolutionParameterivEXT"))) |ptr| {
             self.ConvolutionParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyConvolutionFilter1DEXT, try loader("glCopyConvolutionFilter1DEXT"))) |ptr| {
             self.CopyConvolutionFilter1DEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyConvolutionFilter2DEXT, try loader("glCopyConvolutionFilter2DEXT"))) |ptr| {
             self.CopyConvolutionFilter2DEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetConvolutionFilterEXT, try loader("glGetConvolutionFilterEXT"))) |ptr| {
             self.GetConvolutionFilterEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetConvolutionParameterfvEXT, try loader("glGetConvolutionParameterfvEXT"))) |ptr| {
             self.GetConvolutionParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetConvolutionParameterivEXT, try loader("glGetConvolutionParameterivEXT"))) |ptr| {
             self.GetConvolutionParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSeparableFilterEXT, try loader("glGetSeparableFilterEXT"))) |ptr| {
             self.GetSeparableFilterEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
         if (@ptrCast(?glSeparableFilter2DEXT, try loader("glSeparableFilter2DEXT"))) |ptr| {
             self.SeparableFilter2DEXT = ptr;
         } else {
-            self.features.GL_EXT_convolution = false;
+            loaded = false;
         }
+        self.features.GL_EXT_convolution = loaded;
+    }
+    fn load_GL_EXT_coordinate_frame(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBinormal3bEXT, try loader("glBinormal3bEXT"))) |ptr| {
             self.Binormal3bEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3bvEXT, try loader("glBinormal3bvEXT"))) |ptr| {
             self.Binormal3bvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3dEXT, try loader("glBinormal3dEXT"))) |ptr| {
             self.Binormal3dEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3dvEXT, try loader("glBinormal3dvEXT"))) |ptr| {
             self.Binormal3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3fEXT, try loader("glBinormal3fEXT"))) |ptr| {
             self.Binormal3fEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3fvEXT, try loader("glBinormal3fvEXT"))) |ptr| {
             self.Binormal3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3iEXT, try loader("glBinormal3iEXT"))) |ptr| {
             self.Binormal3iEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3ivEXT, try loader("glBinormal3ivEXT"))) |ptr| {
             self.Binormal3ivEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3sEXT, try loader("glBinormal3sEXT"))) |ptr| {
             self.Binormal3sEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormal3svEXT, try loader("glBinormal3svEXT"))) |ptr| {
             self.Binormal3svEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glBinormalPointerEXT, try loader("glBinormalPointerEXT"))) |ptr| {
             self.BinormalPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3bEXT, try loader("glTangent3bEXT"))) |ptr| {
             self.Tangent3bEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3bvEXT, try loader("glTangent3bvEXT"))) |ptr| {
             self.Tangent3bvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3dEXT, try loader("glTangent3dEXT"))) |ptr| {
             self.Tangent3dEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3dvEXT, try loader("glTangent3dvEXT"))) |ptr| {
             self.Tangent3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3fEXT, try loader("glTangent3fEXT"))) |ptr| {
             self.Tangent3fEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3fvEXT, try loader("glTangent3fvEXT"))) |ptr| {
             self.Tangent3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3iEXT, try loader("glTangent3iEXT"))) |ptr| {
             self.Tangent3iEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3ivEXT, try loader("glTangent3ivEXT"))) |ptr| {
             self.Tangent3ivEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3sEXT, try loader("glTangent3sEXT"))) |ptr| {
             self.Tangent3sEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangent3svEXT, try loader("glTangent3svEXT"))) |ptr| {
             self.Tangent3svEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
         if (@ptrCast(?glTangentPointerEXT, try loader("glTangentPointerEXT"))) |ptr| {
             self.TangentPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_coordinate_frame = false;
+            loaded = false;
         }
+        self.features.GL_EXT_coordinate_frame = loaded;
+    }
+    fn load_GL_EXT_copy_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyTexImage1DEXT, try loader("glCopyTexImage1DEXT"))) |ptr| {
             self.CopyTexImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_copy_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexImage2DEXT, try loader("glCopyTexImage2DEXT"))) |ptr| {
             self.CopyTexImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_copy_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexSubImage1DEXT, try loader("glCopyTexSubImage1DEXT"))) |ptr| {
             self.CopyTexSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_copy_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexSubImage2DEXT, try loader("glCopyTexSubImage2DEXT"))) |ptr| {
             self.CopyTexSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_copy_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTexSubImage3DEXT, try loader("glCopyTexSubImage3DEXT"))) |ptr| {
             self.CopyTexSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_copy_texture = false;
+            loaded = false;
         }
+        self.features.GL_EXT_copy_texture = loaded;
+    }
+    fn load_GL_EXT_cull_vertex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCullParameterdvEXT, try loader("glCullParameterdvEXT"))) |ptr| {
             self.CullParameterdvEXT = ptr;
         } else {
-            self.features.GL_EXT_cull_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glCullParameterfvEXT, try loader("glCullParameterfvEXT"))) |ptr| {
             self.CullParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_cull_vertex = false;
+            loaded = false;
         }
+        self.features.GL_EXT_cull_vertex = loaded;
+    }
+    fn load_GL_EXT_debug_label(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetObjectLabelEXT, try loader("glGetObjectLabelEXT"))) |ptr| {
             self.GetObjectLabelEXT = ptr;
         } else {
-            self.features.GL_EXT_debug_label = false;
+            loaded = false;
         }
         if (@ptrCast(?glLabelObjectEXT, try loader("glLabelObjectEXT"))) |ptr| {
             self.LabelObjectEXT = ptr;
         } else {
-            self.features.GL_EXT_debug_label = false;
+            loaded = false;
         }
+        self.features.GL_EXT_debug_label = loaded;
+    }
+    fn load_GL_EXT_debug_marker(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glInsertEventMarkerEXT, try loader("glInsertEventMarkerEXT"))) |ptr| {
             self.InsertEventMarkerEXT = ptr;
         } else {
-            self.features.GL_EXT_debug_marker = false;
+            loaded = false;
         }
         if (@ptrCast(?glPopGroupMarkerEXT, try loader("glPopGroupMarkerEXT"))) |ptr| {
             self.PopGroupMarkerEXT = ptr;
         } else {
-            self.features.GL_EXT_debug_marker = false;
+            loaded = false;
         }
         if (@ptrCast(?glPushGroupMarkerEXT, try loader("glPushGroupMarkerEXT"))) |ptr| {
             self.PushGroupMarkerEXT = ptr;
         } else {
-            self.features.GL_EXT_debug_marker = false;
+            loaded = false;
         }
+        self.features.GL_EXT_debug_marker = loaded;
+    }
+    fn load_GL_EXT_depth_bounds_test(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDepthBoundsEXT, try loader("glDepthBoundsEXT"))) |ptr| {
             self.DepthBoundsEXT = ptr;
         } else {
-            self.features.GL_EXT_depth_bounds_test = false;
+            loaded = false;
         }
+        self.features.GL_EXT_depth_bounds_test = loaded;
+    }
+    fn load_GL_EXT_direct_state_access(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindMultiTextureEXT, try loader("glBindMultiTextureEXT"))) |ptr| {
             self.BindMultiTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCheckNamedFramebufferStatusEXT, try loader("glCheckNamedFramebufferStatusEXT"))) |ptr| {
             self.CheckNamedFramebufferStatusEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedBufferDataEXT, try loader("glClearNamedBufferDataEXT"))) |ptr| {
             self.ClearNamedBufferDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearNamedBufferSubDataEXT, try loader("glClearNamedBufferSubDataEXT"))) |ptr| {
             self.ClearNamedBufferSubDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glClientAttribDefaultEXT, try loader("glClientAttribDefaultEXT"))) |ptr| {
             self.ClientAttribDefaultEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexImage1DEXT, try loader("glCompressedMultiTexImage1DEXT"))) |ptr| {
             self.CompressedMultiTexImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexImage2DEXT, try loader("glCompressedMultiTexImage2DEXT"))) |ptr| {
             self.CompressedMultiTexImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexImage3DEXT, try loader("glCompressedMultiTexImage3DEXT"))) |ptr| {
             self.CompressedMultiTexImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexSubImage1DEXT, try loader("glCompressedMultiTexSubImage1DEXT"))) |ptr| {
             self.CompressedMultiTexSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexSubImage2DEXT, try loader("glCompressedMultiTexSubImage2DEXT"))) |ptr| {
             self.CompressedMultiTexSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedMultiTexSubImage3DEXT, try loader("glCompressedMultiTexSubImage3DEXT"))) |ptr| {
             self.CompressedMultiTexSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureImage1DEXT, try loader("glCompressedTextureImage1DEXT"))) |ptr| {
             self.CompressedTextureImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureImage2DEXT, try loader("glCompressedTextureImage2DEXT"))) |ptr| {
             self.CompressedTextureImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureImage3DEXT, try loader("glCompressedTextureImage3DEXT"))) |ptr| {
             self.CompressedTextureImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage1DEXT, try loader("glCompressedTextureSubImage1DEXT"))) |ptr| {
             self.CompressedTextureSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage2DEXT, try loader("glCompressedTextureSubImage2DEXT"))) |ptr| {
             self.CompressedTextureSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompressedTextureSubImage3DEXT, try loader("glCompressedTextureSubImage3DEXT"))) |ptr| {
             self.CompressedTextureSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyMultiTexImage1DEXT, try loader("glCopyMultiTexImage1DEXT"))) |ptr| {
             self.CopyMultiTexImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyMultiTexImage2DEXT, try loader("glCopyMultiTexImage2DEXT"))) |ptr| {
             self.CopyMultiTexImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyMultiTexSubImage1DEXT, try loader("glCopyMultiTexSubImage1DEXT"))) |ptr| {
             self.CopyMultiTexSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyMultiTexSubImage2DEXT, try loader("glCopyMultiTexSubImage2DEXT"))) |ptr| {
             self.CopyMultiTexSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyMultiTexSubImage3DEXT, try loader("glCopyMultiTexSubImage3DEXT"))) |ptr| {
             self.CopyMultiTexSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureImage1DEXT, try loader("glCopyTextureImage1DEXT"))) |ptr| {
             self.CopyTextureImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureImage2DEXT, try loader("glCopyTextureImage2DEXT"))) |ptr| {
             self.CopyTextureImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage1DEXT, try loader("glCopyTextureSubImage1DEXT"))) |ptr| {
             self.CopyTextureSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage2DEXT, try loader("glCopyTextureSubImage2DEXT"))) |ptr| {
             self.CopyTextureSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyTextureSubImage3DEXT, try loader("glCopyTextureSubImage3DEXT"))) |ptr| {
             self.CopyTextureSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableClientStateIndexedEXT, try loader("glDisableClientStateIndexedEXT"))) |ptr| {
             self.DisableClientStateIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableClientStateiEXT, try loader("glDisableClientStateiEXT"))) |ptr| {
             self.DisableClientStateiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableIndexedEXT, try loader("glDisableIndexedEXT"))) |ptr| {
             self.DisableIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexArrayAttribEXT, try loader("glDisableVertexArrayAttribEXT"))) |ptr| {
             self.DisableVertexArrayAttribEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVertexArrayEXT, try loader("glDisableVertexArrayEXT"))) |ptr| {
             self.DisableVertexArrayEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableClientStateIndexedEXT, try loader("glEnableClientStateIndexedEXT"))) |ptr| {
             self.EnableClientStateIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableClientStateiEXT, try loader("glEnableClientStateiEXT"))) |ptr| {
             self.EnableClientStateiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableIndexedEXT, try loader("glEnableIndexedEXT"))) |ptr| {
             self.EnableIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexArrayAttribEXT, try loader("glEnableVertexArrayAttribEXT"))) |ptr| {
             self.EnableVertexArrayAttribEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVertexArrayEXT, try loader("glEnableVertexArrayEXT"))) |ptr| {
             self.EnableVertexArrayEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glFlushMappedNamedBufferRangeEXT, try loader("glFlushMappedNamedBufferRangeEXT"))) |ptr| {
             self.FlushMappedNamedBufferRangeEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferDrawBufferEXT, try loader("glFramebufferDrawBufferEXT"))) |ptr| {
             self.FramebufferDrawBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferDrawBuffersEXT, try loader("glFramebufferDrawBuffersEXT"))) |ptr| {
             self.FramebufferDrawBuffersEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferReadBufferEXT, try loader("glFramebufferReadBufferEXT"))) |ptr| {
             self.FramebufferReadBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateMultiTexMipmapEXT, try loader("glGenerateMultiTexMipmapEXT"))) |ptr| {
             self.GenerateMultiTexMipmapEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateTextureMipmapEXT, try loader("glGenerateTextureMipmapEXT"))) |ptr| {
             self.GenerateTextureMipmapEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBooleanIndexedvEXT, try loader("glGetBooleanIndexedvEXT"))) |ptr| {
             self.GetBooleanIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCompressedMultiTexImageEXT, try loader("glGetCompressedMultiTexImageEXT"))) |ptr| {
             self.GetCompressedMultiTexImageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCompressedTextureImageEXT, try loader("glGetCompressedTextureImageEXT"))) |ptr| {
             self.GetCompressedTextureImageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDoubleIndexedvEXT, try loader("glGetDoubleIndexedvEXT"))) |ptr| {
             self.GetDoubleIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDoublei_vEXT, try loader("glGetDoublei_vEXT"))) |ptr| {
             self.GetDoublei_vEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFloatIndexedvEXT, try loader("glGetFloatIndexedvEXT"))) |ptr| {
             self.GetFloatIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFloati_vEXT, try loader("glGetFloati_vEXT"))) |ptr| {
             self.GetFloati_vEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferParameterivEXT, try loader("glGetFramebufferParameterivEXT"))) |ptr| {
             self.GetFramebufferParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegerIndexedvEXT, try loader("glGetIntegerIndexedvEXT"))) |ptr| {
             self.GetIntegerIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexEnvfvEXT, try loader("glGetMultiTexEnvfvEXT"))) |ptr| {
             self.GetMultiTexEnvfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexEnvivEXT, try loader("glGetMultiTexEnvivEXT"))) |ptr| {
             self.GetMultiTexEnvivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexGendvEXT, try loader("glGetMultiTexGendvEXT"))) |ptr| {
             self.GetMultiTexGendvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexGenfvEXT, try loader("glGetMultiTexGenfvEXT"))) |ptr| {
             self.GetMultiTexGenfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexGenivEXT, try loader("glGetMultiTexGenivEXT"))) |ptr| {
             self.GetMultiTexGenivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexImageEXT, try loader("glGetMultiTexImageEXT"))) |ptr| {
             self.GetMultiTexImageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexLevelParameterfvEXT, try loader("glGetMultiTexLevelParameterfvEXT"))) |ptr| {
             self.GetMultiTexLevelParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexLevelParameterivEXT, try loader("glGetMultiTexLevelParameterivEXT"))) |ptr| {
             self.GetMultiTexLevelParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexParameterIivEXT, try loader("glGetMultiTexParameterIivEXT"))) |ptr| {
             self.GetMultiTexParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexParameterIuivEXT, try loader("glGetMultiTexParameterIuivEXT"))) |ptr| {
             self.GetMultiTexParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexParameterfvEXT, try loader("glGetMultiTexParameterfvEXT"))) |ptr| {
             self.GetMultiTexParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMultiTexParameterivEXT, try loader("glGetMultiTexParameterivEXT"))) |ptr| {
             self.GetMultiTexParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferParameterivEXT, try loader("glGetNamedBufferParameterivEXT"))) |ptr| {
             self.GetNamedBufferParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferPointervEXT, try loader("glGetNamedBufferPointervEXT"))) |ptr| {
             self.GetNamedBufferPointervEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferSubDataEXT, try loader("glGetNamedBufferSubDataEXT"))) |ptr| {
             self.GetNamedBufferSubDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedFramebufferAttachmentParameterivEXT, try loader("glGetNamedFramebufferAttachmentParameterivEXT"))) |ptr| {
             self.GetNamedFramebufferAttachmentParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedFramebufferParameterivEXT, try loader("glGetNamedFramebufferParameterivEXT"))) |ptr| {
             self.GetNamedFramebufferParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramLocalParameterIivEXT, try loader("glGetNamedProgramLocalParameterIivEXT"))) |ptr| {
             self.GetNamedProgramLocalParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramLocalParameterIuivEXT, try loader("glGetNamedProgramLocalParameterIuivEXT"))) |ptr| {
             self.GetNamedProgramLocalParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramLocalParameterdvEXT, try loader("glGetNamedProgramLocalParameterdvEXT"))) |ptr| {
             self.GetNamedProgramLocalParameterdvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramLocalParameterfvEXT, try loader("glGetNamedProgramLocalParameterfvEXT"))) |ptr| {
             self.GetNamedProgramLocalParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramStringEXT, try loader("glGetNamedProgramStringEXT"))) |ptr| {
             self.GetNamedProgramStringEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedProgramivEXT, try loader("glGetNamedProgramivEXT"))) |ptr| {
             self.GetNamedProgramivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedRenderbufferParameterivEXT, try loader("glGetNamedRenderbufferParameterivEXT"))) |ptr| {
             self.GetNamedRenderbufferParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPointerIndexedvEXT, try loader("glGetPointerIndexedvEXT"))) |ptr| {
             self.GetPointerIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPointeri_vEXT, try loader("glGetPointeri_vEXT"))) |ptr| {
             self.GetPointeri_vEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureImageEXT, try loader("glGetTextureImageEXT"))) |ptr| {
             self.GetTextureImageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureLevelParameterfvEXT, try loader("glGetTextureLevelParameterfvEXT"))) |ptr| {
             self.GetTextureLevelParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureLevelParameterivEXT, try loader("glGetTextureLevelParameterivEXT"))) |ptr| {
             self.GetTextureLevelParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterIivEXT, try loader("glGetTextureParameterIivEXT"))) |ptr| {
             self.GetTextureParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterIuivEXT, try loader("glGetTextureParameterIuivEXT"))) |ptr| {
             self.GetTextureParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterfvEXT, try loader("glGetTextureParameterfvEXT"))) |ptr| {
             self.GetTextureParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureParameterivEXT, try loader("glGetTextureParameterivEXT"))) |ptr| {
             self.GetTextureParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayIntegeri_vEXT, try loader("glGetVertexArrayIntegeri_vEXT"))) |ptr| {
             self.GetVertexArrayIntegeri_vEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayIntegervEXT, try loader("glGetVertexArrayIntegervEXT"))) |ptr| {
             self.GetVertexArrayIntegervEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayPointeri_vEXT, try loader("glGetVertexArrayPointeri_vEXT"))) |ptr| {
             self.GetVertexArrayPointeri_vEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexArrayPointervEXT, try loader("glGetVertexArrayPointervEXT"))) |ptr| {
             self.GetVertexArrayPointervEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsEnabledIndexedEXT, try loader("glIsEnabledIndexedEXT"))) |ptr| {
             self.IsEnabledIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapNamedBufferEXT, try loader("glMapNamedBufferEXT"))) |ptr| {
             self.MapNamedBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapNamedBufferRangeEXT, try loader("glMapNamedBufferRangeEXT"))) |ptr| {
             self.MapNamedBufferRangeEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixFrustumEXT, try loader("glMatrixFrustumEXT"))) |ptr| {
             self.MatrixFrustumEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadIdentityEXT, try loader("glMatrixLoadIdentityEXT"))) |ptr| {
             self.MatrixLoadIdentityEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadTransposedEXT, try loader("glMatrixLoadTransposedEXT"))) |ptr| {
             self.MatrixLoadTransposedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadTransposefEXT, try loader("glMatrixLoadTransposefEXT"))) |ptr| {
             self.MatrixLoadTransposefEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoaddEXT, try loader("glMatrixLoaddEXT"))) |ptr| {
             self.MatrixLoaddEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadfEXT, try loader("glMatrixLoadfEXT"))) |ptr| {
             self.MatrixLoadfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultTransposedEXT, try loader("glMatrixMultTransposedEXT"))) |ptr| {
             self.MatrixMultTransposedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultTransposefEXT, try loader("glMatrixMultTransposefEXT"))) |ptr| {
             self.MatrixMultTransposefEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultdEXT, try loader("glMatrixMultdEXT"))) |ptr| {
             self.MatrixMultdEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultfEXT, try loader("glMatrixMultfEXT"))) |ptr| {
             self.MatrixMultfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixOrthoEXT, try loader("glMatrixOrthoEXT"))) |ptr| {
             self.MatrixOrthoEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixPopEXT, try loader("glMatrixPopEXT"))) |ptr| {
             self.MatrixPopEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixPushEXT, try loader("glMatrixPushEXT"))) |ptr| {
             self.MatrixPushEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixRotatedEXT, try loader("glMatrixRotatedEXT"))) |ptr| {
             self.MatrixRotatedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixRotatefEXT, try loader("glMatrixRotatefEXT"))) |ptr| {
             self.MatrixRotatefEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixScaledEXT, try loader("glMatrixScaledEXT"))) |ptr| {
             self.MatrixScaledEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixScalefEXT, try loader("glMatrixScalefEXT"))) |ptr| {
             self.MatrixScalefEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixTranslatedEXT, try loader("glMatrixTranslatedEXT"))) |ptr| {
             self.MatrixTranslatedEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixTranslatefEXT, try loader("glMatrixTranslatefEXT"))) |ptr| {
             self.MatrixTranslatefEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexBufferEXT, try loader("glMultiTexBufferEXT"))) |ptr| {
             self.MultiTexBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoordPointerEXT, try loader("glMultiTexCoordPointerEXT"))) |ptr| {
             self.MultiTexCoordPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexEnvfEXT, try loader("glMultiTexEnvfEXT"))) |ptr| {
             self.MultiTexEnvfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexEnvfvEXT, try loader("glMultiTexEnvfvEXT"))) |ptr| {
             self.MultiTexEnvfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexEnviEXT, try loader("glMultiTexEnviEXT"))) |ptr| {
             self.MultiTexEnviEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexEnvivEXT, try loader("glMultiTexEnvivEXT"))) |ptr| {
             self.MultiTexEnvivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGendEXT, try loader("glMultiTexGendEXT"))) |ptr| {
             self.MultiTexGendEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGendvEXT, try loader("glMultiTexGendvEXT"))) |ptr| {
             self.MultiTexGendvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGenfEXT, try loader("glMultiTexGenfEXT"))) |ptr| {
             self.MultiTexGenfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGenfvEXT, try loader("glMultiTexGenfvEXT"))) |ptr| {
             self.MultiTexGenfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGeniEXT, try loader("glMultiTexGeniEXT"))) |ptr| {
             self.MultiTexGeniEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexGenivEXT, try loader("glMultiTexGenivEXT"))) |ptr| {
             self.MultiTexGenivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexImage1DEXT, try loader("glMultiTexImage1DEXT"))) |ptr| {
             self.MultiTexImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexImage2DEXT, try loader("glMultiTexImage2DEXT"))) |ptr| {
             self.MultiTexImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexImage3DEXT, try loader("glMultiTexImage3DEXT"))) |ptr| {
             self.MultiTexImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameterIivEXT, try loader("glMultiTexParameterIivEXT"))) |ptr| {
             self.MultiTexParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameterIuivEXT, try loader("glMultiTexParameterIuivEXT"))) |ptr| {
             self.MultiTexParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameterfEXT, try loader("glMultiTexParameterfEXT"))) |ptr| {
             self.MultiTexParameterfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameterfvEXT, try loader("glMultiTexParameterfvEXT"))) |ptr| {
             self.MultiTexParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameteriEXT, try loader("glMultiTexParameteriEXT"))) |ptr| {
             self.MultiTexParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexParameterivEXT, try loader("glMultiTexParameterivEXT"))) |ptr| {
             self.MultiTexParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexRenderbufferEXT, try loader("glMultiTexRenderbufferEXT"))) |ptr| {
             self.MultiTexRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexSubImage1DEXT, try loader("glMultiTexSubImage1DEXT"))) |ptr| {
             self.MultiTexSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexSubImage2DEXT, try loader("glMultiTexSubImage2DEXT"))) |ptr| {
             self.MultiTexSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexSubImage3DEXT, try loader("glMultiTexSubImage3DEXT"))) |ptr| {
             self.MultiTexSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferDataEXT, try loader("glNamedBufferDataEXT"))) |ptr| {
             self.NamedBufferDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferStorageEXT, try loader("glNamedBufferStorageEXT"))) |ptr| {
             self.NamedBufferStorageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferSubDataEXT, try loader("glNamedBufferSubDataEXT"))) |ptr| {
             self.NamedBufferSubDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedCopyBufferSubDataEXT, try loader("glNamedCopyBufferSubDataEXT"))) |ptr| {
             self.NamedCopyBufferSubDataEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferParameteriEXT, try loader("glNamedFramebufferParameteriEXT"))) |ptr| {
             self.NamedFramebufferParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferRenderbufferEXT, try loader("glNamedFramebufferRenderbufferEXT"))) |ptr| {
             self.NamedFramebufferRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTexture1DEXT, try loader("glNamedFramebufferTexture1DEXT"))) |ptr| {
             self.NamedFramebufferTexture1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTexture2DEXT, try loader("glNamedFramebufferTexture2DEXT"))) |ptr| {
             self.NamedFramebufferTexture2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTexture3DEXT, try loader("glNamedFramebufferTexture3DEXT"))) |ptr| {
             self.NamedFramebufferTexture3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTextureEXT, try loader("glNamedFramebufferTextureEXT"))) |ptr| {
             self.NamedFramebufferTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTextureFaceEXT, try loader("glNamedFramebufferTextureFaceEXT"))) |ptr| {
             self.NamedFramebufferTextureFaceEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferTextureLayerEXT, try loader("glNamedFramebufferTextureLayerEXT"))) |ptr| {
             self.NamedFramebufferTextureLayerEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameter4dEXT, try loader("glNamedProgramLocalParameter4dEXT"))) |ptr| {
             self.NamedProgramLocalParameter4dEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameter4dvEXT, try loader("glNamedProgramLocalParameter4dvEXT"))) |ptr| {
             self.NamedProgramLocalParameter4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameter4fEXT, try loader("glNamedProgramLocalParameter4fEXT"))) |ptr| {
             self.NamedProgramLocalParameter4fEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameter4fvEXT, try loader("glNamedProgramLocalParameter4fvEXT"))) |ptr| {
             self.NamedProgramLocalParameter4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameterI4iEXT, try loader("glNamedProgramLocalParameterI4iEXT"))) |ptr| {
             self.NamedProgramLocalParameterI4iEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameterI4ivEXT, try loader("glNamedProgramLocalParameterI4ivEXT"))) |ptr| {
             self.NamedProgramLocalParameterI4ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameterI4uiEXT, try loader("glNamedProgramLocalParameterI4uiEXT"))) |ptr| {
             self.NamedProgramLocalParameterI4uiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameterI4uivEXT, try loader("glNamedProgramLocalParameterI4uivEXT"))) |ptr| {
             self.NamedProgramLocalParameterI4uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParameters4fvEXT, try loader("glNamedProgramLocalParameters4fvEXT"))) |ptr| {
             self.NamedProgramLocalParameters4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParametersI4ivEXT, try loader("glNamedProgramLocalParametersI4ivEXT"))) |ptr| {
             self.NamedProgramLocalParametersI4ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramLocalParametersI4uivEXT, try loader("glNamedProgramLocalParametersI4uivEXT"))) |ptr| {
             self.NamedProgramLocalParametersI4uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedProgramStringEXT, try loader("glNamedProgramStringEXT"))) |ptr| {
             self.NamedProgramStringEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedRenderbufferStorageEXT, try loader("glNamedRenderbufferStorageEXT"))) |ptr| {
             self.NamedRenderbufferStorageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedRenderbufferStorageMultisampleCoverageEXT, try loader("glNamedRenderbufferStorageMultisampleCoverageEXT"))) |ptr| {
             self.NamedRenderbufferStorageMultisampleCoverageEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedRenderbufferStorageMultisampleEXT, try loader("glNamedRenderbufferStorageMultisampleEXT"))) |ptr| {
             self.NamedRenderbufferStorageMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1dEXT, try loader("glProgramUniform1dEXT"))) |ptr| {
             self.ProgramUniform1dEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1dvEXT, try loader("glProgramUniform1dvEXT"))) |ptr| {
             self.ProgramUniform1dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1fEXT, try loader("glProgramUniform1fEXT"))) |ptr| {
             self.ProgramUniform1fEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1fvEXT, try loader("glProgramUniform1fvEXT"))) |ptr| {
             self.ProgramUniform1fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1iEXT, try loader("glProgramUniform1iEXT"))) |ptr| {
             self.ProgramUniform1iEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ivEXT, try loader("glProgramUniform1ivEXT"))) |ptr| {
             self.ProgramUniform1ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1uiEXT, try loader("glProgramUniform1uiEXT"))) |ptr| {
             self.ProgramUniform1uiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1uivEXT, try loader("glProgramUniform1uivEXT"))) |ptr| {
             self.ProgramUniform1uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2dEXT, try loader("glProgramUniform2dEXT"))) |ptr| {
             self.ProgramUniform2dEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2dvEXT, try loader("glProgramUniform2dvEXT"))) |ptr| {
             self.ProgramUniform2dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2fEXT, try loader("glProgramUniform2fEXT"))) |ptr| {
             self.ProgramUniform2fEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2fvEXT, try loader("glProgramUniform2fvEXT"))) |ptr| {
             self.ProgramUniform2fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2iEXT, try loader("glProgramUniform2iEXT"))) |ptr| {
             self.ProgramUniform2iEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ivEXT, try loader("glProgramUniform2ivEXT"))) |ptr| {
             self.ProgramUniform2ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2uiEXT, try loader("glProgramUniform2uiEXT"))) |ptr| {
             self.ProgramUniform2uiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2uivEXT, try loader("glProgramUniform2uivEXT"))) |ptr| {
             self.ProgramUniform2uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3dEXT, try loader("glProgramUniform3dEXT"))) |ptr| {
             self.ProgramUniform3dEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3dvEXT, try loader("glProgramUniform3dvEXT"))) |ptr| {
             self.ProgramUniform3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3fEXT, try loader("glProgramUniform3fEXT"))) |ptr| {
             self.ProgramUniform3fEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3fvEXT, try loader("glProgramUniform3fvEXT"))) |ptr| {
             self.ProgramUniform3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3iEXT, try loader("glProgramUniform3iEXT"))) |ptr| {
             self.ProgramUniform3iEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ivEXT, try loader("glProgramUniform3ivEXT"))) |ptr| {
             self.ProgramUniform3ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3uiEXT, try loader("glProgramUniform3uiEXT"))) |ptr| {
             self.ProgramUniform3uiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3uivEXT, try loader("glProgramUniform3uivEXT"))) |ptr| {
             self.ProgramUniform3uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4dEXT, try loader("glProgramUniform4dEXT"))) |ptr| {
             self.ProgramUniform4dEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4dvEXT, try loader("glProgramUniform4dvEXT"))) |ptr| {
             self.ProgramUniform4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4fEXT, try loader("glProgramUniform4fEXT"))) |ptr| {
             self.ProgramUniform4fEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4fvEXT, try loader("glProgramUniform4fvEXT"))) |ptr| {
             self.ProgramUniform4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4iEXT, try loader("glProgramUniform4iEXT"))) |ptr| {
             self.ProgramUniform4iEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ivEXT, try loader("glProgramUniform4ivEXT"))) |ptr| {
             self.ProgramUniform4ivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4uiEXT, try loader("glProgramUniform4uiEXT"))) |ptr| {
             self.ProgramUniform4uiEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4uivEXT, try loader("glProgramUniform4uivEXT"))) |ptr| {
             self.ProgramUniform4uivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2dvEXT, try loader("glProgramUniformMatrix2dvEXT"))) |ptr| {
             self.ProgramUniformMatrix2dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2fvEXT, try loader("glProgramUniformMatrix2fvEXT"))) |ptr| {
             self.ProgramUniformMatrix2fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x3dvEXT, try loader("glProgramUniformMatrix2x3dvEXT"))) |ptr| {
             self.ProgramUniformMatrix2x3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x3fvEXT, try loader("glProgramUniformMatrix2x3fvEXT"))) |ptr| {
             self.ProgramUniformMatrix2x3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x4dvEXT, try loader("glProgramUniformMatrix2x4dvEXT"))) |ptr| {
             self.ProgramUniformMatrix2x4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix2x4fvEXT, try loader("glProgramUniformMatrix2x4fvEXT"))) |ptr| {
             self.ProgramUniformMatrix2x4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3dvEXT, try loader("glProgramUniformMatrix3dvEXT"))) |ptr| {
             self.ProgramUniformMatrix3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3fvEXT, try loader("glProgramUniformMatrix3fvEXT"))) |ptr| {
             self.ProgramUniformMatrix3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x2dvEXT, try loader("glProgramUniformMatrix3x2dvEXT"))) |ptr| {
             self.ProgramUniformMatrix3x2dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x2fvEXT, try loader("glProgramUniformMatrix3x2fvEXT"))) |ptr| {
             self.ProgramUniformMatrix3x2fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x4dvEXT, try loader("glProgramUniformMatrix3x4dvEXT"))) |ptr| {
             self.ProgramUniformMatrix3x4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix3x4fvEXT, try loader("glProgramUniformMatrix3x4fvEXT"))) |ptr| {
             self.ProgramUniformMatrix3x4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4dvEXT, try loader("glProgramUniformMatrix4dvEXT"))) |ptr| {
             self.ProgramUniformMatrix4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4fvEXT, try loader("glProgramUniformMatrix4fvEXT"))) |ptr| {
             self.ProgramUniformMatrix4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x2dvEXT, try loader("glProgramUniformMatrix4x2dvEXT"))) |ptr| {
             self.ProgramUniformMatrix4x2dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x2fvEXT, try loader("glProgramUniformMatrix4x2fvEXT"))) |ptr| {
             self.ProgramUniformMatrix4x2fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x3dvEXT, try loader("glProgramUniformMatrix4x3dvEXT"))) |ptr| {
             self.ProgramUniformMatrix4x3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformMatrix4x3fvEXT, try loader("glProgramUniformMatrix4x3fvEXT"))) |ptr| {
             self.ProgramUniformMatrix4x3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glPushClientAttribDefaultEXT, try loader("glPushClientAttribDefaultEXT"))) |ptr| {
             self.PushClientAttribDefaultEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureBufferEXT, try loader("glTextureBufferEXT"))) |ptr| {
             self.TextureBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureBufferRangeEXT, try loader("glTextureBufferRangeEXT"))) |ptr| {
             self.TextureBufferRangeEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage1DEXT, try loader("glTextureImage1DEXT"))) |ptr| {
             self.TextureImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage2DEXT, try loader("glTextureImage2DEXT"))) |ptr| {
             self.TextureImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage3DEXT, try loader("glTextureImage3DEXT"))) |ptr| {
             self.TextureImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexturePageCommitmentEXT, try loader("glTexturePageCommitmentEXT"))) |ptr| {
             self.TexturePageCommitmentEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterIivEXT, try loader("glTextureParameterIivEXT"))) |ptr| {
             self.TextureParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterIuivEXT, try loader("glTextureParameterIuivEXT"))) |ptr| {
             self.TextureParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterfEXT, try loader("glTextureParameterfEXT"))) |ptr| {
             self.TextureParameterfEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterfvEXT, try loader("glTextureParameterfvEXT"))) |ptr| {
             self.TextureParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameteriEXT, try loader("glTextureParameteriEXT"))) |ptr| {
             self.TextureParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureParameterivEXT, try loader("glTextureParameterivEXT"))) |ptr| {
             self.TextureParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureRenderbufferEXT, try loader("glTextureRenderbufferEXT"))) |ptr| {
             self.TextureRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage1DEXT, try loader("glTextureStorage1DEXT"))) |ptr| {
             self.TextureStorage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage2DEXT, try loader("glTextureStorage2DEXT"))) |ptr| {
             self.TextureStorage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage2DMultisampleEXT, try loader("glTextureStorage2DMultisampleEXT"))) |ptr| {
             self.TextureStorage2DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage3DEXT, try loader("glTextureStorage3DEXT"))) |ptr| {
             self.TextureStorage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorage3DMultisampleEXT, try loader("glTextureStorage3DMultisampleEXT"))) |ptr| {
             self.TextureStorage3DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage1DEXT, try loader("glTextureSubImage1DEXT"))) |ptr| {
             self.TextureSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage2DEXT, try loader("glTextureSubImage2DEXT"))) |ptr| {
             self.TextureSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureSubImage3DEXT, try loader("glTextureSubImage3DEXT"))) |ptr| {
             self.TextureSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapNamedBufferEXT, try loader("glUnmapNamedBufferEXT"))) |ptr| {
             self.UnmapNamedBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayBindVertexBufferEXT, try loader("glVertexArrayBindVertexBufferEXT"))) |ptr| {
             self.VertexArrayBindVertexBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayColorOffsetEXT, try loader("glVertexArrayColorOffsetEXT"))) |ptr| {
             self.VertexArrayColorOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayEdgeFlagOffsetEXT, try loader("glVertexArrayEdgeFlagOffsetEXT"))) |ptr| {
             self.VertexArrayEdgeFlagOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayFogCoordOffsetEXT, try loader("glVertexArrayFogCoordOffsetEXT"))) |ptr| {
             self.VertexArrayFogCoordOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayIndexOffsetEXT, try loader("glVertexArrayIndexOffsetEXT"))) |ptr| {
             self.VertexArrayIndexOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayMultiTexCoordOffsetEXT, try loader("glVertexArrayMultiTexCoordOffsetEXT"))) |ptr| {
             self.VertexArrayMultiTexCoordOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayNormalOffsetEXT, try loader("glVertexArrayNormalOffsetEXT"))) |ptr| {
             self.VertexArrayNormalOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArraySecondaryColorOffsetEXT, try loader("glVertexArraySecondaryColorOffsetEXT"))) |ptr| {
             self.VertexArraySecondaryColorOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayTexCoordOffsetEXT, try loader("glVertexArrayTexCoordOffsetEXT"))) |ptr| {
             self.VertexArrayTexCoordOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribBindingEXT, try loader("glVertexArrayVertexAttribBindingEXT"))) |ptr| {
             self.VertexArrayVertexAttribBindingEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribDivisorEXT, try loader("glVertexArrayVertexAttribDivisorEXT"))) |ptr| {
             self.VertexArrayVertexAttribDivisorEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribFormatEXT, try loader("glVertexArrayVertexAttribFormatEXT"))) |ptr| {
             self.VertexArrayVertexAttribFormatEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribIFormatEXT, try loader("glVertexArrayVertexAttribIFormatEXT"))) |ptr| {
             self.VertexArrayVertexAttribIFormatEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribIOffsetEXT, try loader("glVertexArrayVertexAttribIOffsetEXT"))) |ptr| {
             self.VertexArrayVertexAttribIOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribLFormatEXT, try loader("glVertexArrayVertexAttribLFormatEXT"))) |ptr| {
             self.VertexArrayVertexAttribLFormatEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribLOffsetEXT, try loader("glVertexArrayVertexAttribLOffsetEXT"))) |ptr| {
             self.VertexArrayVertexAttribLOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexAttribOffsetEXT, try loader("glVertexArrayVertexAttribOffsetEXT"))) |ptr| {
             self.VertexArrayVertexAttribOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexBindingDivisorEXT, try loader("glVertexArrayVertexBindingDivisorEXT"))) |ptr| {
             self.VertexArrayVertexBindingDivisorEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayVertexOffsetEXT, try loader("glVertexArrayVertexOffsetEXT"))) |ptr| {
             self.VertexArrayVertexOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_direct_state_access = false;
+            loaded = false;
         }
+        self.features.GL_EXT_direct_state_access = loaded;
+    }
+    fn load_GL_EXT_draw_buffers2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorMaskIndexedEXT, try loader("glColorMaskIndexedEXT"))) |ptr| {
             self.ColorMaskIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableIndexedEXT, try loader("glDisableIndexedEXT"))) |ptr| {
             self.DisableIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableIndexedEXT, try loader("glEnableIndexedEXT"))) |ptr| {
             self.EnableIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetBooleanIndexedvEXT, try loader("glGetBooleanIndexedvEXT"))) |ptr| {
             self.GetBooleanIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegerIndexedvEXT, try loader("glGetIntegerIndexedvEXT"))) |ptr| {
             self.GetIntegerIndexedvEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsEnabledIndexedEXT, try loader("glIsEnabledIndexedEXT"))) |ptr| {
             self.IsEnabledIndexedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_buffers2 = false;
+            loaded = false;
         }
+        self.features.GL_EXT_draw_buffers2 = loaded;
+    }
+    fn load_GL_EXT_draw_instanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawArraysInstancedEXT, try loader("glDrawArraysInstancedEXT"))) |ptr| {
             self.DrawArraysInstancedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_instanced = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawElementsInstancedEXT, try loader("glDrawElementsInstancedEXT"))) |ptr| {
             self.DrawElementsInstancedEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_instanced = false;
+            loaded = false;
         }
+        self.features.GL_EXT_draw_instanced = loaded;
+    }
+    fn load_GL_EXT_draw_range_elements(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawRangeElementsEXT, try loader("glDrawRangeElementsEXT"))) |ptr| {
             self.DrawRangeElementsEXT = ptr;
         } else {
-            self.features.GL_EXT_draw_range_elements = false;
+            loaded = false;
         }
+        self.features.GL_EXT_draw_range_elements = loaded;
+    }
+    fn load_GL_EXT_external_buffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferStorageExternalEXT, try loader("glBufferStorageExternalEXT"))) |ptr| {
             self.BufferStorageExternalEXT = ptr;
         } else {
-            self.features.GL_EXT_external_buffer = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferStorageExternalEXT, try loader("glNamedBufferStorageExternalEXT"))) |ptr| {
             self.NamedBufferStorageExternalEXT = ptr;
         } else {
-            self.features.GL_EXT_external_buffer = false;
+            loaded = false;
         }
+        self.features.GL_EXT_external_buffer = loaded;
+    }
+    fn load_GL_EXT_fog_coord(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFogCoordPointerEXT, try loader("glFogCoordPointerEXT"))) |ptr| {
             self.FogCoordPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_fog_coord = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoorddEXT, try loader("glFogCoorddEXT"))) |ptr| {
             self.FogCoorddEXT = ptr;
         } else {
-            self.features.GL_EXT_fog_coord = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoorddvEXT, try loader("glFogCoorddvEXT"))) |ptr| {
             self.FogCoorddvEXT = ptr;
         } else {
-            self.features.GL_EXT_fog_coord = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordfEXT, try loader("glFogCoordfEXT"))) |ptr| {
             self.FogCoordfEXT = ptr;
         } else {
-            self.features.GL_EXT_fog_coord = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordfvEXT, try loader("glFogCoordfvEXT"))) |ptr| {
             self.FogCoordfvEXT = ptr;
         } else {
-            self.features.GL_EXT_fog_coord = false;
+            loaded = false;
         }
+        self.features.GL_EXT_fog_coord = loaded;
+    }
+    fn load_GL_EXT_framebuffer_blit(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlitFramebufferEXT, try loader("glBlitFramebufferEXT"))) |ptr| {
             self.BlitFramebufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_blit = false;
+            loaded = false;
         }
+        self.features.GL_EXT_framebuffer_blit = loaded;
+    }
+    fn load_GL_EXT_framebuffer_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glRenderbufferStorageMultisampleEXT, try loader("glRenderbufferStorageMultisampleEXT"))) |ptr| {
             self.RenderbufferStorageMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_multisample = false;
+            loaded = false;
         }
+        self.features.GL_EXT_framebuffer_multisample = loaded;
+    }
+    fn load_GL_EXT_framebuffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindFramebufferEXT, try loader("glBindFramebufferEXT"))) |ptr| {
             self.BindFramebufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindRenderbufferEXT, try loader("glBindRenderbufferEXT"))) |ptr| {
             self.BindRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glCheckFramebufferStatusEXT, try loader("glCheckFramebufferStatusEXT"))) |ptr| {
             self.CheckFramebufferStatusEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteFramebuffersEXT, try loader("glDeleteFramebuffersEXT"))) |ptr| {
             self.DeleteFramebuffersEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteRenderbuffersEXT, try loader("glDeleteRenderbuffersEXT"))) |ptr| {
             self.DeleteRenderbuffersEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferRenderbufferEXT, try loader("glFramebufferRenderbufferEXT"))) |ptr| {
             self.FramebufferRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture1DEXT, try loader("glFramebufferTexture1DEXT"))) |ptr| {
             self.FramebufferTexture1DEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture2DEXT, try loader("glFramebufferTexture2DEXT"))) |ptr| {
             self.FramebufferTexture2DEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTexture3DEXT, try loader("glFramebufferTexture3DEXT"))) |ptr| {
             self.FramebufferTexture3DEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFramebuffersEXT, try loader("glGenFramebuffersEXT"))) |ptr| {
             self.GenFramebuffersEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenRenderbuffersEXT, try loader("glGenRenderbuffersEXT"))) |ptr| {
             self.GenRenderbuffersEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenerateMipmapEXT, try loader("glGenerateMipmapEXT"))) |ptr| {
             self.GenerateMipmapEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferAttachmentParameterivEXT, try loader("glGetFramebufferAttachmentParameterivEXT"))) |ptr| {
             self.GetFramebufferAttachmentParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetRenderbufferParameterivEXT, try loader("glGetRenderbufferParameterivEXT"))) |ptr| {
             self.GetRenderbufferParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsFramebufferEXT, try loader("glIsFramebufferEXT"))) |ptr| {
             self.IsFramebufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsRenderbufferEXT, try loader("glIsRenderbufferEXT"))) |ptr| {
             self.IsRenderbufferEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderbufferStorageEXT, try loader("glRenderbufferStorageEXT"))) |ptr| {
             self.RenderbufferStorageEXT = ptr;
         } else {
-            self.features.GL_EXT_framebuffer_object = false;
+            loaded = false;
         }
+        self.features.GL_EXT_framebuffer_object = loaded;
+    }
+    fn load_GL_EXT_geometry_shader4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glProgramParameteriEXT, try loader("glProgramParameteriEXT"))) |ptr| {
             self.ProgramParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_geometry_shader4 = false;
+            loaded = false;
         }
+        self.features.GL_EXT_geometry_shader4 = loaded;
+    }
+    fn load_GL_EXT_gpu_program_parameters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glProgramEnvParameters4fvEXT, try loader("glProgramEnvParameters4fvEXT"))) |ptr| {
             self.ProgramEnvParameters4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_program_parameters = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameters4fvEXT, try loader("glProgramLocalParameters4fvEXT"))) |ptr| {
             self.ProgramLocalParameters4fvEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_program_parameters = false;
+            loaded = false;
         }
+        self.features.GL_EXT_gpu_program_parameters = loaded;
+    }
+    fn load_GL_EXT_gpu_shader4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindFragDataLocationEXT, try loader("glBindFragDataLocationEXT"))) |ptr| {
             self.BindFragDataLocationEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragDataLocationEXT, try loader("glGetFragDataLocationEXT"))) |ptr| {
             self.GetFragDataLocationEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformuivEXT, try loader("glGetUniformuivEXT"))) |ptr| {
             self.GetUniformuivEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1uiEXT, try loader("glUniform1uiEXT"))) |ptr| {
             self.Uniform1uiEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1uivEXT, try loader("glUniform1uivEXT"))) |ptr| {
             self.Uniform1uivEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2uiEXT, try loader("glUniform2uiEXT"))) |ptr| {
             self.Uniform2uiEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2uivEXT, try loader("glUniform2uivEXT"))) |ptr| {
             self.Uniform2uivEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3uiEXT, try loader("glUniform3uiEXT"))) |ptr| {
             self.Uniform3uiEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3uivEXT, try loader("glUniform3uivEXT"))) |ptr| {
             self.Uniform3uivEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4uiEXT, try loader("glUniform4uiEXT"))) |ptr| {
             self.Uniform4uiEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4uivEXT, try loader("glUniform4uivEXT"))) |ptr| {
             self.Uniform4uivEXT = ptr;
         } else {
-            self.features.GL_EXT_gpu_shader4 = false;
+            loaded = false;
         }
+        self.features.GL_EXT_gpu_shader4 = loaded;
+    }
+    fn load_GL_EXT_histogram(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetHistogramEXT, try loader("glGetHistogramEXT"))) |ptr| {
             self.GetHistogramEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetHistogramParameterfvEXT, try loader("glGetHistogramParameterfvEXT"))) |ptr| {
             self.GetHistogramParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetHistogramParameterivEXT, try loader("glGetHistogramParameterivEXT"))) |ptr| {
             self.GetHistogramParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMinmaxEXT, try loader("glGetMinmaxEXT"))) |ptr| {
             self.GetMinmaxEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMinmaxParameterfvEXT, try loader("glGetMinmaxParameterfvEXT"))) |ptr| {
             self.GetMinmaxParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMinmaxParameterivEXT, try loader("glGetMinmaxParameterivEXT"))) |ptr| {
             self.GetMinmaxParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glHistogramEXT, try loader("glHistogramEXT"))) |ptr| {
             self.HistogramEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glMinmaxEXT, try loader("glMinmaxEXT"))) |ptr| {
             self.MinmaxEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glResetHistogramEXT, try loader("glResetHistogramEXT"))) |ptr| {
             self.ResetHistogramEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
         if (@ptrCast(?glResetMinmaxEXT, try loader("glResetMinmaxEXT"))) |ptr| {
             self.ResetMinmaxEXT = ptr;
         } else {
-            self.features.GL_EXT_histogram = false;
+            loaded = false;
         }
+        self.features.GL_EXT_histogram = loaded;
+    }
+    fn load_GL_EXT_index_func(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glIndexFuncEXT, try loader("glIndexFuncEXT"))) |ptr| {
             self.IndexFuncEXT = ptr;
         } else {
-            self.features.GL_EXT_index_func = false;
+            loaded = false;
         }
+        self.features.GL_EXT_index_func = loaded;
+    }
+    fn load_GL_EXT_index_material(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glIndexMaterialEXT, try loader("glIndexMaterialEXT"))) |ptr| {
             self.IndexMaterialEXT = ptr;
         } else {
-            self.features.GL_EXT_index_material = false;
+            loaded = false;
         }
+        self.features.GL_EXT_index_material = loaded;
+    }
+    fn load_GL_EXT_light_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glApplyTextureEXT, try loader("glApplyTextureEXT"))) |ptr| {
             self.ApplyTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_light_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureLightEXT, try loader("glTextureLightEXT"))) |ptr| {
             self.TextureLightEXT = ptr;
         } else {
-            self.features.GL_EXT_light_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureMaterialEXT, try loader("glTextureMaterialEXT"))) |ptr| {
             self.TextureMaterialEXT = ptr;
         } else {
-            self.features.GL_EXT_light_texture = false;
+            loaded = false;
         }
+        self.features.GL_EXT_light_texture = loaded;
+    }
+    fn load_GL_EXT_memory_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferStorageMemEXT, try loader("glBufferStorageMemEXT"))) |ptr| {
             self.BufferStorageMemEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateMemoryObjectsEXT, try loader("glCreateMemoryObjectsEXT"))) |ptr| {
             self.CreateMemoryObjectsEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteMemoryObjectsEXT, try loader("glDeleteMemoryObjectsEXT"))) |ptr| {
             self.DeleteMemoryObjectsEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMemoryObjectParameterivEXT, try loader("glGetMemoryObjectParameterivEXT"))) |ptr| {
             self.GetMemoryObjectParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUnsignedBytei_vEXT, try loader("glGetUnsignedBytei_vEXT"))) |ptr| {
             self.GetUnsignedBytei_vEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUnsignedBytevEXT, try loader("glGetUnsignedBytevEXT"))) |ptr| {
             self.GetUnsignedBytevEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsMemoryObjectEXT, try loader("glIsMemoryObjectEXT"))) |ptr| {
             self.IsMemoryObjectEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glMemoryObjectParameterivEXT, try loader("glMemoryObjectParameterivEXT"))) |ptr| {
             self.MemoryObjectParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferStorageMemEXT, try loader("glNamedBufferStorageMemEXT"))) |ptr| {
             self.NamedBufferStorageMemEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorageMem1DEXT, try loader("glTexStorageMem1DEXT"))) |ptr| {
             self.TexStorageMem1DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorageMem2DEXT, try loader("glTexStorageMem2DEXT"))) |ptr| {
             self.TexStorageMem2DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorageMem2DMultisampleEXT, try loader("glTexStorageMem2DMultisampleEXT"))) |ptr| {
             self.TexStorageMem2DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorageMem3DEXT, try loader("glTexStorageMem3DEXT"))) |ptr| {
             self.TexStorageMem3DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexStorageMem3DMultisampleEXT, try loader("glTexStorageMem3DMultisampleEXT"))) |ptr| {
             self.TexStorageMem3DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageMem1DEXT, try loader("glTextureStorageMem1DEXT"))) |ptr| {
             self.TextureStorageMem1DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageMem2DEXT, try loader("glTextureStorageMem2DEXT"))) |ptr| {
             self.TextureStorageMem2DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageMem2DMultisampleEXT, try loader("glTextureStorageMem2DMultisampleEXT"))) |ptr| {
             self.TextureStorageMem2DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageMem3DEXT, try loader("glTextureStorageMem3DEXT"))) |ptr| {
             self.TextureStorageMem3DEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureStorageMem3DMultisampleEXT, try loader("glTextureStorageMem3DMultisampleEXT"))) |ptr| {
             self.TextureStorageMem3DMultisampleEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object = false;
+            loaded = false;
         }
+        self.features.GL_EXT_memory_object = loaded;
+    }
+    fn load_GL_EXT_memory_object_fd(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glImportMemoryFdEXT, try loader("glImportMemoryFdEXT"))) |ptr| {
             self.ImportMemoryFdEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object_fd = false;
+            loaded = false;
         }
+        self.features.GL_EXT_memory_object_fd = loaded;
+    }
+    fn load_GL_EXT_memory_object_win32(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glImportMemoryWin32HandleEXT, try loader("glImportMemoryWin32HandleEXT"))) |ptr| {
             self.ImportMemoryWin32HandleEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object_win32 = false;
+            loaded = false;
         }
         if (@ptrCast(?glImportMemoryWin32NameEXT, try loader("glImportMemoryWin32NameEXT"))) |ptr| {
             self.ImportMemoryWin32NameEXT = ptr;
         } else {
-            self.features.GL_EXT_memory_object_win32 = false;
+            loaded = false;
         }
+        self.features.GL_EXT_memory_object_win32 = loaded;
+    }
+    fn load_GL_EXT_multi_draw_arrays(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysEXT, try loader("glMultiDrawArraysEXT"))) |ptr| {
             self.MultiDrawArraysEXT = ptr;
         } else {
-            self.features.GL_EXT_multi_draw_arrays = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsEXT, try loader("glMultiDrawElementsEXT"))) |ptr| {
             self.MultiDrawElementsEXT = ptr;
         } else {
-            self.features.GL_EXT_multi_draw_arrays = false;
+            loaded = false;
         }
+        self.features.GL_EXT_multi_draw_arrays = loaded;
+    }
+    fn load_GL_EXT_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSampleMaskEXT, try loader("glSampleMaskEXT"))) |ptr| {
             self.SampleMaskEXT = ptr;
         } else {
-            self.features.GL_EXT_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplePatternEXT, try loader("glSamplePatternEXT"))) |ptr| {
             self.SamplePatternEXT = ptr;
         } else {
-            self.features.GL_EXT_multisample = false;
+            loaded = false;
         }
+        self.features.GL_EXT_multisample = loaded;
+    }
+    fn load_GL_EXT_paletted_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorTableEXT, try loader("glColorTableEXT"))) |ptr| {
             self.ColorTableEXT = ptr;
         } else {
-            self.features.GL_EXT_paletted_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableEXT, try loader("glGetColorTableEXT"))) |ptr| {
             self.GetColorTableEXT = ptr;
         } else {
-            self.features.GL_EXT_paletted_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableParameterfvEXT, try loader("glGetColorTableParameterfvEXT"))) |ptr| {
             self.GetColorTableParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_paletted_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableParameterivEXT, try loader("glGetColorTableParameterivEXT"))) |ptr| {
             self.GetColorTableParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_paletted_texture = false;
+            loaded = false;
         }
+        self.features.GL_EXT_paletted_texture = loaded;
+    }
+    fn load_GL_EXT_pixel_transform(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetPixelTransformParameterfvEXT, try loader("glGetPixelTransformParameterfvEXT"))) |ptr| {
             self.GetPixelTransformParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPixelTransformParameterivEXT, try loader("glGetPixelTransformParameterivEXT"))) |ptr| {
             self.GetPixelTransformParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTransformParameterfEXT, try loader("glPixelTransformParameterfEXT"))) |ptr| {
             self.PixelTransformParameterfEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTransformParameterfvEXT, try loader("glPixelTransformParameterfvEXT"))) |ptr| {
             self.PixelTransformParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTransformParameteriEXT, try loader("glPixelTransformParameteriEXT"))) |ptr| {
             self.PixelTransformParameteriEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTransformParameterivEXT, try loader("glPixelTransformParameterivEXT"))) |ptr| {
             self.PixelTransformParameterivEXT = ptr;
         } else {
-            self.features.GL_EXT_pixel_transform = false;
+            loaded = false;
         }
+        self.features.GL_EXT_pixel_transform = loaded;
+    }
+    fn load_GL_EXT_point_parameters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPointParameterfEXT, try loader("glPointParameterfEXT"))) |ptr| {
             self.PointParameterfEXT = ptr;
         } else {
-            self.features.GL_EXT_point_parameters = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterfvEXT, try loader("glPointParameterfvEXT"))) |ptr| {
             self.PointParameterfvEXT = ptr;
         } else {
-            self.features.GL_EXT_point_parameters = false;
+            loaded = false;
         }
+        self.features.GL_EXT_point_parameters = loaded;
+    }
+    fn load_GL_EXT_polygon_offset(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPolygonOffsetEXT, try loader("glPolygonOffsetEXT"))) |ptr| {
             self.PolygonOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_polygon_offset = false;
+            loaded = false;
         }
+        self.features.GL_EXT_polygon_offset = loaded;
+    }
+    fn load_GL_EXT_polygon_offset_clamp(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPolygonOffsetClampEXT, try loader("glPolygonOffsetClampEXT"))) |ptr| {
             self.PolygonOffsetClampEXT = ptr;
         } else {
-            self.features.GL_EXT_polygon_offset_clamp = false;
+            loaded = false;
         }
+        self.features.GL_EXT_polygon_offset_clamp = loaded;
+    }
+    fn load_GL_EXT_provoking_vertex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glProvokingVertexEXT, try loader("glProvokingVertexEXT"))) |ptr| {
             self.ProvokingVertexEXT = ptr;
         } else {
-            self.features.GL_EXT_provoking_vertex = false;
+            loaded = false;
         }
+        self.features.GL_EXT_provoking_vertex = loaded;
+    }
+    fn load_GL_EXT_raster_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glRasterSamplesEXT, try loader("glRasterSamplesEXT"))) |ptr| {
             self.RasterSamplesEXT = ptr;
         } else {
-            self.features.GL_EXT_raster_multisample = false;
+            loaded = false;
         }
+        self.features.GL_EXT_raster_multisample = loaded;
+    }
+    fn load_GL_EXT_secondary_color(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSecondaryColor3bEXT, try loader("glSecondaryColor3bEXT"))) |ptr| {
             self.SecondaryColor3bEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3bvEXT, try loader("glSecondaryColor3bvEXT"))) |ptr| {
             self.SecondaryColor3bvEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3dEXT, try loader("glSecondaryColor3dEXT"))) |ptr| {
             self.SecondaryColor3dEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3dvEXT, try loader("glSecondaryColor3dvEXT"))) |ptr| {
             self.SecondaryColor3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3fEXT, try loader("glSecondaryColor3fEXT"))) |ptr| {
             self.SecondaryColor3fEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3fvEXT, try loader("glSecondaryColor3fvEXT"))) |ptr| {
             self.SecondaryColor3fvEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3iEXT, try loader("glSecondaryColor3iEXT"))) |ptr| {
             self.SecondaryColor3iEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3ivEXT, try loader("glSecondaryColor3ivEXT"))) |ptr| {
             self.SecondaryColor3ivEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3sEXT, try loader("glSecondaryColor3sEXT"))) |ptr| {
             self.SecondaryColor3sEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3svEXT, try loader("glSecondaryColor3svEXT"))) |ptr| {
             self.SecondaryColor3svEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3ubEXT, try loader("glSecondaryColor3ubEXT"))) |ptr| {
             self.SecondaryColor3ubEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3ubvEXT, try loader("glSecondaryColor3ubvEXT"))) |ptr| {
             self.SecondaryColor3ubvEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3uiEXT, try loader("glSecondaryColor3uiEXT"))) |ptr| {
             self.SecondaryColor3uiEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3uivEXT, try loader("glSecondaryColor3uivEXT"))) |ptr| {
             self.SecondaryColor3uivEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3usEXT, try loader("glSecondaryColor3usEXT"))) |ptr| {
             self.SecondaryColor3usEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3usvEXT, try loader("glSecondaryColor3usvEXT"))) |ptr| {
             self.SecondaryColor3usvEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColorPointerEXT, try loader("glSecondaryColorPointerEXT"))) |ptr| {
             self.SecondaryColorPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_secondary_color = false;
+            loaded = false;
         }
+        self.features.GL_EXT_secondary_color = loaded;
+    }
+    fn load_GL_EXT_semaphore(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeleteSemaphoresEXT, try loader("glDeleteSemaphoresEXT"))) |ptr| {
             self.DeleteSemaphoresEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenSemaphoresEXT, try loader("glGenSemaphoresEXT"))) |ptr| {
             self.GenSemaphoresEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSemaphoreParameterui64vEXT, try loader("glGetSemaphoreParameterui64vEXT"))) |ptr| {
             self.GetSemaphoreParameterui64vEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUnsignedBytei_vEXT, try loader("glGetUnsignedBytei_vEXT"))) |ptr| {
             self.GetUnsignedBytei_vEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUnsignedBytevEXT, try loader("glGetUnsignedBytevEXT"))) |ptr| {
             self.GetUnsignedBytevEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsSemaphoreEXT, try loader("glIsSemaphoreEXT"))) |ptr| {
             self.IsSemaphoreEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glSemaphoreParameterui64vEXT, try loader("glSemaphoreParameterui64vEXT"))) |ptr| {
             self.SemaphoreParameterui64vEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glSignalSemaphoreEXT, try loader("glSignalSemaphoreEXT"))) |ptr| {
             self.SignalSemaphoreEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glWaitSemaphoreEXT, try loader("glWaitSemaphoreEXT"))) |ptr| {
             self.WaitSemaphoreEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore = false;
+            loaded = false;
         }
+        self.features.GL_EXT_semaphore = loaded;
+    }
+    fn load_GL_EXT_semaphore_fd(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glImportSemaphoreFdEXT, try loader("glImportSemaphoreFdEXT"))) |ptr| {
             self.ImportSemaphoreFdEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore_fd = false;
+            loaded = false;
         }
+        self.features.GL_EXT_semaphore_fd = loaded;
+    }
+    fn load_GL_EXT_semaphore_win32(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glImportSemaphoreWin32HandleEXT, try loader("glImportSemaphoreWin32HandleEXT"))) |ptr| {
             self.ImportSemaphoreWin32HandleEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore_win32 = false;
+            loaded = false;
         }
         if (@ptrCast(?glImportSemaphoreWin32NameEXT, try loader("glImportSemaphoreWin32NameEXT"))) |ptr| {
             self.ImportSemaphoreWin32NameEXT = ptr;
         } else {
-            self.features.GL_EXT_semaphore_win32 = false;
+            loaded = false;
         }
+        self.features.GL_EXT_semaphore_win32 = loaded;
+    }
+    fn load_GL_EXT_separate_shader_objects(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveProgramEXT, try loader("glActiveProgramEXT"))) |ptr| {
             self.ActiveProgramEXT = ptr;
         } else {
-            self.features.GL_EXT_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateShaderProgramEXT, try loader("glCreateShaderProgramEXT"))) |ptr| {
             self.CreateShaderProgramEXT = ptr;
         } else {
-            self.features.GL_EXT_separate_shader_objects = false;
+            loaded = false;
         }
         if (@ptrCast(?glUseShaderProgramEXT, try loader("glUseShaderProgramEXT"))) |ptr| {
             self.UseShaderProgramEXT = ptr;
         } else {
-            self.features.GL_EXT_separate_shader_objects = false;
+            loaded = false;
         }
+        self.features.GL_EXT_separate_shader_objects = loaded;
+    }
+    fn load_GL_EXT_shader_framebuffer_fetch_non_coherent(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferFetchBarrierEXT, try loader("glFramebufferFetchBarrierEXT"))) |ptr| {
             self.FramebufferFetchBarrierEXT = ptr;
         } else {
-            self.features.GL_EXT_shader_framebuffer_fetch_non_coherent = false;
+            loaded = false;
         }
+        self.features.GL_EXT_shader_framebuffer_fetch_non_coherent = loaded;
+    }
+    fn load_GL_EXT_shader_image_load_store(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindImageTextureEXT, try loader("glBindImageTextureEXT"))) |ptr| {
             self.BindImageTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_shader_image_load_store = false;
+            loaded = false;
         }
         if (@ptrCast(?glMemoryBarrierEXT, try loader("glMemoryBarrierEXT"))) |ptr| {
             self.MemoryBarrierEXT = ptr;
         } else {
-            self.features.GL_EXT_shader_image_load_store = false;
+            loaded = false;
         }
+        self.features.GL_EXT_shader_image_load_store = loaded;
+    }
+    fn load_GL_EXT_stencil_clear_tag(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glStencilClearTagEXT, try loader("glStencilClearTagEXT"))) |ptr| {
             self.StencilClearTagEXT = ptr;
         } else {
-            self.features.GL_EXT_stencil_clear_tag = false;
+            loaded = false;
         }
+        self.features.GL_EXT_stencil_clear_tag = loaded;
+    }
+    fn load_GL_EXT_stencil_two_side(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveStencilFaceEXT, try loader("glActiveStencilFaceEXT"))) |ptr| {
             self.ActiveStencilFaceEXT = ptr;
         } else {
-            self.features.GL_EXT_stencil_two_side = false;
+            loaded = false;
         }
+        self.features.GL_EXT_stencil_two_side = loaded;
+    }
+    fn load_GL_EXT_subtexture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexSubImage1DEXT, try loader("glTexSubImage1DEXT"))) |ptr| {
             self.TexSubImage1DEXT = ptr;
         } else {
-            self.features.GL_EXT_subtexture = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage2DEXT, try loader("glTexSubImage2DEXT"))) |ptr| {
             self.TexSubImage2DEXT = ptr;
         } else {
-            self.features.GL_EXT_subtexture = false;
+            loaded = false;
         }
+        self.features.GL_EXT_subtexture = loaded;
+    }
+    fn load_GL_EXT_texture3D(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexImage3DEXT, try loader("glTexImage3DEXT"))) |ptr| {
             self.TexImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_texture3D = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage3DEXT, try loader("glTexSubImage3DEXT"))) |ptr| {
             self.TexSubImage3DEXT = ptr;
         } else {
-            self.features.GL_EXT_texture3D = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture3D = loaded;
+    }
+    fn load_GL_EXT_texture_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferTextureLayerEXT, try loader("glFramebufferTextureLayerEXT"))) |ptr| {
             self.FramebufferTextureLayerEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_array = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture_array = loaded;
+    }
+    fn load_GL_EXT_texture_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexBufferEXT, try loader("glTexBufferEXT"))) |ptr| {
             self.TexBufferEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture_buffer_object = loaded;
+    }
+    fn load_GL_EXT_texture_integer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearColorIiEXT, try loader("glClearColorIiEXT"))) |ptr| {
             self.ClearColorIiEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearColorIuiEXT, try loader("glClearColorIuiEXT"))) |ptr| {
             self.ClearColorIuiEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterIivEXT, try loader("glGetTexParameterIivEXT"))) |ptr| {
             self.GetTexParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterIuivEXT, try loader("glGetTexParameterIuivEXT"))) |ptr| {
             self.GetTexParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterIivEXT, try loader("glTexParameterIivEXT"))) |ptr| {
             self.TexParameterIivEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterIuivEXT, try loader("glTexParameterIuivEXT"))) |ptr| {
             self.TexParameterIuivEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_integer = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture_integer = loaded;
+    }
+    fn load_GL_EXT_texture_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAreTexturesResidentEXT, try loader("glAreTexturesResidentEXT"))) |ptr| {
             self.AreTexturesResidentEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindTextureEXT, try loader("glBindTextureEXT"))) |ptr| {
             self.BindTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteTexturesEXT, try loader("glDeleteTexturesEXT"))) |ptr| {
             self.DeleteTexturesEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenTexturesEXT, try loader("glGenTexturesEXT"))) |ptr| {
             self.GenTexturesEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTextureEXT, try loader("glIsTextureEXT"))) |ptr| {
             self.IsTextureEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glPrioritizeTexturesEXT, try loader("glPrioritizeTexturesEXT"))) |ptr| {
             self.PrioritizeTexturesEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_object = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture_object = loaded;
+    }
+    fn load_GL_EXT_texture_perturb_normal(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTextureNormalEXT, try loader("glTextureNormalEXT"))) |ptr| {
             self.TextureNormalEXT = ptr;
         } else {
-            self.features.GL_EXT_texture_perturb_normal = false;
+            loaded = false;
         }
+        self.features.GL_EXT_texture_perturb_normal = loaded;
+    }
+    fn load_GL_EXT_timer_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetQueryObjecti64vEXT, try loader("glGetQueryObjecti64vEXT"))) |ptr| {
             self.GetQueryObjecti64vEXT = ptr;
         } else {
-            self.features.GL_EXT_timer_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetQueryObjectui64vEXT, try loader("glGetQueryObjectui64vEXT"))) |ptr| {
             self.GetQueryObjectui64vEXT = ptr;
         } else {
-            self.features.GL_EXT_timer_query = false;
+            loaded = false;
         }
+        self.features.GL_EXT_timer_query = loaded;
+    }
+    fn load_GL_EXT_transform_feedback(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginTransformFeedbackEXT, try loader("glBeginTransformFeedbackEXT"))) |ptr| {
             self.BeginTransformFeedbackEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferBaseEXT, try loader("glBindBufferBaseEXT"))) |ptr| {
             self.BindBufferBaseEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferOffsetEXT, try loader("glBindBufferOffsetEXT"))) |ptr| {
             self.BindBufferOffsetEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferRangeEXT, try loader("glBindBufferRangeEXT"))) |ptr| {
             self.BindBufferRangeEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndTransformFeedbackEXT, try loader("glEndTransformFeedbackEXT"))) |ptr| {
             self.EndTransformFeedbackEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbackVaryingEXT, try loader("glGetTransformFeedbackVaryingEXT"))) |ptr| {
             self.GetTransformFeedbackVaryingEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackVaryingsEXT, try loader("glTransformFeedbackVaryingsEXT"))) |ptr| {
             self.TransformFeedbackVaryingsEXT = ptr;
         } else {
-            self.features.GL_EXT_transform_feedback = false;
+            loaded = false;
         }
+        self.features.GL_EXT_transform_feedback = loaded;
+    }
+    fn load_GL_EXT_vertex_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glArrayElementEXT, try loader("glArrayElementEXT"))) |ptr| {
             self.ArrayElementEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorPointerEXT, try loader("glColorPointerEXT"))) |ptr| {
             self.ColorPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawArraysEXT, try loader("glDrawArraysEXT"))) |ptr| {
             self.DrawArraysEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glEdgeFlagPointerEXT, try loader("glEdgeFlagPointerEXT"))) |ptr| {
             self.EdgeFlagPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPointervEXT, try loader("glGetPointervEXT"))) |ptr| {
             self.GetPointervEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glIndexPointerEXT, try loader("glIndexPointerEXT"))) |ptr| {
             self.IndexPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalPointerEXT, try loader("glNormalPointerEXT"))) |ptr| {
             self.NormalPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoordPointerEXT, try loader("glTexCoordPointerEXT"))) |ptr| {
             self.TexCoordPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexPointerEXT, try loader("glVertexPointerEXT"))) |ptr| {
             self.VertexPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_array = false;
+            loaded = false;
         }
+        self.features.GL_EXT_vertex_array = loaded;
+    }
+    fn load_GL_EXT_vertex_attrib_64bit(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVertexAttribLdvEXT, try loader("glGetVertexAttribLdvEXT"))) |ptr| {
             self.GetVertexAttribLdvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1dEXT, try loader("glVertexAttribL1dEXT"))) |ptr| {
             self.VertexAttribL1dEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1dvEXT, try loader("glVertexAttribL1dvEXT"))) |ptr| {
             self.VertexAttribL1dvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2dEXT, try loader("glVertexAttribL2dEXT"))) |ptr| {
             self.VertexAttribL2dEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2dvEXT, try loader("glVertexAttribL2dvEXT"))) |ptr| {
             self.VertexAttribL2dvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3dEXT, try loader("glVertexAttribL3dEXT"))) |ptr| {
             self.VertexAttribL3dEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3dvEXT, try loader("glVertexAttribL3dvEXT"))) |ptr| {
             self.VertexAttribL3dvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4dEXT, try loader("glVertexAttribL4dEXT"))) |ptr| {
             self.VertexAttribL4dEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4dvEXT, try loader("glVertexAttribL4dvEXT"))) |ptr| {
             self.VertexAttribL4dvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribLPointerEXT, try loader("glVertexAttribLPointerEXT"))) |ptr| {
             self.VertexAttribLPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_attrib_64bit = false;
+            loaded = false;
         }
+        self.features.GL_EXT_vertex_attrib_64bit = loaded;
+    }
+    fn load_GL_EXT_vertex_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginVertexShaderEXT, try loader("glBeginVertexShaderEXT"))) |ptr| {
             self.BeginVertexShaderEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindLightParameterEXT, try loader("glBindLightParameterEXT"))) |ptr| {
             self.BindLightParameterEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindMaterialParameterEXT, try loader("glBindMaterialParameterEXT"))) |ptr| {
             self.BindMaterialParameterEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindParameterEXT, try loader("glBindParameterEXT"))) |ptr| {
             self.BindParameterEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindTexGenParameterEXT, try loader("glBindTexGenParameterEXT"))) |ptr| {
             self.BindTexGenParameterEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindTextureUnitParameterEXT, try loader("glBindTextureUnitParameterEXT"))) |ptr| {
             self.BindTextureUnitParameterEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindVertexShaderEXT, try loader("glBindVertexShaderEXT"))) |ptr| {
             self.BindVertexShaderEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteVertexShaderEXT, try loader("glDeleteVertexShaderEXT"))) |ptr| {
             self.DeleteVertexShaderEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDisableVariantClientStateEXT, try loader("glDisableVariantClientStateEXT"))) |ptr| {
             self.DisableVariantClientStateEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glEnableVariantClientStateEXT, try loader("glEnableVariantClientStateEXT"))) |ptr| {
             self.EnableVariantClientStateEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndVertexShaderEXT, try loader("glEndVertexShaderEXT"))) |ptr| {
             self.EndVertexShaderEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glExtractComponentEXT, try loader("glExtractComponentEXT"))) |ptr| {
             self.ExtractComponentEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenSymbolsEXT, try loader("glGenSymbolsEXT"))) |ptr| {
             self.GenSymbolsEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenVertexShadersEXT, try loader("glGenVertexShadersEXT"))) |ptr| {
             self.GenVertexShadersEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInvariantBooleanvEXT, try loader("glGetInvariantBooleanvEXT"))) |ptr| {
             self.GetInvariantBooleanvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInvariantFloatvEXT, try loader("glGetInvariantFloatvEXT"))) |ptr| {
             self.GetInvariantFloatvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetInvariantIntegervEXT, try loader("glGetInvariantIntegervEXT"))) |ptr| {
             self.GetInvariantIntegervEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetLocalConstantBooleanvEXT, try loader("glGetLocalConstantBooleanvEXT"))) |ptr| {
             self.GetLocalConstantBooleanvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetLocalConstantFloatvEXT, try loader("glGetLocalConstantFloatvEXT"))) |ptr| {
             self.GetLocalConstantFloatvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetLocalConstantIntegervEXT, try loader("glGetLocalConstantIntegervEXT"))) |ptr| {
             self.GetLocalConstantIntegervEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantBooleanvEXT, try loader("glGetVariantBooleanvEXT"))) |ptr| {
             self.GetVariantBooleanvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantFloatvEXT, try loader("glGetVariantFloatvEXT"))) |ptr| {
             self.GetVariantFloatvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantIntegervEXT, try loader("glGetVariantIntegervEXT"))) |ptr| {
             self.GetVariantIntegervEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVariantPointervEXT, try loader("glGetVariantPointervEXT"))) |ptr| {
             self.GetVariantPointervEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glInsertComponentEXT, try loader("glInsertComponentEXT"))) |ptr| {
             self.InsertComponentEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsVariantEnabledEXT, try loader("glIsVariantEnabledEXT"))) |ptr| {
             self.IsVariantEnabledEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glSetInvariantEXT, try loader("glSetInvariantEXT"))) |ptr| {
             self.SetInvariantEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glSetLocalConstantEXT, try loader("glSetLocalConstantEXT"))) |ptr| {
             self.SetLocalConstantEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderOp1EXT, try loader("glShaderOp1EXT"))) |ptr| {
             self.ShaderOp1EXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderOp2EXT, try loader("glShaderOp2EXT"))) |ptr| {
             self.ShaderOp2EXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glShaderOp3EXT, try loader("glShaderOp3EXT"))) |ptr| {
             self.ShaderOp3EXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glSwizzleEXT, try loader("glSwizzleEXT"))) |ptr| {
             self.SwizzleEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantPointerEXT, try loader("glVariantPointerEXT"))) |ptr| {
             self.VariantPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantbvEXT, try loader("glVariantbvEXT"))) |ptr| {
             self.VariantbvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantdvEXT, try loader("glVariantdvEXT"))) |ptr| {
             self.VariantdvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantfvEXT, try loader("glVariantfvEXT"))) |ptr| {
             self.VariantfvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantivEXT, try loader("glVariantivEXT"))) |ptr| {
             self.VariantivEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantsvEXT, try loader("glVariantsvEXT"))) |ptr| {
             self.VariantsvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantubvEXT, try loader("glVariantubvEXT"))) |ptr| {
             self.VariantubvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantuivEXT, try loader("glVariantuivEXT"))) |ptr| {
             self.VariantuivEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glVariantusvEXT, try loader("glVariantusvEXT"))) |ptr| {
             self.VariantusvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glWriteMaskEXT, try loader("glWriteMaskEXT"))) |ptr| {
             self.WriteMaskEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_shader = false;
+            loaded = false;
         }
+        self.features.GL_EXT_vertex_shader = loaded;
+    }
+    fn load_GL_EXT_vertex_weighting(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVertexWeightPointerEXT, try loader("glVertexWeightPointerEXT"))) |ptr| {
             self.VertexWeightPointerEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_weighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexWeightfEXT, try loader("glVertexWeightfEXT"))) |ptr| {
             self.VertexWeightfEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_weighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexWeightfvEXT, try loader("glVertexWeightfvEXT"))) |ptr| {
             self.VertexWeightfvEXT = ptr;
         } else {
-            self.features.GL_EXT_vertex_weighting = false;
+            loaded = false;
         }
+        self.features.GL_EXT_vertex_weighting = loaded;
+    }
+    fn load_GL_EXT_win32_keyed_mutex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAcquireKeyedMutexWin32EXT, try loader("glAcquireKeyedMutexWin32EXT"))) |ptr| {
             self.AcquireKeyedMutexWin32EXT = ptr;
         } else {
-            self.features.GL_EXT_win32_keyed_mutex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReleaseKeyedMutexWin32EXT, try loader("glReleaseKeyedMutexWin32EXT"))) |ptr| {
             self.ReleaseKeyedMutexWin32EXT = ptr;
         } else {
-            self.features.GL_EXT_win32_keyed_mutex = false;
+            loaded = false;
         }
+        self.features.GL_EXT_win32_keyed_mutex = loaded;
+    }
+    fn load_GL_EXT_window_rectangles(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glWindowRectanglesEXT, try loader("glWindowRectanglesEXT"))) |ptr| {
             self.WindowRectanglesEXT = ptr;
         } else {
-            self.features.GL_EXT_window_rectangles = false;
+            loaded = false;
         }
+        self.features.GL_EXT_window_rectangles = loaded;
+    }
+    fn load_GL_EXT_x11_sync_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glImportSyncEXT, try loader("glImportSyncEXT"))) |ptr| {
             self.ImportSyncEXT = ptr;
         } else {
-            self.features.GL_EXT_x11_sync_object = false;
+            loaded = false;
         }
+        self.features.GL_EXT_x11_sync_object = loaded;
+    }
+    fn load_GL_GREMEDY_frame_terminator(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFrameTerminatorGREMEDY, try loader("glFrameTerminatorGREMEDY"))) |ptr| {
             self.FrameTerminatorGREMEDY = ptr;
         } else {
-            self.features.GL_GREMEDY_frame_terminator = false;
+            loaded = false;
         }
+        self.features.GL_GREMEDY_frame_terminator = loaded;
+    }
+    fn load_GL_GREMEDY_string_marker(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glStringMarkerGREMEDY, try loader("glStringMarkerGREMEDY"))) |ptr| {
             self.StringMarkerGREMEDY = ptr;
         } else {
-            self.features.GL_GREMEDY_string_marker = false;
+            loaded = false;
         }
+        self.features.GL_GREMEDY_string_marker = loaded;
+    }
+    fn load_GL_HP_image_transform(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetImageTransformParameterfvHP, try loader("glGetImageTransformParameterfvHP"))) |ptr| {
             self.GetImageTransformParameterfvHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetImageTransformParameterivHP, try loader("glGetImageTransformParameterivHP"))) |ptr| {
             self.GetImageTransformParameterivHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glImageTransformParameterfHP, try loader("glImageTransformParameterfHP"))) |ptr| {
             self.ImageTransformParameterfHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glImageTransformParameterfvHP, try loader("glImageTransformParameterfvHP"))) |ptr| {
             self.ImageTransformParameterfvHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glImageTransformParameteriHP, try loader("glImageTransformParameteriHP"))) |ptr| {
             self.ImageTransformParameteriHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
         if (@ptrCast(?glImageTransformParameterivHP, try loader("glImageTransformParameterivHP"))) |ptr| {
             self.ImageTransformParameterivHP = ptr;
         } else {
-            self.features.GL_HP_image_transform = false;
+            loaded = false;
         }
+        self.features.GL_HP_image_transform = loaded;
+    }
+    fn load_GL_IBM_multimode_draw_arrays(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiModeDrawArraysIBM, try loader("glMultiModeDrawArraysIBM"))) |ptr| {
             self.MultiModeDrawArraysIBM = ptr;
         } else {
-            self.features.GL_IBM_multimode_draw_arrays = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiModeDrawElementsIBM, try loader("glMultiModeDrawElementsIBM"))) |ptr| {
             self.MultiModeDrawElementsIBM = ptr;
         } else {
-            self.features.GL_IBM_multimode_draw_arrays = false;
+            loaded = false;
         }
+        self.features.GL_IBM_multimode_draw_arrays = loaded;
+    }
+    fn load_GL_IBM_static_data(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushStaticDataIBM, try loader("glFlushStaticDataIBM"))) |ptr| {
             self.FlushStaticDataIBM = ptr;
         } else {
-            self.features.GL_IBM_static_data = false;
+            loaded = false;
         }
+        self.features.GL_IBM_static_data = loaded;
+    }
+    fn load_GL_IBM_vertex_array_lists(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorPointerListIBM, try loader("glColorPointerListIBM"))) |ptr| {
             self.ColorPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glEdgeFlagPointerListIBM, try loader("glEdgeFlagPointerListIBM"))) |ptr| {
             self.EdgeFlagPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordPointerListIBM, try loader("glFogCoordPointerListIBM"))) |ptr| {
             self.FogCoordPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glIndexPointerListIBM, try loader("glIndexPointerListIBM"))) |ptr| {
             self.IndexPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalPointerListIBM, try loader("glNormalPointerListIBM"))) |ptr| {
             self.NormalPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColorPointerListIBM, try loader("glSecondaryColorPointerListIBM"))) |ptr| {
             self.SecondaryColorPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoordPointerListIBM, try loader("glTexCoordPointerListIBM"))) |ptr| {
             self.TexCoordPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexPointerListIBM, try loader("glVertexPointerListIBM"))) |ptr| {
             self.VertexPointerListIBM = ptr;
         } else {
-            self.features.GL_IBM_vertex_array_lists = false;
+            loaded = false;
         }
+        self.features.GL_IBM_vertex_array_lists = loaded;
+    }
+    fn load_GL_INGR_blend_func_separate(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendFuncSeparateINGR, try loader("glBlendFuncSeparateINGR"))) |ptr| {
             self.BlendFuncSeparateINGR = ptr;
         } else {
-            self.features.GL_INGR_blend_func_separate = false;
+            loaded = false;
         }
+        self.features.GL_INGR_blend_func_separate = loaded;
+    }
+    fn load_GL_INTEL_framebuffer_CMAA(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glApplyFramebufferAttachmentCMAAINTEL, try loader("glApplyFramebufferAttachmentCMAAINTEL"))) |ptr| {
             self.ApplyFramebufferAttachmentCMAAINTEL = ptr;
         } else {
-            self.features.GL_INTEL_framebuffer_CMAA = false;
+            loaded = false;
         }
+        self.features.GL_INTEL_framebuffer_CMAA = loaded;
+    }
+    fn load_GL_INTEL_map_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMapTexture2DINTEL, try loader("glMapTexture2DINTEL"))) |ptr| {
             self.MapTexture2DINTEL = ptr;
         } else {
-            self.features.GL_INTEL_map_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glSyncTextureINTEL, try loader("glSyncTextureINTEL"))) |ptr| {
             self.SyncTextureINTEL = ptr;
         } else {
-            self.features.GL_INTEL_map_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glUnmapTexture2DINTEL, try loader("glUnmapTexture2DINTEL"))) |ptr| {
             self.UnmapTexture2DINTEL = ptr;
         } else {
-            self.features.GL_INTEL_map_texture = false;
+            loaded = false;
         }
+        self.features.GL_INTEL_map_texture = loaded;
+    }
+    fn load_GL_INTEL_parallel_arrays(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorPointervINTEL, try loader("glColorPointervINTEL"))) |ptr| {
             self.ColorPointervINTEL = ptr;
         } else {
-            self.features.GL_INTEL_parallel_arrays = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalPointervINTEL, try loader("glNormalPointervINTEL"))) |ptr| {
             self.NormalPointervINTEL = ptr;
         } else {
-            self.features.GL_INTEL_parallel_arrays = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoordPointervINTEL, try loader("glTexCoordPointervINTEL"))) |ptr| {
             self.TexCoordPointervINTEL = ptr;
         } else {
-            self.features.GL_INTEL_parallel_arrays = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexPointervINTEL, try loader("glVertexPointervINTEL"))) |ptr| {
             self.VertexPointervINTEL = ptr;
         } else {
-            self.features.GL_INTEL_parallel_arrays = false;
+            loaded = false;
         }
+        self.features.GL_INTEL_parallel_arrays = loaded;
+    }
+    fn load_GL_INTEL_performance_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginPerfQueryINTEL, try loader("glBeginPerfQueryINTEL"))) |ptr| {
             self.BeginPerfQueryINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreatePerfQueryINTEL, try loader("glCreatePerfQueryINTEL"))) |ptr| {
             self.CreatePerfQueryINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeletePerfQueryINTEL, try loader("glDeletePerfQueryINTEL"))) |ptr| {
             self.DeletePerfQueryINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndPerfQueryINTEL, try loader("glEndPerfQueryINTEL"))) |ptr| {
             self.EndPerfQueryINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFirstPerfQueryIdINTEL, try loader("glGetFirstPerfQueryIdINTEL"))) |ptr| {
             self.GetFirstPerfQueryIdINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNextPerfQueryIdINTEL, try loader("glGetNextPerfQueryIdINTEL"))) |ptr| {
             self.GetNextPerfQueryIdINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfCounterInfoINTEL, try loader("glGetPerfCounterInfoINTEL"))) |ptr| {
             self.GetPerfCounterInfoINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfQueryDataINTEL, try loader("glGetPerfQueryDataINTEL"))) |ptr| {
             self.GetPerfQueryDataINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfQueryIdByNameINTEL, try loader("glGetPerfQueryIdByNameINTEL"))) |ptr| {
             self.GetPerfQueryIdByNameINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPerfQueryInfoINTEL, try loader("glGetPerfQueryInfoINTEL"))) |ptr| {
             self.GetPerfQueryInfoINTEL = ptr;
         } else {
-            self.features.GL_INTEL_performance_query = false;
+            loaded = false;
         }
+        self.features.GL_INTEL_performance_query = loaded;
+    }
+    fn load_GL_KHR_blend_equation_advanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendBarrierKHR, try loader("glBlendBarrierKHR"))) |ptr| {
             self.BlendBarrierKHR = ptr;
         } else {
-            self.features.GL_KHR_blend_equation_advanced = false;
+            loaded = false;
         }
+        self.features.GL_KHR_blend_equation_advanced = loaded;
+    }
+    fn load_GL_KHR_debug(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDebugMessageCallback, try loader("glDebugMessageCallback"))) |ptr| {
             self.DebugMessageCallback = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageControl, try loader("glDebugMessageControl"))) |ptr| {
             self.DebugMessageControl = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glDebugMessageInsert, try loader("glDebugMessageInsert"))) |ptr| {
             self.DebugMessageInsert = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDebugMessageLog, try loader("glGetDebugMessageLog"))) |ptr| {
             self.GetDebugMessageLog = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectLabel, try loader("glGetObjectLabel"))) |ptr| {
             self.GetObjectLabel = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetObjectPtrLabel, try loader("glGetObjectPtrLabel"))) |ptr| {
             self.GetObjectPtrLabel = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPointerv, try loader("glGetPointerv"))) |ptr| {
             self.GetPointerv = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glObjectLabel, try loader("glObjectLabel"))) |ptr| {
             self.ObjectLabel = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glObjectPtrLabel, try loader("glObjectPtrLabel"))) |ptr| {
             self.ObjectPtrLabel = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glPopDebugGroup, try loader("glPopDebugGroup"))) |ptr| {
             self.PopDebugGroup = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
         if (@ptrCast(?glPushDebugGroup, try loader("glPushDebugGroup"))) |ptr| {
             self.PushDebugGroup = ptr;
         } else {
-            self.features.GL_KHR_debug = false;
+            loaded = false;
         }
+        self.features.GL_KHR_debug = loaded;
+    }
+    fn load_GL_KHR_parallel_shader_compile(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMaxShaderCompilerThreadsKHR, try loader("glMaxShaderCompilerThreadsKHR"))) |ptr| {
             self.MaxShaderCompilerThreadsKHR = ptr;
         } else {
-            self.features.GL_KHR_parallel_shader_compile = false;
+            loaded = false;
         }
+        self.features.GL_KHR_parallel_shader_compile = loaded;
+    }
+    fn load_GL_KHR_robustness(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetGraphicsResetStatus, try loader("glGetGraphicsResetStatus"))) |ptr| {
             self.GetGraphicsResetStatus = ptr;
         } else {
-            self.features.GL_KHR_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformfv, try loader("glGetnUniformfv"))) |ptr| {
             self.GetnUniformfv = ptr;
         } else {
-            self.features.GL_KHR_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformiv, try loader("glGetnUniformiv"))) |ptr| {
             self.GetnUniformiv = ptr;
         } else {
-            self.features.GL_KHR_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetnUniformuiv, try loader("glGetnUniformuiv"))) |ptr| {
             self.GetnUniformuiv = ptr;
         } else {
-            self.features.GL_KHR_robustness = false;
+            loaded = false;
         }
         if (@ptrCast(?glReadnPixels, try loader("glReadnPixels"))) |ptr| {
             self.ReadnPixels = ptr;
         } else {
-            self.features.GL_KHR_robustness = false;
+            loaded = false;
         }
+        self.features.GL_KHR_robustness = loaded;
+    }
+    fn load_GL_MESA_framebuffer_flip_y(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferParameteriMESA, try loader("glFramebufferParameteriMESA"))) |ptr| {
             self.FramebufferParameteriMESA = ptr;
         } else {
-            self.features.GL_MESA_framebuffer_flip_y = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFramebufferParameterivMESA, try loader("glGetFramebufferParameterivMESA"))) |ptr| {
             self.GetFramebufferParameterivMESA = ptr;
         } else {
-            self.features.GL_MESA_framebuffer_flip_y = false;
+            loaded = false;
         }
+        self.features.GL_MESA_framebuffer_flip_y = loaded;
+    }
+    fn load_GL_MESA_resize_buffers(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glResizeBuffersMESA, try loader("glResizeBuffersMESA"))) |ptr| {
             self.ResizeBuffersMESA = ptr;
         } else {
-            self.features.GL_MESA_resize_buffers = false;
+            loaded = false;
         }
+        self.features.GL_MESA_resize_buffers = loaded;
+    }
+    fn load_GL_MESA_window_pos(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glWindowPos2dMESA, try loader("glWindowPos2dMESA"))) |ptr| {
             self.WindowPos2dMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2dvMESA, try loader("glWindowPos2dvMESA"))) |ptr| {
             self.WindowPos2dvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2fMESA, try loader("glWindowPos2fMESA"))) |ptr| {
             self.WindowPos2fMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2fvMESA, try loader("glWindowPos2fvMESA"))) |ptr| {
             self.WindowPos2fvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2iMESA, try loader("glWindowPos2iMESA"))) |ptr| {
             self.WindowPos2iMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2ivMESA, try loader("glWindowPos2ivMESA"))) |ptr| {
             self.WindowPos2ivMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2sMESA, try loader("glWindowPos2sMESA"))) |ptr| {
             self.WindowPos2sMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos2svMESA, try loader("glWindowPos2svMESA"))) |ptr| {
             self.WindowPos2svMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3dMESA, try loader("glWindowPos3dMESA"))) |ptr| {
             self.WindowPos3dMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3dvMESA, try loader("glWindowPos3dvMESA"))) |ptr| {
             self.WindowPos3dvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3fMESA, try loader("glWindowPos3fMESA"))) |ptr| {
             self.WindowPos3fMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3fvMESA, try loader("glWindowPos3fvMESA"))) |ptr| {
             self.WindowPos3fvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3iMESA, try loader("glWindowPos3iMESA"))) |ptr| {
             self.WindowPos3iMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3ivMESA, try loader("glWindowPos3ivMESA"))) |ptr| {
             self.WindowPos3ivMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3sMESA, try loader("glWindowPos3sMESA"))) |ptr| {
             self.WindowPos3sMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos3svMESA, try loader("glWindowPos3svMESA"))) |ptr| {
             self.WindowPos3svMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4dMESA, try loader("glWindowPos4dMESA"))) |ptr| {
             self.WindowPos4dMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4dvMESA, try loader("glWindowPos4dvMESA"))) |ptr| {
             self.WindowPos4dvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4fMESA, try loader("glWindowPos4fMESA"))) |ptr| {
             self.WindowPos4fMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4fvMESA, try loader("glWindowPos4fvMESA"))) |ptr| {
             self.WindowPos4fvMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4iMESA, try loader("glWindowPos4iMESA"))) |ptr| {
             self.WindowPos4iMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4ivMESA, try loader("glWindowPos4ivMESA"))) |ptr| {
             self.WindowPos4ivMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4sMESA, try loader("glWindowPos4sMESA"))) |ptr| {
             self.WindowPos4sMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
         if (@ptrCast(?glWindowPos4svMESA, try loader("glWindowPos4svMESA"))) |ptr| {
             self.WindowPos4svMESA = ptr;
         } else {
-            self.features.GL_MESA_window_pos = false;
+            loaded = false;
         }
+        self.features.GL_MESA_window_pos = loaded;
+    }
+    fn load_GL_NVX_conditional_render(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginConditionalRenderNVX, try loader("glBeginConditionalRenderNVX"))) |ptr| {
             self.BeginConditionalRenderNVX = ptr;
         } else {
-            self.features.GL_NVX_conditional_render = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndConditionalRenderNVX, try loader("glEndConditionalRenderNVX"))) |ptr| {
             self.EndConditionalRenderNVX = ptr;
         } else {
-            self.features.GL_NVX_conditional_render = false;
+            loaded = false;
         }
+        self.features.GL_NVX_conditional_render = loaded;
+    }
+    fn load_GL_NVX_gpu_multicast2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAsyncCopyBufferSubDataNVX, try loader("glAsyncCopyBufferSubDataNVX"))) |ptr| {
             self.AsyncCopyBufferSubDataNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glAsyncCopyImageSubDataNVX, try loader("glAsyncCopyImageSubDataNVX"))) |ptr| {
             self.AsyncCopyImageSubDataNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastScissorArrayvNVX, try loader("glMulticastScissorArrayvNVX"))) |ptr| {
             self.MulticastScissorArrayvNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastViewportArrayvNVX, try loader("glMulticastViewportArrayvNVX"))) |ptr| {
             self.MulticastViewportArrayvNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastViewportPositionWScaleNVX, try loader("glMulticastViewportPositionWScaleNVX"))) |ptr| {
             self.MulticastViewportPositionWScaleNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUploadGpuMaskNVX, try loader("glUploadGpuMaskNVX"))) |ptr| {
             self.UploadGpuMaskNVX = ptr;
         } else {
-            self.features.GL_NVX_gpu_multicast2 = false;
+            loaded = false;
         }
+        self.features.GL_NVX_gpu_multicast2 = loaded;
+    }
+    fn load_GL_NVX_linked_gpu_multicast(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glLGPUCopyImageSubDataNVX, try loader("glLGPUCopyImageSubDataNVX"))) |ptr| {
             self.LGPUCopyImageSubDataNVX = ptr;
         } else {
-            self.features.GL_NVX_linked_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glLGPUInterlockNVX, try loader("glLGPUInterlockNVX"))) |ptr| {
             self.LGPUInterlockNVX = ptr;
         } else {
-            self.features.GL_NVX_linked_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glLGPUNamedBufferSubDataNVX, try loader("glLGPUNamedBufferSubDataNVX"))) |ptr| {
             self.LGPUNamedBufferSubDataNVX = ptr;
         } else {
-            self.features.GL_NVX_linked_gpu_multicast = false;
+            loaded = false;
         }
+        self.features.GL_NVX_linked_gpu_multicast = loaded;
+    }
+    fn load_GL_NVX_progress_fence(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClientWaitSemaphoreui64NVX, try loader("glClientWaitSemaphoreui64NVX"))) |ptr| {
             self.ClientWaitSemaphoreui64NVX = ptr;
         } else {
-            self.features.GL_NVX_progress_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateProgressFenceNVX, try loader("glCreateProgressFenceNVX"))) |ptr| {
             self.CreateProgressFenceNVX = ptr;
         } else {
-            self.features.GL_NVX_progress_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glSignalSemaphoreui64NVX, try loader("glSignalSemaphoreui64NVX"))) |ptr| {
             self.SignalSemaphoreui64NVX = ptr;
         } else {
-            self.features.GL_NVX_progress_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glWaitSemaphoreui64NVX, try loader("glWaitSemaphoreui64NVX"))) |ptr| {
             self.WaitSemaphoreui64NVX = ptr;
         } else {
-            self.features.GL_NVX_progress_fence = false;
+            loaded = false;
         }
+        self.features.GL_NVX_progress_fence = loaded;
+    }
+    fn load_GL_NV_alpha_to_coverage_dither_control(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAlphaToCoverageDitherControlNV, try loader("glAlphaToCoverageDitherControlNV"))) |ptr| {
             self.AlphaToCoverageDitherControlNV = ptr;
         } else {
-            self.features.GL_NV_alpha_to_coverage_dither_control = false;
+            loaded = false;
         }
+        self.features.GL_NV_alpha_to_coverage_dither_control = loaded;
+    }
+    fn load_GL_NV_bindless_multi_draw_indirect(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysIndirectBindlessNV, try loader("glMultiDrawArraysIndirectBindlessNV"))) |ptr| {
             self.MultiDrawArraysIndirectBindlessNV = ptr;
         } else {
-            self.features.GL_NV_bindless_multi_draw_indirect = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsIndirectBindlessNV, try loader("glMultiDrawElementsIndirectBindlessNV"))) |ptr| {
             self.MultiDrawElementsIndirectBindlessNV = ptr;
         } else {
-            self.features.GL_NV_bindless_multi_draw_indirect = false;
+            loaded = false;
         }
+        self.features.GL_NV_bindless_multi_draw_indirect = loaded;
+    }
+    fn load_GL_NV_bindless_multi_draw_indirect_count(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiDrawArraysIndirectBindlessCountNV, try loader("glMultiDrawArraysIndirectBindlessCountNV"))) |ptr| {
             self.MultiDrawArraysIndirectBindlessCountNV = ptr;
         } else {
-            self.features.GL_NV_bindless_multi_draw_indirect_count = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawElementsIndirectBindlessCountNV, try loader("glMultiDrawElementsIndirectBindlessCountNV"))) |ptr| {
             self.MultiDrawElementsIndirectBindlessCountNV = ptr;
         } else {
-            self.features.GL_NV_bindless_multi_draw_indirect_count = false;
+            loaded = false;
         }
+        self.features.GL_NV_bindless_multi_draw_indirect_count = loaded;
+    }
+    fn load_GL_NV_bindless_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetImageHandleNV, try loader("glGetImageHandleNV"))) |ptr| {
             self.GetImageHandleNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureHandleNV, try loader("glGetTextureHandleNV"))) |ptr| {
             self.GetTextureHandleNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTextureSamplerHandleNV, try loader("glGetTextureSamplerHandleNV"))) |ptr| {
             self.GetTextureSamplerHandleNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsImageHandleResidentNV, try loader("glIsImageHandleResidentNV"))) |ptr| {
             self.IsImageHandleResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTextureHandleResidentNV, try loader("glIsTextureHandleResidentNV"))) |ptr| {
             self.IsTextureHandleResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeImageHandleNonResidentNV, try loader("glMakeImageHandleNonResidentNV"))) |ptr| {
             self.MakeImageHandleNonResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeImageHandleResidentNV, try loader("glMakeImageHandleResidentNV"))) |ptr| {
             self.MakeImageHandleResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeTextureHandleNonResidentNV, try loader("glMakeTextureHandleNonResidentNV"))) |ptr| {
             self.MakeTextureHandleNonResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeTextureHandleResidentNV, try loader("glMakeTextureHandleResidentNV"))) |ptr| {
             self.MakeTextureHandleResidentNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformHandleui64NV, try loader("glProgramUniformHandleui64NV"))) |ptr| {
             self.ProgramUniformHandleui64NV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformHandleui64vNV, try loader("glProgramUniformHandleui64vNV"))) |ptr| {
             self.ProgramUniformHandleui64vNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformHandleui64NV, try loader("glUniformHandleui64NV"))) |ptr| {
             self.UniformHandleui64NV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformHandleui64vNV, try loader("glUniformHandleui64vNV"))) |ptr| {
             self.UniformHandleui64vNV = ptr;
         } else {
-            self.features.GL_NV_bindless_texture = false;
+            loaded = false;
         }
+        self.features.GL_NV_bindless_texture = loaded;
+    }
+    fn load_GL_NV_blend_equation_advanced(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBlendBarrierNV, try loader("glBlendBarrierNV"))) |ptr| {
             self.BlendBarrierNV = ptr;
         } else {
-            self.features.GL_NV_blend_equation_advanced = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendParameteriNV, try loader("glBlendParameteriNV"))) |ptr| {
             self.BlendParameteriNV = ptr;
         } else {
-            self.features.GL_NV_blend_equation_advanced = false;
+            loaded = false;
         }
+        self.features.GL_NV_blend_equation_advanced = loaded;
+    }
+    fn load_GL_NV_clip_space_w_scaling(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glViewportPositionWScaleNV, try loader("glViewportPositionWScaleNV"))) |ptr| {
             self.ViewportPositionWScaleNV = ptr;
         } else {
-            self.features.GL_NV_clip_space_w_scaling = false;
+            loaded = false;
         }
+        self.features.GL_NV_clip_space_w_scaling = loaded;
+    }
+    fn load_GL_NV_command_list(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCallCommandListNV, try loader("glCallCommandListNV"))) |ptr| {
             self.CallCommandListNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glCommandListSegmentsNV, try loader("glCommandListSegmentsNV"))) |ptr| {
             self.CommandListSegmentsNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glCompileCommandListNV, try loader("glCompileCommandListNV"))) |ptr| {
             self.CompileCommandListNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateCommandListsNV, try loader("glCreateCommandListsNV"))) |ptr| {
             self.CreateCommandListsNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glCreateStatesNV, try loader("glCreateStatesNV"))) |ptr| {
             self.CreateStatesNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteCommandListsNV, try loader("glDeleteCommandListsNV"))) |ptr| {
             self.DeleteCommandListsNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteStatesNV, try loader("glDeleteStatesNV"))) |ptr| {
             self.DeleteStatesNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawCommandsAddressNV, try loader("glDrawCommandsAddressNV"))) |ptr| {
             self.DrawCommandsAddressNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawCommandsNV, try loader("glDrawCommandsNV"))) |ptr| {
             self.DrawCommandsNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawCommandsStatesAddressNV, try loader("glDrawCommandsStatesAddressNV"))) |ptr| {
             self.DrawCommandsStatesAddressNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawCommandsStatesNV, try loader("glDrawCommandsStatesNV"))) |ptr| {
             self.DrawCommandsStatesNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCommandHeaderNV, try loader("glGetCommandHeaderNV"))) |ptr| {
             self.GetCommandHeaderNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetStageIndexNV, try loader("glGetStageIndexNV"))) |ptr| {
             self.GetStageIndexNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsCommandListNV, try loader("glIsCommandListNV"))) |ptr| {
             self.IsCommandListNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsStateNV, try loader("glIsStateNV"))) |ptr| {
             self.IsStateNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glListDrawCommandsStatesClientNV, try loader("glListDrawCommandsStatesClientNV"))) |ptr| {
             self.ListDrawCommandsStatesClientNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glStateCaptureNV, try loader("glStateCaptureNV"))) |ptr| {
             self.StateCaptureNV = ptr;
         } else {
-            self.features.GL_NV_command_list = false;
+            loaded = false;
         }
+        self.features.GL_NV_command_list = loaded;
+    }
+    fn load_GL_NV_conditional_render(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginConditionalRenderNV, try loader("glBeginConditionalRenderNV"))) |ptr| {
             self.BeginConditionalRenderNV = ptr;
         } else {
-            self.features.GL_NV_conditional_render = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndConditionalRenderNV, try loader("glEndConditionalRenderNV"))) |ptr| {
             self.EndConditionalRenderNV = ptr;
         } else {
-            self.features.GL_NV_conditional_render = false;
+            loaded = false;
         }
+        self.features.GL_NV_conditional_render = loaded;
+    }
+    fn load_GL_NV_conservative_raster(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSubpixelPrecisionBiasNV, try loader("glSubpixelPrecisionBiasNV"))) |ptr| {
             self.SubpixelPrecisionBiasNV = ptr;
         } else {
-            self.features.GL_NV_conservative_raster = false;
+            loaded = false;
         }
+        self.features.GL_NV_conservative_raster = loaded;
+    }
+    fn load_GL_NV_conservative_raster_dilate(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glConservativeRasterParameterfNV, try loader("glConservativeRasterParameterfNV"))) |ptr| {
             self.ConservativeRasterParameterfNV = ptr;
         } else {
-            self.features.GL_NV_conservative_raster_dilate = false;
+            loaded = false;
         }
+        self.features.GL_NV_conservative_raster_dilate = loaded;
+    }
+    fn load_GL_NV_conservative_raster_pre_snap_triangles(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glConservativeRasterParameteriNV, try loader("glConservativeRasterParameteriNV"))) |ptr| {
             self.ConservativeRasterParameteriNV = ptr;
         } else {
-            self.features.GL_NV_conservative_raster_pre_snap_triangles = false;
+            loaded = false;
         }
+        self.features.GL_NV_conservative_raster_pre_snap_triangles = loaded;
+    }
+    fn load_GL_NV_copy_image(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyImageSubDataNV, try loader("glCopyImageSubDataNV"))) |ptr| {
             self.CopyImageSubDataNV = ptr;
         } else {
-            self.features.GL_NV_copy_image = false;
+            loaded = false;
         }
+        self.features.GL_NV_copy_image = loaded;
+    }
+    fn load_GL_NV_depth_buffer_float(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearDepthdNV, try loader("glClearDepthdNV"))) |ptr| {
             self.ClearDepthdNV = ptr;
         } else {
-            self.features.GL_NV_depth_buffer_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthBoundsdNV, try loader("glDepthBoundsdNV"))) |ptr| {
             self.DepthBoundsdNV = ptr;
         } else {
-            self.features.GL_NV_depth_buffer_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangedNV, try loader("glDepthRangedNV"))) |ptr| {
             self.DepthRangedNV = ptr;
         } else {
-            self.features.GL_NV_depth_buffer_float = false;
+            loaded = false;
         }
+        self.features.GL_NV_depth_buffer_float = loaded;
+    }
+    fn load_GL_NV_draw_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawTextureNV, try loader("glDrawTextureNV"))) |ptr| {
             self.DrawTextureNV = ptr;
         } else {
-            self.features.GL_NV_draw_texture = false;
+            loaded = false;
         }
+        self.features.GL_NV_draw_texture = loaded;
+    }
+    fn load_GL_NV_draw_vulkan_image(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawVkImageNV, try loader("glDrawVkImageNV"))) |ptr| {
             self.DrawVkImageNV = ptr;
         } else {
-            self.features.GL_NV_draw_vulkan_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVkProcAddrNV, try loader("glGetVkProcAddrNV"))) |ptr| {
             self.GetVkProcAddrNV = ptr;
         } else {
-            self.features.GL_NV_draw_vulkan_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glSignalVkFenceNV, try loader("glSignalVkFenceNV"))) |ptr| {
             self.SignalVkFenceNV = ptr;
         } else {
-            self.features.GL_NV_draw_vulkan_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glSignalVkSemaphoreNV, try loader("glSignalVkSemaphoreNV"))) |ptr| {
             self.SignalVkSemaphoreNV = ptr;
         } else {
-            self.features.GL_NV_draw_vulkan_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glWaitVkSemaphoreNV, try loader("glWaitVkSemaphoreNV"))) |ptr| {
             self.WaitVkSemaphoreNV = ptr;
         } else {
-            self.features.GL_NV_draw_vulkan_image = false;
+            loaded = false;
         }
+        self.features.GL_NV_draw_vulkan_image = loaded;
+    }
+    fn load_GL_NV_evaluators(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glEvalMapsNV, try loader("glEvalMapsNV"))) |ptr| {
             self.EvalMapsNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapAttribParameterfvNV, try loader("glGetMapAttribParameterfvNV"))) |ptr| {
             self.GetMapAttribParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapAttribParameterivNV, try loader("glGetMapAttribParameterivNV"))) |ptr| {
             self.GetMapAttribParameterivNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapControlPointsNV, try loader("glGetMapControlPointsNV"))) |ptr| {
             self.GetMapControlPointsNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapParameterfvNV, try loader("glGetMapParameterfvNV"))) |ptr| {
             self.GetMapParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapParameterivNV, try loader("glGetMapParameterivNV"))) |ptr| {
             self.GetMapParameterivNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapControlPointsNV, try loader("glMapControlPointsNV"))) |ptr| {
             self.MapControlPointsNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapParameterfvNV, try loader("glMapParameterfvNV"))) |ptr| {
             self.MapParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapParameterivNV, try loader("glMapParameterivNV"))) |ptr| {
             self.MapParameterivNV = ptr;
         } else {
-            self.features.GL_NV_evaluators = false;
+            loaded = false;
         }
+        self.features.GL_NV_evaluators = loaded;
+    }
+    fn load_GL_NV_explicit_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetMultisamplefvNV, try loader("glGetMultisamplefvNV"))) |ptr| {
             self.GetMultisamplefvNV = ptr;
         } else {
-            self.features.GL_NV_explicit_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glSampleMaskIndexedNV, try loader("glSampleMaskIndexedNV"))) |ptr| {
             self.SampleMaskIndexedNV = ptr;
         } else {
-            self.features.GL_NV_explicit_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexRenderbufferNV, try loader("glTexRenderbufferNV"))) |ptr| {
             self.TexRenderbufferNV = ptr;
         } else {
-            self.features.GL_NV_explicit_multisample = false;
+            loaded = false;
         }
+        self.features.GL_NV_explicit_multisample = loaded;
+    }
+    fn load_GL_NV_fence(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeleteFencesNV, try loader("glDeleteFencesNV"))) |ptr| {
             self.DeleteFencesNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinishFenceNV, try loader("glFinishFenceNV"))) |ptr| {
             self.FinishFenceNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenFencesNV, try loader("glGenFencesNV"))) |ptr| {
             self.GenFencesNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFenceivNV, try loader("glGetFenceivNV"))) |ptr| {
             self.GetFenceivNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsFenceNV, try loader("glIsFenceNV"))) |ptr| {
             self.IsFenceNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glSetFenceNV, try loader("glSetFenceNV"))) |ptr| {
             self.SetFenceNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
         if (@ptrCast(?glTestFenceNV, try loader("glTestFenceNV"))) |ptr| {
             self.TestFenceNV = ptr;
         } else {
-            self.features.GL_NV_fence = false;
+            loaded = false;
         }
+        self.features.GL_NV_fence = loaded;
+    }
+    fn load_GL_NV_fragment_coverage_to_color(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFragmentCoverageColorNV, try loader("glFragmentCoverageColorNV"))) |ptr| {
             self.FragmentCoverageColorNV = ptr;
         } else {
-            self.features.GL_NV_fragment_coverage_to_color = false;
+            loaded = false;
         }
+        self.features.GL_NV_fragment_coverage_to_color = loaded;
+    }
+    fn load_GL_NV_fragment_program(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetProgramNamedParameterdvNV, try loader("glGetProgramNamedParameterdvNV"))) |ptr| {
             self.GetProgramNamedParameterdvNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramNamedParameterfvNV, try loader("glGetProgramNamedParameterfvNV"))) |ptr| {
             self.GetProgramNamedParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramNamedParameter4dNV, try loader("glProgramNamedParameter4dNV"))) |ptr| {
             self.ProgramNamedParameter4dNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramNamedParameter4dvNV, try loader("glProgramNamedParameter4dvNV"))) |ptr| {
             self.ProgramNamedParameter4dvNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramNamedParameter4fNV, try loader("glProgramNamedParameter4fNV"))) |ptr| {
             self.ProgramNamedParameter4fNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramNamedParameter4fvNV, try loader("glProgramNamedParameter4fvNV"))) |ptr| {
             self.ProgramNamedParameter4fvNV = ptr;
         } else {
-            self.features.GL_NV_fragment_program = false;
+            loaded = false;
         }
+        self.features.GL_NV_fragment_program = loaded;
+    }
+    fn load_GL_NV_framebuffer_mixed_samples(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCoverageModulationNV, try loader("glCoverageModulationNV"))) |ptr| {
             self.CoverageModulationNV = ptr;
         } else {
-            self.features.GL_NV_framebuffer_mixed_samples = false;
+            loaded = false;
         }
         if (@ptrCast(?glCoverageModulationTableNV, try loader("glCoverageModulationTableNV"))) |ptr| {
             self.CoverageModulationTableNV = ptr;
         } else {
-            self.features.GL_NV_framebuffer_mixed_samples = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCoverageModulationTableNV, try loader("glGetCoverageModulationTableNV"))) |ptr| {
             self.GetCoverageModulationTableNV = ptr;
         } else {
-            self.features.GL_NV_framebuffer_mixed_samples = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterSamplesEXT, try loader("glRasterSamplesEXT"))) |ptr| {
             self.RasterSamplesEXT = ptr;
         } else {
-            self.features.GL_NV_framebuffer_mixed_samples = false;
+            loaded = false;
         }
+        self.features.GL_NV_framebuffer_mixed_samples = loaded;
+    }
+    fn load_GL_NV_framebuffer_multisample_coverage(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glRenderbufferStorageMultisampleCoverageNV, try loader("glRenderbufferStorageMultisampleCoverageNV"))) |ptr| {
             self.RenderbufferStorageMultisampleCoverageNV = ptr;
         } else {
-            self.features.GL_NV_framebuffer_multisample_coverage = false;
+            loaded = false;
         }
+        self.features.GL_NV_framebuffer_multisample_coverage = loaded;
+    }
+    fn load_GL_NV_geometry_program4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferTextureEXT, try loader("glFramebufferTextureEXT"))) |ptr| {
             self.FramebufferTextureEXT = ptr;
         } else {
-            self.features.GL_NV_geometry_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureFaceEXT, try loader("glFramebufferTextureFaceEXT"))) |ptr| {
             self.FramebufferTextureFaceEXT = ptr;
         } else {
-            self.features.GL_NV_geometry_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glFramebufferTextureLayerEXT, try loader("glFramebufferTextureLayerEXT"))) |ptr| {
             self.FramebufferTextureLayerEXT = ptr;
         } else {
-            self.features.GL_NV_geometry_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramVertexLimitNV, try loader("glProgramVertexLimitNV"))) |ptr| {
             self.ProgramVertexLimitNV = ptr;
         } else {
-            self.features.GL_NV_geometry_program4 = false;
+            loaded = false;
         }
+        self.features.GL_NV_geometry_program4 = loaded;
+    }
+    fn load_GL_NV_gpu_multicast(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMulticastBarrierNV, try loader("glMulticastBarrierNV"))) |ptr| {
             self.MulticastBarrierNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastBlitFramebufferNV, try loader("glMulticastBlitFramebufferNV"))) |ptr| {
             self.MulticastBlitFramebufferNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastBufferSubDataNV, try loader("glMulticastBufferSubDataNV"))) |ptr| {
             self.MulticastBufferSubDataNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastCopyBufferSubDataNV, try loader("glMulticastCopyBufferSubDataNV"))) |ptr| {
             self.MulticastCopyBufferSubDataNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastCopyImageSubDataNV, try loader("glMulticastCopyImageSubDataNV"))) |ptr| {
             self.MulticastCopyImageSubDataNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastFramebufferSampleLocationsfvNV, try loader("glMulticastFramebufferSampleLocationsfvNV"))) |ptr| {
             self.MulticastFramebufferSampleLocationsfvNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastGetQueryObjecti64vNV, try loader("glMulticastGetQueryObjecti64vNV"))) |ptr| {
             self.MulticastGetQueryObjecti64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastGetQueryObjectivNV, try loader("glMulticastGetQueryObjectivNV"))) |ptr| {
             self.MulticastGetQueryObjectivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastGetQueryObjectui64vNV, try loader("glMulticastGetQueryObjectui64vNV"))) |ptr| {
             self.MulticastGetQueryObjectui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastGetQueryObjectuivNV, try loader("glMulticastGetQueryObjectuivNV"))) |ptr| {
             self.MulticastGetQueryObjectuivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glMulticastWaitSyncNV, try loader("glMulticastWaitSyncNV"))) |ptr| {
             self.MulticastWaitSyncNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
         if (@ptrCast(?glRenderGpuMaskNV, try loader("glRenderGpuMaskNV"))) |ptr| {
             self.RenderGpuMaskNV = ptr;
         } else {
-            self.features.GL_NV_gpu_multicast = false;
+            loaded = false;
         }
+        self.features.GL_NV_gpu_multicast = loaded;
+    }
+    fn load_GL_NV_gpu_program4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetProgramEnvParameterIivNV, try loader("glGetProgramEnvParameterIivNV"))) |ptr| {
             self.GetProgramEnvParameterIivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramEnvParameterIuivNV, try loader("glGetProgramEnvParameterIuivNV"))) |ptr| {
             self.GetProgramEnvParameterIuivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterIivNV, try loader("glGetProgramLocalParameterIivNV"))) |ptr| {
             self.GetProgramLocalParameterIivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramLocalParameterIuivNV, try loader("glGetProgramLocalParameterIuivNV"))) |ptr| {
             self.GetProgramLocalParameterIuivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameterI4iNV, try loader("glProgramEnvParameterI4iNV"))) |ptr| {
             self.ProgramEnvParameterI4iNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameterI4ivNV, try loader("glProgramEnvParameterI4ivNV"))) |ptr| {
             self.ProgramEnvParameterI4ivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameterI4uiNV, try loader("glProgramEnvParameterI4uiNV"))) |ptr| {
             self.ProgramEnvParameterI4uiNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParameterI4uivNV, try loader("glProgramEnvParameterI4uivNV"))) |ptr| {
             self.ProgramEnvParameterI4uivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParametersI4ivNV, try loader("glProgramEnvParametersI4ivNV"))) |ptr| {
             self.ProgramEnvParametersI4ivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramEnvParametersI4uivNV, try loader("glProgramEnvParametersI4uivNV"))) |ptr| {
             self.ProgramEnvParametersI4uivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameterI4iNV, try loader("glProgramLocalParameterI4iNV"))) |ptr| {
             self.ProgramLocalParameterI4iNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameterI4ivNV, try loader("glProgramLocalParameterI4ivNV"))) |ptr| {
             self.ProgramLocalParameterI4ivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameterI4uiNV, try loader("glProgramLocalParameterI4uiNV"))) |ptr| {
             self.ProgramLocalParameterI4uiNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParameterI4uivNV, try loader("glProgramLocalParameterI4uivNV"))) |ptr| {
             self.ProgramLocalParameterI4uivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParametersI4ivNV, try loader("glProgramLocalParametersI4ivNV"))) |ptr| {
             self.ProgramLocalParametersI4ivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramLocalParametersI4uivNV, try loader("glProgramLocalParametersI4uivNV"))) |ptr| {
             self.ProgramLocalParametersI4uivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program4 = false;
+            loaded = false;
         }
+        self.features.GL_NV_gpu_program4 = loaded;
+    }
+    fn load_GL_NV_gpu_program5(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetProgramSubroutineParameteruivNV, try loader("glGetProgramSubroutineParameteruivNV"))) |ptr| {
             self.GetProgramSubroutineParameteruivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramSubroutineParametersuivNV, try loader("glProgramSubroutineParametersuivNV"))) |ptr| {
             self.ProgramSubroutineParametersuivNV = ptr;
         } else {
-            self.features.GL_NV_gpu_program5 = false;
+            loaded = false;
         }
+        self.features.GL_NV_gpu_program5 = loaded;
+    }
+    fn load_GL_NV_gpu_shader5(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetUniformi64vNV, try loader("glGetUniformi64vNV"))) |ptr| {
             self.GetUniformi64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64NV, try loader("glProgramUniform1i64NV"))) |ptr| {
             self.ProgramUniform1i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1i64vNV, try loader("glProgramUniform1i64vNV"))) |ptr| {
             self.ProgramUniform1i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64NV, try loader("glProgramUniform1ui64NV"))) |ptr| {
             self.ProgramUniform1ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform1ui64vNV, try loader("glProgramUniform1ui64vNV"))) |ptr| {
             self.ProgramUniform1ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64NV, try loader("glProgramUniform2i64NV"))) |ptr| {
             self.ProgramUniform2i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2i64vNV, try loader("glProgramUniform2i64vNV"))) |ptr| {
             self.ProgramUniform2i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64NV, try loader("glProgramUniform2ui64NV"))) |ptr| {
             self.ProgramUniform2ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform2ui64vNV, try loader("glProgramUniform2ui64vNV"))) |ptr| {
             self.ProgramUniform2ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64NV, try loader("glProgramUniform3i64NV"))) |ptr| {
             self.ProgramUniform3i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3i64vNV, try loader("glProgramUniform3i64vNV"))) |ptr| {
             self.ProgramUniform3i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64NV, try loader("glProgramUniform3ui64NV"))) |ptr| {
             self.ProgramUniform3ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform3ui64vNV, try loader("glProgramUniform3ui64vNV"))) |ptr| {
             self.ProgramUniform3ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64NV, try loader("glProgramUniform4i64NV"))) |ptr| {
             self.ProgramUniform4i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4i64vNV, try loader("glProgramUniform4i64vNV"))) |ptr| {
             self.ProgramUniform4i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64NV, try loader("glProgramUniform4ui64NV"))) |ptr| {
             self.ProgramUniform4ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniform4ui64vNV, try loader("glProgramUniform4ui64vNV"))) |ptr| {
             self.ProgramUniform4ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64NV, try loader("glUniform1i64NV"))) |ptr| {
             self.Uniform1i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1i64vNV, try loader("glUniform1i64vNV"))) |ptr| {
             self.Uniform1i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64NV, try loader("glUniform1ui64NV"))) |ptr| {
             self.Uniform1ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform1ui64vNV, try loader("glUniform1ui64vNV"))) |ptr| {
             self.Uniform1ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64NV, try loader("glUniform2i64NV"))) |ptr| {
             self.Uniform2i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2i64vNV, try loader("glUniform2i64vNV"))) |ptr| {
             self.Uniform2i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64NV, try loader("glUniform2ui64NV"))) |ptr| {
             self.Uniform2ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform2ui64vNV, try loader("glUniform2ui64vNV"))) |ptr| {
             self.Uniform2ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64NV, try loader("glUniform3i64NV"))) |ptr| {
             self.Uniform3i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3i64vNV, try loader("glUniform3i64vNV"))) |ptr| {
             self.Uniform3i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64NV, try loader("glUniform3ui64NV"))) |ptr| {
             self.Uniform3ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform3ui64vNV, try loader("glUniform3ui64vNV"))) |ptr| {
             self.Uniform3ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64NV, try loader("glUniform4i64NV"))) |ptr| {
             self.Uniform4i64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4i64vNV, try loader("glUniform4i64vNV"))) |ptr| {
             self.Uniform4i64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64NV, try loader("glUniform4ui64NV"))) |ptr| {
             self.Uniform4ui64NV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniform4ui64vNV, try loader("glUniform4ui64vNV"))) |ptr| {
             self.Uniform4ui64vNV = ptr;
         } else {
-            self.features.GL_NV_gpu_shader5 = false;
+            loaded = false;
         }
+        self.features.GL_NV_gpu_shader5 = loaded;
+    }
+    fn load_GL_NV_half_float(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColor3hNV, try loader("glColor3hNV"))) |ptr| {
             self.Color3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor3hvNV, try loader("glColor3hvNV"))) |ptr| {
             self.Color3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4hNV, try loader("glColor4hNV"))) |ptr| {
             self.Color4hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4hvNV, try loader("glColor4hvNV"))) |ptr| {
             self.Color4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordhNV, try loader("glFogCoordhNV"))) |ptr| {
             self.FogCoordhNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordhvNV, try loader("glFogCoordhvNV"))) |ptr| {
             self.FogCoordhvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1hNV, try loader("glMultiTexCoord1hNV"))) |ptr| {
             self.MultiTexCoord1hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1hvNV, try loader("glMultiTexCoord1hvNV"))) |ptr| {
             self.MultiTexCoord1hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2hNV, try loader("glMultiTexCoord2hNV"))) |ptr| {
             self.MultiTexCoord2hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2hvNV, try loader("glMultiTexCoord2hvNV"))) |ptr| {
             self.MultiTexCoord2hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3hNV, try loader("glMultiTexCoord3hNV"))) |ptr| {
             self.MultiTexCoord3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3hvNV, try loader("glMultiTexCoord3hvNV"))) |ptr| {
             self.MultiTexCoord3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4hNV, try loader("glMultiTexCoord4hNV"))) |ptr| {
             self.MultiTexCoord4hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4hvNV, try loader("glMultiTexCoord4hvNV"))) |ptr| {
             self.MultiTexCoord4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3hNV, try loader("glNormal3hNV"))) |ptr| {
             self.Normal3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3hvNV, try loader("glNormal3hvNV"))) |ptr| {
             self.Normal3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3hNV, try loader("glSecondaryColor3hNV"))) |ptr| {
             self.SecondaryColor3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColor3hvNV, try loader("glSecondaryColor3hvNV"))) |ptr| {
             self.SecondaryColor3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1hNV, try loader("glTexCoord1hNV"))) |ptr| {
             self.TexCoord1hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1hvNV, try loader("glTexCoord1hvNV"))) |ptr| {
             self.TexCoord1hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2hNV, try loader("glTexCoord2hNV"))) |ptr| {
             self.TexCoord2hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2hvNV, try loader("glTexCoord2hvNV"))) |ptr| {
             self.TexCoord2hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3hNV, try loader("glTexCoord3hNV"))) |ptr| {
             self.TexCoord3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3hvNV, try loader("glTexCoord3hvNV"))) |ptr| {
             self.TexCoord3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4hNV, try loader("glTexCoord4hNV"))) |ptr| {
             self.TexCoord4hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4hvNV, try loader("glTexCoord4hvNV"))) |ptr| {
             self.TexCoord4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2hNV, try loader("glVertex2hNV"))) |ptr| {
             self.Vertex2hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2hvNV, try loader("glVertex2hvNV"))) |ptr| {
             self.Vertex2hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3hNV, try loader("glVertex3hNV"))) |ptr| {
             self.Vertex3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3hvNV, try loader("glVertex3hvNV"))) |ptr| {
             self.Vertex3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4hNV, try loader("glVertex4hNV"))) |ptr| {
             self.Vertex4hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4hvNV, try loader("glVertex4hvNV"))) |ptr| {
             self.Vertex4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1hNV, try loader("glVertexAttrib1hNV"))) |ptr| {
             self.VertexAttrib1hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1hvNV, try loader("glVertexAttrib1hvNV"))) |ptr| {
             self.VertexAttrib1hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2hNV, try loader("glVertexAttrib2hNV"))) |ptr| {
             self.VertexAttrib2hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2hvNV, try loader("glVertexAttrib2hvNV"))) |ptr| {
             self.VertexAttrib2hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3hNV, try loader("glVertexAttrib3hNV"))) |ptr| {
             self.VertexAttrib3hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3hvNV, try loader("glVertexAttrib3hvNV"))) |ptr| {
             self.VertexAttrib3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4hNV, try loader("glVertexAttrib4hNV"))) |ptr| {
             self.VertexAttrib4hNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4hvNV, try loader("glVertexAttrib4hvNV"))) |ptr| {
             self.VertexAttrib4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs1hvNV, try loader("glVertexAttribs1hvNV"))) |ptr| {
             self.VertexAttribs1hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs2hvNV, try loader("glVertexAttribs2hvNV"))) |ptr| {
             self.VertexAttribs2hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs3hvNV, try loader("glVertexAttribs3hvNV"))) |ptr| {
             self.VertexAttribs3hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs4hvNV, try loader("glVertexAttribs4hvNV"))) |ptr| {
             self.VertexAttribs4hvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexWeighthNV, try loader("glVertexWeighthNV"))) |ptr| {
             self.VertexWeighthNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexWeighthvNV, try loader("glVertexWeighthvNV"))) |ptr| {
             self.VertexWeighthvNV = ptr;
         } else {
-            self.features.GL_NV_half_float = false;
+            loaded = false;
         }
+        self.features.GL_NV_half_float = loaded;
+    }
+    fn load_GL_NV_internalformat_sample_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetInternalformatSampleivNV, try loader("glGetInternalformatSampleivNV"))) |ptr| {
             self.GetInternalformatSampleivNV = ptr;
         } else {
-            self.features.GL_NV_internalformat_sample_query = false;
+            loaded = false;
         }
+        self.features.GL_NV_internalformat_sample_query = loaded;
+    }
+    fn load_GL_NV_memory_attachment(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferAttachMemoryNV, try loader("glBufferAttachMemoryNV"))) |ptr| {
             self.BufferAttachMemoryNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMemoryObjectDetachedResourcesuivNV, try loader("glGetMemoryObjectDetachedResourcesuivNV"))) |ptr| {
             self.GetMemoryObjectDetachedResourcesuivNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferAttachMemoryNV, try loader("glNamedBufferAttachMemoryNV"))) |ptr| {
             self.NamedBufferAttachMemoryNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
         if (@ptrCast(?glResetMemoryObjectParameterNV, try loader("glResetMemoryObjectParameterNV"))) |ptr| {
             self.ResetMemoryObjectParameterNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexAttachMemoryNV, try loader("glTexAttachMemoryNV"))) |ptr| {
             self.TexAttachMemoryNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureAttachMemoryNV, try loader("glTextureAttachMemoryNV"))) |ptr| {
             self.TextureAttachMemoryNV = ptr;
         } else {
-            self.features.GL_NV_memory_attachment = false;
+            loaded = false;
         }
+        self.features.GL_NV_memory_attachment = loaded;
+    }
+    fn load_GL_NV_memory_object_sparse(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferPageCommitmentMemNV, try loader("glBufferPageCommitmentMemNV"))) |ptr| {
             self.BufferPageCommitmentMemNV = ptr;
         } else {
-            self.features.GL_NV_memory_object_sparse = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedBufferPageCommitmentMemNV, try loader("glNamedBufferPageCommitmentMemNV"))) |ptr| {
             self.NamedBufferPageCommitmentMemNV = ptr;
         } else {
-            self.features.GL_NV_memory_object_sparse = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexPageCommitmentMemNV, try loader("glTexPageCommitmentMemNV"))) |ptr| {
             self.TexPageCommitmentMemNV = ptr;
         } else {
-            self.features.GL_NV_memory_object_sparse = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexturePageCommitmentMemNV, try loader("glTexturePageCommitmentMemNV"))) |ptr| {
             self.TexturePageCommitmentMemNV = ptr;
         } else {
-            self.features.GL_NV_memory_object_sparse = false;
+            loaded = false;
         }
+        self.features.GL_NV_memory_object_sparse = loaded;
+    }
+    fn load_GL_NV_mesh_shader(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawMeshTasksIndirectNV, try loader("glDrawMeshTasksIndirectNV"))) |ptr| {
             self.DrawMeshTasksIndirectNV = ptr;
         } else {
-            self.features.GL_NV_mesh_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawMeshTasksNV, try loader("glDrawMeshTasksNV"))) |ptr| {
             self.DrawMeshTasksNV = ptr;
         } else {
-            self.features.GL_NV_mesh_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawMeshTasksIndirectCountNV, try loader("glMultiDrawMeshTasksIndirectCountNV"))) |ptr| {
             self.MultiDrawMeshTasksIndirectCountNV = ptr;
         } else {
-            self.features.GL_NV_mesh_shader = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiDrawMeshTasksIndirectNV, try loader("glMultiDrawMeshTasksIndirectNV"))) |ptr| {
             self.MultiDrawMeshTasksIndirectNV = ptr;
         } else {
-            self.features.GL_NV_mesh_shader = false;
+            loaded = false;
         }
+        self.features.GL_NV_mesh_shader = loaded;
+    }
+    fn load_GL_NV_occlusion_query(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginOcclusionQueryNV, try loader("glBeginOcclusionQueryNV"))) |ptr| {
             self.BeginOcclusionQueryNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteOcclusionQueriesNV, try loader("glDeleteOcclusionQueriesNV"))) |ptr| {
             self.DeleteOcclusionQueriesNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndOcclusionQueryNV, try loader("glEndOcclusionQueryNV"))) |ptr| {
             self.EndOcclusionQueryNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenOcclusionQueriesNV, try loader("glGenOcclusionQueriesNV"))) |ptr| {
             self.GenOcclusionQueriesNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetOcclusionQueryivNV, try loader("glGetOcclusionQueryivNV"))) |ptr| {
             self.GetOcclusionQueryivNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetOcclusionQueryuivNV, try loader("glGetOcclusionQueryuivNV"))) |ptr| {
             self.GetOcclusionQueryuivNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsOcclusionQueryNV, try loader("glIsOcclusionQueryNV"))) |ptr| {
             self.IsOcclusionQueryNV = ptr;
         } else {
-            self.features.GL_NV_occlusion_query = false;
+            loaded = false;
         }
+        self.features.GL_NV_occlusion_query = loaded;
+    }
+    fn load_GL_NV_parameter_buffer_object(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glProgramBufferParametersIivNV, try loader("glProgramBufferParametersIivNV"))) |ptr| {
             self.ProgramBufferParametersIivNV = ptr;
         } else {
-            self.features.GL_NV_parameter_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramBufferParametersIuivNV, try loader("glProgramBufferParametersIuivNV"))) |ptr| {
             self.ProgramBufferParametersIuivNV = ptr;
         } else {
-            self.features.GL_NV_parameter_buffer_object = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramBufferParametersfvNV, try loader("glProgramBufferParametersfvNV"))) |ptr| {
             self.ProgramBufferParametersfvNV = ptr;
         } else {
-            self.features.GL_NV_parameter_buffer_object = false;
+            loaded = false;
         }
+        self.features.GL_NV_parameter_buffer_object = loaded;
+    }
+    fn load_GL_NV_path_rendering(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCopyPathNV, try loader("glCopyPathNV"))) |ptr| {
             self.CopyPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glCoverFillPathInstancedNV, try loader("glCoverFillPathInstancedNV"))) |ptr| {
             self.CoverFillPathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glCoverFillPathNV, try loader("glCoverFillPathNV"))) |ptr| {
             self.CoverFillPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glCoverStrokePathInstancedNV, try loader("glCoverStrokePathInstancedNV"))) |ptr| {
             self.CoverStrokePathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glCoverStrokePathNV, try loader("glCoverStrokePathNV"))) |ptr| {
             self.CoverStrokePathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeletePathsNV, try loader("glDeletePathsNV"))) |ptr| {
             self.DeletePathsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenPathsNV, try loader("glGenPathsNV"))) |ptr| {
             self.GenPathsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathCommandsNV, try loader("glGetPathCommandsNV"))) |ptr| {
             self.GetPathCommandsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathCoordsNV, try loader("glGetPathCoordsNV"))) |ptr| {
             self.GetPathCoordsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathDashArrayNV, try loader("glGetPathDashArrayNV"))) |ptr| {
             self.GetPathDashArrayNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathLengthNV, try loader("glGetPathLengthNV"))) |ptr| {
             self.GetPathLengthNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathMetricRangeNV, try loader("glGetPathMetricRangeNV"))) |ptr| {
             self.GetPathMetricRangeNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathMetricsNV, try loader("glGetPathMetricsNV"))) |ptr| {
             self.GetPathMetricsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathParameterfvNV, try loader("glGetPathParameterfvNV"))) |ptr| {
             self.GetPathParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathParameterivNV, try loader("glGetPathParameterivNV"))) |ptr| {
             self.GetPathParameterivNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPathSpacingNV, try loader("glGetPathSpacingNV"))) |ptr| {
             self.GetPathSpacingNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramResourcefvNV, try loader("glGetProgramResourcefvNV"))) |ptr| {
             self.GetProgramResourcefvNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glInterpolatePathsNV, try loader("glInterpolatePathsNV"))) |ptr| {
             self.InterpolatePathsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsPathNV, try loader("glIsPathNV"))) |ptr| {
             self.IsPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsPointInFillPathNV, try loader("glIsPointInFillPathNV"))) |ptr| {
             self.IsPointInFillPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsPointInStrokePathNV, try loader("glIsPointInStrokePathNV"))) |ptr| {
             self.IsPointInStrokePathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixFrustumEXT, try loader("glMatrixFrustumEXT"))) |ptr| {
             self.MatrixFrustumEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoad3x2fNV, try loader("glMatrixLoad3x2fNV"))) |ptr| {
             self.MatrixLoad3x2fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoad3x3fNV, try loader("glMatrixLoad3x3fNV"))) |ptr| {
             self.MatrixLoad3x3fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadIdentityEXT, try loader("glMatrixLoadIdentityEXT"))) |ptr| {
             self.MatrixLoadIdentityEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadTranspose3x3fNV, try loader("glMatrixLoadTranspose3x3fNV"))) |ptr| {
             self.MatrixLoadTranspose3x3fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadTransposedEXT, try loader("glMatrixLoadTransposedEXT"))) |ptr| {
             self.MatrixLoadTransposedEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadTransposefEXT, try loader("glMatrixLoadTransposefEXT"))) |ptr| {
             self.MatrixLoadTransposefEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoaddEXT, try loader("glMatrixLoaddEXT"))) |ptr| {
             self.MatrixLoaddEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixLoadfEXT, try loader("glMatrixLoadfEXT"))) |ptr| {
             self.MatrixLoadfEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMult3x2fNV, try loader("glMatrixMult3x2fNV"))) |ptr| {
             self.MatrixMult3x2fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMult3x3fNV, try loader("glMatrixMult3x3fNV"))) |ptr| {
             self.MatrixMult3x3fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultTranspose3x3fNV, try loader("glMatrixMultTranspose3x3fNV"))) |ptr| {
             self.MatrixMultTranspose3x3fNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultTransposedEXT, try loader("glMatrixMultTransposedEXT"))) |ptr| {
             self.MatrixMultTransposedEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultTransposefEXT, try loader("glMatrixMultTransposefEXT"))) |ptr| {
             self.MatrixMultTransposefEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultdEXT, try loader("glMatrixMultdEXT"))) |ptr| {
             self.MatrixMultdEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixMultfEXT, try loader("glMatrixMultfEXT"))) |ptr| {
             self.MatrixMultfEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixOrthoEXT, try loader("glMatrixOrthoEXT"))) |ptr| {
             self.MatrixOrthoEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixPopEXT, try loader("glMatrixPopEXT"))) |ptr| {
             self.MatrixPopEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixPushEXT, try loader("glMatrixPushEXT"))) |ptr| {
             self.MatrixPushEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixRotatedEXT, try loader("glMatrixRotatedEXT"))) |ptr| {
             self.MatrixRotatedEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixRotatefEXT, try loader("glMatrixRotatefEXT"))) |ptr| {
             self.MatrixRotatefEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixScaledEXT, try loader("glMatrixScaledEXT"))) |ptr| {
             self.MatrixScaledEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixScalefEXT, try loader("glMatrixScalefEXT"))) |ptr| {
             self.MatrixScalefEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixTranslatedEXT, try loader("glMatrixTranslatedEXT"))) |ptr| {
             self.MatrixTranslatedEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glMatrixTranslatefEXT, try loader("glMatrixTranslatefEXT"))) |ptr| {
             self.MatrixTranslatefEXT = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathCommandsNV, try loader("glPathCommandsNV"))) |ptr| {
             self.PathCommandsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathCoordsNV, try loader("glPathCoordsNV"))) |ptr| {
             self.PathCoordsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathCoverDepthFuncNV, try loader("glPathCoverDepthFuncNV"))) |ptr| {
             self.PathCoverDepthFuncNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathDashArrayNV, try loader("glPathDashArrayNV"))) |ptr| {
             self.PathDashArrayNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathGlyphIndexArrayNV, try loader("glPathGlyphIndexArrayNV"))) |ptr| {
             self.PathGlyphIndexArrayNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathGlyphIndexRangeNV, try loader("glPathGlyphIndexRangeNV"))) |ptr| {
             self.PathGlyphIndexRangeNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathGlyphRangeNV, try loader("glPathGlyphRangeNV"))) |ptr| {
             self.PathGlyphRangeNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathGlyphsNV, try loader("glPathGlyphsNV"))) |ptr| {
             self.PathGlyphsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathMemoryGlyphIndexArrayNV, try loader("glPathMemoryGlyphIndexArrayNV"))) |ptr| {
             self.PathMemoryGlyphIndexArrayNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathParameterfNV, try loader("glPathParameterfNV"))) |ptr| {
             self.PathParameterfNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathParameterfvNV, try loader("glPathParameterfvNV"))) |ptr| {
             self.PathParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathParameteriNV, try loader("glPathParameteriNV"))) |ptr| {
             self.PathParameteriNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathParameterivNV, try loader("glPathParameterivNV"))) |ptr| {
             self.PathParameterivNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathStencilDepthOffsetNV, try loader("glPathStencilDepthOffsetNV"))) |ptr| {
             self.PathStencilDepthOffsetNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathStencilFuncNV, try loader("glPathStencilFuncNV"))) |ptr| {
             self.PathStencilFuncNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathStringNV, try loader("glPathStringNV"))) |ptr| {
             self.PathStringNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathSubCommandsNV, try loader("glPathSubCommandsNV"))) |ptr| {
             self.PathSubCommandsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPathSubCoordsNV, try loader("glPathSubCoordsNV"))) |ptr| {
             self.PathSubCoordsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointAlongPathNV, try loader("glPointAlongPathNV"))) |ptr| {
             self.PointAlongPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramPathFragmentInputGenNV, try loader("glProgramPathFragmentInputGenNV"))) |ptr| {
             self.ProgramPathFragmentInputGenNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilFillPathInstancedNV, try loader("glStencilFillPathInstancedNV"))) |ptr| {
             self.StencilFillPathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilFillPathNV, try loader("glStencilFillPathNV"))) |ptr| {
             self.StencilFillPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilStrokePathInstancedNV, try loader("glStencilStrokePathInstancedNV"))) |ptr| {
             self.StencilStrokePathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilStrokePathNV, try loader("glStencilStrokePathNV"))) |ptr| {
             self.StencilStrokePathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilThenCoverFillPathInstancedNV, try loader("glStencilThenCoverFillPathInstancedNV"))) |ptr| {
             self.StencilThenCoverFillPathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilThenCoverFillPathNV, try loader("glStencilThenCoverFillPathNV"))) |ptr| {
             self.StencilThenCoverFillPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilThenCoverStrokePathInstancedNV, try loader("glStencilThenCoverStrokePathInstancedNV"))) |ptr| {
             self.StencilThenCoverStrokePathInstancedNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glStencilThenCoverStrokePathNV, try loader("glStencilThenCoverStrokePathNV"))) |ptr| {
             self.StencilThenCoverStrokePathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformPathNV, try loader("glTransformPathNV"))) |ptr| {
             self.TransformPathNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
         if (@ptrCast(?glWeightPathsNV, try loader("glWeightPathsNV"))) |ptr| {
             self.WeightPathsNV = ptr;
         } else {
-            self.features.GL_NV_path_rendering = false;
+            loaded = false;
         }
+        self.features.GL_NV_path_rendering = loaded;
+    }
+    fn load_GL_NV_pixel_data_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushPixelDataRangeNV, try loader("glFlushPixelDataRangeNV"))) |ptr| {
             self.FlushPixelDataRangeNV = ptr;
         } else {
-            self.features.GL_NV_pixel_data_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelDataRangeNV, try loader("glPixelDataRangeNV"))) |ptr| {
             self.PixelDataRangeNV = ptr;
         } else {
-            self.features.GL_NV_pixel_data_range = false;
+            loaded = false;
         }
+        self.features.GL_NV_pixel_data_range = loaded;
+    }
+    fn load_GL_NV_point_sprite(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPointParameteriNV, try loader("glPointParameteriNV"))) |ptr| {
             self.PointParameteriNV = ptr;
         } else {
-            self.features.GL_NV_point_sprite = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterivNV, try loader("glPointParameterivNV"))) |ptr| {
             self.PointParameterivNV = ptr;
         } else {
-            self.features.GL_NV_point_sprite = false;
+            loaded = false;
         }
+        self.features.GL_NV_point_sprite = loaded;
+    }
+    fn load_GL_NV_present_video(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVideoi64vNV, try loader("glGetVideoi64vNV"))) |ptr| {
             self.GetVideoi64vNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoivNV, try loader("glGetVideoivNV"))) |ptr| {
             self.GetVideoivNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoui64vNV, try loader("glGetVideoui64vNV"))) |ptr| {
             self.GetVideoui64vNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideouivNV, try loader("glGetVideouivNV"))) |ptr| {
             self.GetVideouivNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
         if (@ptrCast(?glPresentFrameDualFillNV, try loader("glPresentFrameDualFillNV"))) |ptr| {
             self.PresentFrameDualFillNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
         if (@ptrCast(?glPresentFrameKeyedNV, try loader("glPresentFrameKeyedNV"))) |ptr| {
             self.PresentFrameKeyedNV = ptr;
         } else {
-            self.features.GL_NV_present_video = false;
+            loaded = false;
         }
+        self.features.GL_NV_present_video = loaded;
+    }
+    fn load_GL_NV_primitive_restart(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPrimitiveRestartIndexNV, try loader("glPrimitiveRestartIndexNV"))) |ptr| {
             self.PrimitiveRestartIndexNV = ptr;
         } else {
-            self.features.GL_NV_primitive_restart = false;
+            loaded = false;
         }
         if (@ptrCast(?glPrimitiveRestartNV, try loader("glPrimitiveRestartNV"))) |ptr| {
             self.PrimitiveRestartNV = ptr;
         } else {
-            self.features.GL_NV_primitive_restart = false;
+            loaded = false;
         }
+        self.features.GL_NV_primitive_restart = loaded;
+    }
+    fn load_GL_NV_query_resource(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glQueryResourceNV, try loader("glQueryResourceNV"))) |ptr| {
             self.QueryResourceNV = ptr;
         } else {
-            self.features.GL_NV_query_resource = false;
+            loaded = false;
         }
+        self.features.GL_NV_query_resource = loaded;
+    }
+    fn load_GL_NV_query_resource_tag(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeleteQueryResourceTagNV, try loader("glDeleteQueryResourceTagNV"))) |ptr| {
             self.DeleteQueryResourceTagNV = ptr;
         } else {
-            self.features.GL_NV_query_resource_tag = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenQueryResourceTagNV, try loader("glGenQueryResourceTagNV"))) |ptr| {
             self.GenQueryResourceTagNV = ptr;
         } else {
-            self.features.GL_NV_query_resource_tag = false;
+            loaded = false;
         }
         if (@ptrCast(?glQueryResourceTagNV, try loader("glQueryResourceTagNV"))) |ptr| {
             self.QueryResourceTagNV = ptr;
         } else {
-            self.features.GL_NV_query_resource_tag = false;
+            loaded = false;
         }
+        self.features.GL_NV_query_resource_tag = loaded;
+    }
+    fn load_GL_NV_register_combiners(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCombinerInputNV, try loader("glCombinerInputNV"))) |ptr| {
             self.CombinerInputNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glCombinerOutputNV, try loader("glCombinerOutputNV"))) |ptr| {
             self.CombinerOutputNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glCombinerParameterfNV, try loader("glCombinerParameterfNV"))) |ptr| {
             self.CombinerParameterfNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glCombinerParameterfvNV, try loader("glCombinerParameterfvNV"))) |ptr| {
             self.CombinerParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glCombinerParameteriNV, try loader("glCombinerParameteriNV"))) |ptr| {
             self.CombinerParameteriNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glCombinerParameterivNV, try loader("glCombinerParameterivNV"))) |ptr| {
             self.CombinerParameterivNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinalCombinerInputNV, try loader("glFinalCombinerInputNV"))) |ptr| {
             self.FinalCombinerInputNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCombinerInputParameterfvNV, try loader("glGetCombinerInputParameterfvNV"))) |ptr| {
             self.GetCombinerInputParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCombinerInputParameterivNV, try loader("glGetCombinerInputParameterivNV"))) |ptr| {
             self.GetCombinerInputParameterivNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCombinerOutputParameterfvNV, try loader("glGetCombinerOutputParameterfvNV"))) |ptr| {
             self.GetCombinerOutputParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCombinerOutputParameterivNV, try loader("glGetCombinerOutputParameterivNV"))) |ptr| {
             self.GetCombinerOutputParameterivNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFinalCombinerInputParameterfvNV, try loader("glGetFinalCombinerInputParameterfvNV"))) |ptr| {
             self.GetFinalCombinerInputParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFinalCombinerInputParameterivNV, try loader("glGetFinalCombinerInputParameterivNV"))) |ptr| {
             self.GetFinalCombinerInputParameterivNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners = false;
+            loaded = false;
         }
+        self.features.GL_NV_register_combiners = loaded;
+    }
+    fn load_GL_NV_register_combiners2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCombinerStageParameterfvNV, try loader("glCombinerStageParameterfvNV"))) |ptr| {
             self.CombinerStageParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetCombinerStageParameterfvNV, try loader("glGetCombinerStageParameterfvNV"))) |ptr| {
             self.GetCombinerStageParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_register_combiners2 = false;
+            loaded = false;
         }
+        self.features.GL_NV_register_combiners2 = loaded;
+    }
+    fn load_GL_NV_sample_locations(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferSampleLocationsfvNV, try loader("glFramebufferSampleLocationsfvNV"))) |ptr| {
             self.FramebufferSampleLocationsfvNV = ptr;
         } else {
-            self.features.GL_NV_sample_locations = false;
+            loaded = false;
         }
         if (@ptrCast(?glNamedFramebufferSampleLocationsfvNV, try loader("glNamedFramebufferSampleLocationsfvNV"))) |ptr| {
             self.NamedFramebufferSampleLocationsfvNV = ptr;
         } else {
-            self.features.GL_NV_sample_locations = false;
+            loaded = false;
         }
         if (@ptrCast(?glResolveDepthValuesNV, try loader("glResolveDepthValuesNV"))) |ptr| {
             self.ResolveDepthValuesNV = ptr;
         } else {
-            self.features.GL_NV_sample_locations = false;
+            loaded = false;
         }
+        self.features.GL_NV_sample_locations = loaded;
+    }
+    fn load_GL_NV_scissor_exclusive(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glScissorExclusiveArrayvNV, try loader("glScissorExclusiveArrayvNV"))) |ptr| {
             self.ScissorExclusiveArrayvNV = ptr;
         } else {
-            self.features.GL_NV_scissor_exclusive = false;
+            loaded = false;
         }
         if (@ptrCast(?glScissorExclusiveNV, try loader("glScissorExclusiveNV"))) |ptr| {
             self.ScissorExclusiveNV = ptr;
         } else {
-            self.features.GL_NV_scissor_exclusive = false;
+            loaded = false;
         }
+        self.features.GL_NV_scissor_exclusive = loaded;
+    }
+    fn load_GL_NV_shader_buffer_load(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetBufferParameterui64vNV, try loader("glGetBufferParameterui64vNV"))) |ptr| {
             self.GetBufferParameterui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegerui64vNV, try loader("glGetIntegerui64vNV"))) |ptr| {
             self.GetIntegerui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetNamedBufferParameterui64vNV, try loader("glGetNamedBufferParameterui64vNV"))) |ptr| {
             self.GetNamedBufferParameterui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetUniformui64vNV, try loader("glGetUniformui64vNV"))) |ptr| {
             self.GetUniformui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsBufferResidentNV, try loader("glIsBufferResidentNV"))) |ptr| {
             self.IsBufferResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsNamedBufferResidentNV, try loader("glIsNamedBufferResidentNV"))) |ptr| {
             self.IsNamedBufferResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeBufferNonResidentNV, try loader("glMakeBufferNonResidentNV"))) |ptr| {
             self.MakeBufferNonResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeBufferResidentNV, try loader("glMakeBufferResidentNV"))) |ptr| {
             self.MakeBufferResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeNamedBufferNonResidentNV, try loader("glMakeNamedBufferNonResidentNV"))) |ptr| {
             self.MakeNamedBufferNonResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glMakeNamedBufferResidentNV, try loader("glMakeNamedBufferResidentNV"))) |ptr| {
             self.MakeNamedBufferResidentNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformui64NV, try loader("glProgramUniformui64NV"))) |ptr| {
             self.ProgramUniformui64NV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramUniformui64vNV, try loader("glProgramUniformui64vNV"))) |ptr| {
             self.ProgramUniformui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformui64NV, try loader("glUniformui64NV"))) |ptr| {
             self.Uniformui64NV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
         if (@ptrCast(?glUniformui64vNV, try loader("glUniformui64vNV"))) |ptr| {
             self.Uniformui64vNV = ptr;
         } else {
-            self.features.GL_NV_shader_buffer_load = false;
+            loaded = false;
         }
+        self.features.GL_NV_shader_buffer_load = loaded;
+    }
+    fn load_GL_NV_shading_rate_image(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindShadingRateImageNV, try loader("glBindShadingRateImageNV"))) |ptr| {
             self.BindShadingRateImageNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShadingRateImagePaletteNV, try loader("glGetShadingRateImagePaletteNV"))) |ptr| {
             self.GetShadingRateImagePaletteNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetShadingRateSampleLocationivNV, try loader("glGetShadingRateSampleLocationivNV"))) |ptr| {
             self.GetShadingRateSampleLocationivNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glShadingRateImageBarrierNV, try loader("glShadingRateImageBarrierNV"))) |ptr| {
             self.ShadingRateImageBarrierNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glShadingRateImagePaletteNV, try loader("glShadingRateImagePaletteNV"))) |ptr| {
             self.ShadingRateImagePaletteNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glShadingRateSampleOrderCustomNV, try loader("glShadingRateSampleOrderCustomNV"))) |ptr| {
             self.ShadingRateSampleOrderCustomNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
         if (@ptrCast(?glShadingRateSampleOrderNV, try loader("glShadingRateSampleOrderNV"))) |ptr| {
             self.ShadingRateSampleOrderNV = ptr;
         } else {
-            self.features.GL_NV_shading_rate_image = false;
+            loaded = false;
         }
+        self.features.GL_NV_shading_rate_image = loaded;
+    }
+    fn load_GL_NV_texture_barrier(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTextureBarrierNV, try loader("glTextureBarrierNV"))) |ptr| {
             self.TextureBarrierNV = ptr;
         } else {
-            self.features.GL_NV_texture_barrier = false;
+            loaded = false;
         }
+        self.features.GL_NV_texture_barrier = loaded;
+    }
+    fn load_GL_NV_texture_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexImage2DMultisampleCoverageNV, try loader("glTexImage2DMultisampleCoverageNV"))) |ptr| {
             self.TexImage2DMultisampleCoverageNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexImage3DMultisampleCoverageNV, try loader("glTexImage3DMultisampleCoverageNV"))) |ptr| {
             self.TexImage3DMultisampleCoverageNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage2DMultisampleCoverageNV, try loader("glTextureImage2DMultisampleCoverageNV"))) |ptr| {
             self.TextureImage2DMultisampleCoverageNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage2DMultisampleNV, try loader("glTextureImage2DMultisampleNV"))) |ptr| {
             self.TextureImage2DMultisampleNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage3DMultisampleCoverageNV, try loader("glTextureImage3DMultisampleCoverageNV"))) |ptr| {
             self.TextureImage3DMultisampleCoverageNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glTextureImage3DMultisampleNV, try loader("glTextureImage3DMultisampleNV"))) |ptr| {
             self.TextureImage3DMultisampleNV = ptr;
         } else {
-            self.features.GL_NV_texture_multisample = false;
+            loaded = false;
         }
+        self.features.GL_NV_texture_multisample = loaded;
+    }
+    fn load_GL_NV_timeline_semaphore(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glCreateSemaphoresNV, try loader("glCreateSemaphoresNV"))) |ptr| {
             self.CreateSemaphoresNV = ptr;
         } else {
-            self.features.GL_NV_timeline_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetSemaphoreParameterivNV, try loader("glGetSemaphoreParameterivNV"))) |ptr| {
             self.GetSemaphoreParameterivNV = ptr;
         } else {
-            self.features.GL_NV_timeline_semaphore = false;
+            loaded = false;
         }
         if (@ptrCast(?glSemaphoreParameterivNV, try loader("glSemaphoreParameterivNV"))) |ptr| {
             self.SemaphoreParameterivNV = ptr;
         } else {
-            self.features.GL_NV_timeline_semaphore = false;
+            loaded = false;
         }
+        self.features.GL_NV_timeline_semaphore = loaded;
+    }
+    fn load_GL_NV_transform_feedback(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glActiveVaryingNV, try loader("glActiveVaryingNV"))) |ptr| {
             self.ActiveVaryingNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBeginTransformFeedbackNV, try loader("glBeginTransformFeedbackNV"))) |ptr| {
             self.BeginTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferBaseNV, try loader("glBindBufferBaseNV"))) |ptr| {
             self.BindBufferBaseNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferOffsetNV, try loader("glBindBufferOffsetNV"))) |ptr| {
             self.BindBufferOffsetNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindBufferRangeNV, try loader("glBindBufferRangeNV"))) |ptr| {
             self.BindBufferRangeNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndTransformFeedbackNV, try loader("glEndTransformFeedbackNV"))) |ptr| {
             self.EndTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetActiveVaryingNV, try loader("glGetActiveVaryingNV"))) |ptr| {
             self.GetActiveVaryingNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTransformFeedbackVaryingNV, try loader("glGetTransformFeedbackVaryingNV"))) |ptr| {
             self.GetTransformFeedbackVaryingNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVaryingLocationNV, try loader("glGetVaryingLocationNV"))) |ptr| {
             self.GetVaryingLocationNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackAttribsNV, try loader("glTransformFeedbackAttribsNV"))) |ptr| {
             self.TransformFeedbackAttribsNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackStreamAttribsNV, try loader("glTransformFeedbackStreamAttribsNV"))) |ptr| {
             self.TransformFeedbackStreamAttribsNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
         if (@ptrCast(?glTransformFeedbackVaryingsNV, try loader("glTransformFeedbackVaryingsNV"))) |ptr| {
             self.TransformFeedbackVaryingsNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback = false;
+            loaded = false;
         }
+        self.features.GL_NV_transform_feedback = loaded;
+    }
+    fn load_GL_NV_transform_feedback2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBindTransformFeedbackNV, try loader("glBindTransformFeedbackNV"))) |ptr| {
             self.BindTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteTransformFeedbacksNV, try loader("glDeleteTransformFeedbacksNV"))) |ptr| {
             self.DeleteTransformFeedbacksNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glDrawTransformFeedbackNV, try loader("glDrawTransformFeedbackNV"))) |ptr| {
             self.DrawTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenTransformFeedbacksNV, try loader("glGenTransformFeedbacksNV"))) |ptr| {
             self.GenTransformFeedbacksNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsTransformFeedbackNV, try loader("glIsTransformFeedbackNV"))) |ptr| {
             self.IsTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glPauseTransformFeedbackNV, try loader("glPauseTransformFeedbackNV"))) |ptr| {
             self.PauseTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
         if (@ptrCast(?glResumeTransformFeedbackNV, try loader("glResumeTransformFeedbackNV"))) |ptr| {
             self.ResumeTransformFeedbackNV = ptr;
         } else {
-            self.features.GL_NV_transform_feedback2 = false;
+            loaded = false;
         }
+        self.features.GL_NV_transform_feedback2 = loaded;
+    }
+    fn load_GL_NV_vdpau_interop(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVDPAUFiniNV, try loader("glVDPAUFiniNV"))) |ptr| {
             self.VDPAUFiniNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUGetSurfaceivNV, try loader("glVDPAUGetSurfaceivNV"))) |ptr| {
             self.VDPAUGetSurfaceivNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUInitNV, try loader("glVDPAUInitNV"))) |ptr| {
             self.VDPAUInitNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUIsSurfaceNV, try loader("glVDPAUIsSurfaceNV"))) |ptr| {
             self.VDPAUIsSurfaceNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUMapSurfacesNV, try loader("glVDPAUMapSurfacesNV"))) |ptr| {
             self.VDPAUMapSurfacesNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAURegisterOutputSurfaceNV, try loader("glVDPAURegisterOutputSurfaceNV"))) |ptr| {
             self.VDPAURegisterOutputSurfaceNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAURegisterVideoSurfaceNV, try loader("glVDPAURegisterVideoSurfaceNV"))) |ptr| {
             self.VDPAURegisterVideoSurfaceNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUSurfaceAccessNV, try loader("glVDPAUSurfaceAccessNV"))) |ptr| {
             self.VDPAUSurfaceAccessNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUUnmapSurfacesNV, try loader("glVDPAUUnmapSurfacesNV"))) |ptr| {
             self.VDPAUUnmapSurfacesNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
         if (@ptrCast(?glVDPAUUnregisterSurfaceNV, try loader("glVDPAUUnregisterSurfaceNV"))) |ptr| {
             self.VDPAUUnregisterSurfaceNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop = false;
+            loaded = false;
         }
+        self.features.GL_NV_vdpau_interop = loaded;
+    }
+    fn load_GL_NV_vdpau_interop2(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glVDPAURegisterVideoSurfaceWithPictureStructureNV, try loader("glVDPAURegisterVideoSurfaceWithPictureStructureNV"))) |ptr| {
             self.VDPAURegisterVideoSurfaceWithPictureStructureNV = ptr;
         } else {
-            self.features.GL_NV_vdpau_interop2 = false;
+            loaded = false;
         }
+        self.features.GL_NV_vdpau_interop2 = loaded;
+    }
+    fn load_GL_NV_vertex_array_range(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushVertexArrayRangeNV, try loader("glFlushVertexArrayRangeNV"))) |ptr| {
             self.FlushVertexArrayRangeNV = ptr;
         } else {
-            self.features.GL_NV_vertex_array_range = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexArrayRangeNV, try loader("glVertexArrayRangeNV"))) |ptr| {
             self.VertexArrayRangeNV = ptr;
         } else {
-            self.features.GL_NV_vertex_array_range = false;
+            loaded = false;
         }
+        self.features.GL_NV_vertex_array_range = loaded;
+    }
+    fn load_GL_NV_vertex_attrib_integer_64bit(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVertexAttribLi64vNV, try loader("glGetVertexAttribLi64vNV"))) |ptr| {
             self.GetVertexAttribLi64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribLui64vNV, try loader("glGetVertexAttribLui64vNV"))) |ptr| {
             self.GetVertexAttribLui64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1i64NV, try loader("glVertexAttribL1i64NV"))) |ptr| {
             self.VertexAttribL1i64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1i64vNV, try loader("glVertexAttribL1i64vNV"))) |ptr| {
             self.VertexAttribL1i64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1ui64NV, try loader("glVertexAttribL1ui64NV"))) |ptr| {
             self.VertexAttribL1ui64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL1ui64vNV, try loader("glVertexAttribL1ui64vNV"))) |ptr| {
             self.VertexAttribL1ui64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2i64NV, try loader("glVertexAttribL2i64NV"))) |ptr| {
             self.VertexAttribL2i64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2i64vNV, try loader("glVertexAttribL2i64vNV"))) |ptr| {
             self.VertexAttribL2i64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2ui64NV, try loader("glVertexAttribL2ui64NV"))) |ptr| {
             self.VertexAttribL2ui64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL2ui64vNV, try loader("glVertexAttribL2ui64vNV"))) |ptr| {
             self.VertexAttribL2ui64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3i64NV, try loader("glVertexAttribL3i64NV"))) |ptr| {
             self.VertexAttribL3i64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3i64vNV, try loader("glVertexAttribL3i64vNV"))) |ptr| {
             self.VertexAttribL3i64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3ui64NV, try loader("glVertexAttribL3ui64NV"))) |ptr| {
             self.VertexAttribL3ui64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL3ui64vNV, try loader("glVertexAttribL3ui64vNV"))) |ptr| {
             self.VertexAttribL3ui64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4i64NV, try loader("glVertexAttribL4i64NV"))) |ptr| {
             self.VertexAttribL4i64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4i64vNV, try loader("glVertexAttribL4i64vNV"))) |ptr| {
             self.VertexAttribL4i64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4ui64NV, try loader("glVertexAttribL4ui64NV"))) |ptr| {
             self.VertexAttribL4ui64NV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribL4ui64vNV, try loader("glVertexAttribL4ui64vNV"))) |ptr| {
             self.VertexAttribL4ui64vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribLFormatNV, try loader("glVertexAttribLFormatNV"))) |ptr| {
             self.VertexAttribLFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_attrib_integer_64bit = false;
+            loaded = false;
         }
+        self.features.GL_NV_vertex_attrib_integer_64bit = loaded;
+    }
+    fn load_GL_NV_vertex_buffer_unified_memory(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBufferAddressRangeNV, try loader("glBufferAddressRangeNV"))) |ptr| {
             self.BufferAddressRangeNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorFormatNV, try loader("glColorFormatNV"))) |ptr| {
             self.ColorFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glEdgeFlagFormatNV, try loader("glEdgeFlagFormatNV"))) |ptr| {
             self.EdgeFlagFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogCoordFormatNV, try loader("glFogCoordFormatNV"))) |ptr| {
             self.FogCoordFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetIntegerui64i_vNV, try loader("glGetIntegerui64i_vNV"))) |ptr| {
             self.GetIntegerui64i_vNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glIndexFormatNV, try loader("glIndexFormatNV"))) |ptr| {
             self.IndexFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormalFormatNV, try loader("glNormalFormatNV"))) |ptr| {
             self.NormalFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glSecondaryColorFormatNV, try loader("glSecondaryColorFormatNV"))) |ptr| {
             self.SecondaryColorFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoordFormatNV, try loader("glTexCoordFormatNV"))) |ptr| {
             self.TexCoordFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribFormatNV, try loader("glVertexAttribFormatNV"))) |ptr| {
             self.VertexAttribFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribIFormatNV, try loader("glVertexAttribIFormatNV"))) |ptr| {
             self.VertexAttribIFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexFormatNV, try loader("glVertexFormatNV"))) |ptr| {
             self.VertexFormatNV = ptr;
         } else {
-            self.features.GL_NV_vertex_buffer_unified_memory = false;
+            loaded = false;
         }
+        self.features.GL_NV_vertex_buffer_unified_memory = loaded;
+    }
+    fn load_GL_NV_vertex_program(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAreProgramsResidentNV, try loader("glAreProgramsResidentNV"))) |ptr| {
             self.AreProgramsResidentNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindProgramNV, try loader("glBindProgramNV"))) |ptr| {
             self.BindProgramNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteProgramsNV, try loader("glDeleteProgramsNV"))) |ptr| {
             self.DeleteProgramsNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glExecuteProgramNV, try loader("glExecuteProgramNV"))) |ptr| {
             self.ExecuteProgramNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenProgramsNV, try loader("glGenProgramsNV"))) |ptr| {
             self.GenProgramsNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramParameterdvNV, try loader("glGetProgramParameterdvNV"))) |ptr| {
             self.GetProgramParameterdvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramParameterfvNV, try loader("glGetProgramParameterfvNV"))) |ptr| {
             self.GetProgramParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramStringNV, try loader("glGetProgramStringNV"))) |ptr| {
             self.GetProgramStringNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetProgramivNV, try loader("glGetProgramivNV"))) |ptr| {
             self.GetProgramivNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTrackMatrixivNV, try loader("glGetTrackMatrixivNV"))) |ptr| {
             self.GetTrackMatrixivNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribPointervNV, try loader("glGetVertexAttribPointervNV"))) |ptr| {
             self.GetVertexAttribPointervNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribdvNV, try loader("glGetVertexAttribdvNV"))) |ptr| {
             self.GetVertexAttribdvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribfvNV, try loader("glGetVertexAttribfvNV"))) |ptr| {
             self.GetVertexAttribfvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribivNV, try loader("glGetVertexAttribivNV"))) |ptr| {
             self.GetVertexAttribivNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsProgramNV, try loader("glIsProgramNV"))) |ptr| {
             self.IsProgramNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glLoadProgramNV, try loader("glLoadProgramNV"))) |ptr| {
             self.LoadProgramNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameter4dNV, try loader("glProgramParameter4dNV"))) |ptr| {
             self.ProgramParameter4dNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameter4dvNV, try loader("glProgramParameter4dvNV"))) |ptr| {
             self.ProgramParameter4dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameter4fNV, try loader("glProgramParameter4fNV"))) |ptr| {
             self.ProgramParameter4fNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameter4fvNV, try loader("glProgramParameter4fvNV"))) |ptr| {
             self.ProgramParameter4fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameters4dvNV, try loader("glProgramParameters4dvNV"))) |ptr| {
             self.ProgramParameters4dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glProgramParameters4fvNV, try loader("glProgramParameters4fvNV"))) |ptr| {
             self.ProgramParameters4fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glRequestResidentProgramsNV, try loader("glRequestResidentProgramsNV"))) |ptr| {
             self.RequestResidentProgramsNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glTrackMatrixNV, try loader("glTrackMatrixNV"))) |ptr| {
             self.TrackMatrixNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dNV, try loader("glVertexAttrib1dNV"))) |ptr| {
             self.VertexAttrib1dNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1dvNV, try loader("glVertexAttrib1dvNV"))) |ptr| {
             self.VertexAttrib1dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fNV, try loader("glVertexAttrib1fNV"))) |ptr| {
             self.VertexAttrib1fNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1fvNV, try loader("glVertexAttrib1fvNV"))) |ptr| {
             self.VertexAttrib1fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1sNV, try loader("glVertexAttrib1sNV"))) |ptr| {
             self.VertexAttrib1sNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib1svNV, try loader("glVertexAttrib1svNV"))) |ptr| {
             self.VertexAttrib1svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dNV, try loader("glVertexAttrib2dNV"))) |ptr| {
             self.VertexAttrib2dNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2dvNV, try loader("glVertexAttrib2dvNV"))) |ptr| {
             self.VertexAttrib2dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fNV, try loader("glVertexAttrib2fNV"))) |ptr| {
             self.VertexAttrib2fNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2fvNV, try loader("glVertexAttrib2fvNV"))) |ptr| {
             self.VertexAttrib2fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2sNV, try loader("glVertexAttrib2sNV"))) |ptr| {
             self.VertexAttrib2sNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib2svNV, try loader("glVertexAttrib2svNV"))) |ptr| {
             self.VertexAttrib2svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dNV, try loader("glVertexAttrib3dNV"))) |ptr| {
             self.VertexAttrib3dNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3dvNV, try loader("glVertexAttrib3dvNV"))) |ptr| {
             self.VertexAttrib3dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fNV, try loader("glVertexAttrib3fNV"))) |ptr| {
             self.VertexAttrib3fNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3fvNV, try loader("glVertexAttrib3fvNV"))) |ptr| {
             self.VertexAttrib3fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3sNV, try loader("glVertexAttrib3sNV"))) |ptr| {
             self.VertexAttrib3sNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib3svNV, try loader("glVertexAttrib3svNV"))) |ptr| {
             self.VertexAttrib3svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dNV, try loader("glVertexAttrib4dNV"))) |ptr| {
             self.VertexAttrib4dNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4dvNV, try loader("glVertexAttrib4dvNV"))) |ptr| {
             self.VertexAttrib4dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fNV, try loader("glVertexAttrib4fNV"))) |ptr| {
             self.VertexAttrib4fNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4fvNV, try loader("glVertexAttrib4fvNV"))) |ptr| {
             self.VertexAttrib4fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4sNV, try loader("glVertexAttrib4sNV"))) |ptr| {
             self.VertexAttrib4sNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4svNV, try loader("glVertexAttrib4svNV"))) |ptr| {
             self.VertexAttrib4svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ubNV, try loader("glVertexAttrib4ubNV"))) |ptr| {
             self.VertexAttrib4ubNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttrib4ubvNV, try loader("glVertexAttrib4ubvNV"))) |ptr| {
             self.VertexAttrib4ubvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribPointerNV, try loader("glVertexAttribPointerNV"))) |ptr| {
             self.VertexAttribPointerNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs1dvNV, try loader("glVertexAttribs1dvNV"))) |ptr| {
             self.VertexAttribs1dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs1fvNV, try loader("glVertexAttribs1fvNV"))) |ptr| {
             self.VertexAttribs1fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs1svNV, try loader("glVertexAttribs1svNV"))) |ptr| {
             self.VertexAttribs1svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs2dvNV, try loader("glVertexAttribs2dvNV"))) |ptr| {
             self.VertexAttribs2dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs2fvNV, try loader("glVertexAttribs2fvNV"))) |ptr| {
             self.VertexAttribs2fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs2svNV, try loader("glVertexAttribs2svNV"))) |ptr| {
             self.VertexAttribs2svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs3dvNV, try loader("glVertexAttribs3dvNV"))) |ptr| {
             self.VertexAttribs3dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs3fvNV, try loader("glVertexAttribs3fvNV"))) |ptr| {
             self.VertexAttribs3fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs3svNV, try loader("glVertexAttribs3svNV"))) |ptr| {
             self.VertexAttribs3svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs4dvNV, try loader("glVertexAttribs4dvNV"))) |ptr| {
             self.VertexAttribs4dvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs4fvNV, try loader("glVertexAttribs4fvNV"))) |ptr| {
             self.VertexAttribs4fvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs4svNV, try loader("glVertexAttribs4svNV"))) |ptr| {
             self.VertexAttribs4svNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribs4ubvNV, try loader("glVertexAttribs4ubvNV"))) |ptr| {
             self.VertexAttribs4ubvNV = ptr;
         } else {
-            self.features.GL_NV_vertex_program = false;
+            loaded = false;
         }
+        self.features.GL_NV_vertex_program = loaded;
+    }
+    fn load_GL_NV_vertex_program4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetVertexAttribIivEXT, try loader("glGetVertexAttribIivEXT"))) |ptr| {
             self.GetVertexAttribIivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVertexAttribIuivEXT, try loader("glGetVertexAttribIuivEXT"))) |ptr| {
             self.GetVertexAttribIuivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1iEXT, try loader("glVertexAttribI1iEXT"))) |ptr| {
             self.VertexAttribI1iEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1ivEXT, try loader("glVertexAttribI1ivEXT"))) |ptr| {
             self.VertexAttribI1ivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1uiEXT, try loader("glVertexAttribI1uiEXT"))) |ptr| {
             self.VertexAttribI1uiEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI1uivEXT, try loader("glVertexAttribI1uivEXT"))) |ptr| {
             self.VertexAttribI1uivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2iEXT, try loader("glVertexAttribI2iEXT"))) |ptr| {
             self.VertexAttribI2iEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2ivEXT, try loader("glVertexAttribI2ivEXT"))) |ptr| {
             self.VertexAttribI2ivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2uiEXT, try loader("glVertexAttribI2uiEXT"))) |ptr| {
             self.VertexAttribI2uiEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI2uivEXT, try loader("glVertexAttribI2uivEXT"))) |ptr| {
             self.VertexAttribI2uivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3iEXT, try loader("glVertexAttribI3iEXT"))) |ptr| {
             self.VertexAttribI3iEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3ivEXT, try loader("glVertexAttribI3ivEXT"))) |ptr| {
             self.VertexAttribI3ivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3uiEXT, try loader("glVertexAttribI3uiEXT"))) |ptr| {
             self.VertexAttribI3uiEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI3uivEXT, try loader("glVertexAttribI3uivEXT"))) |ptr| {
             self.VertexAttribI3uivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4bvEXT, try loader("glVertexAttribI4bvEXT"))) |ptr| {
             self.VertexAttribI4bvEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4iEXT, try loader("glVertexAttribI4iEXT"))) |ptr| {
             self.VertexAttribI4iEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4ivEXT, try loader("glVertexAttribI4ivEXT"))) |ptr| {
             self.VertexAttribI4ivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4svEXT, try loader("glVertexAttribI4svEXT"))) |ptr| {
             self.VertexAttribI4svEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4ubvEXT, try loader("glVertexAttribI4ubvEXT"))) |ptr| {
             self.VertexAttribI4ubvEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4uiEXT, try loader("glVertexAttribI4uiEXT"))) |ptr| {
             self.VertexAttribI4uiEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4uivEXT, try loader("glVertexAttribI4uivEXT"))) |ptr| {
             self.VertexAttribI4uivEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribI4usvEXT, try loader("glVertexAttribI4usvEXT"))) |ptr| {
             self.VertexAttribI4usvEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertexAttribIPointerEXT, try loader("glVertexAttribIPointerEXT"))) |ptr| {
             self.VertexAttribIPointerEXT = ptr;
         } else {
-            self.features.GL_NV_vertex_program4 = false;
+            loaded = false;
         }
+        self.features.GL_NV_vertex_program4 = loaded;
+    }
+    fn load_GL_NV_video_capture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glBeginVideoCaptureNV, try loader("glBeginVideoCaptureNV"))) |ptr| {
             self.BeginVideoCaptureNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindVideoCaptureStreamBufferNV, try loader("glBindVideoCaptureStreamBufferNV"))) |ptr| {
             self.BindVideoCaptureStreamBufferNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glBindVideoCaptureStreamTextureNV, try loader("glBindVideoCaptureStreamTextureNV"))) |ptr| {
             self.BindVideoCaptureStreamTextureNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glEndVideoCaptureNV, try loader("glEndVideoCaptureNV"))) |ptr| {
             self.EndVideoCaptureNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoCaptureStreamdvNV, try loader("glGetVideoCaptureStreamdvNV"))) |ptr| {
             self.GetVideoCaptureStreamdvNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoCaptureStreamfvNV, try loader("glGetVideoCaptureStreamfvNV"))) |ptr| {
             self.GetVideoCaptureStreamfvNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoCaptureStreamivNV, try loader("glGetVideoCaptureStreamivNV"))) |ptr| {
             self.GetVideoCaptureStreamivNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetVideoCaptureivNV, try loader("glGetVideoCaptureivNV"))) |ptr| {
             self.GetVideoCaptureivNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVideoCaptureNV, try loader("glVideoCaptureNV"))) |ptr| {
             self.VideoCaptureNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVideoCaptureStreamParameterdvNV, try loader("glVideoCaptureStreamParameterdvNV"))) |ptr| {
             self.VideoCaptureStreamParameterdvNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVideoCaptureStreamParameterfvNV, try loader("glVideoCaptureStreamParameterfvNV"))) |ptr| {
             self.VideoCaptureStreamParameterfvNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
         if (@ptrCast(?glVideoCaptureStreamParameterivNV, try loader("glVideoCaptureStreamParameterivNV"))) |ptr| {
             self.VideoCaptureStreamParameterivNV = ptr;
         } else {
-            self.features.GL_NV_video_capture = false;
+            loaded = false;
         }
+        self.features.GL_NV_video_capture = loaded;
+    }
+    fn load_GL_NV_viewport_swizzle(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glViewportSwizzleNV, try loader("glViewportSwizzleNV"))) |ptr| {
             self.ViewportSwizzleNV = ptr;
         } else {
-            self.features.GL_NV_viewport_swizzle = false;
+            loaded = false;
         }
+        self.features.GL_NV_viewport_swizzle = loaded;
+    }
+    fn load_GL_OES_byte_coordinates(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glMultiTexCoord1bOES, try loader("glMultiTexCoord1bOES"))) |ptr| {
             self.MultiTexCoord1bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1bvOES, try loader("glMultiTexCoord1bvOES"))) |ptr| {
             self.MultiTexCoord1bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2bOES, try loader("glMultiTexCoord2bOES"))) |ptr| {
             self.MultiTexCoord2bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2bvOES, try loader("glMultiTexCoord2bvOES"))) |ptr| {
             self.MultiTexCoord2bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3bOES, try loader("glMultiTexCoord3bOES"))) |ptr| {
             self.MultiTexCoord3bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3bvOES, try loader("glMultiTexCoord3bvOES"))) |ptr| {
             self.MultiTexCoord3bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4bOES, try loader("glMultiTexCoord4bOES"))) |ptr| {
             self.MultiTexCoord4bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4bvOES, try loader("glMultiTexCoord4bvOES"))) |ptr| {
             self.MultiTexCoord4bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1bOES, try loader("glTexCoord1bOES"))) |ptr| {
             self.TexCoord1bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1bvOES, try loader("glTexCoord1bvOES"))) |ptr| {
             self.TexCoord1bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2bOES, try loader("glTexCoord2bOES"))) |ptr| {
             self.TexCoord2bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2bvOES, try loader("glTexCoord2bvOES"))) |ptr| {
             self.TexCoord2bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3bOES, try loader("glTexCoord3bOES"))) |ptr| {
             self.TexCoord3bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3bvOES, try loader("glTexCoord3bvOES"))) |ptr| {
             self.TexCoord3bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4bOES, try loader("glTexCoord4bOES"))) |ptr| {
             self.TexCoord4bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4bvOES, try loader("glTexCoord4bvOES"))) |ptr| {
             self.TexCoord4bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2bOES, try loader("glVertex2bOES"))) |ptr| {
             self.Vertex2bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2bvOES, try loader("glVertex2bvOES"))) |ptr| {
             self.Vertex2bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3bOES, try loader("glVertex3bOES"))) |ptr| {
             self.Vertex3bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3bvOES, try loader("glVertex3bvOES"))) |ptr| {
             self.Vertex3bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4bOES, try loader("glVertex4bOES"))) |ptr| {
             self.Vertex4bOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4bvOES, try loader("glVertex4bvOES"))) |ptr| {
             self.Vertex4bvOES = ptr;
         } else {
-            self.features.GL_OES_byte_coordinates = false;
+            loaded = false;
         }
+        self.features.GL_OES_byte_coordinates = loaded;
+    }
+    fn load_GL_OES_fixed_point(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAccumxOES, try loader("glAccumxOES"))) |ptr| {
             self.AccumxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glAlphaFuncxOES, try loader("glAlphaFuncxOES"))) |ptr| {
             self.AlphaFuncxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glBitmapxOES, try loader("glBitmapxOES"))) |ptr| {
             self.BitmapxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glBlendColorxOES, try loader("glBlendColorxOES"))) |ptr| {
             self.BlendColorxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearAccumxOES, try loader("glClearAccumxOES"))) |ptr| {
             self.ClearAccumxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearColorxOES, try loader("glClearColorxOES"))) |ptr| {
             self.ClearColorxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glClearDepthxOES, try loader("glClearDepthxOES"))) |ptr| {
             self.ClearDepthxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glClipPlanexOES, try loader("glClipPlanexOES"))) |ptr| {
             self.ClipPlanexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor3xOES, try loader("glColor3xOES"))) |ptr| {
             self.Color3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor3xvOES, try loader("glColor3xvOES"))) |ptr| {
             self.Color3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4xOES, try loader("glColor4xOES"))) |ptr| {
             self.Color4xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4xvOES, try loader("glColor4xvOES"))) |ptr| {
             self.Color4xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameterxOES, try loader("glConvolutionParameterxOES"))) |ptr| {
             self.ConvolutionParameterxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glConvolutionParameterxvOES, try loader("glConvolutionParameterxvOES"))) |ptr| {
             self.ConvolutionParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangexOES, try loader("glDepthRangexOES"))) |ptr| {
             self.DepthRangexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glEvalCoord1xOES, try loader("glEvalCoord1xOES"))) |ptr| {
             self.EvalCoord1xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glEvalCoord1xvOES, try loader("glEvalCoord1xvOES"))) |ptr| {
             self.EvalCoord1xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glEvalCoord2xOES, try loader("glEvalCoord2xOES"))) |ptr| {
             self.EvalCoord2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glEvalCoord2xvOES, try loader("glEvalCoord2xvOES"))) |ptr| {
             self.EvalCoord2xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glFeedbackBufferxOES, try loader("glFeedbackBufferxOES"))) |ptr| {
             self.FeedbackBufferxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogxOES, try loader("glFogxOES"))) |ptr| {
             self.FogxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glFogxvOES, try loader("glFogxvOES"))) |ptr| {
             self.FogxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glFrustumxOES, try loader("glFrustumxOES"))) |ptr| {
             self.FrustumxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetClipPlanexOES, try loader("glGetClipPlanexOES"))) |ptr| {
             self.GetClipPlanexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetConvolutionParameterxvOES, try loader("glGetConvolutionParameterxvOES"))) |ptr| {
             self.GetConvolutionParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFixedvOES, try loader("glGetFixedvOES"))) |ptr| {
             self.GetFixedvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetHistogramParameterxvOES, try loader("glGetHistogramParameterxvOES"))) |ptr| {
             self.GetHistogramParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetLightxOES, try loader("glGetLightxOES"))) |ptr| {
             self.GetLightxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMapxvOES, try loader("glGetMapxvOES"))) |ptr| {
             self.GetMapxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetMaterialxOES, try loader("glGetMaterialxOES"))) |ptr| {
             self.GetMaterialxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPixelMapxv, try loader("glGetPixelMapxv"))) |ptr| {
             self.GetPixelMapxv = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexEnvxvOES, try loader("glGetTexEnvxvOES"))) |ptr| {
             self.GetTexEnvxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexGenxvOES, try loader("glGetTexGenxvOES"))) |ptr| {
             self.GetTexGenxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexLevelParameterxvOES, try loader("glGetTexLevelParameterxvOES"))) |ptr| {
             self.GetTexLevelParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetTexParameterxvOES, try loader("glGetTexParameterxvOES"))) |ptr| {
             self.GetTexParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glIndexxOES, try loader("glIndexxOES"))) |ptr| {
             self.IndexxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glIndexxvOES, try loader("glIndexxvOES"))) |ptr| {
             self.IndexxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLightModelxOES, try loader("glLightModelxOES"))) |ptr| {
             self.LightModelxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLightModelxvOES, try loader("glLightModelxvOES"))) |ptr| {
             self.LightModelxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLightxOES, try loader("glLightxOES"))) |ptr| {
             self.LightxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLightxvOES, try loader("glLightxvOES"))) |ptr| {
             self.LightxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLineWidthxOES, try loader("glLineWidthxOES"))) |ptr| {
             self.LineWidthxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLoadMatrixxOES, try loader("glLoadMatrixxOES"))) |ptr| {
             self.LoadMatrixxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glLoadTransposeMatrixxOES, try loader("glLoadTransposeMatrixxOES"))) |ptr| {
             self.LoadTransposeMatrixxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMap1xOES, try loader("glMap1xOES"))) |ptr| {
             self.Map1xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMap2xOES, try loader("glMap2xOES"))) |ptr| {
             self.Map2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapGrid1xOES, try loader("glMapGrid1xOES"))) |ptr| {
             self.MapGrid1xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMapGrid2xOES, try loader("glMapGrid2xOES"))) |ptr| {
             self.MapGrid2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMaterialxOES, try loader("glMaterialxOES"))) |ptr| {
             self.MaterialxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMaterialxvOES, try loader("glMaterialxvOES"))) |ptr| {
             self.MaterialxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultMatrixxOES, try loader("glMultMatrixxOES"))) |ptr| {
             self.MultMatrixxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultTransposeMatrixxOES, try loader("glMultTransposeMatrixxOES"))) |ptr| {
             self.MultTransposeMatrixxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1xOES, try loader("glMultiTexCoord1xOES"))) |ptr| {
             self.MultiTexCoord1xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord1xvOES, try loader("glMultiTexCoord1xvOES"))) |ptr| {
             self.MultiTexCoord1xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2xOES, try loader("glMultiTexCoord2xOES"))) |ptr| {
             self.MultiTexCoord2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord2xvOES, try loader("glMultiTexCoord2xvOES"))) |ptr| {
             self.MultiTexCoord2xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3xOES, try loader("glMultiTexCoord3xOES"))) |ptr| {
             self.MultiTexCoord3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord3xvOES, try loader("glMultiTexCoord3xvOES"))) |ptr| {
             self.MultiTexCoord3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4xOES, try loader("glMultiTexCoord4xOES"))) |ptr| {
             self.MultiTexCoord4xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glMultiTexCoord4xvOES, try loader("glMultiTexCoord4xvOES"))) |ptr| {
             self.MultiTexCoord4xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3xOES, try loader("glNormal3xOES"))) |ptr| {
             self.Normal3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3xvOES, try loader("glNormal3xvOES"))) |ptr| {
             self.Normal3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glOrthoxOES, try loader("glOrthoxOES"))) |ptr| {
             self.OrthoxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPassThroughxOES, try loader("glPassThroughxOES"))) |ptr| {
             self.PassThroughxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelMapx, try loader("glPixelMapx"))) |ptr| {
             self.PixelMapx = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelStorex, try loader("glPixelStorex"))) |ptr| {
             self.PixelStorex = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTransferxOES, try loader("glPixelTransferxOES"))) |ptr| {
             self.PixelTransferxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelZoomxOES, try loader("glPixelZoomxOES"))) |ptr| {
             self.PixelZoomxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterxvOES, try loader("glPointParameterxvOES"))) |ptr| {
             self.PointParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointSizexOES, try loader("glPointSizexOES"))) |ptr| {
             self.PointSizexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPolygonOffsetxOES, try loader("glPolygonOffsetxOES"))) |ptr| {
             self.PolygonOffsetxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glPrioritizeTexturesxOES, try loader("glPrioritizeTexturesxOES"))) |ptr| {
             self.PrioritizeTexturesxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos2xOES, try loader("glRasterPos2xOES"))) |ptr| {
             self.RasterPos2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos2xvOES, try loader("glRasterPos2xvOES"))) |ptr| {
             self.RasterPos2xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos3xOES, try loader("glRasterPos3xOES"))) |ptr| {
             self.RasterPos3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos3xvOES, try loader("glRasterPos3xvOES"))) |ptr| {
             self.RasterPos3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos4xOES, try loader("glRasterPos4xOES"))) |ptr| {
             self.RasterPos4xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRasterPos4xvOES, try loader("glRasterPos4xvOES"))) |ptr| {
             self.RasterPos4xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRectxOES, try loader("glRectxOES"))) |ptr| {
             self.RectxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRectxvOES, try loader("glRectxvOES"))) |ptr| {
             self.RectxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glRotatexOES, try loader("glRotatexOES"))) |ptr| {
             self.RotatexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glScalexOES, try loader("glScalexOES"))) |ptr| {
             self.ScalexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1xOES, try loader("glTexCoord1xOES"))) |ptr| {
             self.TexCoord1xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord1xvOES, try loader("glTexCoord1xvOES"))) |ptr| {
             self.TexCoord1xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2xOES, try loader("glTexCoord2xOES"))) |ptr| {
             self.TexCoord2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2xvOES, try loader("glTexCoord2xvOES"))) |ptr| {
             self.TexCoord2xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3xOES, try loader("glTexCoord3xOES"))) |ptr| {
             self.TexCoord3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord3xvOES, try loader("glTexCoord3xvOES"))) |ptr| {
             self.TexCoord3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4xOES, try loader("glTexCoord4xOES"))) |ptr| {
             self.TexCoord4xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4xvOES, try loader("glTexCoord4xvOES"))) |ptr| {
             self.TexCoord4xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexEnvxOES, try loader("glTexEnvxOES"))) |ptr| {
             self.TexEnvxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexEnvxvOES, try loader("glTexEnvxvOES"))) |ptr| {
             self.TexEnvxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexGenxOES, try loader("glTexGenxOES"))) |ptr| {
             self.TexGenxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexGenxvOES, try loader("glTexGenxvOES"))) |ptr| {
             self.TexGenxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterxOES, try loader("glTexParameterxOES"))) |ptr| {
             self.TexParameterxOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexParameterxvOES, try loader("glTexParameterxvOES"))) |ptr| {
             self.TexParameterxvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glTranslatexOES, try loader("glTranslatexOES"))) |ptr| {
             self.TranslatexOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2xOES, try loader("glVertex2xOES"))) |ptr| {
             self.Vertex2xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex2xvOES, try loader("glVertex2xvOES"))) |ptr| {
             self.Vertex2xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3xOES, try loader("glVertex3xOES"))) |ptr| {
             self.Vertex3xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex3xvOES, try loader("glVertex3xvOES"))) |ptr| {
             self.Vertex3xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4xOES, try loader("glVertex4xOES"))) |ptr| {
             self.Vertex4xOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
         if (@ptrCast(?glVertex4xvOES, try loader("glVertex4xvOES"))) |ptr| {
             self.Vertex4xvOES = ptr;
         } else {
-            self.features.GL_OES_fixed_point = false;
+            loaded = false;
         }
+        self.features.GL_OES_fixed_point = loaded;
+    }
+    fn load_GL_OES_query_matrix(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glQueryMatrixxOES, try loader("glQueryMatrixxOES"))) |ptr| {
             self.QueryMatrixxOES = ptr;
         } else {
-            self.features.GL_OES_query_matrix = false;
+            loaded = false;
         }
+        self.features.GL_OES_query_matrix = loaded;
+    }
+    fn load_GL_OES_single_precision(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glClearDepthfOES, try loader("glClearDepthfOES"))) |ptr| {
             self.ClearDepthfOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
         if (@ptrCast(?glClipPlanefOES, try loader("glClipPlanefOES"))) |ptr| {
             self.ClipPlanefOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
         if (@ptrCast(?glDepthRangefOES, try loader("glDepthRangefOES"))) |ptr| {
             self.DepthRangefOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
         if (@ptrCast(?glFrustumfOES, try loader("glFrustumfOES"))) |ptr| {
             self.FrustumfOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetClipPlanefOES, try loader("glGetClipPlanefOES"))) |ptr| {
             self.GetClipPlanefOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
         if (@ptrCast(?glOrthofOES, try loader("glOrthofOES"))) |ptr| {
             self.OrthofOES = ptr;
         } else {
-            self.features.GL_OES_single_precision = false;
+            loaded = false;
         }
+        self.features.GL_OES_single_precision = loaded;
+    }
+    fn load_GL_OVR_multiview(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFramebufferTextureMultiviewOVR, try loader("glFramebufferTextureMultiviewOVR"))) |ptr| {
             self.FramebufferTextureMultiviewOVR = ptr;
         } else {
-            self.features.GL_OVR_multiview = false;
+            loaded = false;
         }
+        self.features.GL_OVR_multiview = loaded;
+    }
+    fn load_GL_PGI_misc_hints(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glHintPGI, try loader("glHintPGI"))) |ptr| {
             self.HintPGI = ptr;
         } else {
-            self.features.GL_PGI_misc_hints = false;
+            loaded = false;
         }
+        self.features.GL_PGI_misc_hints = loaded;
+    }
+    fn load_GL_SGIS_detail_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDetailTexFuncSGIS, try loader("glDetailTexFuncSGIS"))) |ptr| {
             self.DetailTexFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_detail_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetDetailTexFuncSGIS, try loader("glGetDetailTexFuncSGIS"))) |ptr| {
             self.GetDetailTexFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_detail_texture = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_detail_texture = loaded;
+    }
+    fn load_GL_SGIS_fog_function(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFogFuncSGIS, try loader("glFogFuncSGIS"))) |ptr| {
             self.FogFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_fog_function = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFogFuncSGIS, try loader("glGetFogFuncSGIS"))) |ptr| {
             self.GetFogFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_fog_function = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_fog_function = loaded;
+    }
+    fn load_GL_SGIS_multisample(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSampleMaskSGIS, try loader("glSampleMaskSGIS"))) |ptr| {
             self.SampleMaskSGIS = ptr;
         } else {
-            self.features.GL_SGIS_multisample = false;
+            loaded = false;
         }
         if (@ptrCast(?glSamplePatternSGIS, try loader("glSamplePatternSGIS"))) |ptr| {
             self.SamplePatternSGIS = ptr;
         } else {
-            self.features.GL_SGIS_multisample = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_multisample = loaded;
+    }
+    fn load_GL_SGIS_pixel_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetPixelTexGenParameterfvSGIS, try loader("glGetPixelTexGenParameterfvSGIS"))) |ptr| {
             self.GetPixelTexGenParameterfvSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetPixelTexGenParameterivSGIS, try loader("glGetPixelTexGenParameterivSGIS"))) |ptr| {
             self.GetPixelTexGenParameterivSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTexGenParameterfSGIS, try loader("glPixelTexGenParameterfSGIS"))) |ptr| {
             self.PixelTexGenParameterfSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTexGenParameterfvSGIS, try loader("glPixelTexGenParameterfvSGIS"))) |ptr| {
             self.PixelTexGenParameterfvSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTexGenParameteriSGIS, try loader("glPixelTexGenParameteriSGIS"))) |ptr| {
             self.PixelTexGenParameteriSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glPixelTexGenParameterivSGIS, try loader("glPixelTexGenParameterivSGIS"))) |ptr| {
             self.PixelTexGenParameterivSGIS = ptr;
         } else {
-            self.features.GL_SGIS_pixel_texture = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_pixel_texture = loaded;
+    }
+    fn load_GL_SGIS_point_parameters(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPointParameterfSGIS, try loader("glPointParameterfSGIS"))) |ptr| {
             self.PointParameterfSGIS = ptr;
         } else {
-            self.features.GL_SGIS_point_parameters = false;
+            loaded = false;
         }
         if (@ptrCast(?glPointParameterfvSGIS, try loader("glPointParameterfvSGIS"))) |ptr| {
             self.PointParameterfvSGIS = ptr;
         } else {
-            self.features.GL_SGIS_point_parameters = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_point_parameters = loaded;
+    }
+    fn load_GL_SGIS_sharpen_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetSharpenTexFuncSGIS, try loader("glGetSharpenTexFuncSGIS"))) |ptr| {
             self.GetSharpenTexFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_sharpen_texture = false;
+            loaded = false;
         }
         if (@ptrCast(?glSharpenTexFuncSGIS, try loader("glSharpenTexFuncSGIS"))) |ptr| {
             self.SharpenTexFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_sharpen_texture = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_sharpen_texture = loaded;
+    }
+    fn load_GL_SGIS_texture4D(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTexImage4DSGIS, try loader("glTexImage4DSGIS"))) |ptr| {
             self.TexImage4DSGIS = ptr;
         } else {
-            self.features.GL_SGIS_texture4D = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexSubImage4DSGIS, try loader("glTexSubImage4DSGIS"))) |ptr| {
             self.TexSubImage4DSGIS = ptr;
         } else {
-            self.features.GL_SGIS_texture4D = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_texture4D = loaded;
+    }
+    fn load_GL_SGIS_texture_color_mask(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTextureColorMaskSGIS, try loader("glTextureColorMaskSGIS"))) |ptr| {
             self.TextureColorMaskSGIS = ptr;
         } else {
-            self.features.GL_SGIS_texture_color_mask = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_texture_color_mask = loaded;
+    }
+    fn load_GL_SGIS_texture_filter4(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetTexFilterFuncSGIS, try loader("glGetTexFilterFuncSGIS"))) |ptr| {
             self.GetTexFilterFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_texture_filter4 = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexFilterFuncSGIS, try loader("glTexFilterFuncSGIS"))) |ptr| {
             self.TexFilterFuncSGIS = ptr;
         } else {
-            self.features.GL_SGIS_texture_filter4 = false;
+            loaded = false;
         }
+        self.features.GL_SGIS_texture_filter4 = loaded;
+    }
+    fn load_GL_SGIX_async(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glAsyncMarkerSGIX, try loader("glAsyncMarkerSGIX"))) |ptr| {
             self.AsyncMarkerSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeleteAsyncMarkersSGIX, try loader("glDeleteAsyncMarkersSGIX"))) |ptr| {
             self.DeleteAsyncMarkersSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
         if (@ptrCast(?glFinishAsyncSGIX, try loader("glFinishAsyncSGIX"))) |ptr| {
             self.FinishAsyncSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
         if (@ptrCast(?glGenAsyncMarkersSGIX, try loader("glGenAsyncMarkersSGIX"))) |ptr| {
             self.GenAsyncMarkersSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
         if (@ptrCast(?glIsAsyncMarkerSGIX, try loader("glIsAsyncMarkerSGIX"))) |ptr| {
             self.IsAsyncMarkerSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
         if (@ptrCast(?glPollAsyncSGIX, try loader("glPollAsyncSGIX"))) |ptr| {
             self.PollAsyncSGIX = ptr;
         } else {
-            self.features.GL_SGIX_async = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_async = loaded;
+    }
+    fn load_GL_SGIX_flush_raster(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFlushRasterSGIX, try loader("glFlushRasterSGIX"))) |ptr| {
             self.FlushRasterSGIX = ptr;
         } else {
-            self.features.GL_SGIX_flush_raster = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_flush_raster = loaded;
+    }
+    fn load_GL_SGIX_fragment_lighting(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFragmentColorMaterialSGIX, try loader("glFragmentColorMaterialSGIX"))) |ptr| {
             self.FragmentColorMaterialSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightModelfSGIX, try loader("glFragmentLightModelfSGIX"))) |ptr| {
             self.FragmentLightModelfSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightModelfvSGIX, try loader("glFragmentLightModelfvSGIX"))) |ptr| {
             self.FragmentLightModelfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightModeliSGIX, try loader("glFragmentLightModeliSGIX"))) |ptr| {
             self.FragmentLightModeliSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightModelivSGIX, try loader("glFragmentLightModelivSGIX"))) |ptr| {
             self.FragmentLightModelivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightfSGIX, try loader("glFragmentLightfSGIX"))) |ptr| {
             self.FragmentLightfSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightfvSGIX, try loader("glFragmentLightfvSGIX"))) |ptr| {
             self.FragmentLightfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightiSGIX, try loader("glFragmentLightiSGIX"))) |ptr| {
             self.FragmentLightiSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentLightivSGIX, try loader("glFragmentLightivSGIX"))) |ptr| {
             self.FragmentLightivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentMaterialfSGIX, try loader("glFragmentMaterialfSGIX"))) |ptr| {
             self.FragmentMaterialfSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentMaterialfvSGIX, try loader("glFragmentMaterialfvSGIX"))) |ptr| {
             self.FragmentMaterialfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentMaterialiSGIX, try loader("glFragmentMaterialiSGIX"))) |ptr| {
             self.FragmentMaterialiSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glFragmentMaterialivSGIX, try loader("glFragmentMaterialivSGIX"))) |ptr| {
             self.FragmentMaterialivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragmentLightfvSGIX, try loader("glGetFragmentLightfvSGIX"))) |ptr| {
             self.GetFragmentLightfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragmentLightivSGIX, try loader("glGetFragmentLightivSGIX"))) |ptr| {
             self.GetFragmentLightivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragmentMaterialfvSGIX, try loader("glGetFragmentMaterialfvSGIX"))) |ptr| {
             self.GetFragmentMaterialfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetFragmentMaterialivSGIX, try loader("glGetFragmentMaterialivSGIX"))) |ptr| {
             self.GetFragmentMaterialivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
         if (@ptrCast(?glLightEnviSGIX, try loader("glLightEnviSGIX"))) |ptr| {
             self.LightEnviSGIX = ptr;
         } else {
-            self.features.GL_SGIX_fragment_lighting = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_fragment_lighting = loaded;
+    }
+    fn load_GL_SGIX_framezoom(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFrameZoomSGIX, try loader("glFrameZoomSGIX"))) |ptr| {
             self.FrameZoomSGIX = ptr;
         } else {
-            self.features.GL_SGIX_framezoom = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_framezoom = loaded;
+    }
+    fn load_GL_SGIX_igloo_interface(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glIglooInterfaceSGIX, try loader("glIglooInterfaceSGIX"))) |ptr| {
             self.IglooInterfaceSGIX = ptr;
         } else {
-            self.features.GL_SGIX_igloo_interface = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_igloo_interface = loaded;
+    }
+    fn load_GL_SGIX_instruments(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetInstrumentsSGIX, try loader("glGetInstrumentsSGIX"))) |ptr| {
             self.GetInstrumentsSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
         if (@ptrCast(?glInstrumentsBufferSGIX, try loader("glInstrumentsBufferSGIX"))) |ptr| {
             self.InstrumentsBufferSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
         if (@ptrCast(?glPollInstrumentsSGIX, try loader("glPollInstrumentsSGIX"))) |ptr| {
             self.PollInstrumentsSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
         if (@ptrCast(?glReadInstrumentsSGIX, try loader("glReadInstrumentsSGIX"))) |ptr| {
             self.ReadInstrumentsSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
         if (@ptrCast(?glStartInstrumentsSGIX, try loader("glStartInstrumentsSGIX"))) |ptr| {
             self.StartInstrumentsSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
         if (@ptrCast(?glStopInstrumentsSGIX, try loader("glStopInstrumentsSGIX"))) |ptr| {
             self.StopInstrumentsSGIX = ptr;
         } else {
-            self.features.GL_SGIX_instruments = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_instruments = loaded;
+    }
+    fn load_GL_SGIX_list_priority(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGetListParameterfvSGIX, try loader("glGetListParameterfvSGIX"))) |ptr| {
             self.GetListParameterfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetListParameterivSGIX, try loader("glGetListParameterivSGIX"))) |ptr| {
             self.GetListParameterivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
         if (@ptrCast(?glListParameterfSGIX, try loader("glListParameterfSGIX"))) |ptr| {
             self.ListParameterfSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
         if (@ptrCast(?glListParameterfvSGIX, try loader("glListParameterfvSGIX"))) |ptr| {
             self.ListParameterfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
         if (@ptrCast(?glListParameteriSGIX, try loader("glListParameteriSGIX"))) |ptr| {
             self.ListParameteriSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
         if (@ptrCast(?glListParameterivSGIX, try loader("glListParameterivSGIX"))) |ptr| {
             self.ListParameterivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_list_priority = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_list_priority = loaded;
+    }
+    fn load_GL_SGIX_pixel_texture(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glPixelTexGenSGIX, try loader("glPixelTexGenSGIX"))) |ptr| {
             self.PixelTexGenSGIX = ptr;
         } else {
-            self.features.GL_SGIX_pixel_texture = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_pixel_texture = loaded;
+    }
+    fn load_GL_SGIX_polynomial_ffd(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDeformSGIX, try loader("glDeformSGIX"))) |ptr| {
             self.DeformSGIX = ptr;
         } else {
-            self.features.GL_SGIX_polynomial_ffd = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeformationMap3dSGIX, try loader("glDeformationMap3dSGIX"))) |ptr| {
             self.DeformationMap3dSGIX = ptr;
         } else {
-            self.features.GL_SGIX_polynomial_ffd = false;
+            loaded = false;
         }
         if (@ptrCast(?glDeformationMap3fSGIX, try loader("glDeformationMap3fSGIX"))) |ptr| {
             self.DeformationMap3fSGIX = ptr;
         } else {
-            self.features.GL_SGIX_polynomial_ffd = false;
+            loaded = false;
         }
         if (@ptrCast(?glLoadIdentityDeformationMapSGIX, try loader("glLoadIdentityDeformationMapSGIX"))) |ptr| {
             self.LoadIdentityDeformationMapSGIX = ptr;
         } else {
-            self.features.GL_SGIX_polynomial_ffd = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_polynomial_ffd = loaded;
+    }
+    fn load_GL_SGIX_reference_plane(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glReferencePlaneSGIX, try loader("glReferencePlaneSGIX"))) |ptr| {
             self.ReferencePlaneSGIX = ptr;
         } else {
-            self.features.GL_SGIX_reference_plane = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_reference_plane = loaded;
+    }
+    fn load_GL_SGIX_sprite(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glSpriteParameterfSGIX, try loader("glSpriteParameterfSGIX"))) |ptr| {
             self.SpriteParameterfSGIX = ptr;
         } else {
-            self.features.GL_SGIX_sprite = false;
+            loaded = false;
         }
         if (@ptrCast(?glSpriteParameterfvSGIX, try loader("glSpriteParameterfvSGIX"))) |ptr| {
             self.SpriteParameterfvSGIX = ptr;
         } else {
-            self.features.GL_SGIX_sprite = false;
+            loaded = false;
         }
         if (@ptrCast(?glSpriteParameteriSGIX, try loader("glSpriteParameteriSGIX"))) |ptr| {
             self.SpriteParameteriSGIX = ptr;
         } else {
-            self.features.GL_SGIX_sprite = false;
+            loaded = false;
         }
         if (@ptrCast(?glSpriteParameterivSGIX, try loader("glSpriteParameterivSGIX"))) |ptr| {
             self.SpriteParameterivSGIX = ptr;
         } else {
-            self.features.GL_SGIX_sprite = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_sprite = loaded;
+    }
+    fn load_GL_SGIX_tag_sample_buffer(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glTagSampleBufferSGIX, try loader("glTagSampleBufferSGIX"))) |ptr| {
             self.TagSampleBufferSGIX = ptr;
         } else {
-            self.features.GL_SGIX_tag_sample_buffer = false;
+            loaded = false;
         }
+        self.features.GL_SGIX_tag_sample_buffer = loaded;
+    }
+    fn load_GL_SGI_color_table(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColorTableParameterfvSGI, try loader("glColorTableParameterfvSGI"))) |ptr| {
             self.ColorTableParameterfvSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorTableParameterivSGI, try loader("glColorTableParameterivSGI"))) |ptr| {
             self.ColorTableParameterivSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glColorTableSGI, try loader("glColorTableSGI"))) |ptr| {
             self.ColorTableSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glCopyColorTableSGI, try loader("glCopyColorTableSGI"))) |ptr| {
             self.CopyColorTableSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableParameterfvSGI, try loader("glGetColorTableParameterfvSGI"))) |ptr| {
             self.GetColorTableParameterfvSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableParameterivSGI, try loader("glGetColorTableParameterivSGI"))) |ptr| {
             self.GetColorTableParameterivSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
         if (@ptrCast(?glGetColorTableSGI, try loader("glGetColorTableSGI"))) |ptr| {
             self.GetColorTableSGI = ptr;
         } else {
-            self.features.GL_SGI_color_table = false;
+            loaded = false;
         }
+        self.features.GL_SGI_color_table = loaded;
+    }
+    fn load_GL_SUNX_constant_data(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glFinishTextureSUNX, try loader("glFinishTextureSUNX"))) |ptr| {
             self.FinishTextureSUNX = ptr;
         } else {
-            self.features.GL_SUNX_constant_data = false;
+            loaded = false;
         }
+        self.features.GL_SUNX_constant_data = loaded;
+    }
+    fn load_GL_SUN_global_alpha(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glGlobalAlphaFactorbSUN, try loader("glGlobalAlphaFactorbSUN"))) |ptr| {
             self.GlobalAlphaFactorbSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactordSUN, try loader("glGlobalAlphaFactordSUN"))) |ptr| {
             self.GlobalAlphaFactordSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactorfSUN, try loader("glGlobalAlphaFactorfSUN"))) |ptr| {
             self.GlobalAlphaFactorfSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactoriSUN, try loader("glGlobalAlphaFactoriSUN"))) |ptr| {
             self.GlobalAlphaFactoriSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactorsSUN, try loader("glGlobalAlphaFactorsSUN"))) |ptr| {
             self.GlobalAlphaFactorsSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactorubSUN, try loader("glGlobalAlphaFactorubSUN"))) |ptr| {
             self.GlobalAlphaFactorubSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactoruiSUN, try loader("glGlobalAlphaFactoruiSUN"))) |ptr| {
             self.GlobalAlphaFactoruiSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
         if (@ptrCast(?glGlobalAlphaFactorusSUN, try loader("glGlobalAlphaFactorusSUN"))) |ptr| {
             self.GlobalAlphaFactorusSUN = ptr;
         } else {
-            self.features.GL_SUN_global_alpha = false;
+            loaded = false;
         }
+        self.features.GL_SUN_global_alpha = loaded;
+    }
+    fn load_GL_SUN_mesh_array(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glDrawMeshArraysSUN, try loader("glDrawMeshArraysSUN"))) |ptr| {
             self.DrawMeshArraysSUN = ptr;
         } else {
-            self.features.GL_SUN_mesh_array = false;
+            loaded = false;
         }
+        self.features.GL_SUN_mesh_array = loaded;
+    }
+    fn load_GL_SUN_triangle_list(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glReplacementCodePointerSUN, try loader("glReplacementCodePointerSUN"))) |ptr| {
             self.ReplacementCodePointerSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeubSUN, try loader("glReplacementCodeubSUN"))) |ptr| {
             self.ReplacementCodeubSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeubvSUN, try loader("glReplacementCodeubvSUN"))) |ptr| {
             self.ReplacementCodeubvSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiSUN, try loader("glReplacementCodeuiSUN"))) |ptr| {
             self.ReplacementCodeuiSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuivSUN, try loader("glReplacementCodeuivSUN"))) |ptr| {
             self.ReplacementCodeuivSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeusSUN, try loader("glReplacementCodeusSUN"))) |ptr| {
             self.ReplacementCodeusSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeusvSUN, try loader("glReplacementCodeusvSUN"))) |ptr| {
             self.ReplacementCodeusvSUN = ptr;
         } else {
-            self.features.GL_SUN_triangle_list = false;
+            loaded = false;
         }
+        self.features.GL_SUN_triangle_list = loaded;
+    }
+    fn load_GL_SUN_vertex(self: *Self, comptime errors: type, loader: fn ([*:0]const u8) errors!GLproc) errors!void {
+        var loaded: bool = true;
         if (@ptrCast(?glColor3fVertex3fSUN, try loader("glColor3fVertex3fSUN"))) |ptr| {
             self.Color3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor3fVertex3fvSUN, try loader("glColor3fVertex3fvSUN"))) |ptr| {
             self.Color3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4fNormal3fVertex3fSUN, try loader("glColor4fNormal3fVertex3fSUN"))) |ptr| {
             self.Color4fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4fNormal3fVertex3fvSUN, try loader("glColor4fNormal3fVertex3fvSUN"))) |ptr| {
             self.Color4fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4ubVertex2fSUN, try loader("glColor4ubVertex2fSUN"))) |ptr| {
             self.Color4ubVertex2fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4ubVertex2fvSUN, try loader("glColor4ubVertex2fvSUN"))) |ptr| {
             self.Color4ubVertex2fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4ubVertex3fSUN, try loader("glColor4ubVertex3fSUN"))) |ptr| {
             self.Color4ubVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glColor4ubVertex3fvSUN, try loader("glColor4ubVertex3fvSUN"))) |ptr| {
             self.Color4ubVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3fVertex3fSUN, try loader("glNormal3fVertex3fSUN"))) |ptr| {
             self.Normal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glNormal3fVertex3fvSUN, try loader("glNormal3fVertex3fvSUN"))) |ptr| {
             self.Normal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor3fVertex3fSUN, try loader("glReplacementCodeuiColor3fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiColor3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor3fVertex3fvSUN, try loader("glReplacementCodeuiColor3fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiColor3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor4fNormal3fVertex3fSUN, try loader("glReplacementCodeuiColor4fNormal3fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiColor4fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor4fNormal3fVertex3fvSUN, try loader("glReplacementCodeuiColor4fNormal3fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiColor4fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor4ubVertex3fSUN, try loader("glReplacementCodeuiColor4ubVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiColor4ubVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiColor4ubVertex3fvSUN, try loader("glReplacementCodeuiColor4ubVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiColor4ubVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiNormal3fVertex3fSUN, try loader("glReplacementCodeuiNormal3fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiNormal3fVertex3fvSUN, try loader("glReplacementCodeuiNormal3fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN, try loader("glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN, try loader("glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN, try loader("glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN, try loader("glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fVertex3fSUN, try loader("glReplacementCodeuiTexCoord2fVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiTexCoord2fVertex3fvSUN, try loader("glReplacementCodeuiTexCoord2fVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiTexCoord2fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiVertex3fSUN, try loader("glReplacementCodeuiVertex3fSUN"))) |ptr| {
             self.ReplacementCodeuiVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glReplacementCodeuiVertex3fvSUN, try loader("glReplacementCodeuiVertex3fvSUN"))) |ptr| {
             self.ReplacementCodeuiVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor3fVertex3fSUN, try loader("glTexCoord2fColor3fVertex3fSUN"))) |ptr| {
             self.TexCoord2fColor3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor3fVertex3fvSUN, try loader("glTexCoord2fColor3fVertex3fvSUN"))) |ptr| {
             self.TexCoord2fColor3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor4fNormal3fVertex3fSUN, try loader("glTexCoord2fColor4fNormal3fVertex3fSUN"))) |ptr| {
             self.TexCoord2fColor4fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor4fNormal3fVertex3fvSUN, try loader("glTexCoord2fColor4fNormal3fVertex3fvSUN"))) |ptr| {
             self.TexCoord2fColor4fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor4ubVertex3fSUN, try loader("glTexCoord2fColor4ubVertex3fSUN"))) |ptr| {
             self.TexCoord2fColor4ubVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fColor4ubVertex3fvSUN, try loader("glTexCoord2fColor4ubVertex3fvSUN"))) |ptr| {
             self.TexCoord2fColor4ubVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fNormal3fVertex3fSUN, try loader("glTexCoord2fNormal3fVertex3fSUN"))) |ptr| {
             self.TexCoord2fNormal3fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fNormal3fVertex3fvSUN, try loader("glTexCoord2fNormal3fVertex3fvSUN"))) |ptr| {
             self.TexCoord2fNormal3fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fVertex3fSUN, try loader("glTexCoord2fVertex3fSUN"))) |ptr| {
             self.TexCoord2fVertex3fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord2fVertex3fvSUN, try loader("glTexCoord2fVertex3fvSUN"))) |ptr| {
             self.TexCoord2fVertex3fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4fColor4fNormal3fVertex4fSUN, try loader("glTexCoord4fColor4fNormal3fVertex4fSUN"))) |ptr| {
             self.TexCoord4fColor4fNormal3fVertex4fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4fColor4fNormal3fVertex4fvSUN, try loader("glTexCoord4fColor4fNormal3fVertex4fvSUN"))) |ptr| {
             self.TexCoord4fColor4fNormal3fVertex4fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4fVertex4fSUN, try loader("glTexCoord4fVertex4fSUN"))) |ptr| {
             self.TexCoord4fVertex4fSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
         if (@ptrCast(?glTexCoord4fVertex4fvSUN, try loader("glTexCoord4fVertex4fvSUN"))) |ptr| {
             self.TexCoord4fVertex4fvSUN = ptr;
         } else {
-            self.features.GL_SUN_vertex = false;
+            loaded = false;
         }
+        self.features.GL_SUN_vertex = loaded;
     }
 };
 
