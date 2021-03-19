@@ -7,8 +7,8 @@ layout (location = 0) out vec4 frag_color;
 uniform vec3 color;
 uniform float fill;
 
-const float radius = 0.1;
-const float hr = radius / 2.0;
+const float inner_radius = 0.1;
+float radius = inner_radius + border_width;
 
 const float threshold = 0.75;
 const float scale = 1.0 / threshold;

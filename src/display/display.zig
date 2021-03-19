@@ -104,20 +104,23 @@ pub fn show(context: *const Context) !void {
             &a_button_color,
         );
 
-        {
-            const pressed = blk: {
-                if (context.last_input) |last| {
-                    break :blk last.button_a;
-                } else {
-                    break :blk false;
-                }
-            };
+        // shader_program.uniform1f(
+        //     shader_program.uniformLocation("fill"),
+        //     if (context.last_input) |last|
+        //         @intToFloat(f32, last.trigger_left) / 255.0
+        //     else
+        //         0.0,
+        // );
 
-            glad.gl_context.Uniform1i(
-                glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pressed"),
-                @boolToInt(pressed),
-            );
-        }
+        glad.gl_context.Uniform1i(
+            glad.gl_context.GetUniformLocation(@enumToInt(shader_program), "pressed"),
+            @boolToInt(
+                if (context.last_input) |last|
+                    last.button_a
+                else
+                    false,
+            ),
+        );
 
         // {
         //     const xp: f32 = blk: {

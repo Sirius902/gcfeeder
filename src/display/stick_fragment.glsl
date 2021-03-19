@@ -8,7 +8,8 @@ uniform vec3 color;
 uniform vec2 pos;
 uniform bool is_c_stick = false;
 
-const float radius = 0.5 * 0.25;
+const float inner_radius = 0.5 * 0.25;
+float radius = inner_radius + border_width;
 
 void main() {
     vec2 center = v_pos + ((pos - 0.5) / 2.0);
