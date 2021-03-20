@@ -1,0 +1,13 @@
+[submodule "src/zusb"]
+	path = src/zusb
+	url = https://gitlab.com/Sirius902/zusb
+[submodule "src/zgl"]
+	path = src/zgl
+	url = https://github.com/Sirius902/zgl
+	branch = glad-gl
+[submodule "src/zlm"]
+	path = src/zlm
+	url = https://github.com/ziglibs/zlm
+[submodule "src/zglfw"]
+	path = src/zglfw
+	url = https://github.com/Iridescence-Technologies/zglfw
