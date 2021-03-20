@@ -1,4 +1,4 @@
-## gcfeeder
+# gcfeeder
 A vJoy feeder for Gamecube controllers using the Gamecube Controller Adapter.
 Inspired by [Wii U GCN USB Driver](http://m4sv.com/page/wii-u-gcn-usb-driver).
 
@@ -9,7 +9,7 @@ A built-in ESS adapter for use in Dolphin with The Legend of Zelda: Ocarina of T
 with code and inversion methods from Skuzee's [ESS-Adapter](https://github.com/Skuzee/ESS-Adapter)
 project.
 
-### Usage Requirements
+## Usage Requirements
 * Both [vJoy and vJoyConf](http://vjoystick.sourceforge.net/site) must be installed.
 * WinUSB (libusb) driver must be installed for the adapter (WUP-028) with [Zadig](https://zadig.akeo.ie).
 For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
@@ -20,7 +20,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     * Force Feedback effects: May be optionally enabled for rumble support
 * To use the ESS Adapter, start the program with the `-e` flag.
 
-### Notes
+## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
 * Only supports port one on the adapter.
 * Currently reads Force Feedback packets from all effects on vJoy to control rumble for compatibility (Dolphin seems to crash unless all effects are enabled).
