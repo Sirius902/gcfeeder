@@ -49,7 +49,7 @@ pub fn show(context: *const Context) !void {
     vertex_shader.delete();
     fragment_shader.delete();
 
-    const bean_sdf: []const u8 = @embedFile("bean-sdf.gray");
+    const bean_sdf = @embedFile("bean-sdf.gray");
     const bean_texture = zgl.Texture.create(.@"2d");
     bean_texture.bindTo(0);
     bean_texture.parameter(.wrap_s, .clamp_to_border);
@@ -57,7 +57,7 @@ pub fn show(context: *const Context) !void {
     bean_texture.parameter(.min_filter, .linear);
     bean_texture.parameter(.mag_filter, .linear);
     bean_texture.storage2D(1, .r8, 64, 64);
-    bean_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, bean_sdf.ptr);
+    bean_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, bean_sdf);
 
     const vertices = [_]f32{
         // positions \ texture coords
