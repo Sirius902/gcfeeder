@@ -9,10 +9,10 @@ uniform vec2 pos;
 uniform bool is_c_stick = false;
 
 const float inner_radius = 0.5 * 0.25;
-float radius = inner_radius + border_width;
+float radius = (inner_radius + border_width) * (is_c_stick ? 0.8 : 1.0);
 
 void main() {
-    vec2 center = v_pos + ((pos - 0.5) / 2.0);
+    vec2 center = v_pos + ((pos - 0.5) * 0.35);
     float sq_dist = (radius * radius) - ((center.x * center.x) + (center.y * center.y));
 
     if (sq_dist < 0.0 || (!is_c_stick && sq_dist >= border_width * border_width)) {

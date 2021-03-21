@@ -4,13 +4,14 @@ const zgl = @import("../zgl/zgl.zig");
 const zlm = @import("../zlm/zlm.zig");
 const glfw = @import("../zglfw/src/glfw.zig");
 const Input = @import("../adapter.zig").Input;
+const Calibration = @import("../adapter.zig").Calibration;
 const Context = @import("root").Context;
 const print = std.debug.print;
 
 const window_x = 512;
 const window_y = 512;
 
-const GraphicsContext = struct {
+const Display = struct {
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
     const circle_button_shader_source: []const u8 = @embedFile("circle_button_fragment.glsl");
     const sdf_button_shader_source: []const u8 = @embedFile("sdf_button_fragment.glsl");
@@ -24,6 +25,8 @@ const GraphicsContext = struct {
     const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
     const c_stick_color = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 };
 
+    const buttons_center = comptime zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
+
     circle_button_program: zgl.Program,
     sdf_button_program: zgl.Program,
     trigger_program: zgl.Program,
@@ -32,7 +35,7 @@ const GraphicsContext = struct {
     vao: zgl.VertexArray,
     ebo: zgl.Buffer,
 
-    pub fn init() GraphicsContext {
+    pub fn init() Display {
         const vertex_shader = zgl.Shader.create(.vertex);
         defer vertex_shader.delete();
         vertex_shader.source(1, &vertex_shader_source);
@@ -113,7 +116,7 @@ const GraphicsContext = struct {
 
         loadTextures();
 
-        return GraphicsContext{
+        return Display{
             .circle_button_program = circle_button_program,
             .sdf_button_program = sdf_button_program,
             .trigger_program = trigger_program,
@@ -124,15 +127,22 @@ const GraphicsContext = struct {
         };
     }
 
-    pub fn draw(self: GraphicsContext, context: *const Context) void {
-        const buttons_center = comptime zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
-
+    pub fn draw(self: Display, context: *const Context) void {
         self.vao.bind();
 
-        var program = self.circle_button_program;
+        self.drawCircleButtons(context);
+        self.drawSdfButtons(context);
+        self.drawSticks(context);
+        self.drawTriggers(context);
+    }
+
+    fn drawCircleButtons(self: Display, context: *const Context) void {
+        const program = self.circle_button_program;
         program.use();
         // a button
         {
+            const model = zlm.Mat4.createUniformScale(0.75).mul(buttons_center);
+
             // use programUniform1i instead because uniform1i has a name conflict
             zgl.programUniform1i(
                 program,
@@ -140,12 +150,16 @@ const GraphicsContext = struct {
                 @boolToInt(if (context.last_input) |last| last.button_a else false),
             );
             program.uniform3f(program.uniformLocation("color"), a_button_color[0], a_button_color[1], a_button_color[2]);
-            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{buttons_center.fields});
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, null);
         }
         // b button
         {
-            const model = comptime buttons_center.mul(zlm.Mat4.createTranslationXYZ(-0.3, -0.3, 0.0));
+            const model = zlm.Mat4.createUniformScale(0.45).mul(
+                buttons_center.mul(
+                    zlm.Mat4.createTranslationXYZ(-0.25, -0.15, 0.0),
+                ),
+            );
 
             zgl.programUniform1i(
                 program,
@@ -153,6 +167,187 @@ const GraphicsContext = struct {
                 @boolToInt(if (context.last_input) |last| last.button_b else false),
             );
             program.uniform3f(program.uniformLocation("color"), b_button_color[0], b_button_color[1], b_button_color[2]);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // z button
+        {
+            const model = zlm.Mat4.createUniformScale(0.35).mul(
+                buttons_center.mul(
+                    zlm.Mat4.createTranslationXYZ(0.1725, 0.25, 0.0),
+                ),
+            );
+
+            zgl.programUniform1i(
+                program,
+                program.uniformLocation("pressed"),
+                @boolToInt(if (context.last_input) |last| last.button_z else false),
+            );
+            program.uniform3f(program.uniformLocation("color"), z_button_color[0], z_button_color[1], z_button_color[2]);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // start button
+        {
+            const model = zlm.Mat4.createUniformScale(0.3).mul(
+                buttons_center.mul(
+                    zlm.Mat4.createTranslationXYZ(-0.325, 0.0475, 0.0),
+                ),
+            );
+
+            zgl.programUniform1i(
+                program,
+                program.uniformLocation("pressed"),
+                @boolToInt(if (context.last_input) |last| last.button_start else false),
+            );
+            program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+    }
+
+    fn drawSdfButtons(self: Display, context: *const Context) void {
+        const bean_scale = zlm.Mat4.createUniformScale(0.325);
+
+        const program = self.sdf_button_program;
+        program.use();
+        program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+        // y button
+        {
+            const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(110.0)).mul(
+                bean_scale.mul(
+                    buttons_center.mul(
+                        zlm.Mat4.createTranslationXYZ(-0.1, 0.225, 0.0),
+                    ),
+                ),
+            );
+
+            zgl.programUniform1i(
+                program,
+                program.uniformLocation("pressed"),
+                @boolToInt(if (context.last_input) |last| last.button_y else false),
+            );
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // x button
+        {
+            const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(225.0)).mul(
+                bean_scale.mul(
+                    buttons_center.mul(
+                        zlm.Mat4.createTranslationXYZ(0.25, 0.0, 0.0),
+                    ),
+                ),
+            );
+
+            zgl.programUniform1i(
+                program,
+                program.uniformLocation("pressed"),
+                @boolToInt(if (context.last_input) |last| last.button_x else false),
+            );
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+    }
+
+    fn drawSticks(self: Display, context: *const Context) void {
+        const scale = zlm.Mat4.createUniformScale(0.6);
+
+        const program = self.stick_program;
+        program.use();
+        // main stick
+        {
+            const model = scale.mul(
+                zlm.Mat4.createTranslationXYZ(-0.65, 0.0, 0.0),
+            );
+
+            const x = @floatCast(f32, if (context.last_input) |last|
+                1.0 - Calibration.main_stick.normalize(last.stick_x)
+            else
+                0.0);
+
+            const y = @floatCast(f32, if (context.last_input) |last|
+                1.0 - Calibration.main_stick.normalize(last.stick_y)
+            else
+                0.0);
+
+            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
+            program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+
+            glad.gl_context.Uniform2fv(
+                glad.gl_context.GetUniformLocation(@enumToInt(program), "pos"),
+                1,
+                &[_]f32{ x, y },
+            );
+
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // c stick
+        {
+            const model = scale.mul(
+                zlm.Mat4.createTranslationXYZ(-0.15, 0.0, 0.0),
+            );
+
+            const x = @floatCast(f32, if (context.last_input) |last|
+                1.0 - Calibration.c_stick.normalize(last.substick_x)
+            else
+                0.0);
+
+            const y = @floatCast(f32, if (context.last_input) |last|
+                1.0 - Calibration.c_stick.normalize(last.substick_y)
+            else
+                0.0);
+
+            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
+            program.uniform3f(program.uniformLocation("color"), c_stick_color[0], c_stick_color[1], c_stick_color[2]);
+
+            glad.gl_context.Uniform2fv(
+                glad.gl_context.GetUniformLocation(@enumToInt(program), "pos"),
+                1,
+                &[_]f32{ x, y },
+            );
+
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+    }
+
+    fn drawTriggers(self: Display, context: *const Context) void {
+        const scale = zlm.Mat4.createUniformScale(0.375);
+
+        const program = self.trigger_program;
+        program.use();
+        program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+        // left trigger
+        {
+            const model = scale.mul(
+                zlm.Mat4.createTranslationXYZ(-0.65, 0.35, 0.0),
+            );
+
+            const fill = @floatCast(f32, if (context.last_input) |last|
+                Calibration.trigger_range.normalize(last.trigger_left)
+            else
+                0.0);
+
+            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
+            program.uniform1f(program.uniformLocation("fill"), fill);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // right trigger
+        {
+            const model = scale.mul(
+                zlm.Mat4.createTranslationXYZ(-0.15, 0.35, 0.0),
+            );
+
+            const fill = @floatCast(f32, if (context.last_input) |last|
+                Calibration.trigger_range.normalize(last.trigger_right)
+            else
+                0.0);
+
+            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
+            program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, null);
         }
@@ -187,13 +382,13 @@ pub fn show(context: *const Context) !void {
 
     try glad.gl_context.load(glfw.GLFWError, glfw.getProcAddress);
 
-    const gfx = GraphicsContext.init();
+    const display = Display.init();
 
     while (!try glfw.windowShouldClose(window)) {
         zgl.clearColor(0.0, 0.0, 0.0, 1.0);
         zgl.clear(.{ .color = true });
 
-        gfx.draw(context);
+        display.draw(context);
 
         try glfw.swapBuffers(window);
         try glfw.pollEvents();
