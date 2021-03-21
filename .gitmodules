@@ -11,3 +11,4 @@
 [submodule "src/zglfw"]
 	path = src/zglfw
 	url = https://github.com/Iridescence-Technologies/zglfw
+	ignore = dirty
