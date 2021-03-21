@@ -9,7 +9,7 @@ layout (location = 0) out vec4 frag_color;
 uniform sampler2D sdf_texture;
 uniform vec3 color;
 uniform vec2 pos;
-uniform bool is_c_stick = false;
+uniform bool is_c_stick;
 
 const float inner_radius = 0.5 * 0.25;
 float radius = inner_radius * (is_c_stick ? 0.8 : 1.0) + border_width;
