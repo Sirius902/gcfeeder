@@ -16,6 +16,7 @@ const Display = struct {
 
     const bean_sdf = @embedFile("bean-sdf.gray");
     const z_button_sdf = @embedFile("z-button-sdf.gray");
+    const octagon_sdf = @embedFile("octagon-sdf.gray");
 
     const main_color = [_]f32{ 0.95, 0.95, 0.95 };
     const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
@@ -257,6 +258,7 @@ const Display = struct {
 
         const program = self.stick_program;
         program.use();
+        zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 2);
         // main stick
         {
             const model = scale.mul(
@@ -373,6 +375,15 @@ const Display = struct {
         z_button_texture.parameter(.mag_filter, .linear);
         z_button_texture.storage2D(1, .r8, 64, 64);
         z_button_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, z_button_sdf);
+
+        const octagon_texture = zgl.Texture.create(.@"2d");
+        octagon_texture.bindTo(2);
+        octagon_texture.parameter(.wrap_s, .clamp_to_border);
+        octagon_texture.parameter(.wrap_t, .clamp_to_border);
+        octagon_texture.parameter(.min_filter, .linear);
+        octagon_texture.parameter(.mag_filter, .linear);
+        octagon_texture.storage2D(1, .r8, 64, 64);
+        octagon_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, octagon_sdf);
     }
 };
 
