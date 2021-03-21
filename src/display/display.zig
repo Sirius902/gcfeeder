@@ -21,6 +21,7 @@ const Display = struct {
     const bean_sdf = @embedFile("bean-sdf.gray");
     const z_button_sdf = @embedFile("z-button-sdf.gray");
 
+    const main_color = [_]f32{ 0.95, 0.95, 0.95 };
     const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
     const b_button_color = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
     const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
@@ -184,7 +185,7 @@ const Display = struct {
                 program.uniformLocation("pressed"),
                 @boolToInt(if (context.last_input) |last| last.button_start else false),
             );
-            program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+            program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, null);
         }
@@ -195,7 +196,7 @@ const Display = struct {
 
         const program = self.sdf_button_program;
         program.use();
-        program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+        program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
         // y button
         {
@@ -277,7 +278,7 @@ const Display = struct {
                 0.0);
 
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
-            program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+            program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
 
             glad.gl_context.Uniform2fv(
                 glad.gl_context.GetUniformLocation(@enumToInt(program), "pos"),
@@ -323,7 +324,7 @@ const Display = struct {
 
         const program = self.trigger_program;
         program.use();
-        program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+        program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         // left trigger
         {
             const model = scale.mul(
