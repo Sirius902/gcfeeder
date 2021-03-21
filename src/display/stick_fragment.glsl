@@ -9,7 +9,7 @@ uniform vec2 pos;
 uniform bool is_c_stick = false;
 
 const float inner_radius = 0.5 * 0.25;
-float radius = (inner_radius + border_width) * (is_c_stick ? 0.8 : 1.0);
+float radius = inner_radius * (is_c_stick ? 0.8 : 1.0) + border_width;
 
 void main() {
     vec2 center = v_pos + ((pos - 0.5) * 0.35);
