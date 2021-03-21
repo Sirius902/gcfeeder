@@ -195,18 +195,18 @@ const Display = struct {
     }
 
     fn drawSdfButtons(self: Display, context: *const Context) void {
-        const bean_scale_factor = 0.275;
-        const bean_scale = zlm.Mat4.createUniformScale(bean_scale_factor);
+        const bean_scale = 0.275;
+        const bean_scale_mat = zlm.Mat4.createUniformScale(bean_scale);
 
         const program = self.sdf_button_program;
         program.use();
         program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
-        program.uniform1f(program.uniformLocation("scale"), bean_scale_factor);
+        program.uniform1f(program.uniformLocation("scale"), bean_scale);
         // y button
         {
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(110.0)).mul(
-                bean_scale.mul(
+                bean_scale_mat.mul(
                     buttons_center.mul(
                         zlm.Mat4.createTranslationXYZ(-0.1, 0.225, 0.0),
                     ),
@@ -224,7 +224,7 @@ const Display = struct {
         // x button
         {
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(225.0)).mul(
-                bean_scale.mul(
+                bean_scale_mat.mul(
                     buttons_center.mul(
                         zlm.Mat4.createTranslationXYZ(0.25, 0.0, 0.0),
                     ),
