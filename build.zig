@@ -35,6 +35,12 @@ pub fn build(b: *Builder) void {
     exe.linkSystemLibrary("vJoyInterface");
     exe.linkSystemLibrary("glfw3dll");
 
+    exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
+    exe.addPackagePath("glad", "pkg/zgl/glad.zig");
+    exe.addPackagePath("zglfw", "pkg/zglfw/src/glfw.zig");
+    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
+    exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
+
     exe.addIncludeDir("src/ess");
     exe.addCSourceFile("src/ess/ESS.c", &[_][]const u8{});
 

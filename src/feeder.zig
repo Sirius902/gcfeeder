@@ -1,6 +1,6 @@
 const std = @import("std");
 const ess = @import("ess/ess.zig");
-const usb = @import("zusb/zusb.zig");
+const usb = @import("zusb");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
