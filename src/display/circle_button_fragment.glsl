@@ -7,13 +7,12 @@ layout (location = 0) out vec4 frag_color;
 uniform vec3 color;
 uniform bool pressed;
 
-const float inner_radius = 0.1;
-float radius = inner_radius + border_width;
+float radius = 0.1;
 
 void main() {
-    float sq_dist = (radius * radius) - ((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
+    float dist = radius - sqrt((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
 
-    if (sq_dist < 0.0 || (!pressed && sq_dist >= border_width * border_width)) {
+    if (dist < 0.0 || (!pressed && dist >= border_width)) {
         discard;
     }
 

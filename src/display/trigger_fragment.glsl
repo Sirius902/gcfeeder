@@ -15,18 +15,16 @@ const float scale = 1.0 / threshold;
 
 void left() {
     vec2 pos = v_pos + vec2(0.5 - radius, 0.0);
-    float sq_dist = (radius * radius) - ((pos.x * pos.x) + (pos.y * pos.y));
+    float dist = radius - sqrt((pos.x * pos.x) + (pos.y * pos.y));
 
-    if (sq_dist < 0.0 || ((v_pos.x + 0.5 > clamp(fill, 0.0, threshold) * scale)
-         && (sq_dist >= border_width * border_width))) {
+    if (dist < 0.0 || ((v_pos.x + 0.5 > clamp(fill, 0.0, threshold) * scale)
+         && (dist >= border_width))) {
         discard;
     }
 }
 
 void middle() {
-    // That should definitely not be `border_width / 4.0` but since it works for this
-    // radius we can just ignore that and scale it.
-    if ((abs(v_pos.y) > radius) || ((abs(v_pos.y) <= radius - border_width / 4.0)
+    if ((abs(v_pos.y) > radius) || ((abs(v_pos.y) <= radius - border_width)
          && (v_pos.x + 0.5 > clamp(fill, 0.0, threshold) * scale))) {
         discard;
     }
@@ -34,10 +32,10 @@ void middle() {
 
 void right() {
     vec2 pos = v_pos - vec2(0.5 - radius, 0.0);
-    float sq_dist = (radius * radius) - ((pos.x * pos.x) + (pos.y * pos.y));
+    float dist = radius - sqrt((pos.x * pos.x) + (pos.y * pos.y));
 
-    if (sq_dist < 0.0 || ((v_pos.x + 0.5 > clamp(fill, 0.0, threshold) * scale)
-         && (sq_dist >= border_width * border_width))) {
+    if (dist < 0.0 || ((v_pos.x + 0.5 > clamp(fill, 0.0, threshold) * scale)
+         && (dist >= border_width))) {
         discard;
     }
 }

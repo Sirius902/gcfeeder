@@ -11,18 +11,17 @@ uniform vec3 color;
 uniform vec2 pos;
 uniform bool is_c_stick;
 
-const float inner_radius = 0.5 * 0.25;
-float radius = inner_radius * (is_c_stick ? 0.8 : 1.0) + border_width;
+float radius = 0.225 * (is_c_stick ? 0.8 : 1.0);
 
 void main() {
     vec2 center = v_pos + ((pos - 0.5) * 0.35);
-    float sq_dist = (radius * radius) - ((center.x * center.x) + (center.y * center.y));
+    float dist = radius - sqrt((center.x * center.x) + (center.y * center.y));
 
     vec2 scaled_tex_coords = (v_tex_coord - 0.5) / 0.85 + 0.5;
     float sdf_dist = texture(sdf_texture, scaled_tex_coords).r;
 
-    if ((sq_dist < 0.0 && (sdf_dist < 0.5 - border_width || sdf_dist >= 0.5))
-         || (!is_c_stick && sq_dist >= border_width * border_width)) {
+    if ((dist < 0.0 && (sdf_dist < 0.5 - border_width || sdf_dist >= 0.5))
+         || (!is_c_stick && dist >= border_width)) {
         discard;
     }
 

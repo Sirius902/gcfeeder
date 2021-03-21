@@ -140,7 +140,9 @@ const Display = struct {
         program.use();
         // a button
         {
-            const model = zlm.Mat4.createUniformScale(0.75).mul(buttons_center);
+            const scale = 1.5;
+            const model = zlm.Mat4.createUniformScale(scale).mul(buttons_center);
+            program.uniform1f(program.uniformLocation("scale"), scale);
 
             // use programUniform1i instead because uniform1i has a name conflict
             zgl.programUniform1i(
@@ -154,11 +156,13 @@ const Display = struct {
         }
         // b button
         {
-            const model = zlm.Mat4.createUniformScale(0.45).mul(
+            const scale = 0.85;
+            const model = zlm.Mat4.createUniformScale(scale).mul(
                 buttons_center.mul(
                     zlm.Mat4.createTranslationXYZ(-0.25, -0.15, 0.0),
                 ),
             );
+            program.uniform1f(program.uniformLocation("scale"), scale);
 
             zgl.programUniform1i(
                 program,
@@ -171,11 +175,13 @@ const Display = struct {
         }
         // start button
         {
-            const model = zlm.Mat4.createUniformScale(0.3).mul(
+            const scale = 0.625;
+            const model = zlm.Mat4.createUniformScale(scale).mul(
                 buttons_center.mul(
                     zlm.Mat4.createTranslationXYZ(-0.325, 0.0475, 0.0),
                 ),
             );
+            program.uniform1f(program.uniformLocation("scale"), scale);
 
             zgl.programUniform1i(
                 program,
@@ -189,12 +195,14 @@ const Display = struct {
     }
 
     fn drawSdfButtons(self: Display, context: *const Context) void {
-        const bean_scale = zlm.Mat4.createUniformScale(0.325);
+        const bean_scale_factor = 0.325;
+        const bean_scale = zlm.Mat4.createUniformScale(bean_scale_factor);
 
         const program = self.sdf_button_program;
         program.use();
         program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
+        program.uniform1f(program.uniformLocation("scale"), bean_scale_factor);
         // y button
         {
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(110.0)).mul(
@@ -233,13 +241,15 @@ const Display = struct {
         }
         // z button
         {
+            const scale = 0.25;
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(-10.0)).mul(
-                zlm.Mat4.createUniformScale(0.25).mul(
+                zlm.Mat4.createUniformScale(scale).mul(
                     buttons_center.mul(
                         zlm.Mat4.createTranslationXYZ(0.185, 0.285, 0.0),
                     ),
                 ),
             );
+            program.uniform1f(program.uniformLocation("scale"), scale);
 
             zgl.programUniform1i(
                 program,
@@ -254,14 +264,16 @@ const Display = struct {
     }
 
     fn drawSticks(self: Display, context: *const Context) void {
-        const scale = zlm.Mat4.createUniformScale(0.6);
+        const scale = 0.6;
+        const scale_mat = zlm.Mat4.createUniformScale(scale);
 
         const program = self.stick_program;
         program.use();
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 2);
+        program.uniform1f(program.uniformLocation("scale"), scale);
         // main stick
         {
-            const model = scale.mul(
+            const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.65, 0.0, 0.0),
             );
 
@@ -289,7 +301,7 @@ const Display = struct {
         }
         // c stick
         {
-            const model = scale.mul(
+            const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.15, 0.0, 0.0),
             );
 
@@ -318,14 +330,16 @@ const Display = struct {
     }
 
     fn drawTriggers(self: Display, context: *const Context) void {
-        const scale = zlm.Mat4.createUniformScale(0.375);
+        const scale = 0.375;
+        const scale_mat = zlm.Mat4.createUniformScale(scale);
 
         const program = self.trigger_program;
         program.use();
         program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
+        program.uniform1f(program.uniformLocation("scale"), scale);
         // left trigger
         {
-            const model = scale.mul(
+            const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.65, 0.35, 0.0),
             );
 
@@ -341,7 +355,7 @@ const Display = struct {
         }
         // right trigger
         {
-            const model = scale.mul(
+            const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.15, 0.35, 0.0),
             );
 
