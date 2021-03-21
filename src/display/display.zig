@@ -6,7 +6,6 @@ const glfw = @import("../zglfw/src/glfw.zig");
 const Input = @import("../adapter.zig").Input;
 const Calibration = @import("../adapter.zig").Calibration;
 const Context = @import("root").Context;
-const print = std.debug.print;
 
 const window_x = 512;
 const window_y = 512;
