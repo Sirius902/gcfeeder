@@ -328,7 +328,7 @@ const Display = struct {
             );
 
             const fill = @floatCast(f32, if (context.last_input) |last|
-                Calibration.trigger_range.normalize(last.trigger_left)
+                if (last.button_l) 1.0 else Calibration.trigger_range.normalize(last.trigger_left)
             else
                 0.0);
 
@@ -344,7 +344,7 @@ const Display = struct {
             );
 
             const fill = @floatCast(f32, if (context.last_input) |last|
-                Calibration.trigger_range.normalize(last.trigger_right)
+                if (last.button_r) 1.0 else Calibration.trigger_range.normalize(last.trigger_right)
             else
                 0.0);
 

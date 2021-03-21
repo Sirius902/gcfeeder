@@ -11,6 +11,9 @@ uniform bool is_c_stick = false;
 const float inner_radius = 0.5 * 0.25;
 float radius = inner_radius * (is_c_stick ? 0.8 : 1.0) + border_width;
 
+// Side length of an octagon with diameter 1
+const float notch_length = 0.5 * sqrt(2.0 - sqrt(2.0));
+
 void main() {
     vec2 center = v_pos + ((pos - 0.5) * 0.35);
     float sq_dist = (radius * radius) - ((center.x * center.x) + (center.y * center.y));
