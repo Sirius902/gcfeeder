@@ -220,7 +220,7 @@ const Display = struct {
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(225.0)).mul(
                 bean_scale.mul(
                     buttons_center.mul(
-                        zlm.Mat4.createTranslationXYZ(0.25, 0.0, 0.0),
+                        zlm.Mat4.createTranslationXYZ(0.2425, 0.0, 0.0),
                     ),
                 ),
             );
