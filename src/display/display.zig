@@ -7,9 +7,6 @@ const Input = @import("../adapter.zig").Input;
 const Calibration = @import("../adapter.zig").Calibration;
 const Context = @import("root").Context;
 
-const window_x = 512;
-const window_y = 512;
-
 const Display = struct {
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
     const circle_button_shader_source: []const u8 = @embedFile("circle_button_fragment.glsl");
@@ -387,7 +384,7 @@ pub fn show(context: *const Context) !void {
     try glfw.windowHint(.ContextVersionMinor, 3);
     try glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
 
-    const window = try glfw.createWindow(window_x, window_y, "Input Viewer", null, null);
+    const window = try glfw.createWindow(512, 512, "Input Viewer", null, null);
     try glfw.makeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
