@@ -19,6 +19,7 @@ const Display = struct {
     const stick_shader_source: []const u8 = @embedFile("stick_fragment.glsl");
 
     const bean_sdf = @embedFile("bean-sdf.gray");
+    const z_button_sdf = @embedFile("z-button-sdf.gray");
 
     const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
     const b_button_color = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
@@ -170,23 +171,6 @@ const Display = struct {
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, null);
         }
-        // z button
-        {
-            const model = zlm.Mat4.createUniformScale(0.35).mul(
-                buttons_center.mul(
-                    zlm.Mat4.createTranslationXYZ(0.1725, 0.25, 0.0),
-                ),
-            );
-
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_z else false),
-            );
-            program.uniform3f(program.uniformLocation("color"), z_button_color[0], z_button_color[1], z_button_color[2]);
-            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
-        }
         // start button
         {
             const model = zlm.Mat4.createUniformScale(0.3).mul(
@@ -212,6 +196,7 @@ const Display = struct {
         const program = self.sdf_button_program;
         program.use();
         program.uniform3f(program.uniformLocation("color"), 1.0, 1.0, 1.0);
+        zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
         // y button
         {
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(110.0)).mul(
@@ -245,6 +230,26 @@ const Display = struct {
                 program.uniformLocation("pressed"),
                 @boolToInt(if (context.last_input) |last| last.button_x else false),
             );
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, null);
+        }
+        // z button
+        {
+            const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(-10.0)).mul(
+                zlm.Mat4.createUniformScale(0.25).mul(
+                    buttons_center.mul(
+                        zlm.Mat4.createTranslationXYZ(0.185, 0.285, 0.0),
+                    ),
+                ),
+            );
+
+            zgl.programUniform1i(
+                program,
+                program.uniformLocation("pressed"),
+                @boolToInt(if (context.last_input) |last| last.button_z else false),
+            );
+            zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 1);
+            program.uniform3f(program.uniformLocation("color"), z_button_color[0], z_button_color[1], z_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, null);
         }
@@ -362,6 +367,15 @@ const Display = struct {
         bean_texture.parameter(.mag_filter, .linear);
         bean_texture.storage2D(1, .r8, 64, 64);
         bean_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, bean_sdf);
+
+        const z_button_texture = zgl.Texture.create(.@"2d");
+        z_button_texture.bindTo(1);
+        z_button_texture.parameter(.wrap_s, .clamp_to_border);
+        z_button_texture.parameter(.wrap_t, .clamp_to_border);
+        z_button_texture.parameter(.min_filter, .linear);
+        z_button_texture.parameter(.mag_filter, .linear);
+        z_button_texture.storage2D(1, .r8, 64, 64);
+        z_button_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, z_button_sdf);
     }
 };
 
