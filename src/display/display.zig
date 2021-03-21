@@ -266,12 +266,12 @@ const Display = struct {
             const x = @floatCast(f32, if (context.last_input) |last|
                 1.0 - Calibration.main_stick.normalize(last.stick_x)
             else
-                0.0);
+                0.5);
 
             const y = @floatCast(f32, if (context.last_input) |last|
                 1.0 - Calibration.main_stick.normalize(last.stick_y)
             else
-                0.0);
+                0.5);
 
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
             program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
@@ -294,12 +294,12 @@ const Display = struct {
             const x = @floatCast(f32, if (context.last_input) |last|
                 1.0 - Calibration.c_stick.normalize(last.substick_x)
             else
-                0.0);
+                0.5);
 
             const y = @floatCast(f32, if (context.last_input) |last|
                 1.0 - Calibration.c_stick.normalize(last.substick_y)
             else
-                0.0);
+                0.5);
 
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform3f(program.uniformLocation("color"), c_stick_color[0], c_stick_color[1], c_stick_color[2]);
