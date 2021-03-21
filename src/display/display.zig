@@ -159,7 +159,7 @@ const Display = struct {
             const scale = 0.85;
             const model = zlm.Mat4.createUniformScale(scale).mul(
                 buttons_center.mul(
-                    zlm.Mat4.createTranslationXYZ(-0.25, -0.15, 0.0),
+                    zlm.Mat4.createTranslationXYZ(-0.225, -0.15, 0.0),
                 ),
             );
             program.uniform1f(program.uniformLocation("scale"), scale);
