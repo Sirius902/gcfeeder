@@ -195,7 +195,7 @@ const Display = struct {
     }
 
     fn drawSdfButtons(self: Display, context: *const Context) void {
-        const bean_scale_factor = 0.325;
+        const bean_scale_factor = 0.275;
         const bean_scale = zlm.Mat4.createUniformScale(bean_scale_factor);
 
         const program = self.sdf_button_program;
@@ -241,7 +241,7 @@ const Display = struct {
         }
         // z button
         {
-            const scale = 0.25;
+            const scale = 0.225;
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(-10.0)).mul(
                 zlm.Mat4.createUniformScale(scale).mul(
                     buttons_center.mul(

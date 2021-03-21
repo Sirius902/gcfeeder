@@ -11,7 +11,7 @@ uniform bool pressed;
 void main() {
     float dist = texture(sdf_texture, v_tex_coord).r;
 
-    if (dist < 0.5 - border_width || (!pressed && dist >= 0.5)) {
+    if (dist < 0.5 - (4.0 * border_width) || (!pressed && dist >= 0.5)) {
         discard;
     }
 
