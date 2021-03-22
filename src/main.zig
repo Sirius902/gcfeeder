@@ -1,5 +1,4 @@
 const std = @import("std");
-const c = @import("c.zig");
 const display = @import("display/display.zig");
 const usb = @import("zusb");
 const vjoy = @import("vjoy.zig");
