@@ -12,6 +12,15 @@ const atomic = std.atomic;
 const time = std.time;
 const print = std.debug.print;
 
+pub const Error = error{
+    InvalidArgument,
+};
+
+pub const Options = struct {
+    ess_adapter: bool,
+    input_viewer: bool,
+};
+
 pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
@@ -61,20 +70,36 @@ fn rumbleLoop(context: *Context) void {
     }
 }
 
-pub fn parseArgs(allocator: *Allocator) !bool {
+pub fn parseArgs(allocator: *Allocator) !Options {
     var ess_adapter = false;
+    var input_viewer = false;
 
     var iter = std.process.args();
     while (iter.next(allocator)) |arg| {
         const argument = try arg;
         defer allocator.free(argument);
 
-        if (std.mem.eql(u8, argument, "-e")) {
-            ess_adapter = true;
+        if (std.mem.startsWith(u8, argument, "-")) {
+            for (argument[1..]) |opt| {
+                switch (opt) {
+                    'e' => {
+                        ess_adapter = true;
+                    },
+                    'i' => {
+                        input_viewer = true;
+                    },
+                    else => {
+                        return Error.InvalidArgument;
+                    },
+                }
+            }
         }
     }
 
-    return ess_adapter;
+    return Options{
+        .ess_adapter = ess_adapter,
+        .input_viewer = input_viewer,
+    };
 }
 
 pub fn main() !void {
@@ -91,11 +116,13 @@ pub fn main() !void {
     var reciever = try vjoy.FFBReciever.init(allocator);
     defer reciever.deinit();
 
+    const options = try parseArgs(allocator);
+
     var thread_ctx = Context{
         .feeder = &feeder,
         .reciever = reciever,
         .stop = atomic.Bool.init(false),
-        .ess_adapter = try parseArgs(allocator),
+        .ess_adapter = options.ess_adapter,
     };
 
     var threads = [_]*std.Thread{
@@ -111,10 +138,12 @@ pub fn main() !void {
         }
     }
 
-    // print("Feeding. Press enter to exit...\n", .{});
+    if (options.input_viewer) {
+        try display.show(&thread_ctx);
+    } else {
+        print("Feeding. Press enter to exit...\n", .{});
 
-    // var reader = std.io.getStdIn().reader();
-    // _ = try reader.readByte();
-
-    try display.show(&thread_ctx);
+        var reader = std.io.getStdIn().reader();
+        _ = try reader.readByte();
+    }
 }
