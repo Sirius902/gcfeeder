@@ -7,9 +7,6 @@ const Input = @import("../adapter.zig").Input;
 const Calibration = @import("../adapter.zig").Calibration;
 const Context = @import("root").Context;
 
-var window_width: u32 = 512;
-var window_height: u32 = 256;
-
 const Display = struct {
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
     const circle_button_shader_source: []const u8 = @embedFile("circle_button_fragment.glsl");
@@ -132,27 +129,15 @@ const Display = struct {
     pub fn draw(self: Display, context: *const Context) void {
         self.vao.bind();
 
-        const window_size = [_]f32{
-            @intToFloat(f32, window_width),
-            @intToFloat(f32, window_height),
-        };
-
-        self.drawCircleButtons(context, window_size);
-        self.drawSdfButtons(context, window_size);
-        self.drawSticks(context, window_size);
-        self.drawTriggers(context, window_size);
+        self.drawCircleButtons(context);
+        self.drawSdfButtons(context);
+        self.drawSticks(context);
+        self.drawTriggers(context);
     }
 
-    fn drawCircleButtons(self: Display, context: *const Context, window_size: [2]f32) void {
+    fn drawCircleButtons(self: Display, context: *const Context) void {
         const program = self.circle_button_program;
         program.use();
-
-        glad.gl_context.Uniform2fv(
-            glad.gl_context.GetUniformLocation(@enumToInt(program), "window_size"),
-            1,
-            &window_size,
-        );
-
         // a button
         {
             const scale = 1.5;
@@ -209,19 +194,12 @@ const Display = struct {
         }
     }
 
-    fn drawSdfButtons(self: Display, context: *const Context, window_size: [2]f32) void {
+    fn drawSdfButtons(self: Display, context: *const Context) void {
         const bean_scale = 0.275;
         const bean_scale_mat = zlm.Mat4.createUniformScale(bean_scale);
 
         const program = self.sdf_button_program;
         program.use();
-
-        glad.gl_context.Uniform2fv(
-            glad.gl_context.GetUniformLocation(@enumToInt(program), "window_size"),
-            1,
-            &window_size,
-        );
-
         program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
         program.uniform1f(program.uniformLocation("scale"), bean_scale);
@@ -285,19 +263,12 @@ const Display = struct {
         }
     }
 
-    fn drawSticks(self: Display, context: *const Context, window_size: [2]f32) void {
+    fn drawSticks(self: Display, context: *const Context) void {
         const scale = 0.6;
         const scale_mat = zlm.Mat4.createUniformScale(scale);
 
         const program = self.stick_program;
         program.use();
-
-        glad.gl_context.Uniform2fv(
-            glad.gl_context.GetUniformLocation(@enumToInt(program), "window_size"),
-            1,
-            &window_size,
-        );
-
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 2);
         program.uniform1f(program.uniformLocation("scale"), scale);
         // main stick
@@ -358,19 +329,12 @@ const Display = struct {
         }
     }
 
-    fn drawTriggers(self: Display, context: *const Context, window_size: [2]f32) void {
+    fn drawTriggers(self: Display, context: *const Context) void {
         const scale = 0.375;
         const scale_mat = zlm.Mat4.createUniformScale(scale);
 
         const program = self.trigger_program;
         program.use();
-
-        glad.gl_context.Uniform2fv(
-            glad.gl_context.GetUniformLocation(@enumToInt(program), "window_size"),
-            1,
-            &window_size,
-        );
-
         program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
         program.uniform1f(program.uniformLocation("scale"), scale);
         // left trigger
@@ -445,14 +409,7 @@ pub fn show(context: *const Context) !void {
     try glfw.windowHint(.ContextVersionMinor, 3);
     try glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
 
-    const window = try glfw.createWindow(
-        @intCast(c_int, window_width),
-        @intCast(c_int, window_height),
-        "Input Viewer",
-        null,
-        null,
-    );
-
+    const window = try glfw.createWindow(512, 512, "Input Viewer", null, null);
     try glfw.makeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
@@ -475,8 +432,5 @@ pub fn show(context: *const Context) !void {
 }
 
 fn framebufferSizeCallback(window: *glfw.Window, width: i32, height: i32) callconv(.C) void {
-    window_width = @intCast(u32, width);
-    window_height = @intCast(u32, height);
-
-    zgl.viewport(0, 0, window_width, window_height);
+    zgl.viewport(0, 0, @intCast(u32, width), @intCast(u32, height));
 }
