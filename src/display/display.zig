@@ -7,6 +7,9 @@ const Input = @import("../adapter.zig").Input;
 const Calibration = @import("../adapter.zig").Calibration;
 const Context = @import("root").Context;
 
+var window_width: u32 = 512;
+var window_height: u32 = 512;
+
 const Display = struct {
     const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
     const circle_button_shader_source: []const u8 = @embedFile("circle_button_fragment.glsl");
@@ -128,6 +131,26 @@ const Display = struct {
 
     pub fn draw(self: Display, context: *const Context) void {
         self.vao.bind();
+
+        const aspect = @intToFloat(f32, window_width) / @intToFloat(f32, window_height);
+        const projection = zlm.Mat4.createOrthogonal(-aspect, aspect, -1.0, 1.0, -1.0, 1.0);
+
+        const programs = [_]zgl.Program{
+            self.circle_button_program,
+            self.sdf_button_program,
+            self.trigger_program,
+            self.stick_program,
+        };
+
+        for (programs) |program| {
+            program.use();
+
+            program.uniformMatrix4(
+                program.uniformLocation("projection"),
+                false,
+                &[_][4][4]f32{projection.fields},
+            );
+        }
 
         self.drawCircleButtons(context);
         self.drawSdfButtons(context);
@@ -409,7 +432,14 @@ pub fn show(context: *const Context) !void {
     try glfw.windowHint(.ContextVersionMinor, 3);
     try glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
 
-    const window = try glfw.createWindow(512, 512, "Input Viewer", null, null);
+    const window = try glfw.createWindow(
+        @intCast(c_int, window_width),
+        @intCast(c_int, window_height),
+        "Input Viewer",
+        null,
+        null,
+    );
+
     try glfw.makeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
@@ -432,5 +462,8 @@ pub fn show(context: *const Context) !void {
 }
 
 fn framebufferSizeCallback(window: *glfw.Window, width: i32, height: i32) callconv(.C) void {
-    zgl.viewport(0, 0, @intCast(u32, width), @intCast(u32, height));
+    window_width = @intCast(u32, width);
+    window_height = @intCast(u32, height);
+
+    zgl.viewport(0, 0, window_width, window_height);
 }
