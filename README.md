@@ -1,5 +1,5 @@
 # gcfeeder
-A vJoy feeder for Gamecube controllers using the Gamecube Controller Adapter.
+A vJoy feeder and input viewer for Gamecube controllers using the Gamecube Controller Adapter.
 Inspired by [Wii U GCN USB Driver](http://m4sv.com/page/wii-u-gcn-usb-driver).
 
 The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
@@ -19,6 +19,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     * POV Hat Switch: Continuous with 0 POVs
     * Force Feedback effects: May be optionally enabled for rumble support
 * To use the ESS Adapter, start the program with the `-e` flag.
+* To use the input viewer, start the program with the `-i` flag.
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
