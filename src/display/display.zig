@@ -312,8 +312,7 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
             program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
 
-            zgl.programUniform1f(program, program.uniformLocation("posx"), x);
-            zgl.programUniform1f(program, program.uniformLocation("posy"), y);
+            zgl.uniform2f(program.uniformLocation("pos"), x, y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
@@ -337,8 +336,7 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform3f(program.uniformLocation("color"), c_stick_color[0], c_stick_color[1], c_stick_color[2]);
 
-            zgl.programUniform1f(program, program.uniformLocation("posx"), x);
-            zgl.programUniform1f(program, program.uniformLocation("posy"), y);
+            zgl.uniform2f(program.uniformLocation("pos"), x, y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
