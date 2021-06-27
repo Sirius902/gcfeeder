@@ -18,17 +18,7 @@ pub fn build(b: *Builder) void {
     exe.c_std = .C99;
     exe.addIncludeDir("include");
 
-    const target_triple_str = target.linuxTriple(b.allocator) catch |err| {
-        std.debug.warn("{} error while trying to stringify the target triple\n", .{err});
-        std.os.exit(1);
-    };
-
-    const lib_dir = std.fs.path.join(b.allocator, &[_][]const u8{ "lib", target_triple_str }) catch |err| {
-        std.debug.warn("{} error while trying to render library path\n", .{err});
-        std.os.exit(1);
-    };
-
-    exe.addLibPath(lib_dir);
+    exe.addLibPath("lib");
 
     exe.linkLibC();
     exe.linkSystemLibrary("libusb-1.0");
@@ -49,7 +39,7 @@ pub fn build(b: *Builder) void {
     exe.install();
 
     if (exe.install_step) |install_step| {
-        const dll_step = DllStep.create(b, target_triple_str);
+        const dll_step = DllStep.create(b);
         dll_step.step.dependOn(&install_step.step);
         b.default_step.dependOn(&dll_step.step);
     }
@@ -64,14 +54,12 @@ pub fn build(b: *Builder) void {
 const DllStep = struct {
     step: Step,
     builder: *Builder,
-    target_triple_str: []const u8,
 
-    pub fn create(b: *Builder, target_triple_str: []const u8) *DllStep {
+    pub fn create(b: *Builder) *DllStep {
         var self = b.allocator.create(DllStep) catch unreachable;
         self.* = DllStep{
             .step = Step.init(.custom, "dll", b.allocator, make),
             .builder = b,
-            .target_triple_str = target_triple_str,
         };
 
         return self;
@@ -81,19 +69,16 @@ const DllStep = struct {
         const self = @fieldParentPtr(DllStep, "step", step);
         const b = self.builder;
 
-        var lib = try std.fs.cwd().openDir("lib", .{});
+        var lib = try std.fs.cwd().openDir("lib", .{ .iterate = true });
         defer lib.close();
-
-        var triple_lib = try lib.openDir(self.target_triple_str, .{ .iterate = true });
-        defer triple_lib.close();
 
         var exe_dir = try std.fs.cwd().openDir(b.exe_dir, .{});
         defer exe_dir.close();
 
-        var files = triple_lib.iterate();
+        var files = lib.iterate();
         while (try files.next()) |file| {
             if (std.mem.endsWith(u8, file.name, ".dll")) {
-                try triple_lib.copyFile(file.name, exe_dir, file.name, .{});
+                try lib.copyFile(file.name, exe_dir, file.name, .{});
             }
         }
     }
