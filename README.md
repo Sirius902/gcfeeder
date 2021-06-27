@@ -1,6 +1,5 @@
 # gcfeeder
 A vJoy feeder and input viewer for Gamecube controllers using the Gamecube Controller Adapter.
-Inspired by [Wii U GCN USB Driver](http://m4sv.com/page/wii-u-gcn-usb-driver).
 
 The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
@@ -10,7 +9,7 @@ with code and inversion methods from Skuzee's [ESS-Adapter](https://github.com/S
 project.
 
 ## Usage Requirements
-* Both [vJoy and vJoyConf](http://vjoystick.sourceforge.net/site) must be installed.
+* Both [vJoy and vJoyConf](https://github.com/njz3/vJoy/) must be installed.
 * WinUSB (libusb) driver must be installed for the adapter (WUP-028) with [Zadig](https://zadig.akeo.ie).
 For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
 * vJoy driver must be enabled and device 1 must have the following configuration:
