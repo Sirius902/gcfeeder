@@ -20,7 +20,7 @@ const Display = struct {
     const z_button_sdf = @embedFile("z-button-sdf.gray");
     const octagon_sdf = @embedFile("octagon-sdf.gray");
 
-    const main_color = [_]f32{ 0.95, 0.95, 0.95 };
+    const main_color = [_]f32{ 0.90, 0.90, 0.90 };
     const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
     const b_button_color = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 };
     const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
