@@ -146,7 +146,7 @@ pub const FFBReciever = struct {
         var ffb_type: c.FFBPType = undefined;
 
         if (c.Ffb_h_DeviceID(ffb_data, &c_id) == c.ERROR_SEVERITY_SUCCESS and c.Ffb_h_Type(ffb_data, &ffb_type) == c.ERROR_SEVERITY_SUCCESS) {
-            const id = std.math.cast(u8, c_id) catch unreachable;
+            const id = @intCast(u8, c_id);
 
             const timestamp = std.time.milliTimestamp();
 

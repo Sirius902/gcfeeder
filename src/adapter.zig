@@ -198,8 +198,8 @@ const StickRange = struct {
         const yy = std.math.clamp(y, center - radius, center + radius);
 
         return Vec2{
-            .x = std.math.cast(u8, xx) catch unreachable,
-            .y = std.math.cast(u8, yy) catch unreachable,
+            .x = @intCast(u8, xx),
+            .y = @intCast(u8, yy),
         };
     }
 
@@ -215,7 +215,7 @@ const AnalogRange = struct {
     pub fn restrict(self: AnalogRange, n: i10) u8 {
         const nn = std.math.clamp(n, @as(i10, self.min), @as(i10, self.max));
 
-        return std.math.cast(u8, nn) catch unreachable;
+        return @intCast(u8, nn);
     }
 
     pub fn normalize(self: AnalogRange, axis: u8) f64 {
