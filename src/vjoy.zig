@@ -81,9 +81,9 @@ pub const EffectOperation = struct {
         return EffectOperation{
             .block_index = eff_op.EffectBlockIndex,
             .operation = switch (eff_op.EffectOp) {
-                .EFF_START => .Start,
-                .EFF_SOLO => .Solo,
-                .EFF_STOP => .Stop,
+                c.EFF_START => .Start,
+                c.EFF_SOLO => .Solo,
+                c.EFF_STOP => .Stop,
                 else => unreachable,
             },
             .loop_count = eff_op.LoopCount,
@@ -151,7 +151,7 @@ pub const FFBReciever = struct {
             const timestamp = std.time.milliTimestamp();
 
             switch (ffb_type) {
-                .PT_EFOPREP => {
+                c.PT_EFOPREP => {
                     var operation: c.FFB_EFF_OP = undefined;
 
                     if (c.Ffb_h_EffOp(ffb_data, &operation) == c.ERROR_SEVERITY_SUCCESS) {

@@ -1,5 +1,4 @@
 const std = @import("std");
-const glad = @import("glad");
 const zgl = @import("zgl");
 const zlm = @import("zlm");
 const glfw = @import("zglfw");
@@ -27,7 +26,7 @@ const Display = struct {
     const z_button_color = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 };
     const c_stick_color = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 };
 
-    const buttons_center = comptime zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
+    const buttons_center = zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
 
     circle_button_program: zgl.Program,
     sdf_button_program: zgl.Program,
@@ -175,7 +174,7 @@ const Display = struct {
             );
             program.uniform3f(program.uniformLocation("color"), a_button_color[0], a_button_color[1], a_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // b button
         {
@@ -194,7 +193,7 @@ const Display = struct {
             );
             program.uniform3f(program.uniformLocation("color"), b_button_color[0], b_button_color[1], b_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // start button
         {
@@ -213,7 +212,7 @@ const Display = struct {
             );
             program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }
 
@@ -242,7 +241,7 @@ const Display = struct {
                 @boolToInt(if (context.last_input) |last| last.button_y else false),
             );
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // x button
         {
@@ -260,7 +259,7 @@ const Display = struct {
                 @boolToInt(if (context.last_input) |last| last.button_x else false),
             );
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // z button
         {
@@ -282,7 +281,7 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 1);
             program.uniform3f(program.uniformLocation("color"), z_button_color[0], z_button_color[1], z_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }
 
@@ -313,14 +312,11 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
             program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
 
-            glad.gl_context.Uniform2fv(
-                glad.gl_context.GetUniformLocation(@enumToInt(program), "pos"),
-                1,
-                &[_]f32{ x, y },
-            );
+            zgl.programUniform1f(program, program.uniformLocation("posx"), x);
+            zgl.programUniform1f(program, program.uniformLocation("posy"), y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // c stick
         {
@@ -341,14 +337,11 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform3f(program.uniformLocation("color"), c_stick_color[0], c_stick_color[1], c_stick_color[2]);
 
-            glad.gl_context.Uniform2fv(
-                glad.gl_context.GetUniformLocation(@enumToInt(program), "pos"),
-                1,
-                &[_]f32{ x, y },
-            );
+            zgl.programUniform1f(program, program.uniformLocation("posx"), x);
+            zgl.programUniform1f(program, program.uniformLocation("posy"), y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }
 
@@ -374,7 +367,7 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
             program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // right trigger
         {
@@ -390,7 +383,7 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
-            zgl.drawElements(.triangles, 6, .u32, null);
+            zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }
 
@@ -426,11 +419,11 @@ const Display = struct {
 
 pub fn show(context: *const Context) !void {
     try glfw.init();
-    defer glfw.terminate() catch unreachable;
+    defer glfw.terminate();
 
-    try glfw.windowHint(.ContextVersionMajor, 3);
-    try glfw.windowHint(.ContextVersionMinor, 3);
-    try glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
+    glfw.windowHint(.ContextVersionMajor, 3);
+    glfw.windowHint(.ContextVersionMinor, 3);
+    glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
 
     const window = try glfw.createWindow(
         @intCast(c_int, window_width),
@@ -440,28 +433,26 @@ pub fn show(context: *const Context) !void {
         null,
     );
 
-    try glfw.makeContextCurrent(window);
+    glfw.makeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
-    try glfw.swapInterval(1);
-    _ = try glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
-
-    try glad.gl_context.load(glfw.GLFWError, glfw.getProcAddress);
+    glfw.swapInterval(1);
+    _ = glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
     const display = Display.init();
 
-    while (!try glfw.windowShouldClose(window)) {
+    while (!glfw.windowShouldClose(window)) {
         zgl.clearColor(0.0, 0.0, 0.0, 1.0);
         zgl.clear(.{ .color = true });
 
         display.draw(context);
 
-        try glfw.swapBuffers(window);
-        try glfw.pollEvents();
+        glfw.swapBuffers(window);
+        glfw.pollEvents();
     }
 }
 
-fn framebufferSizeCallback(window: *glfw.Window, width: i32, height: i32) callconv(.C) void {
+fn framebufferSizeCallback(_: *glfw.Window, width: i32, height: i32) callconv(.C) void {
     window_width = @intCast(u32, width);
     window_height = @intCast(u32, height);
 

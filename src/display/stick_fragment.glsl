@@ -8,12 +8,14 @@ layout (location = 0) out vec4 frag_color;
 // octagon notch sdf
 uniform sampler2D sdf_texture;
 uniform vec3 color;
-uniform vec2 pos;
+uniform float posx;
+uniform float posy;
 uniform bool is_c_stick;
 
 float radius = 0.225 * (is_c_stick ? 0.8 : 1.0);
 
 void main() {
+    vec2 pos = vec2(posx, posy);
     vec2 center = v_pos + ((pos - 0.5) * 0.5);
     float dist = radius - sqrt((center.x * center.x) + (center.y * center.y));
 

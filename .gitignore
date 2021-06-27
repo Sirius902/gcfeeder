@@ -10,20 +10,21 @@
 !.vscode/extensions.json
 *.code-workspace
 
+# Local History for Visual Studio Code
+.history/
+
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+.ionide
 
 ### zig ###
 # Zig programming language
 
 zig-cache/
+zig-out/
 build/
 build-*/
 docgen_tmp/
-
-### zls ###
-# Zig Language Server
-build_runner.zig
 
 # End of https://www.toptal.com/developers/gitignore/api/zig,visualstudiocode

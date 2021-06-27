@@ -7,7 +7,7 @@ const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
-const atomic = std.atomic;
+const Atomic = std.atomic.Atomic;
 const time = std.time;
 const print = std.debug.print;
 
@@ -23,7 +23,7 @@ pub const Options = struct {
 pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
-    stop: atomic.Bool,
+    stop: Atomic(bool),
     last_input: ?Input = null,
     ess_adapter: bool,
 };
@@ -120,7 +120,7 @@ pub fn main() !void {
     var thread_ctx = Context{
         .feeder = &feeder,
         .reciever = reciever,
-        .stop = atomic.Bool.init(false),
+        .stop = Atomic(bool).init(false),
         .ess_adapter = options.ess_adapter,
     };
 
