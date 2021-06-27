@@ -9,7 +9,7 @@ with code and inversion methods from Skuzee's [ESS-Adapter](https://github.com/S
 project.
 
 ## Usage Requirements
-* Both [vJoy and vJoyConf](https://github.com/njz3/vJoy/) must be installed.
+* Both [vJoy and vJoyConf](https://github.com/jshafer817/vJoy) must be installed.
 * WinUSB (libusb) driver must be installed for the adapter (WUP-028) with [Zadig](https://zadig.akeo.ie).
 For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
 * vJoy driver must be enabled and device 1 must have the following configuration:
