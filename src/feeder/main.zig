@@ -3,7 +3,6 @@ const usb = @import("zusb");
 const network = @import("network");
 const clap = @import("clap");
 const vjoy = @import("vjoy.zig");
-const Allocator = std.mem.Allocator;
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
