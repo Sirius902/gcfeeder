@@ -293,6 +293,30 @@ pub const Input = struct {
     trigger_left: u8,
     trigger_right: u8,
 
+    pub fn serialize(self: Input, buffer: *[@sizeOf(Input)]u8) void {
+        inline for (@typeInfo(Input).Struct.fields) |field, i| {
+            buffer[i] = switch (field.field_type) {
+                u8 => @field(self, field.name),
+                bool => @boolToInt(@field(self, field.name)),
+                else => @compileError("Unsupported type"),
+            };
+        }
+    }
+
+    pub fn deserialize(buffer: *const [@sizeOf(Input)]u8) Input {
+        var input: Input = undefined;
+
+        inline for (@typeInfo(Input).Struct.fields) |field, i| {
+            @field(input, field.name) = switch (field.field_type) {
+                u8 => buffer[i],
+                bool => buffer[i] != 0,
+                else => @compileError("Unsupported type"),
+            };
+        }
+
+        return input;
+    }
+
     fn fromPayload(payload: *const [payload_len]u8, port: Port) Input {
         const chan = port.channel();
         const b1 = payload[1 + (9 * chan) + 1];

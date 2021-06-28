@@ -1,5 +1,4 @@
 const std = @import("std");
-const display = @import("display/display.zig");
 const usb = @import("zusb");
 const vjoy = @import("vjoy.zig");
 const Allocator = std.mem.Allocator;
@@ -137,12 +136,8 @@ pub fn main() !void {
         }
     }
 
-    if (options.input_viewer) {
-        try display.show(&thread_ctx);
-    } else {
-        print("Feeding. Press enter to exit...\n", .{});
+    print("Feeding. Press enter to exit...\n", .{});
 
-        var reader = std.io.getStdIn().reader();
-        _ = try reader.readByte();
-    }
+    var reader = std.io.getStdIn().reader();
+    _ = try reader.readByte();
 }

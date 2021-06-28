@@ -4,21 +4,20 @@ const zlm = @import("zlm");
 const glfw = @import("zglfw");
 const Input = @import("../adapter.zig").Input;
 const Calibration = @import("../adapter.zig").Calibration;
-const Context = @import("root").Context;
 
 var window_width: u32 = 512;
 var window_height: u32 = 512;
 
 const Display = struct {
-    const vertex_shader_source: []const u8 = @embedFile("vertex.glsl");
-    const circle_button_shader_source: []const u8 = @embedFile("circle_button_fragment.glsl");
-    const sdf_button_shader_source: []const u8 = @embedFile("sdf_button_fragment.glsl");
-    const trigger_shader_source: []const u8 = @embedFile("trigger_fragment.glsl");
-    const stick_shader_source: []const u8 = @embedFile("stick_fragment.glsl");
+    const vertex_shader_source: []const u8 = @embedFile("shader/vertex.glsl");
+    const circle_button_shader_source: []const u8 = @embedFile("shader/circle_button_fragment.glsl");
+    const sdf_button_shader_source: []const u8 = @embedFile("shader/sdf_button_fragment.glsl");
+    const trigger_shader_source: []const u8 = @embedFile("shader/trigger_fragment.glsl");
+    const stick_shader_source: []const u8 = @embedFile("shader/stick_fragment.glsl");
 
-    const bean_sdf = @embedFile("bean-sdf.gray");
-    const z_button_sdf = @embedFile("z-button-sdf.gray");
-    const octagon_sdf = @embedFile("octagon-sdf.gray");
+    const bean_sdf = @embedFile("sdf/bean-sdf.gray");
+    const z_button_sdf = @embedFile("sdf/z-button-sdf.gray");
+    const octagon_sdf = @embedFile("sdf/octagon-sdf.gray");
 
     const main_color = [_]f32{ 0.90, 0.90, 0.90 };
     const a_button_color = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 };
