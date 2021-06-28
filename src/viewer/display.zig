@@ -12,22 +12,36 @@ var window_height: u32 = 512;
 pub const Theme = struct {
     colors: struct {
         background: [3]f32,
-        main: [3]f32,
         a_button: [3]f32,
         b_button: [3]f32,
+        x_button: [3]f32,
+        y_button: [3]f32,
         z_button: [3]f32,
+        start_button: [3]f32,
+        main_stick: [3]f32,
         c_stick: [3]f32,
+        left_trigger: [3]f32,
+        right_trigger: [3]f32,
     },
 
-    pub const default = Theme{
-        .colors = .{
-            .background = [_]f32{ 0.0, 0.0, 0.0 },
-            .main = [_]f32{ 0.9, 0.9, 0.9 },
-            .a_button = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 },
-            .b_button = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 },
-            .z_button = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 },
-            .c_stick = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 },
-        },
+    pub const default = blk: {
+        const main = [_]f32{ 0.9, 0.9, 0.9 };
+
+        break :blk Theme{
+            .colors = .{
+                .background = [_]f32{ 0.0, 0.0, 0.0 },
+                .a_button = [_]f32{ 0.0 / 255.0, 188.0 / 255.0, 142.0 / 255.0 },
+                .b_button = [_]f32{ 255.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0 },
+                .x_button = main,
+                .y_button = main,
+                .z_button = [_]f32{ 85.0 / 255.0, 0.0 / 255.0, 173.0 / 255.0 },
+                .start_button = main,
+                .main_stick = main,
+                .c_stick = [_]f32{ 255.0 / 255.0, 228.0 / 255.0, 0.0 / 255.0 },
+                .left_trigger = main,
+                .right_trigger = main,
+            },
+        };
     };
 };
 
@@ -229,7 +243,12 @@ const Display = struct {
                 program.uniformLocation("pressed"),
                 @boolToInt(if (input) |in| in.button_start else false),
             );
-            program.uniform3f(program.uniformLocation("color"), colors.main[0], colors.main[1], colors.main[2]);
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.start_button[0],
+                colors.start_button[1],
+                colors.start_button[2],
+            );
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -242,11 +261,16 @@ const Display = struct {
 
         const program = self.sdf_button_program;
         program.use();
-        program.uniform3f(program.uniformLocation("color"), colors.main[0], colors.main[1], colors.main[2]);
         zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
         program.uniform1f(program.uniformLocation("scale"), bean_scale);
         // y button
         {
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.y_button[0],
+                colors.y_button[1],
+                colors.y_button[2],
+            );
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(110.0)).mul(
                 bean_scale_mat.mul(
                     buttons_center.mul(
@@ -265,6 +289,12 @@ const Display = struct {
         }
         // x button
         {
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.x_button[0],
+                colors.x_button[1],
+                colors.x_button[2],
+            );
             const model = zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(225.0)).mul(
                 bean_scale_mat.mul(
                     buttons_center.mul(
@@ -331,7 +361,12 @@ const Display = struct {
                 0.5);
 
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
-            program.uniform3f(program.uniformLocation("color"), colors.main[0], colors.main[1], colors.main[2]);
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.main_stick[0],
+                colors.main_stick[1],
+                colors.main_stick[2],
+            );
 
             zgl.uniform2f(program.uniformLocation("pos"), x, y);
 
@@ -371,10 +406,15 @@ const Display = struct {
 
         const program = self.trigger_program;
         program.use();
-        program.uniform3f(program.uniformLocation("color"), colors.main[0], colors.main[1], colors.main[2]);
         program.uniform1f(program.uniformLocation("scale"), scale);
         // left trigger
         {
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.left_trigger[0],
+                colors.left_trigger[1],
+                colors.left_trigger[2],
+            );
             const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.65, 0.35, 0.0),
             );
@@ -391,6 +431,12 @@ const Display = struct {
         }
         // right trigger
         {
+            program.uniform3f(
+                program.uniformLocation("color"),
+                colors.right_trigger[0],
+                colors.right_trigger[1],
+                colors.right_trigger[2],
+            );
             const model = scale_mat.mul(
                 zlm.Mat4.createTranslationXYZ(-0.15, 0.35, 0.0),
             );
