@@ -34,7 +34,7 @@ pub fn build(b: *Builder) void {
 
     const dll_step = DllStep.create(b);
     dll_step.step.dependOn(&feeder_exe.step);
-    run_step.dependOn(&dll_step.step);
+    run_cmd.step.dependOn(&dll_step.step);
 }
 
 fn feederExecutable(b: *Builder) *LibExeObjStep {
