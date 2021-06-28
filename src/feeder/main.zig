@@ -8,7 +8,6 @@ const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
 const Atomic = std.atomic.Atomic;
 const time = std.time;
-const print = std.debug.print;
 
 pub const Error = error{
     InvalidArgument,
@@ -32,7 +31,7 @@ fn inputLoop(context: *Context) void {
 
     while (!context.stop.load(.Acquire)) {
         context.last_input = feeder.feed(context.ess_adapter) catch |err| blk: {
-            print("{} error in input thread\n", .{err});
+            std.log.err("{} error in input thread", .{err});
             break :blk null;
         };
     }
@@ -63,7 +62,7 @@ fn rumbleLoop(context: *Context) void {
         }
 
         feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
-            print("{} error in rumble thread\n", .{err});
+            std.log.err("{} error in rumble thread", .{err});
         };
     }
 }
@@ -136,7 +135,7 @@ pub fn main() !void {
         }
     }
 
-    print("Feeding. Press enter to exit...\n", .{});
+    std.log.info("Feeding. Press enter to exit...", .{});
 
     var reader = std.io.getStdIn().reader();
     _ = try reader.readByte();
