@@ -1,5 +1,6 @@
 const std = @import("std");
 const usb = @import("zusb");
+const network = @import("network");
 const vjoy = @import("vjoy.zig");
 const Allocator = std.mem.Allocator;
 const Adapter = @import("adapter.zig").Adapter;
@@ -14,26 +15,42 @@ pub const Error = error{
 };
 
 pub const Options = struct {
-    ess_adapter: bool,
-    input_viewer: bool,
+    ess_adapter: bool = false,
+    input_server: bool = false,
 };
 
 pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
     stop: Atomic(bool),
-    last_input: ?Input = null,
+    sock: ?*network.Socket,
     ess_adapter: bool,
+};
+
+const endpoint = network.EndPoint{
+    .address = .{ .ipv4 = network.Address.IPv4.loopback },
+    .port = 4096,
 };
 
 fn inputLoop(context: *Context) void {
     const feeder = context.feeder;
 
     while (!context.stop.load(.Acquire)) {
-        context.last_input = feeder.feed(context.ess_adapter) catch |err| blk: {
+        const input = feeder.feed(context.ess_adapter) catch |err| blk: {
             std.log.err("{} error in input thread", .{err});
             break :blk null;
         };
+
+        if (input) |in| {
+            if (context.sock) |s| {
+                var buffer: [@sizeOf(Input)]u8 = undefined;
+                in.serialize(&buffer);
+
+                _ = s.sendTo(endpoint, &buffer) catch |err| {
+                    std.log.err("{} error in input thread", .{err});
+                };
+            }
+        }
     }
 }
 
@@ -68,8 +85,7 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn parseArgs(allocator: *Allocator) !Options {
-    var ess_adapter = false;
-    var input_viewer = false;
+    var options = Options{};
 
     var iter = std.process.args();
     while (iter.next(allocator)) |arg| {
@@ -80,10 +96,10 @@ pub fn parseArgs(allocator: *Allocator) !Options {
             for (argument[1..]) |opt| {
                 switch (opt) {
                     'e' => {
-                        ess_adapter = true;
+                        options.ess_adapter = true;
                     },
                     'i' => {
-                        input_viewer = true;
+                        options.input_server = true;
                     },
                     else => {
                         return Error.InvalidArgument;
@@ -93,10 +109,7 @@ pub fn parseArgs(allocator: *Allocator) !Options {
         }
     }
 
-    return Options{
-        .ess_adapter = ess_adapter,
-        .input_viewer = input_viewer,
-    };
+    return options;
 }
 
 pub fn main() !void {
@@ -115,10 +128,25 @@ pub fn main() !void {
 
     const options = try parseArgs(allocator);
 
+    var sock: ?network.Socket = null;
+    if (options.input_server) {
+        try network.init();
+
+        sock = try network.Socket.create(.ipv4, .udp);
+
+        try sock.?.connect(endpoint);
+        std.log.info("Opened UDP server on port {}", .{endpoint.port});
+    }
+    defer {
+        if (options.input_server) network.deinit();
+        if (sock) |s| s.close();
+    }
+
     var thread_ctx = Context{
         .feeder = &feeder,
         .reciever = reciever,
         .stop = Atomic(bool).init(false),
+        .sock = if (sock) |_| &sock.? else null,
         .ess_adapter = options.ess_adapter,
     };
 

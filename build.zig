@@ -61,6 +61,9 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
 fn viewerExecutable(b: *Builder) *LibExeObjStep {
     const exe = b.addExecutable("gcviewer", "src/viewer/main.zig");
 
+    exe.c_std = .C99;
+    exe.addIncludeDir("include");
+
     exe.addLibPath("lib");
 
     exe.linkLibC();

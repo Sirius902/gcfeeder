@@ -2,8 +2,9 @@ const std = @import("std");
 const zgl = @import("zgl");
 const zlm = @import("zlm");
 const glfw = @import("zglfw");
-const Input = @import("../adapter.zig").Input;
-const Calibration = @import("../adapter.zig").Calibration;
+const Input = @import("adapter").Input;
+const Calibration = @import("adapter").Calibration;
+const Context = @import("root").Context;
 
 var window_width: u32 = 512;
 var window_height: u32 = 512;
@@ -127,7 +128,7 @@ const Display = struct {
         };
     }
 
-    pub fn draw(self: Display, context: *const Context) void {
+    pub fn draw(self: Display, input: ?Input) void {
         self.vao.bind();
 
         const aspect = @intToFloat(f32, window_width) / @intToFloat(f32, window_height);
@@ -150,13 +151,13 @@ const Display = struct {
             );
         }
 
-        self.drawCircleButtons(context);
-        self.drawSdfButtons(context);
-        self.drawSticks(context);
-        self.drawTriggers(context);
+        self.drawCircleButtons(input);
+        self.drawSdfButtons(input);
+        self.drawSticks(input);
+        self.drawTriggers(input);
     }
 
-    fn drawCircleButtons(self: Display, context: *const Context) void {
+    fn drawCircleButtons(self: Display, input: ?Input) void {
         const program = self.circle_button_program;
         program.use();
         // a button
@@ -169,7 +170,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_a else false),
+                @boolToInt(if (input) |in| in.button_a else false),
             );
             program.uniform3f(program.uniformLocation("color"), a_button_color[0], a_button_color[1], a_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
@@ -188,7 +189,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_b else false),
+                @boolToInt(if (input) |in| in.button_b else false),
             );
             program.uniform3f(program.uniformLocation("color"), b_button_color[0], b_button_color[1], b_button_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
@@ -207,7 +208,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_start else false),
+                @boolToInt(if (input) |in| in.button_start else false),
             );
             program.uniform3f(program.uniformLocation("color"), main_color[0], main_color[1], main_color[2]);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
@@ -215,7 +216,7 @@ const Display = struct {
         }
     }
 
-    fn drawSdfButtons(self: Display, context: *const Context) void {
+    fn drawSdfButtons(self: Display, input: ?Input) void {
         const bean_scale = 0.275;
         const bean_scale_mat = zlm.Mat4.createUniformScale(bean_scale);
 
@@ -237,7 +238,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_y else false),
+                @boolToInt(if (input) |in| in.button_y else false),
             );
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
@@ -255,7 +256,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_x else false),
+                @boolToInt(if (input) |in| in.button_x else false),
             );
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
@@ -275,7 +276,7 @@ const Display = struct {
             zgl.programUniform1i(
                 program,
                 program.uniformLocation("pressed"),
-                @boolToInt(if (context.last_input) |last| last.button_z else false),
+                @boolToInt(if (input) |in| in.button_z else false),
             );
             zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 1);
             program.uniform3f(program.uniformLocation("color"), z_button_color[0], z_button_color[1], z_button_color[2]);
@@ -284,7 +285,7 @@ const Display = struct {
         }
     }
 
-    fn drawSticks(self: Display, context: *const Context) void {
+    fn drawSticks(self: Display, input: ?Input) void {
         const scale = 0.6;
         const scale_mat = zlm.Mat4.createUniformScale(scale);
 
@@ -298,13 +299,13 @@ const Display = struct {
                 zlm.Mat4.createTranslationXYZ(-0.65, 0.0, 0.0),
             );
 
-            const x = @floatCast(f32, if (context.last_input) |last|
-                1.0 - Calibration.main_stick.normalize(last.stick_x)
+            const x = @floatCast(f32, if (input) |in|
+                1.0 - Calibration.main_stick.normalize(in.stick_x)
             else
                 0.5);
 
-            const y = @floatCast(f32, if (context.last_input) |last|
-                1.0 - Calibration.main_stick.normalize(last.stick_y)
+            const y = @floatCast(f32, if (input) |in|
+                1.0 - Calibration.main_stick.normalize(in.stick_y)
             else
                 0.5);
 
@@ -322,13 +323,13 @@ const Display = struct {
                 zlm.Mat4.createTranslationXYZ(-0.15, 0.0, 0.0),
             );
 
-            const x = @floatCast(f32, if (context.last_input) |last|
-                1.0 - Calibration.c_stick.normalize(last.substick_x)
+            const x = @floatCast(f32, if (input) |in|
+                1.0 - Calibration.c_stick.normalize(in.substick_x)
             else
                 0.5);
 
-            const y = @floatCast(f32, if (context.last_input) |last|
-                1.0 - Calibration.c_stick.normalize(last.substick_y)
+            const y = @floatCast(f32, if (input) |in|
+                1.0 - Calibration.c_stick.normalize(in.substick_y)
             else
                 0.5);
 
@@ -342,7 +343,7 @@ const Display = struct {
         }
     }
 
-    fn drawTriggers(self: Display, context: *const Context) void {
+    fn drawTriggers(self: Display, input: ?Input) void {
         const scale = 0.375;
         const scale_mat = zlm.Mat4.createUniformScale(scale);
 
@@ -356,8 +357,8 @@ const Display = struct {
                 zlm.Mat4.createTranslationXYZ(-0.65, 0.35, 0.0),
             );
 
-            const fill = @floatCast(f32, if (context.last_input) |last|
-                if (last.button_l) 1.0 else Calibration.trigger_range.normalize(last.trigger_left)
+            const fill = @floatCast(f32, if (input) |in|
+                if (in.button_l) 1.0 else Calibration.trigger_range.normalize(in.trigger_left)
             else
                 0.0);
 
@@ -372,8 +373,8 @@ const Display = struct {
                 zlm.Mat4.createTranslationXYZ(-0.15, 0.35, 0.0),
             );
 
-            const fill = @floatCast(f32, if (context.last_input) |last|
-                if (last.button_r) 1.0 else Calibration.trigger_range.normalize(last.trigger_right)
+            const fill = @floatCast(f32, if (input) |in|
+                if (in.button_r) 1.0 else Calibration.trigger_range.normalize(in.trigger_right)
             else
                 0.0);
 
@@ -414,7 +415,7 @@ const Display = struct {
     }
 };
 
-pub fn show(context: *const Context) !void {
+pub fn show(context: *Context) !void {
     try glfw.init();
     defer glfw.terminate();
 
@@ -439,10 +440,17 @@ pub fn show(context: *const Context) !void {
     const display = Display.init();
 
     while (!glfw.windowShouldClose(window)) {
+        const input = blk: {
+            const held = context.mutex.acquire();
+            defer held.release();
+
+            break :blk context.input;
+        };
+
         zgl.clearColor(0.0, 0.0, 0.0, 1.0);
         zgl.clear(.{ .color = true });
 
-        display.draw(context);
+        display.draw(input);
 
         glfw.swapBuffers(window);
         glfw.pollEvents();

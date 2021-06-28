@@ -18,7 +18,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     * POV Hat Switch: Continuous with 0 POVs
     * Force Feedback effects: May be optionally enabled for rumble support
 * To use the ESS Adapter, start the program with the `-e` flag.
-* To use the input viewer, start the program with the `-i` flag.
+* To create a UDP server for controller inputs on port `4096`, start the program with the `-i` flag.
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
