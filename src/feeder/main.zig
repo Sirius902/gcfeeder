@@ -12,20 +12,34 @@ const time = std.time;
 
 pub const Options = struct {
     ess_adapter: bool = false,
-    input_server: bool = false,
+    port: ?u16 = null,
+};
+
+pub const Server = struct {
+    sock: network.Socket,
+    endpoint: network.EndPoint,
+
+    pub fn init(port: u16) !Server {
+        var sock = try network.Socket.create(.ipv4, .udp);
+        const endpoint = network.EndPoint{
+            .address = .{ .ipv4 = network.Address.IPv4.loopback },
+            .port = port,
+        };
+
+        return Server{ .sock = sock, .endpoint = endpoint };
+    }
+
+    pub fn deinit(self: Server) void {
+        self.sock.close();
+    }
 };
 
 pub const Context = struct {
     feeder: *Feeder,
     reciever: *vjoy.FFBReciever,
     stop: Atomic(bool),
-    sock: ?*network.Socket,
+    server: ?*Server,
     ess_adapter: bool,
-};
-
-const endpoint = network.EndPoint{
-    .address = .{ .ipv4 = network.Address.IPv4.loopback },
-    .port = 4096,
 };
 
 fn inputLoop(context: *Context) void {
@@ -38,11 +52,11 @@ fn inputLoop(context: *Context) void {
         };
 
         if (input) |in| {
-            if (context.sock) |s| {
+            if (context.server) |s| {
                 var buffer: [@sizeOf(Input)]u8 = undefined;
                 in.serialize(&buffer);
 
-                _ = s.sendTo(endpoint, &buffer) catch |err| {
+                _ = s.sock.sendTo(s.endpoint, &buffer) catch |err| {
                     std.log.err("{} error in input thread", .{err});
                 };
             }
@@ -85,6 +99,35 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = &gpa.allocator;
 
+    const options = blk: {
+        const params = comptime [_]clap.Param(clap.Help){
+            clap.parseParam("-h, --help        Display this help and exit.      ") catch unreachable,
+            clap.parseParam("-e, --ess         Enables ESS adapter.             ") catch unreachable,
+            clap.parseParam("-s, --server      Enables UDP input server.        ") catch unreachable,
+            clap.parseParam("-p, --port <PORT> Enables UDP input server on port.") catch unreachable,
+        };
+
+        var args = try clap.parse(clap.Help, &params, .{});
+        defer args.deinit();
+
+        if (args.flag("--help")) {
+            try clap.help(std.io.getStdErr().writer(), &params);
+            return;
+        }
+
+        const port = if (args.option("--port")) |p|
+            try std.fmt.parseUnsigned(u16, p, 10)
+        else if (args.flag("--server"))
+            @as(u16, 4096)
+        else
+            null;
+
+        break :blk Options{
+            .ess_adapter = args.flag("--ess"),
+            .port = port,
+        };
+    };
+
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
@@ -94,46 +137,25 @@ pub fn main() !void {
     var reciever = try vjoy.FFBReciever.init(allocator);
     defer reciever.deinit();
 
-    const options = blk: {
-        const params = comptime [_]clap.Param(clap.Help){
-            clap.parseParam("-h, --help   Display this help and exit.") catch unreachable,
-            clap.parseParam("-e, --ess    Enables ESS adapter.       ") catch unreachable,
-            clap.parseParam("-s, --server Enables UDP input server.  ") catch unreachable,
-        };
-
-        var args = try clap.parse(clap.Help, &params, .{});
-        defer args.deinit();
-
-        if (args.flag("--help")) {
-            try clap.help(std.io.getStdErr().writer(), &params);
-            return;
-        } else {
-            break :blk Options{
-                .ess_adapter = args.flag("--ess"),
-                .input_server = args.flag("--server"),
-            };
-        }
-    };
-
-    var sock: ?network.Socket = null;
-    if (options.input_server) {
+    var server: ?Server = null;
+    if (options.port) |p| {
         try network.init();
 
-        sock = try network.Socket.create(.ipv4, .udp);
-
-        try sock.?.connect(endpoint);
-        std.log.info("Opened UDP server on port {}", .{endpoint.port});
+        server = try Server.init(p);
+        std.log.info("Opened UDP server on port {}", .{p});
     }
     defer {
-        if (options.input_server) network.deinit();
-        if (sock) |s| s.close();
+        if (server) |s| {
+            s.deinit();
+            network.deinit();
+        }
     }
 
     var thread_ctx = Context{
         .feeder = &feeder,
         .reciever = reciever,
         .stop = Atomic(bool).init(false),
-        .sock = if (sock) |*s| s else null,
+        .server = if (server) |*s| s else null,
         .ess_adapter = options.ess_adapter,
     };
 
@@ -151,7 +173,5 @@ pub fn main() !void {
     }
 
     std.log.info("Feeding. Press enter to exit...", .{});
-
-    var reader = std.io.getStdIn().reader();
-    _ = try reader.readByte();
+    _ = try std.io.getStdIn().reader().readByte();
 }
