@@ -51,6 +51,7 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
     exe.addPackagePath("network", "pkg/zig-network/network.zig");
+    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     exe.addIncludeDir("src/feeder/ess");
     exe.addCSourceFile("src/feeder/ess/ESS.c", &[_][]const u8{});
@@ -75,6 +76,7 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
     exe.addPackagePath("zglfw", "pkg/zglfw/src/main.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("network", "pkg/zig-network/network.zig");
+    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     return exe;
 }

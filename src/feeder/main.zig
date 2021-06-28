@@ -1,6 +1,7 @@
 const std = @import("std");
 const usb = @import("zusb");
 const network = @import("network");
+const clap = @import("clap");
 const vjoy = @import("vjoy.zig");
 const Allocator = std.mem.Allocator;
 const Adapter = @import("adapter.zig").Adapter;
@@ -9,10 +10,6 @@ const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
 const Atomic = std.atomic.Atomic;
 const time = std.time;
-
-pub const Error = error{
-    InvalidArgument,
-};
 
 pub const Options = struct {
     ess_adapter: bool = false,
@@ -84,34 +81,6 @@ fn rumbleLoop(context: *Context) void {
     }
 }
 
-pub fn parseArgs(allocator: *Allocator) !Options {
-    var options = Options{};
-
-    var iter = std.process.args();
-    while (iter.next(allocator)) |arg| {
-        const argument = try arg;
-        defer allocator.free(argument);
-
-        if (std.mem.startsWith(u8, argument, "-")) {
-            for (argument[1..]) |opt| {
-                switch (opt) {
-                    'e' => {
-                        options.ess_adapter = true;
-                    },
-                    'i' => {
-                        options.input_server = true;
-                    },
-                    else => {
-                        return Error.InvalidArgument;
-                    },
-                }
-            }
-        }
-    }
-
-    return options;
-}
-
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -126,7 +95,26 @@ pub fn main() !void {
     var reciever = try vjoy.FFBReciever.init(allocator);
     defer reciever.deinit();
 
-    const options = try parseArgs(allocator);
+    const options = blk: {
+        const params = comptime [_]clap.Param(clap.Help){
+            clap.parseParam("-h, --help   Display this help and exit.") catch unreachable,
+            clap.parseParam("-e, --ess    Enables ESS adapter.       ") catch unreachable,
+            clap.parseParam("-s, --server Enables UDP input server.  ") catch unreachable,
+        };
+
+        var args = try clap.parse(clap.Help, &params, .{});
+        defer args.deinit();
+
+        if (args.flag("--help")) {
+            try clap.help(std.io.getStdErr().writer(), &params);
+            return;
+        } else {
+            break :blk Options{
+                .ess_adapter = args.flag("--ess"),
+                .input_server = args.flag("--server"),
+            };
+        }
+    };
 
     var sock: ?network.Socket = null;
     if (options.input_server) {

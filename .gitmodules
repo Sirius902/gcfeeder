@@ -13,3 +13,6 @@
 [submodule "pkg/zig-network"]
 	path = pkg/zig-network
 	url = https://github.com/MasterQ32/zig-network.git
+[submodule "pkg/zig-clap"]
+	path = pkg/zig-clap
+	url = https://github.com/Hejsil/zig-clap.git
