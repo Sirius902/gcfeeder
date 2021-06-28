@@ -20,6 +20,11 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 * To use the ESS Adapter, start the program with the `-e` flag.
 * To create a UDP server for controller inputs on port `4096`, start the program with the `-i` flag.
 
+## Themes
+
+To customize the theme of the input viewer, put a `theme.json` according to the specification in the same directory as the executable.
+Some example themes are in the `theme` folder.
+
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
 * Only supports port one on the adapter.
