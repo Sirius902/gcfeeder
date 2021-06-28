@@ -1,12 +1,15 @@
 [submodule "pkg/zusb"]
 	path = pkg/zusb
-	url = https://gitlab.com/Sirius902/zusb
-[submodule "pkg/zlm"]
-	path = pkg/zlm
-	url = https://github.com/ziglibs/zlm
-[submodule "pkg/zgl"]
-	path = pkg/zgl
-	url = https://github.com/ziglibs/zgl
+	url = https://gitlab.com/Sirius902/zusb.git
 [submodule "pkg/zglfw"]
 	path = pkg/zglfw
-	url = https://github.com/Sirius902/zglfw
+	url = git@github.com:Sirius902/zglfw.git
+[submodule "pkg/zgl"]
+	path = pkg/zgl
+	url = https://github.com/ziglibs/zgl.git
+[submodule "pkg/zlm"]
+	path = pkg/zlm
+	url = https://github.com/ziglibs/zlm.git
+[submodule "pkg/zig-network"]
+	path = pkg/zig-network
+	url = https://github.com/MasterQ32/zig-network.git
