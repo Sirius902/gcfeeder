@@ -146,7 +146,7 @@ pub fn main() !void {
         .feeder = &feeder,
         .reciever = reciever,
         .stop = Atomic(bool).init(false),
-        .sock = if (sock) |_| &sock.? else null,
+        .sock = if (sock) |*s| s else null,
         .ess_adapter = options.ess_adapter,
     };
 
