@@ -1,3 +1,7 @@
+const std = @import("std");
+const Input = @import("adapter").Input;
+const Calibration = @import("adapter").Calibration;
+
 pub fn main() !void {
-    @import("std").log.info("Hello world!", .{});
+    std.log.info("{}\n", .{@sizeOf(Input)});
 }

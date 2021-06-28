@@ -23,12 +23,6 @@ pub fn build(b: *Builder) void {
         exe.install();
     }
 
-    if (feeder_exe.install_step) |install_step| {
-        const dll_step = DllStep.create(b);
-        dll_step.step.dependOn(&install_step.step);
-        b.default_step.dependOn(&dll_step.step);
-    }
-
     const run_cmd = feeder_exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
     if (b.args) |args| {
@@ -37,6 +31,10 @@ pub fn build(b: *Builder) void {
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
+
+    const dll_step = DllStep.create(b);
+    dll_step.step.dependOn(&feeder_exe.step);
+    run_step.dependOn(&dll_step.step);
 }
 
 fn feederExecutable(b: *Builder) *LibExeObjStep {
@@ -69,6 +67,7 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
     exe.linkSystemLibrary("libepoxy");
     exe.linkSystemLibrary("glfw3dll");
 
+    exe.addPackagePath("adapter", "src/feeder/adapter.zig");
     exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
     exe.addPackagePath("zglfw", "pkg/zglfw/src/main.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
