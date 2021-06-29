@@ -25,7 +25,7 @@ pub const Theme = struct {
     },
 
     pub const default = blk: {
-        const main = [_]f32{ 0.9, 0.9, 0.9 };
+        const main = [_]f32{ 0.95, 0.95, 0.95 };
 
         break :blk Theme{
             .colors = .{
