@@ -81,6 +81,6 @@ pub fn main() !void {
     _ = try std.Thread.spawn(recieveLoop, &context);
     // defer thread.wait();
 
-    std.log.info("Listening on port {}", .{port});
+    std.log.info("Listening on UDP port {}", .{port});
     try display.show(&context);
 }
