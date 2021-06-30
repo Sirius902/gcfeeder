@@ -10,10 +10,10 @@
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
 
-#define SCREEN_POS (gl_FragCoord.xy / resolution)
-
 uniform vec2 resolution;
 uniform int which;
+
+vec2 screen_pos = gl_FragCoord.xy / resolution;
 
 const vec4 main_color = vec4(0.95, 0.95, 0.95, 1.0);
 
