@@ -13,7 +13,7 @@ float radius = inner_radius + border_width;
 const float threshold = 0.75;
 const float scale = 1.0 / threshold;
 
-vec4 colorTrigger(vec2 pos, float fill, bool pressed);
+vec4 colorTrigger(float fill, bool pressed);
 
 void left() {
     vec2 pos = v_pos + vec2(0.5 - radius, 0.0);
@@ -51,5 +51,5 @@ void main() {
         middle();
     }
 
-    frag_color = colorTrigger(v_pos, fill, pressed);
+    frag_color = colorTrigger(fill, pressed);
 }

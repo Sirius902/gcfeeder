@@ -12,7 +12,7 @@ uniform bool is_c_stick;
 
 float radius = 0.225 * (is_c_stick ? 0.8 : 1.0);
 
-vec4 colorStick(vec2 pos, vec2 stick_pos);
+vec4 colorStick(vec2 stick_pos);
 
 void main() {
     vec2 center = v_pos + ((pos - 0.5) * 0.5);
@@ -26,5 +26,5 @@ void main() {
         discard;
     }
 
-    frag_color = colorStick(v_pos, pos);
+    frag_color = colorStick(pos);
 }

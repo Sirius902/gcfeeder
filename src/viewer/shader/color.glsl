@@ -10,11 +10,14 @@
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
 
+#define SCREEN_POS (gl_FragCoord.xy / resolution)
+
+uniform vec2 resolution;
 uniform int which;
 
 const vec4 main_color = vec4(0.95, 0.95, 0.95, 1.0);
 
-vec4 colorButton(vec2 pos, bool pressed) {
+vec4 colorButton(bool pressed) {
     switch (which) {
         case BUTTON_A:
             return vec4(0.0, 0.737, 0.556, 1.0);
@@ -31,7 +34,7 @@ vec4 colorButton(vec2 pos, bool pressed) {
     }
 }
 
-vec4 colorStick(vec2 pos, vec2 stick_pos) {
+vec4 colorStick(vec2 stick_pos) {
     switch (which) {
         case STICK_MAIN:
             return main_color;
@@ -42,6 +45,6 @@ vec4 colorStick(vec2 pos, vec2 stick_pos) {
     }
 }
 
-vec4 colorTrigger(vec2 pos, float fill, bool pressed) {
+vec4 colorTrigger(float fill, bool pressed) {
     return main_color;
 }

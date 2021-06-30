@@ -158,7 +158,9 @@ const Display = struct {
     pub fn draw(self: Display, input: ?Input) void {
         self.vao.bind();
 
-        const aspect = @intToFloat(f32, window_width) / @intToFloat(f32, window_height);
+        const width = @intToFloat(f32, window_width);
+        const height = @intToFloat(f32, window_height);
+        const aspect = width / height;
         const projection = if (window_width >= window_height)
             zlm.Mat4.createOrthogonal(-0.5 * aspect, 0.5 * aspect, -0.5, 0.5, -1.0, 1.0)
         else
@@ -179,6 +181,8 @@ const Display = struct {
                 false,
                 &[_][4][4]f32{projection.fields},
             );
+
+            zgl.uniform2f(program.uniformLocation("resolution"), width, height);
         }
 
         self.drawCircleButtons(input);
