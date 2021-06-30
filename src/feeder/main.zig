@@ -74,13 +74,13 @@ fn rumbleLoop(context: *Context) void {
         if (reciever.get()) |packet| {
             if (packet.device_id == 1) {
                 rumble = switch (packet.effect.operation) {
-                    .Stop => Rumble.Off,
-                    else => Rumble.On,
+                    .Stop => .Off,
+                    else => .On,
                 };
 
                 if (last_timestamp) |last| {
                     if (packet.timestamp_ms - last < 2) {
-                        rumble = Rumble.Off;
+                        rumble = .Off;
                     }
                 }
 
