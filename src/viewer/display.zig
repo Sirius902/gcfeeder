@@ -28,7 +28,7 @@ const Display = struct {
     const sdf_button_shader_source: []const u8 = @embedFile("shader/sdf_button_fragment.glsl");
     const trigger_shader_source: []const u8 = @embedFile("shader/trigger_fragment.glsl");
     const stick_shader_source: []const u8 = @embedFile("shader/stick_fragment.glsl");
-    const color_shader_source: []const u8 = @embedFile("shader/color.glsl");
+    const default_color_shader_source: []const u8 = @embedFile("shader/color.glsl");
 
     const bean_sdf = @embedFile("sdf/bean-sdf.gray");
     const z_button_sdf = @embedFile("sdf/z-button-sdf.gray");
@@ -44,7 +44,7 @@ const Display = struct {
     vao: zgl.VertexArray,
     ebo: zgl.Buffer,
 
-    pub fn init() Display {
+    pub fn init(color_shader_source: ?[]const u8) Display {
         const vertex_shader = zgl.Shader.create(.vertex);
         defer vertex_shader.delete();
         vertex_shader.source(1, &vertex_shader_source);
@@ -72,10 +72,18 @@ const Display = struct {
 
         const color_shader = zgl.Shader.create(.fragment);
         defer color_shader.delete();
-        color_shader.source(1, &color_shader_source);
+        color_shader.source(
+            1,
+            if (color_shader_source) |cs| &cs else &default_color_shader_source,
+        );
         color_shader.compile();
 
-        std.log.info("color_shader: {s}", .{color_shader.getCompileLog(std.testing.allocator) catch unreachable});
+        if (zgl.getShader(color_shader, .compile_status) == 0) {
+            std.log.err("color_shader compile log: {s}", .{
+                color_shader.getCompileLog(std.testing.allocator) catch unreachable,
+            });
+            @panic("Failed to compile color_shader");
+        }
 
         const circle_button_program = zgl.Program.create();
         circle_button_program.attach(vertex_shader);
@@ -441,7 +449,7 @@ const Display = struct {
     }
 };
 
-pub fn show(context: *Context) !void {
+pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     try glfw.init();
     defer glfw.terminate();
 
@@ -463,7 +471,7 @@ pub fn show(context: *Context) !void {
     glfw.swapInterval(1);
     _ = glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    const display = Display.init();
+    const display = Display.init(color_shader_source);
 
     while (!glfw.windowShouldClose(window)) {
         const input = blk: {

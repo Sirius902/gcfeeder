@@ -22,8 +22,8 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 
 ## Themes
 
-To customize the theme of the input viewer, put a `theme.json` according to the specification in the same directory as the executable.
-Some example themes are in the `theme` folder.
+To customize the theme of the input viewer, put a `color.glsl` according to the specification in the same directory as the executable.
+The default theme can be found at `src/viewer/shader/color.glsl`.
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.

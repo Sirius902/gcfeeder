@@ -65,13 +65,16 @@ pub fn main() !void {
         .input = null,
     };
 
-    // TODO: Read custom color shader from file.
-    _ = allocator;
-
     // TODO: Don't leak thread.
     _ = try std.Thread.spawn(recieveLoop, &context);
     // defer thread.wait();
 
     std.log.info("Listening on UDP port {}", .{port});
-    try display.show(&context);
+
+    const color_shader_source: ?[]const u8 = blk: {
+        const file = std.fs.cwd().openFile("color.glsl", .{}) catch break :blk null;
+        break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));
+    };
+
+    try display.show(&context, color_shader_source);
 }
