@@ -20,6 +20,8 @@ fn recieveLoop(context: *Context) !void {
             defer held.release();
 
             context.input = Input.deserialize(&buffer);
+        } else {
+            break;
         }
     }
 }
