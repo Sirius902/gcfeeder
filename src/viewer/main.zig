@@ -4,13 +4,11 @@ const network = @import("network");
 const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const display = @import("display.zig");
-const Theme = display.Theme;
 
 pub const Context = struct {
     mutex: std.Thread.Mutex,
     sock: *const network.Socket,
     input: ?Input,
-    theme: Theme,
 };
 
 fn recieveLoop(context: *Context) !void {
@@ -59,23 +57,14 @@ pub fn main() !void {
 
     try sock.bindToPort(port);
 
-    const theme = blk: {
-        const file = std.fs.cwd().openFile("theme.json", .{}) catch
-            break :blk Theme.default;
-
-        const buffer = try file.readToEndAlloc(allocator, std.math.maxInt(usize));
-        defer allocator.free(buffer);
-
-        var stream = std.json.TokenStream.init(buffer);
-        break :blk try std.json.parse(Theme, &stream, .{});
-    };
-
     var context = Context{
         .mutex = std.Thread.Mutex{},
         .sock = &sock,
         .input = null,
-        .theme = theme,
     };
+
+    // TODO: Read custom color shader from file.
+    _ = allocator;
 
     // TODO: Don't leak thread.
     _ = try std.Thread.spawn(recieveLoop, &context);

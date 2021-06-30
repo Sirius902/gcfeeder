@@ -7,11 +7,12 @@ layout (location = 0) out vec4 frag_color;
 
 // octagon notch sdf
 uniform sampler2D sdf_texture;
-uniform vec3 color;
 uniform vec2 pos;
 uniform bool is_c_stick;
 
 float radius = 0.225 * (is_c_stick ? 0.8 : 1.0);
+
+vec4 colorStick(vec2 pos, vec2 stick_pos);
 
 void main() {
     vec2 center = v_pos + ((pos - 0.5) * 0.5);
@@ -25,5 +26,5 @@ void main() {
         discard;
     }
 
-    frag_color = vec4(color, 1.0);
+    frag_color = colorStick(v_pos, pos);
 }

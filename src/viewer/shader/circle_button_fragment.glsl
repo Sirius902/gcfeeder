@@ -4,10 +4,11 @@ in float border_width;
 
 layout (location = 0) out vec4 frag_color;
 
-uniform vec3 color;
 uniform bool pressed;
 
 float radius = 0.1;
+
+vec4 colorButton(vec2 pos, bool pressed);
 
 void main() {
     float dist = radius - sqrt((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
@@ -16,5 +17,5 @@ void main() {
         discard;
     }
 
-    frag_color = vec4(color, 1.0);
+    frag_color = colorButton(v_pos, pressed);
 }
