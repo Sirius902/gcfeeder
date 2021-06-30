@@ -24,6 +24,10 @@ vec2 screen_pos = gl_FragCoord.xy / resolution;
 
 float wave = (sin(time) + 1.0) / 2.0;
 
+vec4 colorBackground() {
+    return vec4(0.0);
+}
+
 vec4 colorButton(bool pressed) {
     return vec4(wave, screen_pos.y, 1.0, 1.0);
 }

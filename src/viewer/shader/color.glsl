@@ -24,6 +24,10 @@ vec2 screen_pos = gl_FragCoord.xy / resolution;
 
 const vec4 main_color = vec4(0.95, 0.95, 0.95, 1.0);
 
+vec4 colorBackground() {
+    return vec4(0.0);
+}
+
 vec4 colorButton(bool pressed) {
     switch (which) {
         case BUTTON_A:

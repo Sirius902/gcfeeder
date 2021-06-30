@@ -25,6 +25,7 @@ const Display = struct {
     };
 
     const vertex_shader_source: []const u8 = @embedFile("shader/vertex.glsl");
+    const background_shader_source: []const u8 = @embedFile("shader/background_fragment.glsl");
     const circle_button_shader_source: []const u8 = @embedFile("shader/circle_button_fragment.glsl");
     const sdf_button_shader_source: []const u8 = @embedFile("shader/sdf_button_fragment.glsl");
     const trigger_shader_source: []const u8 = @embedFile("shader/trigger_fragment.glsl");
@@ -37,6 +38,7 @@ const Display = struct {
 
     const buttons_center = zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
 
+    background_program: zgl.Program,
     circle_button_program: zgl.Program,
     sdf_button_program: zgl.Program,
     trigger_program: zgl.Program,
@@ -51,6 +53,11 @@ const Display = struct {
         defer vertex_shader.delete();
         vertex_shader.source(1, &vertex_shader_source);
         vertex_shader.compile();
+
+        const background_shader = zgl.Shader.create(.fragment);
+        defer background_shader.delete();
+        background_shader.source(1, &background_shader_source);
+        background_shader.compile();
 
         const circle_button_shader = zgl.Shader.create(.fragment);
         defer circle_button_shader.delete();
@@ -86,6 +93,12 @@ const Display = struct {
             });
             @panic("Failed to compile color_shader");
         }
+
+        const background_program = zgl.Program.create();
+        background_program.attach(vertex_shader);
+        background_program.attach(background_shader);
+        background_program.attach(color_shader);
+        background_program.link();
 
         const circle_button_program = zgl.Program.create();
         circle_button_program.attach(vertex_shader);
@@ -147,6 +160,7 @@ const Display = struct {
         loadTextures();
 
         return Display{
+            .background_program = background_program,
             .circle_button_program = circle_button_program,
             .sdf_button_program = sdf_button_program,
             .trigger_program = trigger_program,
@@ -170,6 +184,7 @@ const Display = struct {
             zlm.Mat4.createOrthogonal(-0.5, 0.5, -0.5 / aspect, 0.5 / aspect, -1.0, 1.0);
 
         const programs = [_]zgl.Program{
+            self.background_program,
             self.circle_button_program,
             self.sdf_button_program,
             self.trigger_program,
@@ -192,10 +207,19 @@ const Display = struct {
             );
         }
 
+        self.drawBackground();
         self.drawCircleButtons(input);
         self.drawSdfButtons(input);
         self.drawSticks(input);
         self.drawTriggers(input);
+    }
+
+    fn drawBackground(self: Display) void {
+        const program = self.background_program;
+        program.use();
+        const model = zlm.Mat4.createUniformScale(2.0);
+        program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+        zgl.drawElements(.triangles, 6, .u32, 0);
     }
 
     fn drawCircleButtons(self: Display, input: ?Input) void {
