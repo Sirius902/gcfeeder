@@ -10,7 +10,14 @@
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
 
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+#else
+    precision mediump float;
+#endif
+
 uniform vec2 resolution;
+uniform float time;
 uniform int which;
 
 vec2 screen_pos = gl_FragCoord.xy / resolution;

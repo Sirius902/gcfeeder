@@ -5,6 +5,7 @@ const glfw = @import("zglfw");
 const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const Context = @import("root").Context;
+const time = std.time;
 
 var window_width: u32 = 512;
 var window_height: u32 = 256;
@@ -43,8 +44,9 @@ const Display = struct {
     vbo: zgl.Buffer,
     vao: zgl.VertexArray,
     ebo: zgl.Buffer,
+    timer: time.Timer,
 
-    pub fn init(color_shader_source: ?[]const u8) Display {
+    pub fn init(color_shader_source: ?[]const u8) !Display {
         const vertex_shader = zgl.Shader.create(.vertex);
         defer vertex_shader.delete();
         vertex_shader.source(1, &vertex_shader_source);
@@ -152,6 +154,7 @@ const Display = struct {
             .vbo = vbo,
             .vao = vao,
             .ebo = ebo,
+            .timer = try time.Timer.start(),
         };
     }
 
@@ -183,6 +186,10 @@ const Display = struct {
             );
 
             zgl.uniform2f(program.uniformLocation("resolution"), width, height);
+            zgl.uniform1f(
+                program.uniformLocation("time"),
+                @intToFloat(f32, self.timer.read()) / @intToFloat(f32, time.ns_per_s),
+            );
         }
 
         self.drawCircleButtons(input);
@@ -475,7 +482,7 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     glfw.swapInterval(1);
     _ = glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    const display = Display.init(color_shader_source);
+    const display = try Display.init(color_shader_source);
 
     while (!glfw.windowShouldClose(window)) {
         const input = blk: {
