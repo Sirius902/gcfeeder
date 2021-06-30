@@ -431,8 +431,9 @@ const Display = struct {
     }
 
     fn loadTextures() void {
-        const bean_texture = zgl.Texture.create(.@"2d");
-        bean_texture.bindTo(0);
+        const bean_texture = zgl.genTexture();
+        zgl.activeTexture(.texture_0);
+        zgl.bindTexture(bean_texture, .@"2d");
         bean_texture.parameter(.wrap_s, .clamp_to_border);
         bean_texture.parameter(.wrap_t, .clamp_to_border);
         bean_texture.parameter(.min_filter, .linear);
@@ -440,8 +441,9 @@ const Display = struct {
         bean_texture.storage2D(1, .r8, 64, 64);
         bean_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, bean_sdf);
 
-        const z_button_texture = zgl.Texture.create(.@"2d");
-        z_button_texture.bindTo(1);
+        const z_button_texture = zgl.genTexture();
+        zgl.activeTexture(.texture_1);
+        zgl.bindTexture(z_button_texture, .@"2d");
         z_button_texture.parameter(.wrap_s, .clamp_to_border);
         z_button_texture.parameter(.wrap_t, .clamp_to_border);
         z_button_texture.parameter(.min_filter, .linear);
@@ -449,14 +451,19 @@ const Display = struct {
         z_button_texture.storage2D(1, .r8, 64, 64);
         z_button_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, z_button_sdf);
 
-        const octagon_texture = zgl.Texture.create(.@"2d");
-        octagon_texture.bindTo(2);
+        const octagon_texture = zgl.genTexture();
+        zgl.activeTexture(.texture_2);
+        zgl.bindTexture(octagon_texture, .@"2d");
         octagon_texture.parameter(.wrap_s, .clamp_to_border);
         octagon_texture.parameter(.wrap_t, .clamp_to_border);
         octagon_texture.parameter(.min_filter, .linear);
         octagon_texture.parameter(.mag_filter, .linear);
         octagon_texture.storage2D(1, .r8, 64, 64);
         octagon_texture.subImage2D(0, 0, 0, 64, 64, .red, .unsigned_byte, octagon_sdf);
+
+        // Bind active texture to unused unit to workaround Discord screen
+        // share bug.
+        zgl.activeTexture(.texture_3);
     }
 };
 
