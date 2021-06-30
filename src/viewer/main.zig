@@ -72,9 +72,18 @@ pub fn main() !void {
     std.log.info("Listening on UDP port {}", .{port});
 
     const color_shader_source: ?[]const u8 = blk: {
-        const file = std.fs.cwd().openFile("color.glsl", .{}) catch break :blk null;
+        const exe_dir_path = std.fs.selfExeDirPathAlloc(allocator) catch break :blk null;
+        defer allocator.free(exe_dir_path);
+
+        var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
+        defer exe_dir.close();
+
+        const file = exe_dir.openFile("color.glsl", .{}) catch break :blk null;
+        defer file.close();
+
         break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));
     };
+    defer if (color_shader_source) |cs| allocator.free(cs);
 
     try display.show(&context, color_shader_source);
 }
