@@ -18,12 +18,13 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     * POV Hat Switch: Continuous with 0 POVs
     * Force Feedback effects: May be optionally enabled for rumble support
 * To use the ESS Adapter, start the program with the `-e` flag.
-* To create a UDP server for controller inputs on port `4096`, start the program with the `-i` flag.
+* To create a UDP server for controller inputs on port `4096`, start the program with the `-s` flag. The port can be customized
+with the `-p <PORT>` flag.
 
 ## Themes
 
 To customize the theme of the input viewer, put a `color.glsl` according to the specification in the same directory as the executable.
-The default theme can be found at `src/viewer/shader/color.glsl`.
+The default theme can be found at `src/viewer/shader/color.glsl`. Other themes can be found in `theme`.
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
