@@ -481,7 +481,7 @@ const Display = struct {
             program.uniform1f(program.uniformLocation("scale"), scale);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_left else false));
-            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_left));
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // right
@@ -492,7 +492,7 @@ const Display = struct {
             program.uniform1f(program.uniformLocation("scale"), scale);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_right else false));
-            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_right));
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
         // down
@@ -503,7 +503,7 @@ const Display = struct {
             program.uniform1f(program.uniformLocation("scale"), scale);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_down else false));
-            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_down));
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }
