@@ -9,10 +9,10 @@
 #define STICK_C 7
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
-#define PAD_UP 10
-#define PAD_LEFT 11
-#define PAD_RIGHT 12
-#define PAD_DOWN 13
+#define DPAD_UP 10
+#define DPAD_LEFT 11
+#define DPAD_RIGHT 12
+#define DPAD_DOWN 13
 
 #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
