@@ -22,6 +22,10 @@ const Display = struct {
         stick_c = 7,
         trigger_left = 8,
         trigger_right = 9,
+        pad_up = 10,
+        pad_left = 11,
+        pad_right = 12,
+        pad_down = 13,
     };
 
     const vertex_shader_source: []const u8 = @embedFile("shader/vertex.glsl");
@@ -36,7 +40,7 @@ const Display = struct {
     const z_button_sdf = @embedFile("sdf/z-button-sdf.gray");
     const octagon_sdf = @embedFile("sdf/octagon-sdf.gray");
 
-    const buttons_center = zlm.Mat4.createTranslationXYZ(0.5, 0.0, 0.0);
+    const buttons_center = zlm.Mat4.createTranslationXYZ(0.5, -0.075, 0.0);
 
     background_program: zgl.Program,
     circle_button_program: zgl.Program,
@@ -212,6 +216,7 @@ const Display = struct {
         self.drawSdfButtons(input);
         self.drawSticks(input);
         self.drawTriggers(input);
+        self.drawDpad(input);
     }
 
     fn drawBackground(self: Display) void {
@@ -264,10 +269,8 @@ const Display = struct {
         {
             zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.button_start));
             const scale = 0.625;
-            const model = zlm.Mat4.createUniformScale(scale).mul(
-                buttons_center.mul(
-                    zlm.Mat4.createTranslationXYZ(-0.325, 0.0475, 0.0),
-                ),
+            const model = zlm.Mat4.createUniformScale(scale).mul(buttons_center).mul(
+                zlm.Mat4.createTranslationXYZ(-0.325, 0.05, 0.0),
             );
             program.uniform1f(program.uniformLocation("scale"), scale);
 
@@ -450,6 +453,57 @@ const Display = struct {
             zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.drawElements(.triangles, 6, .u32, 0);
+        }
+    }
+
+    fn drawDpad(self: Display, input: ?Input) void {
+        const program = self.circle_button_program;
+        program.use();
+        const center = zlm.Vec3.new(-0.4, -0.3, 0.0);
+        const center_translate = zlm.Mat4.createTranslation(center);
+        const button_translate = zlm.Mat4.createTranslationXYZ(0.0, 0.095, 0.0);
+        const scale = 0.55;
+        // up
+        {
+            const model = zlm.Mat4.createUniformScale(scale).mul(button_translate).mul(center_translate);
+            program.uniform1f(program.uniformLocation("scale"), scale);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_up else false));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.drawElements(.triangles, 6, .u32, 0);
+        }
+        // left
+        {
+            const model = zlm.Mat4.createUniformScale(scale).mul(button_translate).mul(
+                zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(-90.0)),
+            ).mul(center_translate);
+            program.uniform1f(program.uniformLocation("scale"), scale);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_left else false));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.drawElements(.triangles, 6, .u32, 0);
+        }
+        // right
+        {
+            const model = zlm.Mat4.createUniformScale(scale).mul(button_translate).mul(
+                zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(90.0)),
+            ).mul(center_translate);
+            program.uniform1f(program.uniformLocation("scale"), scale);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_right else false));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
+            zgl.drawElements(.triangles, 6, .u32, 0);
+        }
+        // down
+        {
+            const model = zlm.Mat4.createUniformScale(scale).mul(button_translate).mul(
+                zlm.Mat4.createAngleAxis(zlm.Vec3.unitZ, zlm.toRadians(180.0)),
+            ).mul(center_translate);
+            program.uniform1f(program.uniformLocation("scale"), scale);
+            program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_down else false));
+            zgl.uniform1i(program.uniformLocation("which"), @enumToInt(Which.pad_up));
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
     }

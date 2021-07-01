@@ -9,6 +9,10 @@
 #define STICK_C 7
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
+#define PAD_UP 10
+#define PAD_LEFT 11
+#define PAD_RIGHT 12
+#define PAD_DOWN 13
 
 #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
@@ -22,20 +26,20 @@ uniform int which;
 
 vec2 screen_pos = gl_FragCoord.xy / resolution;
 
-float wave = (sin(time) + 1.0) / 2.0;
+vec4 wave_color = vec4((sin(time) + 1.0) / 2.0, screen_pos.y, 1.0, 1.0);
 
 vec4 colorBackground() {
     return vec4(0.0);
 }
 
 vec4 colorButton(bool pressed) {
-    return vec4(wave, screen_pos.y, 1.0, 1.0);
+    return wave_color;
 }
 
 vec4 colorStick(vec2 stick_pos) {
-    return vec4(wave, screen_pos.y, 1.0, 1.0);
+    return wave_color;
 }
 
 vec4 colorTrigger(float fill, bool pressed) {
-    return vec4(wave, screen_pos.y, 1.0, 1.0);
+    return wave_color;
 }

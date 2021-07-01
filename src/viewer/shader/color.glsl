@@ -9,6 +9,10 @@
 #define STICK_C 7
 #define TRIGGER_LEFT 8
 #define TRIGGER_RIGHT 9
+#define PAD_UP 10
+#define PAD_LEFT 11
+#define PAD_RIGHT 12
+#define PAD_DOWN 13
 
 #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
@@ -37,6 +41,10 @@ vec4 colorButton(bool pressed) {
         case BUTTON_X:
         case BUTTON_Y:
         case BUTTON_START:
+        case PAD_UP:
+        case PAD_LEFT:
+        case PAD_RIGHT:
+        case PAD_DOWN:
             return main_color;
         case BUTTON_Z:
             return vec4(0.333, 0.0, 0.678, 1.0);
