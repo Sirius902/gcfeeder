@@ -48,20 +48,20 @@ const mat3 minv = inverse(m);
 
 float gamma(float u) {
     if (u <= 0.0031308) {
-	    return 12.92 * u;
-	} else {
-	    return (1.055 * pow(u, 1.0 / 2.4)) - 0.055;
-	}
+        return 12.92 * u;
+    } else {
+        return (1.055 * pow(u, 1.0 / 2.4)) - 0.055;
+    }
 }
 
 const float delta = 6.0 / 29.0;
 
 float inversef(float t) {
     if (t > delta) {
-	    return pow(t, 3.0);
-	} else {
-	    return 3 * pow(delta, 2.0) * (t - (4.0 / 29.0));
-	}
+        return pow(t, 3.0);
+    } else {
+        return 3 * pow(delta, 2.0) * (t - (4.0 / 29.0));
+    }
 }
 
 vec3 rgbToSrgb(vec3 c) {
@@ -74,9 +74,9 @@ vec3 xyzToRgb(vec3 c) {
 
 vec3 labToXyz(vec3 c) {
     float x = d65.x * inversef(((c.x + 16.0) / 116.0) + (c.y / 500.0));
-	float y = d65.y * inversef((c.x + 16.0) / 116.0);
-	float z = d65.z * inversef(((c.x + 16.0) / 116.0) - (c.z / 200.0));
-	return vec3(x, y, z);
+    float y = d65.y * inversef((c.x + 16.0) / 116.0);
+    float z = d65.z * inversef(((c.x + 16.0) / 116.0) - (c.z / 200.0));
+    return vec3(x, y, z);
 }
 
 vec3 lchToLab(vec3 c) {
