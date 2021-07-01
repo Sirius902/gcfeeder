@@ -556,7 +556,7 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     const window = try glfw.createWindow(
         @intCast(c_int, window_width),
         @intCast(c_int, window_height),
-        "Input Viewer",
+        "GC Viewer",
         null,
         null,
     );
