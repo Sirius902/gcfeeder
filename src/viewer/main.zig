@@ -14,7 +14,7 @@ pub const Context = struct {
     input: ?Input,
 };
 
-fn recieveLoop(context: *Context) !void {
+fn receiveLoop(context: *Context) !void {
     while (true) {
         var buffer: [@sizeOf(Input)]u8 = undefined;
 
@@ -76,7 +76,7 @@ pub fn main() !void {
         .input = null,
     };
 
-    const thread = try std.Thread.spawn(recieveLoop, &context);
+    const thread = try std.Thread.spawn(receiveLoop, &context);
     defer {
         sock.close();
         thread.wait();

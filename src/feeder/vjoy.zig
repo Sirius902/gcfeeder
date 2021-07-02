@@ -97,16 +97,16 @@ pub const FFBPacket = struct {
     timestamp_ms: i64,
 };
 
-pub const FFBReciever = struct {
+pub const FFBReceiver = struct {
     const Fifo = LinearFifo(FFBPacket, .{ .Static = 10 });
 
     allocator: *Allocator,
     mutex: Mutex,
     queue: Fifo,
 
-    pub fn init(allocator: *Allocator) Allocator.Error!*FFBReciever {
-        var self = try allocator.create(FFBReciever);
-        self.* = FFBReciever{
+    pub fn init(allocator: *Allocator) Allocator.Error!*FFBReceiver {
+        var self = try allocator.create(FFBReceiver);
+        self.* = FFBReceiver{
             .allocator = allocator,
             .mutex = Mutex{},
             .queue = Fifo.init(),
@@ -117,18 +117,18 @@ pub const FFBReciever = struct {
         return self;
     }
 
-    pub fn deinit(self: *FFBReciever) void {
+    pub fn deinit(self: *FFBReceiver) void {
         self.allocator.destroy(self);
     }
 
-    pub fn get(self: *FFBReciever) ?FFBPacket {
+    pub fn get(self: *FFBReceiver) ?FFBPacket {
         const held = self.mutex.acquire();
         defer held.release();
 
         return self.queue.readItem();
     }
 
-    fn put(self: *FFBReciever, packet: FFBPacket) void {
+    fn put(self: *FFBReceiver, packet: FFBPacket) void {
         const held = self.mutex.acquire();
         defer held.release();
 
@@ -141,7 +141,7 @@ pub const FFBReciever = struct {
 
     export fn ffbCallback(data: ?*c_void, userdata: ?*c_void) void {
         const ffb_data = @intToPtr(*c.FFB_DATA, @ptrToInt(data.?));
-        const self = @intToPtr(*FFBReciever, @ptrToInt(userdata.?));
+        const self = @intToPtr(*FFBReceiver, @ptrToInt(userdata.?));
         var c_id: c_int = undefined;
         var ffb_type: c.FFBPType = undefined;
 

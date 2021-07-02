@@ -38,7 +38,7 @@ pub const Context = struct {
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     feeder: ?Feeder,
-    reciever: *vjoy.FFBReciever,
+    receiver: *vjoy.FFBReceiver,
     stop: Atomic(bool),
     server: ?*Server,
     ess_adapter: bool,
@@ -91,13 +91,13 @@ fn inputLoop(context: *Context) void {
 }
 
 fn rumbleLoop(context: *Context) void {
-    const reciever = context.reciever;
+    const receiver = context.receiver;
     var last_timestamp: ?i64 = null;
     var rumble = Rumble.Off;
 
     while (!context.stop.load(.Acquire)) {
         if (context.feeder) |*feeder| {
-            if (reciever.get()) |packet| {
+            if (receiver.get()) |packet| {
                 if (packet.device_id == 1) {
                     rumble = switch (packet.effect.operation) {
                         .Stop => .Off,
@@ -178,8 +178,8 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    var reciever = try vjoy.FFBReciever.init(allocator);
-    defer reciever.deinit();
+    var receiver = try vjoy.FFBReceiver.init(allocator);
+    defer receiver.deinit();
 
     var server: ?Server = null;
     if (options.port) |p| {
@@ -199,7 +199,7 @@ pub fn main() !void {
         .mutex = std.Thread.Mutex{},
         .usb_ctx = &ctx,
         .feeder = null,
-        .reciever = reciever,
+        .receiver = receiver,
         .stop = Atomic(bool).init(false),
         .server = if (server) |*s| s else null,
         .ess_adapter = options.ess_adapter,
