@@ -56,6 +56,7 @@ fn inputLoop(context: *Context) void {
                         const held = context.mutex.acquire();
                         defer held.release();
 
+                        feeder.deinit();
                         context.feeder = null;
                         std.log.err("{} in input thread", .{err});
                         std.log.info("Disconnected from adapter and vJoy", .{});
