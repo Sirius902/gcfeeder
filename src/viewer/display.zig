@@ -437,7 +437,6 @@ const Display = struct {
             else
                 0.0);
 
-            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
             program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
@@ -455,7 +454,6 @@ const Display = struct {
             else
                 0.0);
 
-            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
             program.uniform1f(program.uniformLocation("fill"), fill);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
