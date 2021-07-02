@@ -12,7 +12,8 @@
 	url = https://github.com/ziglibs/zlm.git
 [submodule "pkg/zig-network"]
 	path = pkg/zig-network
-	url = https://github.com/MasterQ32/zig-network.git
+	url = https://github.com/Sirius902/zig-network.git
+	branch = error
 [submodule "pkg/zig-clap"]
 	path = pkg/zig-clap
 	url = https://github.com/Hejsil/zig-clap.git

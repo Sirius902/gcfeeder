@@ -18,12 +18,20 @@ fn recieveLoop(context: *Context) !void {
     while (true) {
         var buffer: [@sizeOf(Input)]u8 = undefined;
 
-        if ((try context.sock.receive(&buffer)) == buffer.len) {
+        const data_len = context.sock.receive(&buffer) catch |err| {
+            switch (err) {
+                error.FileDescriptorNotASocket => return,
+                else => return err,
+            }
+        };
+
+        if (data_len == buffer.len) {
             const held = context.mutex.acquire();
             defer held.release();
 
             context.input = Input.deserialize(&buffer);
         } else {
+            std.log.err("Socket received incomplete data of size {}", .{data_len});
             break;
         }
     }
@@ -38,7 +46,6 @@ pub fn main() !void {
     defer network.deinit();
 
     var sock = try network.Socket.create(.ipv4, .udp);
-    defer sock.close();
 
     const port = blk: {
         const params = comptime [_]clap.Param(clap.Help){
@@ -69,9 +76,11 @@ pub fn main() !void {
         .input = null,
     };
 
-    // TODO: Don't leak thread.
-    _ = try std.Thread.spawn(recieveLoop, &context);
-    // defer thread.wait();
+    const thread = try std.Thread.spawn(recieveLoop, &context);
+    defer {
+        sock.close();
+        thread.wait();
+    }
 
     std.log.info("Listening on UDP port {}", .{port});
 
