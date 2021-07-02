@@ -5,8 +5,11 @@ const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const display = @import("display.zig");
 
+pub const user_shader_path = "color.glsl";
+
 pub const Context = struct {
     mutex: std.Thread.Mutex,
+    allocator: *std.mem.Allocator,
     sock: *const network.Socket,
     input: ?Input,
 };
@@ -61,6 +64,7 @@ pub fn main() !void {
 
     var context = Context{
         .mutex = std.Thread.Mutex{},
+        .allocator = allocator,
         .sock = &sock,
         .input = null,
     };
@@ -78,7 +82,7 @@ pub fn main() !void {
         var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
         defer exe_dir.close();
 
-        const file = exe_dir.openFile("color.glsl", .{}) catch break :blk null;
+        const file = exe_dir.openFile(user_shader_path, .{}) catch break :blk null;
         defer file.close();
 
         break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));

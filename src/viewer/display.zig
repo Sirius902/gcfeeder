@@ -6,6 +6,7 @@ const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const Context = @import("root").Context;
 const time = std.time;
+const user_shader_path = @import("root").user_shader_path;
 
 var window_width: u32 = 512;
 var window_height: u32 = 256;
@@ -52,7 +53,10 @@ const Display = struct {
     ebo: zgl.Buffer,
     timer: time.Timer,
 
-    pub fn init(color_shader_source: ?[]const u8) !Display {
+    pub fn init(
+        allocator: *std.mem.Allocator,
+        color_shader_source: ?[]const u8,
+    ) !Display {
         const vertex_shader = zgl.Shader.create(.vertex);
         defer vertex_shader.delete();
         vertex_shader.source(1, &vertex_shader_source);
@@ -92,10 +96,11 @@ const Display = struct {
         color_shader.compile();
 
         if (zgl.getShader(color_shader, .compile_status) == 0) {
-            std.log.err("color_shader compile log: {s}", .{
-                color_shader.getCompileLog(std.testing.allocator) catch unreachable,
-            });
-            @panic("Failed to compile color_shader");
+            const compile_log = try color_shader.getCompileLog(allocator);
+            defer allocator.free(compile_log);
+
+            std.log.err(user_shader_path ++ " compile log: {s}", .{compile_log});
+            return error.ShaderCompile;
         }
 
         const background_program = zgl.Program.create();
@@ -567,7 +572,7 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     glfw.swapInterval(1);
     _ = glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    const display = try Display.init(color_shader_source);
+    const display = try Display.init(context.allocator, color_shader_source);
 
     while (!glfw.windowShouldClose(window)) {
         const input = blk: {
