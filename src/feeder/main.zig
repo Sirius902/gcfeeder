@@ -123,6 +123,7 @@ fn rumbleLoop(context: *Context) void {
                         continue;
                     },
                     else => {
+                        // Release mutex before sleeping to allow input thread to acquire.
                         held.release();
                         std.log.err("{} in rumble thread", .{err});
                         time.sleep(feeder_wait);
