@@ -139,10 +139,6 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = &gpa.allocator;
-
     const options = blk: {
         const params = comptime [_]clap.Param(clap.Help){
             clap.parseParam("-h, --help        Display this help and exit.      ") catch unreachable,
@@ -171,6 +167,12 @@ pub fn main() !void {
             .port = port,
         };
     };
+
+    std.log.info("Initializing. Press enter to exit...", .{});
+
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = &gpa.allocator;
 
     var ctx = try usb.Context.init();
     defer ctx.deinit();
@@ -216,6 +218,6 @@ pub fn main() !void {
         }
     }
 
-    std.log.info("Initializing. Press enter to exit...", .{});
+    // Wait for user to press enter to exit program.
     _ = try std.io.getStdIn().reader().readByte();
 }
