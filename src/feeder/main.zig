@@ -35,62 +35,105 @@ const Server = struct {
 };
 
 pub const Context = struct {
-    feeder: *Feeder,
+    mutex: std.Thread.Mutex,
+    usb_ctx: *usb.Context,
+    feeder: ?Feeder,
     reciever: *vjoy.FFBReciever,
     stop: Atomic(bool),
     server: ?*Server,
     ess_adapter: bool,
 };
 
+const feeder_wait = 100 * time.ns_per_ms;
+
 fn inputLoop(context: *Context) void {
-    const feeder = context.feeder;
-
     while (!context.stop.load(.Acquire)) {
-        const input = feeder.feed(context.ess_adapter) catch |err| blk: {
-            std.log.err("{} in input thread", .{err});
-            break :blk null;
-        };
+        if (context.feeder) |*feeder| {
+            const input = feeder.feed(context.ess_adapter) catch |err| {
+                switch (err) {
+                    error.Timeout => continue,
+                    else => {
+                        const held = context.mutex.acquire();
+                        defer held.release();
 
-        if (input) |in| {
+                        context.feeder = null;
+                        std.log.err("{} in input thread", .{err});
+                        std.log.info("Disconnected from adapter and vJoy", .{});
+                        continue;
+                    },
+                }
+            };
+
             if (context.server) |s| {
-                var buffer: [@sizeOf(Input)]u8 = undefined;
-                in.serialize(&buffer);
+                if (input) |in| {
+                    var buffer: [@sizeOf(Input)]u8 = undefined;
+                    in.serialize(&buffer);
 
-                _ = s.sock.sendTo(s.endpoint, &buffer) catch |err| {
-                    std.log.err("{} in input thread", .{err});
-                };
+                    _ = s.sock.sendTo(s.endpoint, &buffer) catch |err| {
+                        std.log.err("{} in input thread", .{err});
+                    };
+                }
             }
+        } else {
+            const held = context.mutex.acquire();
+            defer held.release();
+
+            context.feeder = Feeder.init(context.usb_ctx) catch |err| {
+                std.log.err("{} in input thread", .{err});
+                time.sleep(feeder_wait);
+                continue;
+            };
+
+            std.log.info("Connected to adapter and vJoy", .{});
         }
     }
 }
 
 fn rumbleLoop(context: *Context) void {
-    const feeder = context.feeder;
     const reciever = context.reciever;
     var last_timestamp: ?i64 = null;
     var rumble = Rumble.Off;
 
     while (!context.stop.load(.Acquire)) {
-        if (reciever.get()) |packet| {
-            if (packet.device_id == 1) {
-                rumble = switch (packet.effect.operation) {
-                    .Stop => .Off,
-                    else => .On,
-                };
+        if (context.feeder) |*feeder| {
+            if (reciever.get()) |packet| {
+                if (packet.device_id == 1) {
+                    rumble = switch (packet.effect.operation) {
+                        .Stop => .Off,
+                        else => .On,
+                    };
 
-                if (last_timestamp) |last| {
-                    if (packet.timestamp_ms - last < 2) {
-                        rumble = .Off;
+                    if (last_timestamp) |last| {
+                        if (packet.timestamp_ms - last < 2) {
+                            rumble = .Off;
+                        }
                     }
+
+                    last_timestamp = packet.timestamp_ms;
                 }
-
-                last_timestamp = packet.timestamp_ms;
             }
-        }
 
-        feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
-            std.log.err("{} in rumble thread", .{err});
-        };
+            const held = context.mutex.acquire();
+
+            feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
+                switch (err) {
+                    error.Timeout => {
+                        held.release();
+                        continue;
+                    },
+                    else => {
+                        held.release();
+                        std.log.err("{} in rumble thread", .{err});
+                        time.sleep(feeder_wait);
+                        continue;
+                    },
+                }
+            };
+
+            held.release();
+        } else {
+            time.sleep(8 * time.ns_per_ms);
+        }
     }
 }
 
@@ -131,9 +174,6 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    var feeder = try Feeder.init(&ctx);
-    defer feeder.deinit();
-
     var reciever = try vjoy.FFBReciever.init(allocator);
     defer reciever.deinit();
 
@@ -152,12 +192,15 @@ pub fn main() !void {
     }
 
     var thread_ctx = Context{
-        .feeder = &feeder,
+        .mutex = std.Thread.Mutex{},
+        .usb_ctx = &ctx,
+        .feeder = null,
         .reciever = reciever,
         .stop = Atomic(bool).init(false),
         .server = if (server) |*s| s else null,
         .ess_adapter = options.ess_adapter,
     };
+    defer if (thread_ctx.feeder) |feeder| feeder.deinit();
 
     var threads = [_]*std.Thread{
         try std.Thread.spawn(inputLoop, &thread_ctx),
@@ -172,6 +215,6 @@ pub fn main() !void {
         }
     }
 
-    std.log.info("Feeding. Press enter to exit...", .{});
+    std.log.info("Initializing. Press enter to exit...", .{});
     _ = try std.io.getStdIn().reader().readByte();
 }
