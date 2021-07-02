@@ -47,7 +47,7 @@ fn inputLoop(context: *Context) void {
 
     while (!context.stop.load(.Acquire)) {
         const input = feeder.feed(context.ess_adapter) catch |err| blk: {
-            std.log.err("{} error in input thread", .{err});
+            std.log.err("{} in input thread", .{err});
             break :blk null;
         };
 
@@ -57,7 +57,7 @@ fn inputLoop(context: *Context) void {
                 in.serialize(&buffer);
 
                 _ = s.sock.sendTo(s.endpoint, &buffer) catch |err| {
-                    std.log.err("{} error in input thread", .{err});
+                    std.log.err("{} in input thread", .{err});
                 };
             }
         }
@@ -89,7 +89,7 @@ fn rumbleLoop(context: *Context) void {
         }
 
         feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
-            std.log.err("{} error in rumble thread", .{err});
+            std.log.err("{} in rumble thread", .{err});
         };
     }
 }
