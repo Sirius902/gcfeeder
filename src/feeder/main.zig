@@ -44,7 +44,7 @@ pub const Context = struct {
     ess_adapter: bool,
 };
 
-const feeder_wait = 100 * time.ns_per_ms;
+const fail_wait = 100 * time.ns_per_ms;
 
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
@@ -81,7 +81,7 @@ fn inputLoop(context: *Context) void {
 
             context.feeder = Feeder.init(context.usb_ctx) catch |err| {
                 std.log.err("{} in input thread", .{err});
-                time.sleep(feeder_wait);
+                time.sleep(fail_wait);
                 continue;
             };
 
@@ -126,7 +126,7 @@ fn rumbleLoop(context: *Context) void {
                         // Release mutex before sleeping to allow input thread to acquire.
                         held.release();
                         std.log.err("{} in rumble thread", .{err});
-                        time.sleep(feeder_wait);
+                        time.sleep(fail_wait);
                         continue;
                     },
                 }
