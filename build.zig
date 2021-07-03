@@ -17,10 +17,17 @@ pub fn build(b: *Builder) void {
     const feeder_exe = feederExecutable(b);
     const viewer_exe = viewerExecutable(b);
 
+    const dll_step = DllStep.create(b);
+    b.default_step.dependOn(&dll_step.step);
+
     for ([_]*LibExeObjStep{ feeder_exe, viewer_exe }) |exe| {
         exe.setTarget(target);
         exe.setBuildMode(mode);
         exe.install();
+
+        if (exe.install_step) |install_step| {
+            dll_step.step.dependOn(&install_step.step);
+        }
     }
 
     const run_cmd = feeder_exe.run();
@@ -31,10 +38,6 @@ pub fn build(b: *Builder) void {
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
-
-    const dll_step = DllStep.create(b);
-    dll_step.step.dependOn(&feeder_exe.step);
-    run_cmd.step.dependOn(&dll_step.step);
 }
 
 fn feederExecutable(b: *Builder) *LibExeObjStep {
