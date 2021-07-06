@@ -206,16 +206,16 @@ pub fn main() !void {
     };
     defer if (thread_ctx.feeder) |feeder| feeder.deinit();
 
-    var threads = [_]*std.Thread{
-        try std.Thread.spawn(inputLoop, &thread_ctx),
-        try std.Thread.spawn(rumbleLoop, &thread_ctx),
+    var threads = [_]std.Thread{
+        try std.Thread.spawn(.{}, inputLoop, .{&thread_ctx}),
+        try std.Thread.spawn(.{}, rumbleLoop, .{&thread_ctx}),
     };
 
     defer {
         thread_ctx.stop.store(true, .Release);
 
         for (threads) |thread| {
-            thread.wait();
+            thread.join();
         }
     }
 

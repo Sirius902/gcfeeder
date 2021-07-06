@@ -76,10 +76,10 @@ pub fn main() !void {
         .input = null,
     };
 
-    const thread = try std.Thread.spawn(receiveLoop, &context);
+    const thread = try std.Thread.spawn(.{}, receiveLoop, .{&context});
     defer {
         sock.close();
-        thread.wait();
+        thread.join();
     }
 
     std.log.info("Listening on UDP port {}", .{port});
