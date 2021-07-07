@@ -242,12 +242,7 @@ const Display = struct {
             const model = zlm.Mat4.createUniformScale(scale).mul(buttons_center);
             program.uniform1f(program.uniformLocation("scale"), scale);
 
-            // use programUniform1i instead because uniform1i has a name conflict
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_a else false),
-            );
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_a else false));
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -262,11 +257,7 @@ const Display = struct {
             );
             program.uniform1f(program.uniformLocation("scale"), scale);
 
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_b else false),
-            );
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_b else false));
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -279,11 +270,7 @@ const Display = struct {
             );
             program.uniform1f(program.uniformLocation("scale"), scale);
 
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_start else false),
-            );
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_start else false));
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -295,7 +282,7 @@ const Display = struct {
 
         const program = self.sdf_button_program;
         program.use();
-        zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 0);
+        zgl.uniform1i(program.uniformLocation("sdf_texture"), 0);
         program.uniform1f(program.uniformLocation("scale"), bean_scale);
         // y button
         {
@@ -308,11 +295,7 @@ const Display = struct {
                 ),
             );
 
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_y else false),
-            );
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_y else false));
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -327,11 +310,7 @@ const Display = struct {
                 ),
             );
 
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_x else false),
-            );
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_x else false));
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -348,12 +327,8 @@ const Display = struct {
             );
             program.uniform1f(program.uniformLocation("scale"), scale);
 
-            zgl.programUniform1i(
-                program,
-                program.uniformLocation("pressed"),
-                @boolToInt(if (input) |in| in.button_z else false),
-            );
-            zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 1);
+            zgl.uniform1i(program.uniformLocation("pressed"), @boolToInt(if (input) |in| in.button_z else false));
+            zgl.uniform1i(program.uniformLocation("sdf_texture"), 1);
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
             zgl.drawElements(.triangles, 6, .u32, 0);
         }
@@ -365,7 +340,7 @@ const Display = struct {
 
         const program = self.stick_program;
         program.use();
-        zgl.programUniform1i(program, program.uniformLocation("sdf_texture"), 2);
+        zgl.uniform1i(program.uniformLocation("sdf_texture"), 2);
         program.uniform1f(program.uniformLocation("scale"), scale);
         // main stick
         {
@@ -384,8 +359,7 @@ const Display = struct {
             else
                 0.5);
 
-            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(false));
-
+            zgl.uniform1i(program.uniformLocation("is_c_stick"), @boolToInt(false));
             zgl.uniform2f(program.uniformLocation("pos"), x, y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
@@ -408,8 +382,7 @@ const Display = struct {
             else
                 0.5);
 
-            zgl.programUniform1i(program, program.uniformLocation("is_c_stick"), @boolToInt(true));
-
+            zgl.uniform1i(program.uniformLocation("is_c_stick"), @boolToInt(true));
             zgl.uniform2f(program.uniformLocation("pos"), x, y);
 
             program.uniformMatrix4(program.uniformLocation("model"), false, &[_][4][4]f32{model.fields});
