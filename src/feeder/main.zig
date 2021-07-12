@@ -10,6 +10,8 @@ const Feeder = @import("feeder.zig").Feeder;
 const Atomic = std.atomic.Atomic;
 const time = std.time;
 
+pub const log_level = .info;
+
 const Options = struct {
     ess_adapter: bool = false,
     port: ?u16 = null,
