@@ -13,6 +13,7 @@ pub fn build(b: *Builder) void {
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
+    const strip = b.option(bool, "strip", "Strip binary") orelse false;
 
     const feeder_exe = feederExecutable(b);
     const viewer_exe = viewerExecutable(b);
@@ -21,6 +22,8 @@ pub fn build(b: *Builder) void {
     b.default_step.dependOn(&dll_step.step);
 
     for ([_]*LibExeObjStep{ feeder_exe, viewer_exe }) |exe| {
+        if (strip) exe.strip = true;
+
         exe.setTarget(target);
         exe.setBuildMode(mode);
         exe.install();
