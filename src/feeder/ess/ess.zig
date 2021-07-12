@@ -71,8 +71,8 @@ fn gcToN64(coords: *[2]u8) void {
 
     const scale = math.pow(f64, (5.0 * x + 2.0 * y) / 525.0, 2.0) * (7.0 * y / 525.0) * (70.0 / 75.0 - 80.0 / 105.0) + 80.0 / 105.0;
 
-    coords[0] = @floatToInt(u8, @ceil(x * scale));
-    coords[1] = @floatToInt(u8, @ceil(y * scale));
+    coords[0] = math.min(@floatToInt(u8, @ceil(x * scale)), 127);
+    coords[1] = math.min(@floatToInt(u8, @ceil(y * scale)), 127);
 }
 
 pub fn map(input: Input) Input {
