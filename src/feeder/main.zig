@@ -150,7 +150,15 @@ pub fn main() !void {
             clap.parseParam("-p, --port <PORT> Enables UDP input server on port.") catch unreachable,
         };
 
-        var args = try clap.parse(clap.Help, &params, .{});
+        var args = clap.parse(clap.Help, &params, .{}) catch |err| {
+            switch (err) {
+                error.InvalidArgument => {
+                    std.log.err("Invalid arguments. Run with --help to see proper usage.", .{});
+                    return;
+                },
+                else => return err,
+            }
+        };
         defer args.deinit();
 
         if (args.flag("--help")) {
