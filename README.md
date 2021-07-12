@@ -4,7 +4,11 @@ A vJoy feeder and input viewer for Gamecube controllers using the Gamecube Contr
 The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
 
-A built-in ESS adapter for use in Dolphin with The Legend of Zelda: Ocarina of Time is also included.
+## ESS Adapter
+A built-in ESS adapter for use in Dolphin with mappings for the following games is also included.
+* The Legend of Zelda: Ocarina of Time (OoT) on Virtual Console
+* The Legend of Zelda: Majora's Mask (MM) on Virtual Console
+* OoT and MM on Gamecube
 
 ## Usage Requirements
 * Both [vJoy and vJoyConf](https://github.com/jshafer817/vJoy) must be installed.
@@ -15,9 +19,13 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     * Number of Buttons: 12
     * POV Hat Switch: Continuous with 0 POVs
     * Force Feedback effects: May be optionally enabled for rumble support
-* To use the ESS Adapter, start the program with the `-e` flag.
+* To use the ESS Adapter with the default OoT VC mapping, start the program with the `-e` flag. To specify another mapping use
+the `-m <MAP>` option. The following mappings are available.
+    * To specify OoT VC use `-m oot-vc`.
+    * To specify MM VC use `-m mm-vc`.
+    * To specify OoT and MM GC use `-m z64-gc`.
 * To create a UDP server for controller inputs on port `4096`, start the program with the `-s` flag. The port can be customized
-with the `-p <PORT>` flag.
+with the `-p <PORT>` option.
 
 ## Themes
 
