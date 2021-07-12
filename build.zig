@@ -56,9 +56,6 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.addPackagePath("network", "pkg/zig-network/network.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
-    exe.addIncludeDir("src/feeder/ess");
-    exe.addCSourceFile("src/feeder/ess/ESS.c", &[_][]const u8{});
-
     return exe;
 }
 

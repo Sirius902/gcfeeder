@@ -4,9 +4,7 @@ A vJoy feeder and input viewer for Gamecube controllers using the Gamecube Contr
 The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
 
-A built-in ESS adapter for use in Dolphin with The Legend of Zelda: Ocarina of Time is also included
-with code and inversion methods from Skuzee's [ESS-Adapter](https://github.com/Skuzee/ESS-Adapter)
-project.
+A built-in ESS adapter for use in Dolphin with The Legend of Zelda: Ocarina of Time is also included.
 
 ## Usage Requirements
 * Both [vJoy and vJoyConf](https://github.com/jshafer817/vJoy) must be installed.
@@ -28,5 +26,6 @@ The default theme can be found at `src/viewer/shader/color.glsl`. Other themes c
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
+To use a controller with Dolphin using the feeder, configure the vJoy Device as a Standard Controller instead.
 * Only supports port one on the adapter.
 * Currently reads Force Feedback packets from all effects on vJoy to control rumble for compatibility (Dolphin seems to crash unless all effects are enabled).
