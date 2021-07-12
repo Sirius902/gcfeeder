@@ -85,11 +85,12 @@ pub fn map(input: Input) Input {
     gcToN64(&coords);
 
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
-    denormalize(&coords, q);
 
-    const map_index = 2 * ((@as(usize, coords[1]) * 256) + coords[0]);
+    const map_index = 2 * ((@as(usize, coords[1]) * 128) + coords[0]);
     coords[0] = vc_map[map_index];
     coords[1] = vc_map[map_index + 1];
+
+    denormalize(&coords, q);
 
     var mapped = input;
     mapped.stick_x = coords[0];
