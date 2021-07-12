@@ -54,14 +54,9 @@ pub fn main() !void {
             clap.parseParam("-p, --port <PORT> Listen to UDP input server on port.") catch unreachable,
         };
 
-        var args = clap.parse(clap.Help, &params, .{}) catch |err| {
-            switch (err) {
-                error.InvalidArgument => {
-                    std.log.err("Invalid arguments. Run with --help to see proper usage.", .{});
-                    return;
-                },
-                else => return err,
-            }
+        var args = clap.parse(clap.Help, &params, .{}) catch {
+            std.log.err("Invalid arguments. Run with --help to see proper usage.", .{});
+            return;
         };
         defer args.deinit();
 
@@ -71,7 +66,10 @@ pub fn main() !void {
         }
 
         break :blk if (args.option("--port")) |p|
-            try std.fmt.parseUnsigned(u16, p, 10)
+            std.fmt.parseUnsigned(u16, p, 10) catch {
+                std.log.err("Invalid port specified.", .{});
+                return;
+            }
         else
             4096;
     };
