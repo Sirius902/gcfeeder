@@ -1,8 +1,34 @@
 const std = @import("std");
 const math = std.math;
+const Tuple = std.meta.Tuple;
 const Input = @import("../adapter.zig").Input;
 const main_stick = @import("../adapter.zig").Calibration.main_stick;
-const vc_map: []const u8 = @embedFile("map/oot-vc.bin");
+
+fn loadMapping(comptime name: []const u8) Tuple(&[_]type{ []const u8, NormalizedMap }) {
+    return .{ name, NormalizedMap{ .table = @embedFile("map/" ++ name ++ ".bin") } };
+}
+
+pub const mappings = std.ComptimeStringMap(NormalizedMap, .{
+    loadMapping("oot-vc"),
+    loadMapping("mm-vc"),
+    loadMapping("z64-gc"),
+});
+
+/// Mapping of normalized quadrant one GC coordinates using a LUT.
+/// Rows are y and columns are x.
+pub const NormalizedMap = struct {
+    table: *const [dim * dim * 2]u8,
+
+    pub const dim = 128;
+
+    /// Maps normalized GC coordinates.
+    /// Should not be called on raw GC coordinates.
+    pub fn map(self: NormalizedMap, coords: *[2]u8) void {
+        const index = 2 * ((@as(usize, coords[1]) * dim) + coords[0]);
+        coords[0] = self.table[index];
+        coords[1] = self.table[index + 1];
+    }
+};
 
 pub const Quadrant = enum {
     One,
@@ -75,7 +101,7 @@ fn gcToN64(coords: *[2]u8) void {
     coords[1] = math.min(@floatToInt(u8, @ceil(y * scale)), 127);
 }
 
-pub fn map(input: Input) Input {
+pub fn map(mapping: *const NormalizedMap, input: Input) Input {
     const swap = input.stick_y > input.stick_x;
     var coords = [_]u8{ input.stick_x, input.stick_y };
 
@@ -86,9 +112,7 @@ pub fn map(input: Input) Input {
 
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
-    const map_index = 2 * ((@as(usize, coords[1]) * 128) + coords[0]);
-    coords[0] = vc_map[map_index];
-    coords[1] = vc_map[map_index + 1];
+    mapping.map(&coords);
 
     denormalize(&coords, q);
 

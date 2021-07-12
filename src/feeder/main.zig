@@ -7,13 +7,14 @@ const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
 const Feeder = @import("feeder.zig").Feeder;
+const ess = @import("ess/ess.zig");
 const Atomic = std.atomic.Atomic;
 const time = std.time;
 
 pub const log_level = .info;
 
 const Options = struct {
-    ess_adapter: bool = false,
+    ess_mapping: ?*const ess.NormalizedMap = null,
     port: ?u16 = null,
 };
 
@@ -43,7 +44,7 @@ pub const Context = struct {
     receiver: *vjoy.FFBReceiver,
     stop: Atomic(bool),
     server: ?*Server,
-    ess_adapter: bool,
+    ess_mapping: ?*const ess.NormalizedMap,
 };
 
 const fail_wait = 100 * time.ns_per_ms;
@@ -51,7 +52,7 @@ const fail_wait = 100 * time.ns_per_ms;
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
         if (context.feeder) |*feeder| {
-            const input = feeder.feed(context.ess_adapter) catch |err| {
+            const input = feeder.feed(context.ess_mapping) catch |err| {
                 switch (err) {
                     error.Timeout => continue,
                     else => {
@@ -144,10 +145,11 @@ fn rumbleLoop(context: *Context) void {
 pub fn main() !void {
     const options = blk: {
         const params = comptime [_]clap.Param(clap.Help){
-            clap.parseParam("-h, --help        Display this help and exit.      ") catch unreachable,
-            clap.parseParam("-e, --ess         Enables ESS adapter.             ") catch unreachable,
-            clap.parseParam("-s, --server      Enables UDP input server.        ") catch unreachable,
-            clap.parseParam("-p, --port <PORT> Enables UDP input server on port.") catch unreachable,
+            clap.parseParam("-h, --help          Display this help and exit.") catch unreachable,
+            clap.parseParam("-e, --ess           Enables ESS adapter with oot-vc mapping.") catch unreachable,
+            clap.parseParam("-m, --mapping <MAP> Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.") catch unreachable,
+            clap.parseParam("-s, --server        Enables UDP input server.") catch unreachable,
+            clap.parseParam("-p, --port <PORT>   Enables UDP input server on port.") catch unreachable,
         };
 
         var args = clap.parse(clap.Help, &params, .{}) catch {
@@ -171,8 +173,18 @@ pub fn main() !void {
         else
             null;
 
+        const ess_mapping = if (args.option("--mapping")) |m|
+            &(ess.mappings.get(m) orelse {
+                std.log.err("Invalid mapping specified.", .{});
+                return;
+            })
+        else if (args.flag("--ess"))
+            &ess.mappings.get("oot-vc").?
+        else
+            null;
+
         break :blk Options{
-            .ess_adapter = args.flag("--ess"),
+            .ess_mapping = ess_mapping,
             .port = port,
         };
     };
@@ -210,7 +222,7 @@ pub fn main() !void {
         .receiver = receiver,
         .stop = Atomic(bool).init(false),
         .server = if (server) |*s| s else null,
-        .ess_adapter = options.ess_adapter,
+        .ess_mapping = options.ess_mapping,
     };
     defer if (thread_ctx.feeder) |feeder| feeder.deinit();
 

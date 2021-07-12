@@ -28,12 +28,12 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder, ess_adapter: bool) Error!?Input {
+    pub fn feed(self: *Feeder, ess_mapping: ?*const ess.NormalizedMap) Error!?Input {
         const inputs = try self.adapter.readInputs();
 
         if (inputs[0]) |input| {
-            if (ess_adapter) {
-                try self.device.update(toVJoy(ess.map(input)));
+            if (ess_mapping) |m| {
+                try self.device.update(toVJoy(ess.map(m, input)));
             } else {
                 try self.device.update(toVJoy(input));
             }
