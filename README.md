@@ -29,8 +29,8 @@ with the `-p <PORT>` option.
 
 ## Themes
 
-To customize the theme of the input viewer, put a `color.glsl` according to the specification in the same directory as the executable.
-The default theme can be found at `src/viewer/shader/color.glsl`. Other themes can be found in `theme`.
+To customize the theme of the input viewer, put a `color.frag` according to the specification in the same directory as the executable.
+The default theme can be found at `src/viewer/shader/color.frag`. Other themes can be found in `theme`.
 
 ## Notes
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.

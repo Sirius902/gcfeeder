@@ -29,13 +29,13 @@ const Display = struct {
         pad_down = 13,
     };
 
-    const vertex_shader_source: []const u8 = @embedFile("shader/vertex.glsl");
-    const background_shader_source: []const u8 = @embedFile("shader/background_fragment.glsl");
-    const circle_button_shader_source: []const u8 = @embedFile("shader/circle_button_fragment.glsl");
-    const sdf_button_shader_source: []const u8 = @embedFile("shader/sdf_button_fragment.glsl");
-    const trigger_shader_source: []const u8 = @embedFile("shader/trigger_fragment.glsl");
-    const stick_shader_source: []const u8 = @embedFile("shader/stick_fragment.glsl");
-    const default_color_shader_source: []const u8 = @embedFile("shader/color.glsl");
+    const vertex_shader_source: []const u8 = @embedFile("shader/main.vert");
+    const background_shader_source: []const u8 = @embedFile("shader/background.frag");
+    const circle_button_shader_source: []const u8 = @embedFile("shader/circle_button.frag");
+    const sdf_button_shader_source: []const u8 = @embedFile("shader/sdf_button.frag");
+    const trigger_shader_source: []const u8 = @embedFile("shader/trigger.frag");
+    const stick_shader_source: []const u8 = @embedFile("shader/stick.frag");
+    const default_color_shader_source: []const u8 = @embedFile("shader/color.frag");
 
     const bean_sdf = @embedFile("sdf/bean-sdf.gray");
     const z_button_sdf = @embedFile("sdf/z-button-sdf.gray");

@@ -6,7 +6,7 @@ const Calibration = @import("adapter").Calibration;
 const display = @import("display.zig");
 
 pub const log_level = .info;
-pub const user_shader_path = "color.glsl";
+pub const user_shader_path = "color.frag";
 
 pub const Context = struct {
     mutex: std.Thread.Mutex,
