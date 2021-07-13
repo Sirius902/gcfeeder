@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v1
+      with:
+        version: master
+    - name: Zig Build
+      run: zig build -Drelease-safe
+    - name: Compress Artifacts
+      run: |
+        7z a theme.zip ./theme/*
+        7z a gcfeeder.zip ./zig-out/bin/gcfeeder.exe ./zig-out/bin/libusb-1.0.dll ./zig-out/bin/vJoyInterface.dll
+        7z a gcviewer.zip ./zig-out/bin/gcviewer.exe ./zig-out/bin/glfw3.dll
+    - name: Automatic Release
+      uses: marvinpinto/action-automatic-releases@v1
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        automatic_release_tag: latest
+        files: |
+          gcfeeder.zip
+          gcviewer.zip
+          theme.zip
