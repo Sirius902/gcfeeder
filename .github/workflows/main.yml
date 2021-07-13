@@ -1,0 +1,34 @@
+name: CI
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v1
+      with:
+        version: master
+    - name: Zig Build
+      run: zig build
+    - name: Upload Feeder
+      uses: actions/upload-artifact@v2
+      with:
+        name: gcfeeder
+        path: |
+          zig-out/bin/gcfeeder.exe
+          zig-out/bin/libusb-1.0.dll
+          zig-out/bin/vJoyInterface.dll
+    - name: Upload Viewer
+      uses: actions/upload-artifact@v2
+      with:
+        name: gcviewer
+        path: |
+          zig-out/bin/gcviewer.exe
+          zig-out/bin/glfw3.dll
+    - name: Upload Themes
+      uses: actions/upload-artifact@v2
+      with:
+          name: theme
+          path: theme
