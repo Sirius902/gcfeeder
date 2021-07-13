@@ -1,14 +1,14 @@
 # gcfeeder
-A vJoy feeder and input viewer for Gamecube controllers using the Gamecube Controller Adapter.
+A vJoy feeder and input viewer for GameCube controllers using the GameCube Controller Adapter.
 
-The process for reading adapter inputs is based on Dolphin's Gamecube Adapter support.
+The process for reading adapter inputs is based on Dolphin's GameCube Adapter support.
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
 
 ## ESS Adapter
 A built-in ESS adapter for use in Dolphin with mappings for the following games is also included.
 * The Legend of Zelda: Ocarina of Time (OoT) on Virtual Console
 * The Legend of Zelda: Majora's Mask (MM) on Virtual Console
-* OoT and MM on Gamecube
+* OoT and MM on GameCube
 
 ## Usage Requirements
 * Both [vJoy and vJoyConf](https://github.com/jshafer817/vJoy) must be installed.
