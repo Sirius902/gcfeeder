@@ -9,7 +9,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        submodules: 'true'
+        submodules: true
     - name: Setup Zig
       uses: goto-bus-stop/setup-zig@v1
       with:
