@@ -25,7 +25,7 @@ jobs:
         7z a gcfeeder.zip ./zig-out/bin/gcfeeder.exe ./zig-out/bin/libusb-1.0.dll ./zig-out/bin/vJoyInterface.dll
         7z a gcviewer.zip ./zig-out/bin/gcviewer.exe ./zig-out/bin/glfw3.dll
     - name: Automatic Release
-      uses: marvinpinto/action-automatic-releases@v1
+      uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
