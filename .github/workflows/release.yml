@@ -23,7 +23,7 @@ jobs:
       run: |
         7z a theme.zip ./theme/*
         7z a gcfeeder.zip ./zig-out/bin/gcfeeder.exe ./zig-out/bin/libusb-1.0.dll ./zig-out/bin/vJoyInterface.dll
-        7z a gcviewer.zip ./zig-out/bin/gcviewer.exe ./zig-out/bin/glfw3.dll
+        7z a gcviewer.zip ./zig-out/bin/gcviewer.exe ./zig-out/bin/glfw3.dll ./zig-out/bin/libepoxy-0.dll
     - name: Automatic Release
       uses: marvinpinto/action-automatic-releases@latest
       with:

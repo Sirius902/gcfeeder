@@ -71,7 +71,7 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
     exe.addLibPath("lib");
 
     exe.linkLibC();
-    exe.linkSystemLibrary("libepoxy");
+    exe.linkSystemLibrary("libepoxy.dll");
     exe.linkSystemLibrary("glfw3dll");
 
     exe.addPackagePath("adapter", "src/feeder/adapter.zig");

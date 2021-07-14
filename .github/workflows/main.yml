@@ -36,6 +36,7 @@ jobs:
         path: |
           zig-out/bin/gcviewer.exe
           zig-out/bin/glfw3.dll
+          zig-out/bin/libepoxy-0.dll
     - name: Upload Themes
       uses: actions/upload-artifact@v2
       with:
