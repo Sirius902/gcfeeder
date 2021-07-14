@@ -74,7 +74,10 @@ pub fn main() !void {
             4096;
     };
 
-    try sock.bindToPort(port);
+    try sock.bind(.{
+        .address = .{ .ipv4 = network.Address.IPv4.loopback },
+        .port = port,
+    });
 
     var context = Context{
         .mutex = std.Thread.Mutex{},
