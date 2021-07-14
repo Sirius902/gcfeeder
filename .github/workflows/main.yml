@@ -37,6 +37,13 @@ jobs:
           zig-out/bin/gcviewer.exe
           zig-out/bin/glfw3.dll
           zig-out/bin/libepoxy-0.dll
+    - name: Upload PDB
+      uses: actions/upload-artifact@v2
+      with:
+        name: pdb
+        path: |
+          zig-out/bin/gcfeeder.pdb
+          zig-out/bin/gcviewer.pdb
     - name: Upload Themes
       uses: actions/upload-artifact@v2
       with:
