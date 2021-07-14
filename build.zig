@@ -52,7 +52,7 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.addLibPath("lib");
 
     exe.linkLibC();
-    exe.linkSystemLibrary("libusb-1.0");
+    exe.linkSystemLibrary("libusb-1.0.dll");
     exe.linkSystemLibrary("vJoyInterface");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
