@@ -20,7 +20,7 @@ jobs:
       with:
         version: master
     - name: Zig Build
-      run: zig build
+      run: zig build -Dcpu=baseline
     - name: Upload Feeder
       uses: actions/upload-artifact@v2
       with:
