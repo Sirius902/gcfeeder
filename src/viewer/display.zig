@@ -1,12 +1,15 @@
 const std = @import("std");
 const zgl = @import("zgl");
 const zlm = @import("zlm");
-const glfw = @import("zglfw");
 const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const Context = @import("root").Context;
 const time = std.time;
 const user_shader_path = @import("root").user_shader_path;
+
+const c = @cImport({
+    @cInclude("GLFW/glfw3.h");
+});
 
 var window_width: u32 = 512;
 var window_height: u32 = 256;
@@ -522,30 +525,31 @@ const Display = struct {
 };
 
 pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
-    try glfw.init();
-    defer glfw.terminate();
+    if (c.glfwInit() != c.GLFW_TRUE) return error.GlfwInitFailed;
+    defer c.glfwTerminate();
 
-    glfw.windowHint(.ContextVersionMajor, 3);
-    glfw.windowHint(.ContextVersionMinor, 3);
-    glfw.windowHint(.OpenGLProfile, @enumToInt(glfw.GLProfileAttribute.OpenglCoreProfile));
+    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MAJOR, 3);
+    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MINOR, 3);
+    c.glfwWindowHint(c.GLFW_OPENGL_PROFILE, c.GLFW_OPENGL_CORE_PROFILE);
 
-    const window = try glfw.createWindow(
+    const window = c.glfwCreateWindow(
         @intCast(c_int, window_width),
         @intCast(c_int, window_height),
         "GC Viewer",
         null,
         null,
-    );
+    ) orelse return error.WindowInitFailed;
+    defer c.glfwDestroyWindow(window);
 
-    glfw.makeContextCurrent(window);
+    c.glfwMakeContextCurrent(window);
 
     // wait for vsync to reduce cpu usage
-    glfw.swapInterval(1);
-    _ = glfw.setFramebufferSizeCallback(window, framebufferSizeCallback);
+    c.glfwSwapInterval(1);
+    _ = c.glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     const display = try Display.init(context.allocator, color_shader_source);
 
-    while (!glfw.windowShouldClose(window)) {
+    while (c.glfwWindowShouldClose(window) == c.GLFW_FALSE) {
         const input = blk: {
             const held = context.mutex.acquire();
             defer held.release();
@@ -558,12 +562,12 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
 
         display.draw(input);
 
-        glfw.swapBuffers(window);
-        glfw.pollEvents();
+        c.glfwSwapBuffers(window);
+        c.glfwPollEvents();
     }
 }
 
-fn framebufferSizeCallback(_: *glfw.Window, width: i32, height: i32) callconv(.C) void {
+fn framebufferSizeCallback(_: ?*c.GLFWwindow, width: i32, height: i32) callconv(.C) void {
     window_width = @intCast(u32, width);
     window_height = @intCast(u32, height);
 

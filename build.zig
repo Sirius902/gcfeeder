@@ -76,7 +76,6 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
 
     exe.addPackagePath("adapter", "src/feeder/adapter.zig");
     exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
-    exe.addPackagePath("zglfw", "pkg/zglfw/src/main.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("network", "pkg/zig-network/network.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
