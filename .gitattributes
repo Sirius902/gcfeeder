@@ -1,2 +1,5 @@
-* text=auto eol=lf
+*.zig text eol=lf
+*.frag text eol=lf
+*.vert text eol=lf
+
 include/** linguist-vendored
