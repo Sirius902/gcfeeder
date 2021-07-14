@@ -5,7 +5,13 @@ const LibExeObjStep = std.build.LibExeObjStep;
 
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{
-        .default_target = .{ .cpu_arch = .x86_64, .os_tag = .windows },
+        .default_target = .{
+            .cpu_arch = .x86_64,
+            .os_tag = .windows,
+            // Workaround for -Dcpu=baseline not being respected.
+            // Related: https://github.com/ziglang/zig/pull/9359
+            .cpu_model = .{ .explicit = &std.Target.x86.cpu.skylake },
+        },
     });
 
     const mode = b.standardReleaseOptions();
