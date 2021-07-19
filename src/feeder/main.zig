@@ -14,8 +14,8 @@ const time = std.time;
 pub const log_level = .info;
 
 const Options = struct {
-    ess_mapping: ?*const ess.NormalizedMap = null,
-    port: ?u16 = null,
+    ess_mapping: ?*const ess.NormalizedMap,
+    port: ?u16,
 };
 
 const Server = struct {
