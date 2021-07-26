@@ -152,8 +152,9 @@ pub fn main() !void {
             clap.parseParam("-p, --port <PORT>   Enables UDP input server on port.") catch unreachable,
         };
 
-        var args = clap.parse(clap.Help, &params, .{}) catch {
-            std.log.err("Invalid arguments. Run with --help to see proper usage.", .{});
+        var diag = clap.Diagnostic{};
+        var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
+            diag.report(std.io.getStdErr().writer(), err) catch {};
             return;
         };
         defer args.deinit();
