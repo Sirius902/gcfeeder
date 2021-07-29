@@ -58,7 +58,6 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.linkSystemLibrary("vJoyInterface");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
-    exe.addPackagePath("network", "pkg/zig-network/network.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     return exe;
@@ -79,7 +78,6 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
     exe.addPackagePath("adapter", "src/feeder/adapter.zig");
     exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
-    exe.addPackagePath("network", "pkg/zig-network/network.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     return exe;

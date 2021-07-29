@@ -1,6 +1,5 @@
 const std = @import("std");
 const usb = @import("zusb");
-const network = @import("network");
 const clap = @import("clap");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
@@ -18,32 +17,13 @@ const Options = struct {
     port: ?u16,
 };
 
-const Server = struct {
-    sock: network.Socket,
-    endpoint: network.EndPoint,
-
-    pub fn init(port: u16) !Server {
-        var sock = try network.Socket.create(.ipv4, .udp);
-        const endpoint = network.EndPoint{
-            .address = .{ .ipv4 = network.Address.IPv4.loopback },
-            .port = port,
-        };
-
-        return Server{ .sock = sock, .endpoint = endpoint };
-    }
-
-    pub fn deinit(self: Server) void {
-        self.sock.close();
-    }
-};
-
 pub const Context = struct {
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     feeder: ?Feeder,
     receiver: *vjoy.FFBReceiver,
     stop: Atomic(bool),
-    server: ?*Server,
+    sock: ?*const std.x.os.Socket,
     ess_mapping: ?*const ess.NormalizedMap,
 };
 
@@ -68,12 +48,12 @@ fn inputLoop(context: *Context) void {
                 }
             };
 
-            if (context.server) |s| {
+            if (context.sock) |s| {
                 if (input) |in| {
                     var buffer: [@sizeOf(Input)]u8 = undefined;
                     in.serialize(&buffer);
 
-                    _ = s.sock.sendTo(s.endpoint, &buffer) catch |err| {
+                    _ = s.write(&buffer, 0) catch |err| {
                         std.log.err("{} in input thread", .{err});
                     };
                 }
@@ -202,19 +182,27 @@ pub fn main() !void {
     var receiver = try vjoy.FFBReceiver.init(allocator);
     defer receiver.deinit();
 
-    var server: ?Server = null;
-    if (options.port) |p| {
-        try network.init();
+    const sock = blk: {
+        if (options.port) |p| {
+            const s = try std.x.os.Socket.init(
+                std.os.AF_INET,
+                std.os.SOCK_DGRAM,
+                0,
+                .{ .close_on_exec = true },
+            );
 
-        server = try Server.init(p);
-        std.log.info("Opened UDP server on port {}", .{p});
-    }
-    defer {
-        if (server) |s| {
-            s.deinit();
-            network.deinit();
+            try s.connect(.{ .ipv4 = .{
+                .host = std.x.os.IPv4.localhost,
+                .port = p,
+            } });
+
+            std.log.info("Opened UDP server on port {}", .{p});
+            break :blk s;
+        } else {
+            break :blk null;
         }
-    }
+    };
+    defer if (sock) |s| s.deinit();
 
     var thread_ctx = Context{
         .mutex = std.Thread.Mutex{},
@@ -222,7 +210,7 @@ pub fn main() !void {
         .feeder = null,
         .receiver = receiver,
         .stop = Atomic(bool).init(false),
-        .server = if (server) |*s| s else null,
+        .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
     };
     defer if (thread_ctx.feeder) |feeder| feeder.deinit();

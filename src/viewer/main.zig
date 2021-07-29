@@ -1,9 +1,9 @@
 const std = @import("std");
 const clap = @import("clap");
-const network = @import("network");
 const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const display = @import("display.zig");
+const Atomic = std.atomic.Atomic;
 
 pub const log_level = .info;
 pub const user_shader_path = "color.frag";
@@ -11,17 +11,21 @@ pub const user_shader_path = "color.frag";
 pub const Context = struct {
     mutex: std.Thread.Mutex,
     allocator: *std.mem.Allocator,
-    sock: *const network.Socket,
+    sock: *const std.x.os.Socket,
     input: ?Input,
+    stop: Atomic(bool),
 };
 
 fn receiveLoop(context: *Context) !void {
-    while (true) {
+    while (!context.stop.load(.Acquire)) {
         var buffer: [@sizeOf(Input)]u8 = undefined;
 
-        const data_len = context.sock.receive(&buffer) catch |err| {
+        const data_len = context.sock.read(&buffer, 0) catch |err| {
             switch (err) {
-                error.FileDescriptorNotASocket => return,
+                error.WouldBlock => {
+                    std.time.sleep(8 * std.time.ns_per_ms);
+                    continue;
+                },
                 else => return err,
             }
         };
@@ -43,10 +47,12 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = &gpa.allocator;
 
-    try network.init();
-    defer network.deinit();
-
-    var sock = try network.Socket.create(.ipv4, .udp);
+    const sock = try std.x.os.Socket.init(
+        std.os.AF_INET,
+        std.os.SOCK_DGRAM,
+        0,
+        .{ .nonblocking = true, .close_on_exec = true },
+    );
 
     const port = blk: {
         const params = comptime [_]clap.Param(clap.Help){
@@ -75,22 +81,24 @@ pub fn main() !void {
             4096;
     };
 
-    try sock.bind(.{
-        .address = .{ .ipv4 = network.Address.IPv4.loopback },
+    try sock.bind(.{ .ipv4 = .{
+        .host = std.x.os.IPv4.localhost,
         .port = port,
-    });
+    } });
 
     var context = Context{
         .mutex = std.Thread.Mutex{},
         .allocator = allocator,
         .sock = &sock,
         .input = null,
+        .stop = Atomic(bool).init(false),
     };
 
     const thread = try std.Thread.spawn(.{}, receiveLoop, .{&context});
     defer {
-        sock.close();
+        context.stop.store(true, .Release);
         thread.join();
+        sock.deinit();
     }
 
     std.log.info("Listening on UDP port {}", .{port});
