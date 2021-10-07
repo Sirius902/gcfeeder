@@ -185,8 +185,8 @@ pub fn main() !void {
     const sock = blk: {
         if (options.port) |p| {
             const s = try std.x.os.Socket.init(
-                std.os.AF_INET,
-                std.os.SOCK_DGRAM,
+                std.os.AF.INET,
+                std.os.SOCK.DGRAM,
                 0,
                 .{ .close_on_exec = true },
             );

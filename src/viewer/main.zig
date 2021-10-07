@@ -48,8 +48,8 @@ pub fn main() !void {
     const allocator = &gpa.allocator;
 
     const sock = try std.x.os.Socket.init(
-        std.os.AF_INET,
-        std.os.SOCK_DGRAM,
+        std.os.AF.INET,
+        std.os.SOCK.DGRAM,
         0,
         .{ .nonblocking = true, .close_on_exec = true },
     );
