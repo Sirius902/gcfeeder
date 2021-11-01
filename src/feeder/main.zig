@@ -13,7 +13,7 @@ const time = std.time;
 pub const log_level = .info;
 
 const Options = struct {
-    ess_mapping: ?*const ess.NormalizedMap,
+    ess_mapping: ?ess.Mapping,
     port: ?u16,
 };
 
@@ -24,7 +24,7 @@ pub const Context = struct {
     receiver: *vjoy.FFBReceiver,
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
-    ess_mapping: ?*const ess.NormalizedMap,
+    ess_mapping: ?ess.Mapping,
 };
 
 const fail_wait = 100 * time.ns_per_ms;
@@ -155,12 +155,12 @@ pub fn main() !void {
             null;
 
         const ess_mapping = if (args.option("--mapping")) |m|
-            &(ess.mappings.get(m) orelse {
+            ess.Mapping.fromFileName(m) orelse {
                 std.log.err("Invalid mapping specified.", .{});
                 return;
-            })
+            }
         else if (args.flag("--ess"))
-            &ess.mappings.get("oot-vc").?
+            ess.Mapping.oot_vc
         else
             null;
 

@@ -28,7 +28,7 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder, ess_mapping: ?*const ess.NormalizedMap) Error!?Input {
+    pub fn feed(self: *Feeder, ess_mapping: ?ess.Mapping) Error!?Input {
         const inputs = try self.adapter.readInputs();
 
         if (inputs[0]) |input| {

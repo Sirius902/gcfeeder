@@ -4,15 +4,60 @@ const Tuple = std.meta.Tuple;
 const Input = @import("../adapter.zig").Input;
 const main_stick = @import("../adapter.zig").Calibration.main_stick;
 
-fn loadMapping(comptime name: []const u8) Tuple(&[_]type{ []const u8, NormalizedMap }) {
-    return .{ name, NormalizedMap{ .table = @embedFile("map/" ++ name ++ ".bin") } };
+fn enumVariants(comptime T: type) *const [std.meta.fields(T).len]T {
+    comptime {
+        const fields = std.meta.fields(T);
+        var variants: [fields.len]T = undefined;
+
+        inline for (fields) |field, i| {
+            variants[i] = @field(T, field.name);
+        }
+
+        return &variants;
+    }
 }
 
-pub const mappings = std.ComptimeStringMap(NormalizedMap, .{
-    loadMapping("oot-vc"),
-    loadMapping("mm-vc"),
-    loadMapping("z64-gc"),
-});
+pub const Mapping = enum {
+    oot_vc,
+    mm_vc,
+    z64_gc,
+
+    pub fn fileName(comptime self: Mapping) []const u8 {
+        comptime {
+            const tag_name = std.meta.tagName(self);
+            var name: [tag_name.len]u8 = undefined;
+
+            for (tag_name) |c, i| {
+                name[i] = switch (c) {
+                    '_' => '-',
+                    else => c,
+                };
+            }
+
+            return &name;
+        }
+    }
+
+    pub fn fromFileName(file_name: []const u8) ?Mapping {
+        inline for (comptime enumVariants(Mapping)) |variant| {
+            if (std.mem.eql(u8, file_name, variant.fileName())) {
+                return variant;
+            }
+        }
+
+        return null;
+    }
+
+    pub fn normalizedMap(self: Mapping) NormalizedMap {
+        inline for (comptime enumVariants(Mapping)) |variant| {
+            if (self == variant) {
+                return NormalizedMap{ .table = @embedFile("map/" ++ variant.fileName() ++ ".bin") };
+            }
+        }
+
+        unreachable;
+    }
+};
 
 /// Mapping of normalized quadrant one GC coordinates using a LUT.
 /// Rows are y and columns are x.
@@ -101,7 +146,7 @@ fn gcToN64(coords: *[2]u8) void {
     coords[1] = math.min(@floatToInt(u8, @ceil(y * scale)), 127);
 }
 
-pub fn map(mapping: *const NormalizedMap, input: Input) Input {
+pub fn map(mapping: Mapping, input: Input) Input {
     const swap = input.stick_y > input.stick_x;
     var coords = [_]u8{ input.stick_x, input.stick_y };
 
@@ -112,7 +157,7 @@ pub fn map(mapping: *const NormalizedMap, input: Input) Input {
 
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
-    mapping.map(&coords);
+    mapping.normalizedMap().map(&coords);
 
     denormalize(&coords, q);
 
