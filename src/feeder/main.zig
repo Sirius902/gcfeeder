@@ -36,8 +36,8 @@ fn inputLoop(context: *Context) void {
                 switch (err) {
                     error.Timeout => continue,
                     else => {
-                        const held = context.mutex.acquire();
-                        defer held.release();
+                        context.mutex.lock();
+                        defer context.mutex.unlock();
 
                         feeder.deinit();
                         context.feeder = null;
@@ -59,8 +59,8 @@ fn inputLoop(context: *Context) void {
                 }
             }
         } else {
-            const held = context.mutex.acquire();
-            defer held.release();
+            context.mutex.lock();
+            defer context.mutex.unlock();
 
             context.feeder = Feeder.init(context.usb_ctx) catch |err| {
                 std.log.err("{} in input thread", .{err});
@@ -97,17 +97,17 @@ fn rumbleLoop(context: *Context) void {
                 }
             }
 
-            const held = context.mutex.acquire();
+            context.mutex.lock();
 
             feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
                 switch (err) {
                     error.Timeout => {
-                        held.release();
+                        context.mutex.unlock();
                         continue;
                     },
                     else => {
                         // Release mutex before sleeping to allow input thread to acquire.
-                        held.release();
+                        context.mutex.unlock();
                         std.log.err("{} in rumble thread", .{err});
                         time.sleep(fail_wait);
                         continue;
@@ -115,7 +115,7 @@ fn rumbleLoop(context: *Context) void {
                 }
             };
 
-            held.release();
+            context.mutex.unlock();
         } else {
             time.sleep(8 * time.ns_per_ms);
         }

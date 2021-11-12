@@ -551,8 +551,8 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
 
     while (c.glfwWindowShouldClose(window) == c.GLFW_FALSE) {
         const input = blk: {
-            const held = context.mutex.acquire();
-            defer held.release();
+            context.mutex.lock();
+            defer context.mutex.unlock();
 
             break :blk context.input;
         };

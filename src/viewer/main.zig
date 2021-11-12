@@ -31,8 +31,8 @@ fn receiveLoop(context: *Context) !void {
         };
 
         if (data_len == buffer.len) {
-            const held = context.mutex.acquire();
-            defer held.release();
+            context.mutex.lock();
+            defer context.mutex.unlock();
 
             context.input = Input.deserialize(&buffer);
         } else {

@@ -122,15 +122,15 @@ pub const FFBReceiver = struct {
     }
 
     pub fn get(self: *FFBReceiver) ?FFBPacket {
-        const held = self.mutex.acquire();
-        defer held.release();
+        self.mutex.lock();
+        defer self.mutex.unlock();
 
         return self.queue.readItem();
     }
 
     fn put(self: *FFBReceiver, packet: FFBPacket) void {
-        const held = self.mutex.acquire();
-        defer held.release();
+        self.mutex.lock();
+        defer self.mutex.unlock();
 
         self.queue.ensureUnusedCapacity(1) catch {
             self.queue.discard(1);
