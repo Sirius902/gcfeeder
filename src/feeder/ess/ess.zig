@@ -4,19 +4,6 @@ const Tuple = std.meta.Tuple;
 const Input = @import("../adapter.zig").Input;
 const main_stick = @import("../adapter.zig").Calibration.main_stick;
 
-fn enumVariants(comptime T: type) *const [std.meta.fields(T).len]T {
-    comptime {
-        const fields = std.meta.fields(T);
-        var variants: [fields.len]T = undefined;
-
-        inline for (fields) |field, i| {
-            variants[i] = @field(T, field.name);
-        }
-
-        return &variants;
-    }
-}
-
 pub const Mapping = enum {
     oot_vc,
     mm_vc,
@@ -39,7 +26,7 @@ pub const Mapping = enum {
     }
 
     pub fn fromFileName(file_name: []const u8) ?Mapping {
-        inline for (comptime enumVariants(Mapping)) |variant| {
+        inline for (comptime std.enums.values(Mapping)) |variant| {
             if (std.mem.eql(u8, file_name, variant.fileName())) {
                 return variant;
             }
@@ -49,7 +36,7 @@ pub const Mapping = enum {
     }
 
     pub fn normalizedMap(self: Mapping) NormalizedMap {
-        inline for (comptime enumVariants(Mapping)) |variant| {
+        inline for (comptime std.enums.values(Mapping)) |variant| {
             if (self == variant) {
                 return NormalizedMap{ .table = @embedFile("map/" ++ variant.fileName() ++ ".bin") };
             }
