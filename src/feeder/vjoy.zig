@@ -100,11 +100,11 @@ pub const FFBPacket = struct {
 pub const FFBReceiver = struct {
     const Fifo = LinearFifo(FFBPacket, .{ .Static = 10 });
 
-    allocator: *Allocator,
+    allocator: Allocator,
     mutex: Mutex,
     queue: Fifo,
 
-    pub fn init(allocator: *Allocator) Allocator.Error!*FFBReceiver {
+    pub fn init(allocator: Allocator) Allocator.Error!*FFBReceiver {
         var self = try allocator.create(FFBReceiver);
         self.* = FFBReceiver{
             .allocator = allocator,

@@ -10,7 +10,7 @@ pub const user_shader_path = "color.frag";
 
 pub const Context = struct {
     mutex: std.Thread.Mutex,
-    allocator: *std.mem.Allocator,
+    allocator: std.mem.Allocator,
     sock: *const std.x.os.Socket,
     input: ?Input,
     stop: Atomic(bool),
@@ -45,7 +45,7 @@ fn receiveLoop(context: *Context) !void {
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
-    const allocator = &gpa.allocator;
+    const allocator = gpa.allocator();
 
     const sock = try std.x.os.Socket.init(
         std.os.AF.INET,

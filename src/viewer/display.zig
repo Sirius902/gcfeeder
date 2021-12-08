@@ -57,7 +57,7 @@ const Display = struct {
     timer: time.Timer,
 
     pub fn init(
-        allocator: *std.mem.Allocator,
+        allocator: std.mem.Allocator,
         color_shader_source: ?[]const u8,
     ) !Display {
         const vertex_shader = zgl.Shader.create(.vertex);
@@ -99,8 +99,10 @@ const Display = struct {
         color_shader.compile();
 
         if (zgl.getShader(color_shader, .compile_status) == 0) {
-            const compile_log = try color_shader.getCompileLog(allocator);
-            defer allocator.free(compile_log);
+            // TODO: Remove useless temp after zgl updates.
+            var a = allocator;
+            const compile_log = try color_shader.getCompileLog(&a);
+            defer a.free(compile_log);
 
             std.log.err(user_shader_path ++ " compile log: {s}", .{compile_log});
             return error.ShaderCompile;
