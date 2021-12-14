@@ -12,7 +12,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        submodules: true
+        submodules: "recursive"
     - name: Setup Zig
       uses: goto-bus-stop/setup-zig@v1
       with:
