@@ -139,7 +139,7 @@ pub const FFBReceiver = struct {
         self.queue.writeItemAssumeCapacity(packet);
     }
 
-    export fn ffbCallback(data: ?*c_void, userdata: ?*c_void) void {
+    export fn ffbCallback(data: ?*anyopaque, userdata: ?*anyopaque) void {
         const ffb_data = @intToPtr(*c.FFB_DATA, @ptrToInt(data.?));
         const self = @intToPtr(*FFBReceiver, @ptrToInt(userdata.?));
         var c_id: c_int = undefined;

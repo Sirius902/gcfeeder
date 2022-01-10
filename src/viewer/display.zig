@@ -99,10 +99,8 @@ const Display = struct {
         color_shader.compile();
 
         if (zgl.getShader(color_shader, .compile_status) == 0) {
-            // TODO: Remove useless temp after zgl updates.
-            var a = allocator;
-            const compile_log = try color_shader.getCompileLog(&a);
-            defer a.free(compile_log);
+            const compile_log = try color_shader.getCompileLog(allocator);
+            defer allocator.free(compile_log);
 
             std.log.err(user_shader_path ++ " compile log: {s}", .{compile_log});
             return error.ShaderCompile;
