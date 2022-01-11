@@ -145,7 +145,7 @@ const Display = struct {
         };
 
         const indices = [_]u32{
-            0, 1, 2,
+            0, 2, 1,
             0, 3, 2,
         };
 
