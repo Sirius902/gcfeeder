@@ -60,7 +60,7 @@ float inversef(float t) {
     if (t > delta) {
         return pow(t, 3.0);
     } else {
-        return 3 * pow(delta, 2.0) * (t - (4.0 / 29.0));
+        return 3.0 * pow(delta, 2.0) * (t - (4.0 / 29.0));
     }
 }
 
