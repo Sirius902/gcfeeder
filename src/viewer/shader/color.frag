@@ -20,20 +20,20 @@
     precision mediump float;
 #endif
 
-uniform vec2 resolution;
-uniform float time;
-uniform int which;
+uniform vec2 u_Resolution;
+uniform float u_Time;
+uniform int u_Which;
 
-vec2 screen_pos = gl_FragCoord.xy / resolution;
+vec2 screenPos = gl_FragCoord.xy / u_Resolution;
 
-const vec4 main_color = vec4(0.95, 0.95, 0.95, 1.0);
+const vec4 mainColor = vec4(0.95, 0.95, 0.95, 1.0);
 
 vec4 colorBackground() {
     return vec4(0.0);
 }
 
 vec4 colorButton(bool pressed) {
-    switch (which) {
+    switch (u_Which) {
         case BUTTON_A:
             return vec4(0.0, 0.737, 0.556, 1.0);
         case BUTTON_B:
@@ -45,7 +45,7 @@ vec4 colorButton(bool pressed) {
         case DPAD_LEFT:
         case DPAD_RIGHT:
         case DPAD_DOWN:
-            return main_color;
+            return mainColor;
         case BUTTON_Z:
             return vec4(0.333, 0.0, 0.678, 1.0);
         default:
@@ -53,10 +53,10 @@ vec4 colorButton(bool pressed) {
     }
 }
 
-vec4 colorStick(vec2 stick_pos) {
-    switch (which) {
+vec4 colorStick(vec2 stickPos) {
+    switch (u_Which) {
         case STICK_MAIN:
-            return main_color;
+            return mainColor;
         case STICK_C:
             return vec4(1.0, 0.894, 0.0, 1.0);
         default:
@@ -65,5 +65,5 @@ vec4 colorStick(vec2 stick_pos) {
 }
 
 vec4 colorTrigger(float fill, bool pressed) {
-    return main_color;
+    return mainColor;
 }

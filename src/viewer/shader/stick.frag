@@ -1,30 +1,36 @@
 #version 330 core
-in vec2 v_pos;
-in vec2 v_tex_coord;
-in float border_width;
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+#else
+    precision mediump float;
+#endif
 
-layout (location = 0) out vec4 frag_color;
+in vec2 v_Position;
+in vec2 v_TexCoord;
+in float v_BorderWidth;
+
+layout (location = 0) out vec4 diffuseColor;
 
 // octagon notch sdf
-uniform sampler2D sdf_texture;
-uniform vec2 pos;
-uniform bool is_c_stick;
+uniform sampler2D u_SdfTexture;
+uniform vec2 u_Pos;
+uniform bool u_IsCStick;
 
-float radius = 0.225 * (is_c_stick ? 0.8 : 1.0);
+float radius = 0.225 * (u_IsCStick ? 0.8 : 1.0);
 
-vec4 colorStick(vec2 stick_pos);
+vec4 colorStick(vec2 stickPos);
 
 void main() {
-    vec2 center = v_pos + ((pos - 0.5) * 0.5);
+    vec2 center = v_Position + ((u_Pos - 0.5) * 0.5);
     float dist = radius - sqrt((center.x * center.x) + (center.y * center.y));
 
-    vec2 scaled_tex_coords = (v_tex_coord - 0.5) / 0.85 + 0.5;
-    float sdf_dist = texture(sdf_texture, scaled_tex_coords).r;
+    vec2 scaledTexCoords = (v_TexCoord - 0.5) / 0.85 + 0.5;
+    float sdfDist = texture(u_SdfTexture, scaledTexCoords).r;
 
-    if ((dist < 0.0 && (sdf_dist < 0.5 - (4.0 * border_width) || sdf_dist >= 0.5))
-         || (!is_c_stick && dist >= border_width)) {
+    if ((dist < 0.0 && (sdfDist < 0.5 - (4.0 * v_BorderWidth) || sdfDist >= 0.5))
+         || (!u_IsCStick && dist >= v_BorderWidth)) {
         discard;
     }
 
-    frag_color = colorStick(pos);
+    diffuseColor = colorStick(u_Pos);
 }

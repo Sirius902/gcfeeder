@@ -1,21 +1,27 @@
 #version 330 core
-in vec2 v_pos;
-in vec2 v_tex_coord;
-in float border_width;
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+#else
+    precision mediump float;
+#endif
 
-layout (location = 0) out vec4 frag_color;
+in vec2 v_Position;
+in vec2 v_TexCoord;
+in float v_BorderWidth;
 
-uniform sampler2D sdf_texture;
-uniform bool pressed;
+layout (location = 0) out vec4 diffuseColor;
+
+uniform sampler2D u_SdfTexture;
+uniform bool u_Pressed;
 
 vec4 colorButton(bool pressed);
 
 void main() {
-    float dist = texture(sdf_texture, v_tex_coord).r;
+    float dist = texture(u_SdfTexture, v_TexCoord).r;
 
-    if (dist < 0.5 - (4.0 * border_width) || (!pressed && dist >= 0.5)) {
+    if (dist < 0.5 - (4.0 * v_BorderWidth) || (!u_Pressed && dist >= 0.5)) {
         discard;
     }
 
-    frag_color = colorButton(pressed);
+    diffuseColor = colorButton(u_Pressed);
 }

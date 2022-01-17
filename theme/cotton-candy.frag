@@ -20,26 +20,26 @@
     precision mediump float;
 #endif
 
-uniform vec2 resolution;
-uniform float time;
-uniform int which;
+uniform vec2 u_Resolution;
+uniform float u_Time;
+uniform int u_Which;
 
-vec2 screen_pos = gl_FragCoord.xy / resolution;
+vec2 screenPos = gl_FragCoord.xy / u_Resolution;
 
-vec4 wave_color = vec4((sin(time) + 1.0) / 2.0, screen_pos.y, 1.0, 1.0);
+vec4 waveColor = vec4((sin(u_Time) + 1.0) / 2.0, screenPos.y, 1.0, 1.0);
 
 vec4 colorBackground() {
     return vec4(0.0);
 }
 
 vec4 colorButton(bool pressed) {
-    return wave_color;
+    return waveColor;
 }
 
-vec4 colorStick(vec2 stick_pos) {
-    return wave_color;
+vec4 colorStick(vec2 stickPos) {
+    return waveColor;
 }
 
 vec4 colorTrigger(float fill, bool pressed) {
-    return wave_color;
+    return waveColor;
 }

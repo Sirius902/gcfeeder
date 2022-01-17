@@ -1,21 +1,27 @@
 #version 330 core
-in vec2 v_pos;
-in float border_width;
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+#else
+    precision mediump float;
+#endif
 
-layout (location = 0) out vec4 frag_color;
+in vec2 v_Position;
+in float v_BorderWidth;
 
-uniform bool pressed;
+layout (location = 0) out vec4 diffuseColor;
+
+uniform bool u_Pressed;
 
 float radius = 0.1;
 
 vec4 colorButton(bool pressed);
 
 void main() {
-    float dist = radius - sqrt((v_pos.x * v_pos.x) + (v_pos.y * v_pos.y));
+    float dist = radius - sqrt((v_Position.x * v_Position.x) + (v_Position.y * v_Position.y));
 
-    if (dist < 0.0 || (!pressed && dist >= border_width)) {
+    if (dist < 0.0 || (!u_Pressed && dist >= v_BorderWidth)) {
         discard;
     }
 
-    frag_color = colorButton(pressed);
+    diffuseColor = colorButton(u_Pressed);
 }

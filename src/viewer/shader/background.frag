@@ -1,8 +1,14 @@
 #version 330 core
-layout (location = 0) out vec4 frag_color;
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+#else
+    precision mediump float;
+#endif
+
+layout (location = 0) out vec4 diffuseColor;
 
 vec4 colorBackground();
 
 void main() {
-    frag_color = colorBackground();
+    diffuseColor = colorBackground();
 }

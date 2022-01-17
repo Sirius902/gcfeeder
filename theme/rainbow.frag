@@ -20,14 +20,14 @@
     precision mediump float;
 #endif
 
-uniform vec2 resolution;
-uniform float time;
-uniform int which;
+uniform vec2 u_Resolution;
+uniform float u_Time;
+uniform int u_Which;
 
-vec2 screen_pos = gl_FragCoord.xy / resolution;
+vec2 screenPos = gl_FragCoord.xy / u_Resolution;
 
-const vec2 d65_cie = vec2(0.31271, 0.32902);
-const vec3 d65 = vec3((1.0 / d65_cie.y) * d65_cie.x, 1.0, (1.0 / d65_cie.y) * (1.0 - d65_cie.x - d65_cie.y));
+const vec2 d65Cie = vec2(0.31271, 0.32902);
+const vec3 d65 = vec3((1.0 / d65Cie.y) * d65Cie.x, 1.0, (1.0 / d65Cie.y) * (1.0 - d65Cie.x - d65Cie.y));
 
 const vec2 sr = vec2(0.640, 0.330);
 const vec2 sg = vec2(0.300, 0.600);
@@ -84,7 +84,7 @@ vec3 lchToLab(vec3 c) {
 }
 
 vec4 waveColor(float lum, float chrom) {
-    return vec4(rgbToSrgb(xyzToRgb(labToXyz(lchToLab(vec3(lum, chrom, time + 2 * screen_pos))))), 1.0);
+    return vec4(rgbToSrgb(xyzToRgb(labToXyz(lchToLab(vec3(lum, chrom, u_Time + 2 * screenPos))))), 1.0);
 }
 
 vec4 colorBackground() {
@@ -95,7 +95,7 @@ vec4 colorButton(bool pressed) {
     return waveColor(80.0, 100.0);
 }
 
-vec4 colorStick(vec2 stick_pos) {
+vec4 colorStick(vec2 stickPos) {
     return waveColor(80.0, 100.0);
 }
 
