@@ -239,9 +239,9 @@ const Display = struct {
         const height = @intToFloat(f32, window_height);
         const aspect = width / height;
         const projection = if (window_width >= window_height)
-            zlm.Mat4.createOrthogonal(-0.5 * aspect, 0.5 * aspect, -0.5, 0.5, -1.0, 1.0)
+            zlm.Mat4.createOrthogonal(-0.5 * aspect, 0.5 * aspect, -0.5, 0.5, 0.1, 1.0)
         else
-            zlm.Mat4.createOrthogonal(-0.5, 0.5, -0.5 / aspect, 0.5 / aspect, -1.0, 1.0);
+            zlm.Mat4.createOrthogonal(-0.5, 0.5, -0.5 / aspect, 0.5 / aspect, 0.1, 1.0);
 
         const programs = [_]zgl.Program{
             self.background_program,
