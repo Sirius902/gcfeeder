@@ -232,7 +232,7 @@ const Display = struct {
         };
     }
 
-    pub fn draw(self: Display, input: ?Input) void {
+    pub fn draw(self: *Display, input: ?Input) void {
         self.vao.bind();
 
         const width = @intToFloat(f32, window_width);
@@ -595,7 +595,7 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     c.glfwSwapInterval(1);
     _ = c.glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    const display = try Display.init(context.allocator, color_shader_source);
+    var display = try Display.init(context.allocator, color_shader_source);
 
     while (c.glfwWindowShouldClose(window) == c.GLFW_FALSE) {
         const input = blk: {
