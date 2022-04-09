@@ -124,42 +124,45 @@ fn rumbleLoop(context: *Context) void {
 
 pub fn main() !void {
     const options = blk: {
-        const params = comptime [_]clap.Param(clap.Help){
-            clap.parseParam("-h, --help          Display this help and exit.") catch unreachable,
-            clap.parseParam("-e, --ess           Enables ESS adapter with oot-vc mapping.") catch unreachable,
-            clap.parseParam("-m, --mapping <MAP> Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.") catch unreachable,
-            clap.parseParam("-s, --server        Enables UDP input server.") catch unreachable,
-            clap.parseParam("-p, --port <PORT>   Enables UDP input server on port.") catch unreachable,
+        const params = comptime clap.parseParamsComptime(
+            \\-h, --help          Display this help and exit.
+            \\-e, --ess           Enables ESS adapter with oot-vc mapping.
+            \\-m, --mapping <MAP> Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
+            \\-s, --server        Enables UDP input server.
+            \\-p, --port <PORT>   Enables UDP input server on port.
+            \\
+        );
+
+        const parsers = comptime .{
+            .MAP = clap.parsers.string,
+            .PORT = clap.parsers.int(u16, 10),
         };
 
         var diag = clap.Diagnostic{};
-        var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
+        var res = clap.parse(clap.Help, &params, parsers, .{
+            .diagnostic = &diag,
+        }) catch |err| {
             diag.report(std.io.getStdErr().writer(), err) catch {};
             return;
         };
-        defer args.deinit();
+        defer res.deinit();
 
-        if (args.flag("--help")) {
-            try clap.help(std.io.getStdErr().writer(), &params);
+        if (res.args.help) {
+            try clap.help(std.io.getStdErr().writer(), clap.Help, &params, .{});
             return;
         }
 
-        const port = if (args.option("--port")) |p|
-            std.fmt.parseUnsigned(u16, p, 10) catch {
-                std.log.err("Invalid port specified.", .{});
-                return;
-            }
-        else if (args.flag("--server"))
+        const port = res.args.port orelse if (res.args.server)
             @as(u16, 4096)
         else
             null;
 
-        const ess_mapping = if (args.option("--mapping")) |m|
+        const ess_mapping = if (res.args.mapping) |m|
             ess.Mapping.fromFileName(m) orelse {
                 std.log.err("Invalid mapping specified.", .{});
                 return;
             }
-        else if (args.flag("--ess"))
+        else if (res.args.ess)
             ess.Mapping.oot_vc
         else
             null;

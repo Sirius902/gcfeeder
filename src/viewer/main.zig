@@ -55,30 +55,32 @@ pub fn main() !void {
     );
 
     const port = blk: {
-        const params = comptime [_]clap.Param(clap.Help){
-            clap.parseParam("-h, --help        Display this help and exit.        ") catch unreachable,
-            clap.parseParam("-p, --port <PORT> Listen to UDP input server on port.") catch unreachable,
+        const params = comptime clap.parseParamsComptime(
+            \\-h, --help        Display this help and exit.
+            \\-p, --port <PORT> Listen to UDP input server on port.
+            \\
+        );
+
+        const parsers = comptime .{
+            .MAP = clap.parsers.string,
+            .PORT = clap.parsers.int(u16, 10),
         };
 
         var diag = clap.Diagnostic{};
-        var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
+        var res = clap.parse(clap.Help, &params, parsers, .{
+            .diagnostic = &diag,
+        }) catch |err| {
             diag.report(std.io.getStdErr().writer(), err) catch {};
             return;
         };
-        defer args.deinit();
+        defer res.deinit();
 
-        if (args.flag("--help")) {
-            try clap.help(std.io.getStdErr().writer(), &params);
+        if (res.args.help) {
+            try clap.help(std.io.getStdErr().writer(), clap.Help, &params, .{});
             return;
         }
 
-        break :blk if (args.option("--port")) |p|
-            std.fmt.parseUnsigned(u16, p, 10) catch {
-                std.log.err("Invalid port specified.", .{});
-                return;
-            }
-        else
-            4096;
+        break :blk res.args.port orelse 4096;
     };
 
     try sock.bind(.{ .ipv4 = .{
