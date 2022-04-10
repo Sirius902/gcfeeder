@@ -61,7 +61,7 @@ pub const StickCalibration = struct {
         const t = mat3Mul(x, mat3Invert(a) orelse unreachable);
         const res = zlm.Vec3.new(@intToFloat(f32, pos[0]), @intToFloat(f32, pos[1]), 1.0).transform(t);
 
-        // std.debug.print("q = {}, T = {d:.3}, res = {d:.3}\n", .{ q, t.fields, res });
+        // TODO: I am not sure why x and y have to be switched here.
         return [_]u8{ std.math.lossyCast(u8, @round(res.y)), std.math.lossyCast(u8, @round(res.x)) };
     }
 
@@ -89,8 +89,6 @@ pub const StickCalibration = struct {
 
         const max_angle = angles[max_index];
         const min_angle = angles[(max_index + angles.len - 1) % angles.len];
-
-        // std.debug.print("max_index = {} | min_angle = {d:.3} | max_angle = {d:.3}\n", .{ max_index, min_angle, max_angle });
 
         if (angle > max_angle or angle < min_angle) {
             return @intCast(u3, max_index);
@@ -229,8 +227,6 @@ pub fn generateCalibration(adapter: *Adapter) !Calibration {
             break;
         }
     }
-
-    // std.debug.print("calibration = {}\n", .{calibration});
 
     return calibration;
 }
