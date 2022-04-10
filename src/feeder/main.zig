@@ -11,6 +11,7 @@ const Feeder = @import("feeder.zig").Feeder;
 const ess = @import("ess/ess.zig");
 const Atomic = std.atomic.Atomic;
 const time = std.time;
+const emulator = @import("emulator.zig");
 
 pub const log_level = .info;
 
@@ -18,6 +19,7 @@ const Options = struct {
     ess_mapping: ?ess.Mapping,
     port: ?u16,
     use_calibration: bool,
+    emulator_rumble: bool,
 };
 
 pub const Context = struct {
@@ -31,6 +33,7 @@ pub const Context = struct {
     ess_mapping: ?ess.Mapping,
     calibration: ?Calibration,
     use_calibration: bool,
+    emulator_rumble: bool,
 };
 
 const fail_wait = 100 * time.ns_per_ms;
@@ -105,22 +108,43 @@ fn rumbleLoop(context: *Context) void {
     var last_timestamp: ?i64 = null;
     var rumble = Rumble.Off;
 
+    var handle: ?emulator.Handle = null;
+    defer if (handle) |h| h.close();
+
     while (!context.stop.load(.Acquire)) {
         if (context.feeder) |*feeder| {
-            if (receiver.get()) |packet| {
-                if (packet.device_id == 1) {
-                    rumble = switch (packet.effect.operation) {
-                        .Stop => .Off,
-                        else => .On,
-                    };
+            if (!context.emulator_rumble) {
+                if (receiver.get()) |packet| {
+                    if (packet.device_id == 1) {
+                        rumble = switch (packet.effect.operation) {
+                            .Stop => .Off,
+                            else => .On,
+                        };
 
-                    if (last_timestamp) |last| {
-                        if (packet.timestamp_ms - last < 2) {
-                            rumble = .Off;
+                        if (last_timestamp) |last| {
+                            if (packet.timestamp_ms - last < 2) {
+                                rumble = .Off;
+                            }
                         }
-                    }
 
-                    last_timestamp = packet.timestamp_ms;
+                        last_timestamp = packet.timestamp_ms;
+                    }
+                }
+            } else {
+                if (handle) |h| {
+                    rumble = h.rumbleState() catch blk: {
+                        std.log.info("Disconnected from {s}", .{h.emulatorTitle()});
+                        h.close();
+                        handle = null;
+                        break :blk .Off;
+                    };
+                } else {
+                    handle = emulator.Handle.open() catch blk: {
+                        time.sleep(fail_wait);
+                        break :blk null;
+                    };
+                    if (handle) |h| std.log.info("Connected to {s} OoT 1.0", .{h.emulatorTitle()});
+                    rumble = .Off;
                 }
             }
 
@@ -158,6 +182,7 @@ pub fn main() !void {
             \\-s, --server        Enables UDP input server.
             \\-p, --port <PORT>   Enables UDP input server on port.
             \\-c, --calibrate     Use calibration to scale controller to full Windows range.
+            \\--oot               Read rumble data from OoT 1.0 on emulator.
             \\
         );
 
@@ -199,6 +224,7 @@ pub fn main() !void {
             .ess_mapping = ess_mapping,
             .port = port,
             .use_calibration = res.args.calibrate,
+            .emulator_rumble = res.args.oot,
         };
     };
 
@@ -247,6 +273,7 @@ pub fn main() !void {
         .ess_mapping = options.ess_mapping,
         .calibration = null,
         .use_calibration = options.use_calibration,
+        .emulator_rumble = options.emulator_rumble,
     };
     defer if (thread_ctx.feeder) |feeder| feeder.deinit();
 

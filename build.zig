@@ -52,6 +52,7 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
+    exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
 
     return exe;
 }

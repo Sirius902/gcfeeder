@@ -11,3 +11,6 @@
 [submodule "pkg/zig-clap"]
 	path = pkg/zig-clap
 	url = https://github.com/Hejsil/zig-clap.git
+[submodule "pkg/grindel"]
+	path = pkg/grindel
+	url = https://github.com/Sirius902/grindel.git
