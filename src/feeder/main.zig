@@ -1,6 +1,8 @@
 const std = @import("std");
 const usb = @import("zusb");
 const clap = @import("clap");
+const calibrate = @import("calibrate.zig");
+const Calibration = @import("calibrate.zig").Calibration;
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
@@ -15,9 +17,11 @@ pub const log_level = .info;
 const Options = struct {
     ess_mapping: ?ess.Mapping,
     port: ?u16,
+    use_calibration: bool,
 };
 
 pub const Context = struct {
+    allocator: std.mem.Allocator,
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     feeder: ?Feeder,
@@ -25,14 +29,37 @@ pub const Context = struct {
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
+    calibration: ?Calibration,
+    use_calibration: bool,
 };
 
 const fail_wait = 100 * time.ns_per_ms;
 
+fn updateFeeder(context: *Context) !?Input {
+    const feeder = &(context.feeder orelse unreachable);
+    const adapter = &feeder.adapter;
+
+    if (context.use_calibration) {
+        if (context.calibration == null) {
+            if (try Calibration.load(context.allocator)) |cal| {
+                context.calibration = cal;
+            } else {
+                const cal = try calibrate.generateCalibration(adapter);
+                try cal.save(context.allocator);
+                context.calibration = cal;
+            }
+        }
+
+        return feeder.feed(context.ess_mapping, context.calibration.?);
+    } else {
+        return feeder.feed(context.ess_mapping, null);
+    }
+}
+
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
         if (context.feeder) |*feeder| {
-            const input = feeder.feed(context.ess_mapping) catch |err| {
+            const input = updateFeeder(context) catch |err| {
                 switch (err) {
                     error.Timeout => continue,
                     else => {
@@ -130,6 +157,7 @@ pub fn main() !void {
             \\-m, --mapping <MAP> Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
             \\-s, --server        Enables UDP input server.
             \\-p, --port <PORT>   Enables UDP input server on port.
+            \\-c, --calibrate     Use calibration to scale controller to full Windows range.
             \\
         );
 
@@ -170,6 +198,7 @@ pub fn main() !void {
         break :blk Options{
             .ess_mapping = ess_mapping,
             .port = port,
+            .use_calibration = res.args.calibrate,
         };
     };
 
@@ -208,6 +237,7 @@ pub fn main() !void {
     defer if (sock) |s| s.deinit();
 
     var thread_ctx = Context{
+        .allocator = allocator,
         .mutex = std.Thread.Mutex{},
         .usb_ctx = &ctx,
         .feeder = null,
@@ -215,6 +245,8 @@ pub fn main() !void {
         .stop = Atomic(bool).init(false),
         .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
+        .calibration = null,
+        .use_calibration = options.use_calibration,
     };
     defer if (thread_ctx.feeder) |feeder| feeder.deinit();
 

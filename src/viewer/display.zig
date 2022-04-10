@@ -401,12 +401,12 @@ const Display = struct {
             );
 
             const x = @floatCast(f32, if (input) |in|
-                1.0 - Calibration.main_stick.normalize(in.stick_x)
+                1.0 - Calibration.stick_range.normalize(in.stick_x)
             else
                 0.5);
 
             const y = @floatCast(f32, if (input) |in|
-                1.0 - Calibration.main_stick.normalize(in.stick_y)
+                1.0 - Calibration.stick_range.normalize(in.stick_y)
             else
                 0.5);
 
@@ -424,12 +424,12 @@ const Display = struct {
             );
 
             const x = @floatCast(f32, if (input) |in|
-                1.0 - Calibration.c_stick.normalize(in.substick_x)
+                1.0 - Calibration.stick_range.normalize(in.substick_x)
             else
                 0.5);
 
             const y = @floatCast(f32, if (input) |in|
-                1.0 - Calibration.c_stick.normalize(in.substick_y)
+                1.0 - Calibration.stick_range.normalize(in.substick_y)
             else
                 0.5);
 

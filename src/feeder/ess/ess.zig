@@ -2,7 +2,7 @@ const std = @import("std");
 const math = std.math;
 const Tuple = std.meta.Tuple;
 const Input = @import("../adapter.zig").Input;
-const main_stick = @import("../adapter.zig").Calibration.main_stick;
+const stick_range = @import("../adapter.zig").Calibration.stick_range;
 
 pub const Mapping = enum {
     oot_vc,
@@ -69,10 +69,10 @@ pub const Quadrant = enum {
     Four,
 
     pub fn of(coords: *const [2]u8) Quadrant {
-        if (coords[0] >= main_stick.center) {
-            return if (coords[1] >= main_stick.center) .One else .Four;
+        if (coords[0] >= stick_range.center) {
+            return if (coords[1] >= stick_range.center) .One else .Four;
         } else {
-            return if (coords[1] >= main_stick.center) .Two else .Three;
+            return if (coords[1] >= stick_range.center) .Two else .Three;
         }
     }
 };
@@ -86,13 +86,13 @@ fn normalize(coords: *[2]u8) Quadrant {
     const y = @as(i10, coords[1]);
 
     const xx = switch (original) {
-        .One, .Four => x - main_stick.center,
-        .Two, .Three => math.min(main_stick.center - x, main_stick.radius),
+        .One, .Four => x - stick_range.center,
+        .Two, .Three => math.min(stick_range.center - x, stick_range.radius),
     };
 
     const yy = switch (original) {
-        .One, .Two => y - main_stick.center,
-        .Three, .Four => math.min(main_stick.center - y, main_stick.radius),
+        .One, .Two => y - stick_range.center,
+        .Three, .Four => math.min(stick_range.center - y, stick_range.radius),
     };
 
     coords[0] = @intCast(u8, math.clamp(xx, math.minInt(u8), math.maxInt(u8)));
@@ -106,13 +106,13 @@ fn denormalize(coords: *[2]u8, original: Quadrant) void {
     const y = @as(i10, coords[1]);
 
     const xx = switch (original) {
-        .One, .Four => x + main_stick.center,
-        .Two, .Three => main_stick.center - x,
+        .One, .Four => x + stick_range.center,
+        .Two, .Three => stick_range.center - x,
     };
 
     const yy = switch (original) {
-        .One, .Two => y + main_stick.center,
-        .Three, .Four => main_stick.center - y,
+        .One, .Two => y + stick_range.center,
+        .Three, .Four => stick_range.center - y,
     };
 
     coords[0] = @intCast(u8, math.clamp(xx, math.minInt(u8), math.maxInt(u8)));

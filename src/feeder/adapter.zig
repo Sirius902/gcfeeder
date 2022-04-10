@@ -224,8 +224,7 @@ const AnalogRange = struct {
 };
 
 pub const Calibration = struct {
-    pub const main_stick = StickRange{ .center = 0x80, .radius = 0x7F };
-    pub const c_stick = StickRange{ .center = 0x80, .radius = 0x7F };
+    pub const stick_range = StickRange{ .center = 0x80, .radius = 0x7F };
     pub const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
 
     stick_x: i10,
@@ -237,10 +236,10 @@ pub const Calibration = struct {
 
     pub fn init(initial: Input) Calibration {
         return Calibration{
-            .stick_x = @as(i10, main_stick.center) - initial.stick_x,
-            .stick_y = @as(i10, main_stick.center) - initial.stick_y,
-            .substick_x = @as(i10, c_stick.center) - initial.substick_x,
-            .substick_y = @as(i10, c_stick.center) - initial.substick_y,
+            .stick_x = @as(i10, stick_range.center) - initial.stick_x,
+            .stick_y = @as(i10, stick_range.center) - initial.stick_y,
+            .substick_x = @as(i10, stick_range.center) - initial.substick_x,
+            .substick_y = @as(i10, stick_range.center) - initial.substick_y,
             .trigger_left = @as(i10, trigger_range.min) - initial.trigger_left,
             .trigger_right = @as(i10, trigger_range.min) - initial.trigger_right,
         };
@@ -249,12 +248,12 @@ pub const Calibration = struct {
     pub fn correct(self: Calibration, input: Input) Input {
         var in = input;
 
-        const stick = main_stick.restrict(
+        const stick = stick_range.restrict(
             @as(i10, in.stick_x) + self.stick_x,
             @as(i10, in.stick_y) + self.stick_y,
         );
 
-        const substick = c_stick.restrict(
+        const substick = stick_range.restrict(
             @as(i10, in.substick_x) + self.substick_x,
             @as(i10, in.substick_y) + self.substick_y,
         );

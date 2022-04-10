@@ -50,6 +50,7 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.linkSystemLibrary("vJoyInterface");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
+    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     return exe;

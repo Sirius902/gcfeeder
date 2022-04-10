@@ -4,9 +4,9 @@ const usb = @import("zusb");
 const vjoy = @import("vjoy.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
-const main_stick = @import("adapter.zig").Calibration.main_stick;
-const c_stick = @import("adapter.zig").Calibration.c_stick;
+const stick_range = @import("adapter.zig").Calibration.stick_range;
 const trigger_range = @import("adapter.zig").Calibration.trigger_range;
+const Calibration = @import("calibrate.zig").Calibration;
 
 pub const Feeder = struct {
     pub const Error = Adapter.Error || vjoy.Device.Error;
@@ -28,15 +28,13 @@ pub const Feeder = struct {
         self.device.deinit();
     }
 
-    pub fn feed(self: *Feeder, ess_mapping: ?ess.Mapping) Error!?Input {
+    pub fn feed(self: *Feeder, ess_mapping: ?ess.Mapping, calibration: ?Calibration) Error!?Input {
         const inputs = try self.adapter.readInputs();
 
         if (inputs[0]) |input| {
-            if (ess_mapping) |m| {
-                try self.device.update(toVJoy(ess.map(m, input)));
-            } else {
-                try self.device.update(toVJoy(input));
-            }
+            const ess_mapped = if (ess_mapping) |m| ess.map(m, input) else input;
+            const calibrated = if (calibration) |cal| cal.map(ess_mapped) else ess_mapped;
+            try self.device.update(toVJoy(calibrated));
 
             return input;
         } else {
@@ -66,11 +64,11 @@ pub const Feeder = struct {
 
         pos.lButtons = buttons.sliceCast(u12).get(0);
 
-        pos.wAxisX = @floatToInt(c_long, std.math.ceil(main_stick.normalize(input.stick_x) * windows_max));
-        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - main_stick.normalize(input.stick_y)) * windows_max));
+        pos.wAxisX = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.stick_x) * windows_max));
+        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.stick_y)) * windows_max));
 
-        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(c_stick.normalize(input.substick_x) * windows_max));
-        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - c_stick.normalize(input.substick_y)) * windows_max));
+        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.substick_x) * windows_max));
+        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.substick_y)) * windows_max));
 
         pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * windows_max));
         pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * windows_max));
