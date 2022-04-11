@@ -3,11 +3,11 @@ const usb = @import("zusb");
 const clap = @import("clap");
 const calibrate = @import("calibrate.zig");
 const Calibration = @import("calibrate.zig").Calibration;
-const vjoy = @import("vjoy.zig");
+const vjoy = @import("bridge/vjoy.zig");
+const vigem = @import("bridge/vigem.zig");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
-const Feeder = @import("feeder.zig").Feeder;
 const ess = @import("ess/ess.zig");
 const Atomic = std.atomic.Atomic;
 const time = std.time;
@@ -26,8 +26,8 @@ pub const Context = struct {
     allocator: std.mem.Allocator,
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
-    feeder: ?Feeder,
-    receiver: *vjoy.FFBReceiver,
+    adapter: ?Adapter = null,
+    bridge: ?vjoy.Bridge = null,
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
@@ -38,138 +38,164 @@ pub const Context = struct {
 
 const fail_wait = 100 * time.ns_per_ms;
 
-fn updateFeeder(context: *Context) !?Input {
-    const feeder = &(context.feeder orelse unreachable);
-    const adapter = &feeder.adapter;
-
-    if (context.use_calibration) {
-        if (context.calibration == null) {
-            if (try Calibration.load(context.allocator)) |cal| {
-                context.calibration = cal;
-            } else {
-                const cal = try calibrate.generateCalibration(adapter);
-                try cal.save(context.allocator);
-                context.calibration = cal;
-            }
-        }
-
-        return feeder.feed(context.ess_mapping, context.calibration.?);
-    } else {
-        return feeder.feed(context.ess_mapping, null);
-    }
-}
-
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
-        if (context.feeder) |*feeder| {
-            const input = updateFeeder(context) catch |err| {
-                switch (err) {
-                    error.Timeout => continue,
-                    else => {
-                        context.mutex.lock();
-                        defer context.mutex.unlock();
-
-                        feeder.deinit();
-                        context.feeder = null;
-                        std.log.err("{} in input thread", .{err});
-                        std.log.info("Disconnected from adapter and vJoy", .{});
-                        continue;
-                    },
-                }
-            };
-
-            if (context.sock) |s| {
-                if (input) |in| {
-                    var buffer: [@sizeOf(Input)]u8 = undefined;
-                    in.serialize(&buffer);
-
-                    _ = s.write(&buffer, 0) catch |err| {
-                        std.log.err("{} in input thread", .{err});
-                    };
-                }
-            }
-        } else {
+        const bridge = &(context.bridge orelse blk: {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            context.feeder = Feeder.init(context.usb_ctx) catch |err| {
+            const b = vjoy.Bridge.init(context.allocator) catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;
             };
 
-            std.log.info("Connected to adapter and vJoy", .{});
+            std.log.info("Connected to vJoy", .{});
+
+            context.bridge = b;
+            break :blk b;
+        });
+
+        const adapter = &(context.adapter orelse blk: {
+            context.mutex.lock();
+            defer context.mutex.unlock();
+
+            const a = Adapter.init(context.usb_ctx) catch |err| {
+                std.log.err("{} in input thread", .{err});
+                time.sleep(fail_wait);
+                continue;
+            };
+
+            std.log.info("Connected to adapter", .{});
+
+            context.adapter = a;
+            break :blk a;
+        });
+
+        if (context.use_calibration and context.calibration == null) {
+            if (Calibration.load(context.allocator) catch null) |cal| {
+                context.calibration = cal;
+            } else {
+                const cal = calibrate.generateCalibration(adapter) catch |err| {
+                    switch (err) {
+                        error.Timeout => continue,
+                        else => {
+                            context.mutex.lock();
+                            defer context.mutex.unlock();
+
+                            adapter.deinit();
+                            context.adapter = null;
+                            std.log.err("{} in input thread", .{err});
+                            std.log.info("Disconnected from adapter", .{});
+                            continue;
+                        },
+                    }
+                };
+                cal.save(context.allocator) catch {
+                    std.log.err("Failed to save calibration.json", .{});
+                };
+                context.calibration = cal;
+            }
+        }
+
+        const inputs = adapter.readInputs() catch |err| {
+            switch (err) {
+                error.Timeout => continue,
+                else => {
+                    context.mutex.lock();
+                    defer context.mutex.unlock();
+
+                    adapter.deinit();
+                    context.adapter = null;
+                    std.log.err("{} in input thread", .{err});
+                    std.log.info("Disconnected from adapter", .{});
+                    continue;
+                },
+            }
+        };
+
+        if (inputs[0]) |input| {
+            const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
+            const calibrated = if (context.calibration) |cal| cal.map(ess_mapped) else ess_mapped;
+            bridge.feed(calibrated) catch |err| {
+                context.mutex.lock();
+                defer context.mutex.unlock();
+
+                bridge.deinit();
+                context.bridge = null;
+                std.log.err("{} in input thread", .{err});
+                std.log.info("Disconnected from vJoy", .{});
+                continue;
+            };
+
+            if (context.sock) |s| {
+                var buffer: [@sizeOf(Input)]u8 = undefined;
+                input.serialize(&buffer);
+
+                _ = s.write(&buffer, 0) catch |err| {
+                    std.log.err("{} in input thread", .{err});
+                };
+            }
         }
     }
 }
 
 fn rumbleLoop(context: *Context) void {
-    const receiver = context.receiver;
-    var last_timestamp: ?i64 = null;
     var rumble = Rumble.Off;
 
     var handle: ?emulator.Handle = null;
     defer if (handle) |h| h.close();
 
     while (!context.stop.load(.Acquire)) {
-        if (context.feeder) |*feeder| {
-            if (!context.emulator_rumble) {
-                if (receiver.get()) |packet| {
-                    if (packet.device_id == 1) {
-                        rumble = switch (packet.effect.operation) {
-                            .Stop => .Off,
-                            else => .On,
-                        };
-
-                        if (last_timestamp) |last| {
-                            if (packet.timestamp_ms - last < 2) {
-                                rumble = .Off;
-                            }
-                        }
-
-                        last_timestamp = packet.timestamp_ms;
-                    }
-                }
-            } else {
-                if (handle) |h| {
-                    rumble = h.rumbleState() catch blk: {
-                        std.log.info("Disconnected from {s}", .{h.emulatorTitle()});
-                        h.close();
-                        handle = null;
-                        break :blk .Off;
-                    };
-                } else {
-                    handle = emulator.Handle.open() catch blk: {
-                        time.sleep(fail_wait);
-                        break :blk null;
-                    };
-                    if (handle) |h| std.log.info("Connected to {s} OoT 1.0", .{h.emulatorTitle()});
-                    rumble = .Off;
-                }
-            }
-
-            context.mutex.lock();
-
-            feeder.adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
-                switch (err) {
-                    error.Timeout => {
-                        context.mutex.unlock();
-                        continue;
-                    },
-                    else => {
-                        // Release mutex before sleeping to allow input thread to acquire.
-                        context.mutex.unlock();
-                        std.log.err("{} in rumble thread", .{err});
-                        time.sleep(fail_wait);
-                        continue;
-                    },
-                }
-            };
-
-            context.mutex.unlock();
-        } else {
+        if (context.adapter == null or context.bridge == null) {
             time.sleep(8 * time.ns_per_ms);
+            continue;
         }
+
+        const adapter = &context.adapter.?;
+        const bridge = &context.bridge.?;
+
+        if (!context.emulator_rumble) {
+            if (bridge.pollRumble()) |r| {
+                rumble = r;
+            }
+        } else {
+            if (handle) |h| {
+                rumble = h.rumbleState() catch blk: {
+                    std.log.info("Disconnected from {s}", .{h.emulatorTitle()});
+                    h.close();
+                    handle = null;
+                    break :blk .Off;
+                };
+            } else {
+                handle = emulator.Handle.open() catch blk: {
+                    time.sleep(fail_wait);
+                    break :blk null;
+                };
+                if (handle) |h| std.log.info("Connected to {s} OoT 1.0", .{h.emulatorTitle()});
+                rumble = .Off;
+            }
+        }
+
+        context.mutex.lock();
+
+        adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
+            switch (err) {
+                error.Timeout => {
+                    context.mutex.unlock();
+                    continue;
+                },
+                else => {
+                    // Release mutex before sleeping to allow input thread to acquire.
+                    context.mutex.unlock();
+                    std.log.err("{} in rumble thread", .{err});
+                    time.sleep(fail_wait);
+                    continue;
+                },
+            }
+        };
+
+        context.mutex.unlock();
     }
 }
 
@@ -237,9 +263,6 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    var receiver = try vjoy.FFBReceiver.init(allocator);
-    defer receiver.deinit();
-
     const sock = blk: {
         if (options.port) |p| {
             const s = try std.x.os.Socket.init(
@@ -266,8 +289,6 @@ pub fn main() !void {
         .allocator = allocator,
         .mutex = std.Thread.Mutex{},
         .usb_ctx = &ctx,
-        .feeder = null,
-        .receiver = receiver,
         .stop = Atomic(bool).init(false),
         .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
@@ -275,7 +296,10 @@ pub fn main() !void {
         .use_calibration = options.use_calibration,
         .emulator_rumble = options.emulator_rumble,
     };
-    defer if (thread_ctx.feeder) |feeder| feeder.deinit();
+    defer {
+        if (thread_ctx.adapter) |a| a.deinit();
+        if (thread_ctx.bridge) |b| b.deinit();
+    }
 
     var threads = [_]std.Thread{
         try std.Thread.spawn(.{}, inputLoop, .{&thread_ctx}),

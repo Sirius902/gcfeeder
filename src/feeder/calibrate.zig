@@ -2,7 +2,6 @@ const std = @import("std");
 const zlm = @import("zlm");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
-const Feeder = @import("feeder.zig").Feeder;
 const stick_range = @import("adapter.zig").Calibration.stick_range;
 
 pub const StickCalibration = struct {
@@ -61,7 +60,7 @@ pub const StickCalibration = struct {
         const t = mat3Mul(x, mat3Invert(a) orelse unreachable);
         const res = zlm.Vec3.new(@intToFloat(f32, pos[0]), @intToFloat(f32, pos[1]), 1.0).transform(t);
 
-        // TODO: I am not sure why x and y have to be switched here.
+        // HACK: Not sure why x and y have to be switched here.
         return [_]u8{ std.math.lossyCast(u8, @round(res.y)), std.math.lossyCast(u8, @round(res.x)) };
     }
 

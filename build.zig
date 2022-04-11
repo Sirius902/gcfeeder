@@ -45,9 +45,19 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
 
     exe.addLibPath("lib");
 
-    exe.linkLibC();
+    const cxx_flags = [_][]const u8{
+        "-std=c++20",
+        "-fno-exceptions",
+        // HACK: This isn't defined during zig build for some reason.
+        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=0x28AL",
+    };
+
+    exe.linkLibCpp();
+    exe.addCSourceFile("src/feeder/bridge/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
+
     exe.linkSystemLibrary("libusb-1.0.dll");
     exe.linkSystemLibrary("vJoyInterface");
+    exe.linkSystemLibrary("setupapi");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
