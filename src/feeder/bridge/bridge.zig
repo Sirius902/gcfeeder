@@ -136,16 +136,50 @@ pub const ViGEmBridge = struct {
     }
 
     fn toX360(self: ViGEmBridge, input: Input) vigem.XUSBReport {
-        _ = self;
-        _ = input;
-        // TODO: Implement
-        @panic("Not implemented");
+        var pos = std.mem.zeroes(vigem.XUSBReport);
+
+        var buttons = std.PackedIntArray(u1, 16).init([_]u1{
+            @boolToInt(input.button_up),
+            @boolToInt(input.button_down),
+            @boolToInt(input.button_left),
+            @boolToInt(input.button_right),
+            @boolToInt(input.button_start),
+            0, // back
+            0, // left thumb
+            0, // right thumb
+            0, // left shoulder
+            @boolToInt(input.button_z),
+            0,
+            0,
+            @boolToInt(input.button_a),
+            @boolToInt(input.button_b),
+            @boolToInt(input.button_x),
+            @boolToInt(input.button_y),
+        });
+
+        pos.wButtons = buttons.sliceCast(u16).get(0);
+
+        pos.sThumbLX = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.stick_x) - 1.0) * windows_max));
+        pos.sThumbLY = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.stick_y) - 1.0) * windows_max));
+
+        pos.sThumbRX = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_x) - 1.0) * windows_max));
+        pos.sThumbRY = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_y) - 1.0) * windows_max));
+
+        if (self.config.digital_triggers) {
+            pos.bLeftTrigger = if (input.button_l) 255 else 0;
+            pos.bRightTrigger = if (input.button_r) 255 else 0;
+        } else {
+            pos.bLeftTrigger = input.trigger_left;
+            pos.bRightTrigger = input.trigger_right;
+        }
+
+        return pos;
     }
 
     fn toDS4(self: ViGEmBridge, input: Input) vigem.DS4Report {
         var pos = std.mem.zeroes(vigem.DS4Report);
 
-        const hat_bits = hatBits(input);
+        const hat_bits = ds4HatBits(input);
         var buttons = std.PackedIntArray(u1, 14).init([_]u1{
             @truncate(u1, hat_bits >> 0),
             @truncate(u1, hat_bits >> 1),
@@ -182,7 +216,7 @@ pub const ViGEmBridge = struct {
         return pos;
     }
 
-    fn hatBits(input: Input) u4 {
+    fn ds4HatBits(input: Input) u4 {
         const up: u4 = @boolToInt(input.button_up);
         const left: u4 = @boolToInt(input.button_left);
         const right: u4 = @boolToInt(input.button_right);

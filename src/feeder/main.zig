@@ -40,6 +40,22 @@ const fail_wait = 100 * time.ns_per_ms;
 
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
+        const adapter = &(context.adapter orelse blk: {
+            context.mutex.lock();
+            defer context.mutex.unlock();
+
+            const a = Adapter.init(context.usb_ctx) catch |err| {
+                std.log.err("{} in input thread", .{err});
+                time.sleep(fail_wait);
+                continue;
+            };
+
+            std.log.info("Connected to adapter", .{});
+
+            context.adapter = a;
+            break :blk a;
+        });
+
         const bridge = &(context.bridge orelse blk: {
             context.mutex.lock();
             defer context.mutex.unlock();
@@ -55,22 +71,6 @@ fn inputLoop(context: *Context) void {
 
             context.bridge = b;
             break :blk b;
-        });
-
-        const adapter = &(context.adapter orelse blk: {
-            context.mutex.lock();
-            defer context.mutex.unlock();
-
-            const a = Adapter.init(context.usb_ctx) catch |err| {
-                std.log.err("{} in input thread", .{err});
-                time.sleep(fail_wait);
-                continue;
-            };
-
-            std.log.info("Connected to adapter", .{});
-
-            context.adapter = a;
-            break :blk a;
         });
 
         if (context.use_calibration and context.calibration == null) {
@@ -157,7 +157,8 @@ fn rumbleLoop(context: *Context) void {
         const bridge = &context.bridge.?;
 
         if (!context.emulator_rumble) {
-            if (bridge.pollRumble()) |r| {
+            // TODO: Only store newest rumble value.
+            while (bridge.pollRumble()) |r| {
                 rumble = r;
             }
         } else {

@@ -102,7 +102,7 @@ pub const Listener = struct {
     queue: Fifo,
     device: *const Device,
 
-    const Fifo = LinearFifo(Rumble, .{ .Static = 10 });
+    const Fifo = LinearFifo(Rumble, .{ .Static = 16 });
 
     pub fn init(allocator: Allocator, device: *const Device) Allocator.Error!*Listener {
         var self = try allocator.create(Listener);

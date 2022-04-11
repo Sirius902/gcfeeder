@@ -101,7 +101,7 @@ pub const FFBPacket = struct {
 };
 
 pub const FFBReceiver = struct {
-    const Fifo = LinearFifo(FFBPacket, .{ .Static = 10 });
+    const Fifo = LinearFifo(FFBPacket, .{ .Static = 16 });
 
     allocator: Allocator,
     mutex: Mutex,
