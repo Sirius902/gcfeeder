@@ -3,8 +3,8 @@ const usb = @import("zusb");
 const clap = @import("clap");
 const calibrate = @import("calibrate.zig");
 const Calibration = @import("calibrate.zig").Calibration;
-const vjoy = @import("bridge/vjoy.zig");
-const vigem = @import("bridge/vigem.zig");
+const VJoyBridge = @import("bridge/bridge.zig").VJoyBridge;
+const ViGEmBridge = @import("bridge/bridge.zig").ViGEmBridge;
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const Rumble = @import("adapter.zig").Rumble;
@@ -27,7 +27,7 @@ pub const Context = struct {
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     adapter: ?Adapter = null,
-    bridge: ?vjoy.Bridge = null,
+    bridge: ?ViGEmBridge = null,
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
@@ -44,13 +44,14 @@ fn inputLoop(context: *Context) void {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            const b = vjoy.Bridge.init(context.allocator) catch |err| {
+            const b = ViGEmBridge.init(context.allocator) catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;
             };
 
-            std.log.info("Connected to vJoy", .{});
+            // TODO: Replace with name of bridge driver.
+            std.log.info("Connected to {s}", .{"vJoy"});
 
             context.bridge = b;
             break :blk b;
@@ -124,7 +125,7 @@ fn inputLoop(context: *Context) void {
                 bridge.deinit();
                 context.bridge = null;
                 std.log.err("{} in input thread", .{err});
-                std.log.info("Disconnected from vJoy", .{});
+                std.log.info("Disconnected from {s}", .{"vJoy"});
                 continue;
             };
 

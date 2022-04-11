@@ -8,11 +8,6 @@ const atomic = std.atomic;
 const Allocator = std.mem.Allocator;
 const LinearFifo = std.fifo.LinearFifo;
 const Mutex = std.Thread.Mutex;
-const Adapter = @import("../adapter.zig").Adapter;
-const Input = @import("../adapter.zig").Input;
-const Rumble = @import("../adapter.zig").Rumble;
-const stick_range = @import("../adapter.zig").Calibration.stick_range;
-const trigger_range = @import("../adapter.zig").Calibration.trigger_range;
 
 pub const JoystickPosition = c.JOYSTICK_POSITION_V2;
 
@@ -22,86 +17,6 @@ pub const Stat = enum {
     Busy,
     Miss,
     Unknown,
-};
-
-pub const Bridge = struct {
-    device: Device,
-    receiver: *FFBReceiver,
-    last_timestamp: ?i64 = null,
-
-    pub const Error = Adapter.Error || Device.Error || Allocator.Error;
-
-    pub fn init(allocator: Allocator) Error!Bridge {
-        const device = try Device.init(1);
-        const receiver = try FFBReceiver.init(allocator);
-        return Bridge{ .device = device, .receiver = receiver };
-    }
-
-    pub fn deinit(self: Bridge) void {
-        self.device.deinit();
-        self.receiver.deinit();
-    }
-
-    pub fn feed(self: Bridge, input: Input) Error!void {
-        try self.device.update(toVJoy(input));
-    }
-
-    pub fn pollRumble(self: *Bridge) ?Rumble {
-        var rumble: ?Rumble = null;
-
-        if (self.receiver.get()) |packet| {
-            if (packet.device_id == 1) {
-                rumble = switch (packet.effect.operation) {
-                    .Stop => .Off,
-                    else => .On,
-                };
-
-                if (self.last_timestamp) |last| {
-                    if (packet.timestamp_ms - last < 2) {
-                        rumble = .Off;
-                    }
-                }
-
-                self.last_timestamp = packet.timestamp_ms;
-            }
-        }
-
-        return rumble;
-    }
-
-    fn toVJoy(input: Input) JoystickPosition {
-        const windows_max = 32767;
-
-        var pos = std.mem.zeroes(JoystickPosition);
-
-        var buttons = std.PackedIntArray(u1, 12).init([_]u1{
-            @boolToInt(input.button_a),
-            @boolToInt(input.button_b),
-            @boolToInt(input.button_x),
-            @boolToInt(input.button_y),
-            @boolToInt(input.button_z),
-            @boolToInt(input.button_r),
-            @boolToInt(input.button_l),
-            @boolToInt(input.button_start),
-            @boolToInt(input.button_up),
-            @boolToInt(input.button_down),
-            @boolToInt(input.button_left),
-            @boolToInt(input.button_right),
-        });
-
-        pos.lButtons = buttons.sliceCast(u12).get(0);
-
-        pos.wAxisX = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.stick_x) * windows_max));
-        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.stick_y)) * windows_max));
-
-        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.substick_x) * windows_max));
-        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.substick_y)) * windows_max));
-
-        pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * windows_max));
-        pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * windows_max));
-
-        return pos;
-    }
 };
 
 pub const Device = struct {
