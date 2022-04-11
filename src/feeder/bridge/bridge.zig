@@ -91,14 +91,19 @@ pub const VJoyBridge = struct {
 
 pub const ViGEmBridge = struct {
     device: vigem.Device,
+    config: Config,
 
     pub const Error = vigem.Device.Error || Allocator.Error;
     pub const driver_name = "ViGEm";
 
-    pub fn init(allocator: Allocator) Error!ViGEmBridge {
-        _ = allocator;
-        const device = try vigem.Device.init();
-        return ViGEmBridge{ .device = device };
+    pub const Config = struct {
+        pad: vigem.Pad,
+        digital_triggers: bool = false,
+    };
+
+    pub fn init(_: Allocator, config: Config) Error!ViGEmBridge {
+        const device = try vigem.Device.init(config.pad);
+        return ViGEmBridge{ .device = device, .config = config };
     }
 
     pub fn deinit(self: ViGEmBridge) void {
@@ -106,15 +111,26 @@ pub const ViGEmBridge = struct {
     }
 
     pub fn feed(self: ViGEmBridge, input: Input) Error!void {
-        try self.device.update(toDS4(input));
+        try self.device.update(switch (self.config.pad) {
+            .x360 => &self.toX360(input),
+            .ds4 => &self.toDS4(input),
+        });
     }
 
     pub fn pollRumble(self: *ViGEmBridge) ?Rumble {
         _ = self;
+        // TODO: Implement
         return Rumble.Off;
     }
 
-    fn toDS4(input: Input) vigem.DS4Report {
+    fn toX360(self: ViGEmBridge, input: Input) vigem.XUSBReport {
+        _ = self;
+        _ = input;
+        // TODO: Implement
+        @panic("Not implemented");
+    }
+
+    fn toDS4(self: ViGEmBridge, input: Input) vigem.DS4Report {
         var pos = std.mem.zeroes(vigem.DS4Report);
 
         const hat_bits = hatBits(input);
@@ -143,8 +159,13 @@ pub const ViGEmBridge = struct {
         pos.bThumbRX = input.substick_x;
         pos.bThumbRY = ~input.substick_y;
 
-        pos.bTriggerL = input.trigger_left;
-        pos.bTriggerR = input.trigger_right;
+        if (self.config.digital_triggers) {
+            pos.bTriggerL = if (input.button_l) 255 else 0;
+            pos.bTriggerR = if (input.button_r) 255 else 0;
+        } else {
+            pos.bTriggerL = input.trigger_left;
+            pos.bTriggerR = input.trigger_right;
+        }
 
         return pos;
     }

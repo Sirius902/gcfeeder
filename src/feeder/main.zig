@@ -44,14 +44,14 @@ fn inputLoop(context: *Context) void {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            const b = ViGEmBridge.init(context.allocator) catch |err| {
+            const b = ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .digital_triggers = true }) catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;
             };
 
             // TODO: Replace with name of bridge driver.
-            std.log.info("Connected to {s}", .{"vJoy"});
+            std.log.info("Connected to {s}", .{ViGEmBridge.driver_name});
 
             context.bridge = b;
             break :blk b;
@@ -125,7 +125,7 @@ fn inputLoop(context: *Context) void {
                 bridge.deinit();
                 context.bridge = null;
                 std.log.err("{} in input thread", .{err});
-                std.log.info("Disconnected from {s}", .{"vJoy"});
+                std.log.info("Disconnected from {s}", .{ViGEmBridge.driver_name});
                 continue;
             };
 
