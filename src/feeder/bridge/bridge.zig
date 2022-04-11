@@ -90,7 +90,9 @@ pub const VJoyBridge = struct {
 };
 
 pub const ViGEmBridge = struct {
-    device: vigem.Device,
+    allocator: Allocator,
+    device: *vigem.Device,
+    listener: *vigem.Listener,
     config: Config,
 
     pub const Error = vigem.Device.Error || Allocator.Error;
@@ -101,13 +103,25 @@ pub const ViGEmBridge = struct {
         digital_triggers: bool = false,
     };
 
-    pub fn init(_: Allocator, config: Config) Error!ViGEmBridge {
-        const device = try vigem.Device.init(config.pad);
-        return ViGEmBridge{ .device = device, .config = config };
+    pub fn init(allocator: Allocator, config: Config) Error!ViGEmBridge {
+        var device = try allocator.create(vigem.Device);
+        errdefer allocator.destroy(device);
+
+        device.* = try vigem.Device.init(config.pad);
+        const listener = try vigem.Listener.init(allocator, device);
+
+        return ViGEmBridge{
+            .allocator = allocator,
+            .device = device,
+            .listener = listener,
+            .config = config,
+        };
     }
 
     pub fn deinit(self: ViGEmBridge) void {
+        self.listener.deinit();
         self.device.deinit();
+        self.allocator.destroy(self.device);
     }
 
     pub fn feed(self: ViGEmBridge, input: Input) Error!void {
@@ -118,9 +132,7 @@ pub const ViGEmBridge = struct {
     }
 
     pub fn pollRumble(self: *ViGEmBridge) ?Rumble {
-        _ = self;
-        // TODO: Implement
-        return Rumble.Off;
+        return self.listener.get();
     }
 
     fn toX360(self: ViGEmBridge, input: Input) vigem.XUSBReport {

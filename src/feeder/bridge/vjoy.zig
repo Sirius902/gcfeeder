@@ -4,7 +4,6 @@ pub const c = @cImport({
     @cInclude("windows.h");
     @cInclude("vjoyinterface.h");
 });
-const atomic = std.atomic;
 const Allocator = std.mem.Allocator;
 const LinearFifo = std.fifo.LinearFifo;
 const Mutex = std.Thread.Mutex;

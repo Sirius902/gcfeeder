@@ -4,6 +4,12 @@ const c = @cImport({
     @cInclude("ViGEm/Client.h");
 });
 
+const std = @import("std");
+const Allocator = std.mem.Allocator;
+const Mutex = std.Thread.Mutex;
+const LinearFifo = std.fifo.LinearFifo;
+const Rumble = @import("../adapter.zig").Rumble;
+
 pub const XUSBReport = c.XUSB_REPORT;
 
 // b0 - square
@@ -87,5 +93,88 @@ pub const Device = struct {
         if (!c.VIGEM_SUCCESS(res)) {
             return error.ViGEmFail;
         }
+    }
+};
+
+pub const Listener = struct {
+    allocator: Allocator,
+    mutex: Mutex,
+    queue: Fifo,
+    device: *const Device,
+
+    const Fifo = LinearFifo(Rumble, .{ .Static = 10 });
+
+    pub fn init(allocator: Allocator, device: *const Device) Allocator.Error!*Listener {
+        var self = try allocator.create(Listener);
+        self.* = Listener{
+            .allocator = allocator,
+            .mutex = Mutex{},
+            .queue = Fifo.init(),
+            .device = device,
+        };
+
+        _ = switch (device.pad_type) {
+            .x360 => c.vigem_target_x360_register_notification(device.client, device.pad, x360Callback, self),
+            .ds4 => c.vigem_target_ds4_register_notification(device.client, device.pad, ds4Callback, self),
+        };
+
+        return self;
+    }
+
+    pub fn deinit(self: *Listener) void {
+        switch (self.device.pad_type) {
+            .x360 => c.vigem_target_x360_unregister_notification(self.device.pad),
+            .ds4 => c.vigem_target_ds4_unregister_notification(self.device.pad),
+        }
+
+        self.allocator.destroy(self);
+    }
+
+    pub fn get(self: *Listener) ?Rumble {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+
+        return self.queue.readItem();
+    }
+
+    fn put(self: *Listener, packet: Rumble) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+
+        self.queue.ensureUnusedCapacity(1) catch {
+            self.queue.discard(1);
+        };
+
+        self.queue.writeItemAssumeCapacity(packet);
+    }
+
+    export fn x360Callback(
+        client: c.PVIGEM_CLIENT,
+        target: c.PVIGEM_TARGET,
+        large_motor: c.UCHAR,
+        small_motor: c.UCHAR,
+        led_number: c.UCHAR,
+        user_data: ?*anyopaque,
+    ) void {
+        _ = client;
+        _ = target;
+        _ = led_number;
+        const self = @intToPtr(*Listener, @ptrToInt(user_data.?));
+        self.put(if (large_motor > 0 or small_motor > 0) .On else .Off);
+    }
+
+    export fn ds4Callback(
+        client: c.PVIGEM_CLIENT,
+        target: c.PVIGEM_TARGET,
+        large_motor: c.UCHAR,
+        small_motor: c.UCHAR,
+        lightbar_color: c.DS4_LIGHTBAR_COLOR,
+        user_data: ?*anyopaque,
+    ) void {
+        _ = client;
+        _ = target;
+        _ = lightbar_color;
+        const self = @intToPtr(*Listener, @ptrToInt(user_data.?));
+        self.put(if (large_motor > 0 or small_motor > 0) .On else .Off);
     }
 };
