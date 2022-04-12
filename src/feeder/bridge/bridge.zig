@@ -323,7 +323,7 @@ pub const Bridge = struct {
     }
 
     pub fn feed(self: Bridge, input: Input) Error!void {
-        return self.vtable.feed(self.ptr, input);
+        try self.vtable.feed(self.ptr, input);
     }
 
     pub fn pollRumble(self: Bridge) ?Rumble {
