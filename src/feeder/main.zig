@@ -3,6 +3,7 @@ const usb = @import("zusb");
 const clap = @import("clap");
 const calibrate = @import("calibrate.zig");
 const Calibration = @import("calibrate.zig").Calibration;
+const Bridge = @import("bridge/bridge.zig").Bridge;
 const VJoyBridge = @import("bridge/bridge.zig").VJoyBridge;
 const ViGEmBridge = @import("bridge/bridge.zig").ViGEmBridge;
 const Adapter = @import("adapter.zig").Adapter;
@@ -27,7 +28,7 @@ pub const Context = struct {
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     adapter: ?Adapter = null,
-    bridge: ?ViGEmBridge = null,
+    bridge: ?Bridge = null,
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
@@ -56,22 +57,21 @@ fn inputLoop(context: *Context) void {
             break :blk a;
         });
 
-        const bridge = &(context.bridge orelse blk: {
+        const bridge = context.bridge orelse blk: {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            const b = ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .digital_triggers = true }) catch |err| {
+            const b = (ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .digital_triggers = true }) catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;
-            };
+            }).bridge();
 
-            // TODO: Replace with name of bridge driver.
-            std.log.info("Connected to {s}", .{ViGEmBridge.driver_name});
+            std.log.info("Connected to {s}", .{b.driverName()});
 
             context.bridge = b;
             break :blk b;
-        });
+        };
 
         if (context.use_calibration and context.calibration == null) {
             if (Calibration.load(context.allocator) catch null) |cal| {
@@ -125,7 +125,7 @@ fn inputLoop(context: *Context) void {
                 bridge.deinit();
                 context.bridge = null;
                 std.log.err("{} in input thread", .{err});
-                std.log.info("Disconnected from {s}", .{ViGEmBridge.driver_name});
+                std.log.info("Disconnected from {s}", .{bridge.driverName()});
                 continue;
             };
 
@@ -154,7 +154,7 @@ fn rumbleLoop(context: *Context) void {
         }
 
         const adapter = &context.adapter.?;
-        const bridge = &context.bridge.?;
+        const bridge = context.bridge.?;
 
         if (!context.emulator_rumble) {
             // TODO: Only store newest rumble value.

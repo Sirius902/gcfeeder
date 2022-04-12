@@ -10,26 +10,35 @@ const trigger_range = @import("../adapter.zig").Calibration.trigger_range;
 
 const windows_max = 32767;
 
+pub const Error = vjoy.Device.Error || vigem.Device.Error || Allocator.Error;
+
 pub const VJoyBridge = struct {
+    allocator: Allocator,
     device: vjoy.Device,
     receiver: *vjoy.FFBReceiver,
     last_timestamp: ?i64 = null,
 
-    pub const Error = vjoy.Device.Error || Allocator.Error;
-    pub const driver_name = "VJoy";
-
-    pub fn init(allocator: Allocator) Error!VJoyBridge {
+    pub fn init(allocator: Allocator) Error!*VJoyBridge {
         const device = try vjoy.Device.init(1);
         const receiver = try vjoy.FFBReceiver.init(allocator);
-        return VJoyBridge{ .device = device, .receiver = receiver };
+        errdefer receiver.deinit();
+
+        var self = try allocator.create(VJoyBridge);
+        self.* = VJoyBridge{
+            .allocator = allocator,
+            .device = device,
+            .receiver = receiver,
+        };
+        return self;
     }
 
-    pub fn deinit(self: VJoyBridge) void {
+    pub fn deinit(self: *VJoyBridge) void {
         self.device.deinit();
         self.receiver.deinit();
+        self.allocator.destroy(self);
     }
 
-    pub fn feed(self: VJoyBridge, input: Input) Error!void {
+    pub fn feed(self: *VJoyBridge, input: Input) Error!void {
         try self.device.update(toVJoy(input));
     }
 
@@ -54,6 +63,14 @@ pub const VJoyBridge = struct {
         }
 
         return rumble;
+    }
+
+    pub fn driverName() []const u8 {
+        return "vJoy";
+    }
+
+    pub fn bridge(self: *VJoyBridge) Bridge {
+        return Bridge.init(self, deinit, feed, pollRumble, driverName);
     }
 
     fn toVJoy(input: Input) vjoy.JoystickPosition {
@@ -95,36 +112,38 @@ pub const ViGEmBridge = struct {
     listener: *vigem.Listener,
     config: Config,
 
-    pub const Error = vigem.Device.Error || Allocator.Error;
-    pub const driver_name = "ViGEm";
-
     pub const Config = struct {
         pad: vigem.Pad,
         digital_triggers: bool = false,
     };
 
-    pub fn init(allocator: Allocator, config: Config) Error!ViGEmBridge {
+    pub fn init(allocator: Allocator, config: Config) Error!*ViGEmBridge {
         var device = try allocator.create(vigem.Device);
         errdefer allocator.destroy(device);
 
         device.* = try vigem.Device.init(config.pad);
-        const listener = try vigem.Listener.init(allocator, device);
 
-        return ViGEmBridge{
+        const listener = try vigem.Listener.init(allocator, device);
+        errdefer listener.deinit();
+
+        var self = try allocator.create(ViGEmBridge);
+        self.* = ViGEmBridge{
             .allocator = allocator,
             .device = device,
             .listener = listener,
             .config = config,
         };
+        return self;
     }
 
-    pub fn deinit(self: ViGEmBridge) void {
+    pub fn deinit(self: *ViGEmBridge) void {
         self.listener.deinit();
         self.device.deinit();
         self.allocator.destroy(self.device);
+        self.allocator.destroy(self);
     }
 
-    pub fn feed(self: ViGEmBridge, input: Input) Error!void {
+    pub fn feed(self: *ViGEmBridge, input: Input) Error!void {
         try self.device.update(switch (self.config.pad) {
             .x360 => &self.toX360(input),
             .ds4 => &self.toDS4(input),
@@ -133,6 +152,14 @@ pub const ViGEmBridge = struct {
 
     pub fn pollRumble(self: *ViGEmBridge) ?Rumble {
         return self.listener.get();
+    }
+
+    pub fn driverName() []const u8 {
+        return "ViGEm";
+    }
+
+    pub fn bridge(self: *ViGEmBridge) Bridge {
+        return Bridge.init(self, deinit, feed, pollRumble, driverName);
     }
 
     fn toX360(self: ViGEmBridge, input: Input) vigem.XUSBReport {
@@ -234,5 +261,76 @@ pub const ViGEmBridge = struct {
             0b0100, 0b1101 => 6,
             0b1100 => 7,
         };
+    }
+};
+
+pub const Bridge = struct {
+    ptr: *anyopaque,
+    vtable: *const VTable,
+
+    const VTable = struct {
+        deinit: fn (ptr: *anyopaque) void,
+        feed: fn (ptr: *anyopaque, input: Input) Error!void,
+        pollRumble: fn (ptr: *anyopaque) ?Rumble,
+        driverName: fn () []const u8,
+    };
+
+    pub fn init(
+        pointer: anytype,
+        comptime deinitFn: fn (ptr: @TypeOf(pointer)) void,
+        comptime feedFn: fn (ptr: @TypeOf(pointer), input: Input) Error!void,
+        comptime pollRumbleFn: fn (ptr: @TypeOf(pointer)) ?Rumble,
+        comptime driverNameFn: fn () []const u8,
+    ) Bridge {
+        const Ptr = @TypeOf(pointer);
+        const ptr_info = @typeInfo(Ptr);
+
+        std.debug.assert(ptr_info == .Pointer); // Must be a pointer
+        std.debug.assert(ptr_info.Pointer.size == .One); // Must be a single-item pointer
+
+        const alignment = ptr_info.Pointer.alignment;
+
+        const gen = struct {
+            fn deinitImpl(ptr: *anyopaque) void {
+                const self = @ptrCast(Ptr, @alignCast(alignment, ptr));
+                @call(.{ .modifier = .always_inline }, deinitFn, .{self});
+            }
+            fn feedImpl(ptr: *anyopaque, input: Input) Error!void {
+                const self = @ptrCast(Ptr, @alignCast(alignment, ptr));
+                return @call(.{ .modifier = .always_inline }, feedFn, .{ self, input });
+            }
+            fn pollRumbleImpl(ptr: *anyopaque) ?Rumble {
+                const self = @ptrCast(Ptr, @alignCast(alignment, ptr));
+                return @call(.{ .modifier = .always_inline }, pollRumbleFn, .{self});
+            }
+
+            const vtable = VTable{
+                .deinit = deinitImpl,
+                .feed = feedImpl,
+                .pollRumble = pollRumbleImpl,
+                .driverName = driverNameFn,
+            };
+        };
+
+        return Bridge{
+            .ptr = pointer,
+            .vtable = &gen.vtable,
+        };
+    }
+
+    pub fn deinit(self: Bridge) void {
+        self.vtable.deinit(self.ptr);
+    }
+
+    pub fn feed(self: Bridge, input: Input) Error!void {
+        return self.vtable.feed(self.ptr, input);
+    }
+
+    pub fn pollRumble(self: Bridge) ?Rumble {
+        return self.vtable.pollRumble(self.ptr);
+    }
+
+    pub fn driverName(self: Bridge) []const u8 {
+        return self.vtable.driverName();
     }
 };
