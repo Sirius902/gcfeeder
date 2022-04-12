@@ -61,7 +61,7 @@ fn inputLoop(context: *Context) void {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            const b = (ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .digital_triggers = true }) catch |err| {
+            const b = (ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .trigger_mode = .digital }) catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;

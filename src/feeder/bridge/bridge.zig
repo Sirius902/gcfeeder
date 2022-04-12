@@ -114,7 +114,14 @@ pub const ViGEmBridge = struct {
 
     pub const Config = struct {
         pad: vigem.Pad,
-        digital_triggers: bool = false,
+        trigger_mode: TriggerMode = .default,
+    };
+
+    pub const TriggerMode = enum {
+        default,
+        digital,
+        combination,
+        stick_click,
     };
 
     pub fn init(allocator: Allocator, config: Config) Error!*ViGEmBridge {
@@ -165,6 +172,7 @@ pub const ViGEmBridge = struct {
     fn toX360(self: ViGEmBridge, input: Input) vigem.XUSBReport {
         var pos = std.mem.zeroes(vigem.XUSBReport);
 
+        const trigger_res = self.applyTriggerMode(input);
         var buttons = std.PackedIntArray(u1, 16).init([_]u1{
             @boolToInt(input.button_up),
             @boolToInt(input.button_down),
@@ -172,8 +180,8 @@ pub const ViGEmBridge = struct {
             @boolToInt(input.button_right),
             @boolToInt(input.button_start),
             0, // back
-            0, // left thumb
-            0, // right thumb
+            trigger_res.ls, // left thumb
+            trigger_res.rs, // right thumb
             0, // left shoulder
             @boolToInt(input.button_z),
             0,
@@ -192,13 +200,8 @@ pub const ViGEmBridge = struct {
         pos.sThumbRX = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_x) - 1.0) * windows_max));
         pos.sThumbRY = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_y) - 1.0) * windows_max));
 
-        if (self.config.digital_triggers) {
-            pos.bLeftTrigger = if (input.button_l) 255 else 0;
-            pos.bRightTrigger = if (input.button_r) 255 else 0;
-        } else {
-            pos.bLeftTrigger = input.trigger_left;
-            pos.bRightTrigger = input.trigger_right;
-        }
+        pos.bLeftTrigger = trigger_res.l;
+        pos.bRightTrigger = trigger_res.r;
 
         return pos;
     }
@@ -206,8 +209,9 @@ pub const ViGEmBridge = struct {
     fn toDS4(self: ViGEmBridge, input: Input) vigem.DS4Report {
         var pos = std.mem.zeroes(vigem.DS4Report);
 
+        const trigger_res = self.applyTriggerMode(input);
         const hat_bits = ds4HatBits(input);
-        var buttons = std.PackedIntArray(u1, 14).init([_]u1{
+        var buttons = std.PackedIntArray(u1, 16).init([_]u1{
             @truncate(u1, hat_bits >> 0),
             @truncate(u1, hat_bits >> 1),
             @truncate(u1, hat_bits >> 2),
@@ -222,9 +226,11 @@ pub const ViGEmBridge = struct {
             @boolToInt(input.button_r),
             0,
             @boolToInt(input.button_start),
+            trigger_res.ls,
+            trigger_res.rs,
         });
 
-        pos.wButtons = buttons.sliceCast(u14).get(0);
+        pos.wButtons = buttons.sliceCast(u16).get(0);
 
         pos.bThumbLX = input.stick_x;
         pos.bThumbLY = ~input.stick_y;
@@ -232,13 +238,8 @@ pub const ViGEmBridge = struct {
         pos.bThumbRX = input.substick_x;
         pos.bThumbRY = ~input.substick_y;
 
-        if (self.config.digital_triggers) {
-            pos.bTriggerL = if (input.button_l) 255 else 0;
-            pos.bTriggerR = if (input.button_r) 255 else 0;
-        } else {
-            pos.bTriggerL = input.trigger_left;
-            pos.bTriggerR = input.trigger_right;
-        }
+        pos.bTriggerL = trigger_res.l;
+        pos.bTriggerR = trigger_res.r;
 
         return pos;
     }
@@ -261,6 +262,36 @@ pub const ViGEmBridge = struct {
             0b0100, 0b1101 => 6,
             0b1100 => 7,
         };
+    }
+
+    fn applyTriggerMode(self: ViGEmBridge, input: Input) struct { l: u8, r: u8, ls: u1, rs: u1 } {
+        var l: u8 = undefined;
+        var r: u8 = undefined;
+        var ls: u1 = 0;
+        var rs: u1 = 0;
+
+        switch (self.config.trigger_mode) {
+            .default => {
+                l = input.trigger_left;
+                r = input.trigger_right;
+            },
+            .digital => {
+                l = if (input.button_l) 255 else 0;
+                r = if (input.button_r) 255 else 0;
+            },
+            .combination => {
+                l = if (input.button_l) 255 else input.trigger_left;
+                r = if (input.button_r) 255 else input.trigger_right;
+            },
+            .stick_click => {
+                l = input.trigger_left;
+                r = input.trigger_right;
+                ls = @boolToInt(input.button_l);
+                rs = @boolToInt(input.button_r);
+            },
+        }
+
+        return .{ .l = l, .r = r, .ls = ls, .rs = rs };
     }
 };
 
