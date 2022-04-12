@@ -157,8 +157,7 @@ fn rumbleLoop(context: *Context) void {
         const bridge = context.bridge.?;
 
         if (!context.emulator_rumble) {
-            // TODO: Only store newest rumble value.
-            while (bridge.pollRumble()) |r| {
+            if (bridge.pollRumble()) |r| {
                 rumble = r;
             }
         } else {
