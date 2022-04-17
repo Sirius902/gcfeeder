@@ -168,7 +168,6 @@ pub const Listener = struct {
         defer self.mutex.unlock();
         self.rumble_state.index = rumble_index;
         self.rumble_state.poll_count = 0;
-        std.log.info("strength = {}, index = {}", .{ strength, rumble_index });
     }
 
     export fn x360Callback(
