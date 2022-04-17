@@ -202,7 +202,9 @@ fn rumbleLoop(context: *Context) void {
     context.mutex.lock();
     defer context.mutex.unlock();
 
-    adapter.setRumble(.{ .Off, .Off, .Off, .Off }) catch {};
+    if (context.adapter) |adapter| {
+        adapter.setRumble(.{ .Off, .Off, .Off, .Off }) catch {};
+    }
 }
 
 pub fn main() !void {
