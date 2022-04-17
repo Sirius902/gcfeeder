@@ -261,6 +261,11 @@ pub fn main() !void {
         else
             null;
 
+        if (!res.args.calibrate and res.args.overscale != null) {
+            std.log.err("--overscale requires --calibrate.", .{});
+            return;
+        }
+
         break :blk Options{
             .ess_mapping = ess_mapping,
             .port = port,
