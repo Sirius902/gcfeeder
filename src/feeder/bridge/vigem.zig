@@ -33,6 +33,17 @@ pub const DS4Report = c.DS4_REPORT;
 pub const Pad = enum {
     x360,
     ds4,
+
+    pub fn jsonStringify(
+        value: Pad,
+        options: std.json.StringifyOptions,
+        out_stream: anytype,
+    ) @TypeOf(out_stream).Error!void {
+        _ = options;
+        try out_stream.writeByte('"');
+        try out_stream.writeAll(std.meta.fieldNames(Pad)[@enumToInt(value)]);
+        try out_stream.writeByte('"');
+    }
 };
 
 pub const Device = struct {

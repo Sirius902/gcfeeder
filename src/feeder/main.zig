@@ -13,6 +13,7 @@ const ess = @import("ess/ess.zig");
 const Atomic = std.atomic.Atomic;
 const time = std.time;
 const emulator = @import("emulator.zig");
+const Config = @import("config.zig").Config;
 
 pub const log_level = .info;
 
@@ -33,7 +34,7 @@ pub const Context = struct {
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
-    calibration: ?Calibration,
+    config: Config,
     use_calibration: bool,
     emulator_rumble: bool,
     overscale: ?f32,
@@ -75,30 +76,28 @@ fn inputLoop(context: *Context) void {
             break :blk b;
         };
 
-        if (context.use_calibration and context.calibration == null) {
-            if (Calibration.load(context.allocator) catch null) |cal| {
-                context.calibration = cal;
-            } else {
-                const cal = calibrate.generateCalibration(adapter) catch |err| {
-                    switch (err) {
-                        error.Timeout => continue,
-                        else => {
-                            context.mutex.lock();
-                            defer context.mutex.unlock();
+        const config = &context.config;
 
-                            adapter.deinit();
-                            context.adapter = null;
-                            std.log.err("{} in input thread", .{err});
-                            std.log.info("Disconnected from adapter", .{});
-                            continue;
-                        },
-                    }
-                };
-                cal.save(context.allocator) catch {
-                    std.log.err("Failed to save calibration.json", .{});
-                };
-                context.calibration = cal;
-            }
+        if (context.use_calibration and config.calibration == null) {
+            const cal = calibrate.generateCalibration(adapter) catch |err| {
+                switch (err) {
+                    error.Timeout => continue,
+                    else => {
+                        context.mutex.lock();
+                        defer context.mutex.unlock();
+
+                        adapter.deinit();
+                        context.adapter = null;
+                        std.log.err("{} in input thread", .{err});
+                        std.log.info("Disconnected from adapter", .{});
+                        continue;
+                    },
+                }
+            };
+            config.calibration = cal;
+            config.save(context.allocator) catch |err| {
+                std.log.warn("Failed to save {s}: {}", .{ Config.path, err });
+            };
         }
 
         const inputs = adapter.readInputs() catch |err| {
@@ -119,7 +118,11 @@ fn inputLoop(context: *Context) void {
 
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
-            const calibrated = if (context.calibration) |cal| cal.map(ess_mapped, context.overscale) else ess_mapped;
+            const calibrated = if (context.use_calibration)
+                config.calibration.?.map(ess_mapped, context.overscale)
+            else
+                ess_mapped;
+
             bridge.feed(calibrated) catch |err| {
                 context.mutex.lock();
                 defer context.mutex.unlock();
@@ -276,6 +279,14 @@ pub fn main() !void {
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
+    const config = (try Config.load(allocator)) orelse blk: {
+        const c = Config{};
+        c.save(allocator) catch |err| {
+            std.log.warn("Failed to save {s}: {}", .{ Config.path, err });
+        };
+        break :blk c;
+    };
+
     const sock = blk: {
         if (options.port) |p| {
             const s = try std.x.os.Socket.init(
@@ -305,7 +316,7 @@ pub fn main() !void {
         .stop = Atomic(bool).init(false),
         .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
-        .calibration = null,
+        .config = config,
         .use_calibration = options.use_calibration,
         .emulator_rumble = options.emulator_rumble,
         .overscale = options.overscale,

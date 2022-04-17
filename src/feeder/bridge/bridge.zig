@@ -114,14 +114,25 @@ pub const ViGEmBridge = struct {
 
     pub const Config = struct {
         pad: vigem.Pad,
-        trigger_mode: TriggerMode = .default,
+        trigger_mode: TriggerMode = .stick_click,
     };
 
     pub const TriggerMode = enum {
-        default,
+        analog,
         digital,
         combination,
         stick_click,
+
+        pub fn jsonStringify(
+            value: TriggerMode,
+            options: std.json.StringifyOptions,
+            out_stream: anytype,
+        ) @TypeOf(out_stream).Error!void {
+            _ = options;
+            try out_stream.writeByte('"');
+            try out_stream.writeAll(std.meta.fieldNames(TriggerMode)[@enumToInt(value)]);
+            try out_stream.writeByte('"');
+        }
     };
 
     pub fn init(allocator: Allocator, config: Config) Error!*ViGEmBridge {
@@ -271,7 +282,7 @@ pub const ViGEmBridge = struct {
         var rs: u1 = 0;
 
         switch (self.config.trigger_mode) {
-            .default => {
+            .analog => {
                 l = input.trigger_left;
                 r = input.trigger_right;
             },

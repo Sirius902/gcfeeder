@@ -121,8 +121,6 @@ pub const Calibration = struct {
     main_stick: StickCalibration,
     c_stick: StickCalibration,
 
-    const json_path = "calibration.json";
-
     pub fn map(self: Calibration, input: Input, overscale: ?f32) Input {
         const main_stick = self.main_stick.map([_]u8{ input.stick_x, input.stick_y }, overscale);
         const c_stick = self.c_stick.map([_]u8{ input.substick_x, input.substick_y }, overscale);
@@ -133,43 +131,6 @@ pub const Calibration = struct {
         res.substick_x = c_stick[0];
         res.substick_y = c_stick[1];
         return res;
-    }
-
-    pub fn load(allocator: std.mem.Allocator) !?Calibration {
-        const payload: ?[]const u8 = blk: {
-            const exe_dir_path = std.fs.selfExeDirPathAlloc(allocator) catch break :blk null;
-            defer allocator.free(exe_dir_path);
-
-            var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
-            defer exe_dir.close();
-
-            const file = exe_dir.openFile(json_path, .{}) catch break :blk null;
-            defer file.close();
-
-            break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));
-        };
-
-        if (payload) |p| {
-            defer allocator.free(p);
-            var stream = std.json.TokenStream.init(p);
-            return try std.json.parse(Calibration, &stream, .{});
-        } else {
-            return null;
-        }
-    }
-
-    pub fn save(self: Calibration, allocator: std.mem.Allocator) !void {
-        const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
-        defer allocator.free(exe_dir_path);
-
-        var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
-        defer exe_dir.close();
-
-        var file = try exe_dir.createFile(json_path, .{});
-        defer file.close();
-
-        const writer = file.writer();
-        try std.json.stringify(self, .{}, writer);
     }
 };
 
