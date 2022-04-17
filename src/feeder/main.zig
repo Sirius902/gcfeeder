@@ -21,6 +21,7 @@ const Options = struct {
     port: ?u16,
     use_calibration: bool,
     emulator_rumble: bool,
+    overscale: ?f32,
 };
 
 pub const Context = struct {
@@ -35,6 +36,7 @@ pub const Context = struct {
     calibration: ?Calibration,
     use_calibration: bool,
     emulator_rumble: bool,
+    overscale: ?f32,
 };
 
 const fail_wait = 100 * time.ns_per_ms;
@@ -117,7 +119,7 @@ fn inputLoop(context: *Context) void {
 
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
-            const calibrated = if (context.calibration) |cal| cal.map(ess_mapped) else ess_mapped;
+            const calibrated = if (context.calibration) |cal| cal.map(ess_mapped, context.overscale) else ess_mapped;
             bridge.feed(calibrated) catch |err| {
                 context.mutex.lock();
                 defer context.mutex.unlock();
@@ -210,19 +212,21 @@ fn rumbleLoop(context: *Context) void {
 pub fn main() !void {
     const options = blk: {
         const params = comptime clap.parseParamsComptime(
-            \\-h, --help          Display this help and exit.
-            \\-e, --ess           Enables ESS adapter with oot-vc mapping.
-            \\-m, --mapping <MAP> Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
-            \\-s, --server        Enables UDP input server.
-            \\-p, --port <PORT>   Enables UDP input server on port.
-            \\-c, --calibrate     Use calibration to scale controller to full Windows range.
-            \\--oot               Read rumble data from OoT 1.0 on emulator.
+            \\-h, --help            Display this help and exit.
+            \\-e, --ess             Enables ESS adapter with oot-vc mapping.
+            \\-m, --mapping <MAP>   Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
+            \\-s, --server          Enables UDP input server.
+            \\-p, --port <PORT>     Enables UDP input server on port.
+            \\-c, --calibrate       Use calibration to scale controller to full Windows range.
+            \\-o, --overscale <f32> Scale control stick value by multipler. Requires --calibrate.
+            \\--oot                 Read rumble data from OoT 1.0 on emulator.
             \\
         );
 
         const parsers = comptime .{
             .MAP = clap.parsers.string,
             .PORT = clap.parsers.int(u16, 10),
+            .f32 = clap.parsers.float(f32),
         };
 
         var diag = clap.Diagnostic{};
@@ -259,6 +263,7 @@ pub fn main() !void {
             .port = port,
             .use_calibration = res.args.calibrate,
             .emulator_rumble = res.args.oot,
+            .overscale = res.args.overscale,
         };
     };
 
@@ -303,6 +308,7 @@ pub fn main() !void {
         .calibration = null,
         .use_calibration = options.use_calibration,
         .emulator_rumble = options.emulator_rumble,
+        .overscale = options.overscale,
     };
     defer {
         if (thread_ctx.adapter) |a| a.deinit();

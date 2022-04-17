@@ -8,7 +8,7 @@ pub const StickCalibration = struct {
     notch_points: [8][2]u8,
     stick_center: [2]u8,
 
-    pub fn map(self: StickCalibration, pos: [2]u8) [2]u8 {
+    pub fn map(self: StickCalibration, pos: [2]u8, overscale: ?f32) [2]u8 {
         const q = self.quadrant(pos);
         const qn = (q + self.notch_points.len - 1) % self.notch_points.len;
 
@@ -60,8 +60,16 @@ pub const StickCalibration = struct {
         const t = mat3Mul(x, mat3Invert(a) orelse unreachable);
         const res = zlm.Vec3.new(@intToFloat(f32, pos[0]), @intToFloat(f32, pos[1]), 1.0).transform(t);
 
-        // HACK: Not sure why x and y have to be switched here.
-        return [_]u8{ std.math.lossyCast(u8, @round(res.y)), std.math.lossyCast(u8, @round(res.x)) };
+        if (overscale) |o| {
+            const resY = ((res.y - @intToFloat(f32, stick_range.radius)) * o) + @intToFloat(f32, stick_range.radius);
+            const resX = ((res.x - @intToFloat(f32, stick_range.radius)) * o) + @intToFloat(f32, stick_range.radius);
+
+            // HACK: Not sure why x and y have to be switched here.
+            return [_]u8{ std.math.lossyCast(u8, @round(resY)), std.math.lossyCast(u8, @round(resX)) };
+        } else {
+            // HACK: Not sure why x and y have to be switched here.
+            return [_]u8{ std.math.lossyCast(u8, @round(res.y)), std.math.lossyCast(u8, @round(res.x)) };
+        }
     }
 
     fn quadrant(self: StickCalibration, pos: [2]u8) u3 {
@@ -115,9 +123,9 @@ pub const Calibration = struct {
 
     const json_path = "calibration.json";
 
-    pub fn map(self: Calibration, input: Input) Input {
-        const main_stick = self.main_stick.map([_]u8{ input.stick_x, input.stick_y });
-        const c_stick = self.c_stick.map([_]u8{ input.substick_x, input.substick_y });
+    pub fn map(self: Calibration, input: Input, overscale: ?f32) Input {
+        const main_stick = self.main_stick.map([_]u8{ input.stick_x, input.stick_y }, overscale);
+        const c_stick = self.c_stick.map([_]u8{ input.substick_x, input.substick_y }, overscale);
 
         var res = input;
         res.stick_x = main_stick[0];
