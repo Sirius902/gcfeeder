@@ -60,23 +60,26 @@ fn inputLoop(context: *Context) void {
             break :blk a;
         });
 
+        const config = &context.config;
+
         const bridge = context.bridge orelse blk: {
             context.mutex.lock();
             defer context.mutex.unlock();
 
-            const b = (ViGEmBridge.init(context.allocator, .{ .pad = .ds4, .trigger_mode = .digital }) catch |err| {
+            const b = switch (config.driver) {
+                .vjoy => VJoyBridge.initBridge(context.allocator),
+                .vigem => ViGEmBridge.initBridge(context.allocator, config.vigem_config),
+            } catch |err| {
                 std.log.err("{} in input thread", .{err});
                 time.sleep(fail_wait);
                 continue;
-            }).bridge();
+            };
 
             std.log.info("Connected to {s}", .{b.driverName()});
 
             context.bridge = b;
             break :blk b;
         };
-
-        const config = &context.config;
 
         if (context.use_calibration and config.calibration == null) {
             const cal = calibrate.generateCalibration(adapter) catch |err| {

@@ -32,6 +32,11 @@ pub const VJoyBridge = struct {
         return self;
     }
 
+    pub fn initBridge(allocator: Allocator) Error!Bridge {
+        const self = try VJoyBridge.init(allocator);
+        return self.bridge();
+    }
+
     pub fn deinit(self: *VJoyBridge) void {
         self.device.deinit();
         self.receiver.deinit();
@@ -152,6 +157,11 @@ pub const ViGEmBridge = struct {
             .config = config,
         };
         return self;
+    }
+
+    pub fn initBridge(allocator: Allocator, config: Config) Error!Bridge {
+        const self = try ViGEmBridge.init(allocator, config);
+        return self.bridge();
     }
 
     pub fn deinit(self: *ViGEmBridge) void {
