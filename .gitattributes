@@ -1,2 +1,3 @@
 * text=auto eol=lf
 include/** linguist-vendored
+src/feeder/bridge/ViGEmClient/** linguist-vendored
