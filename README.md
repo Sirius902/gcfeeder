@@ -42,7 +42,9 @@ To customize the theme of the input viewer, put a `color.frag` according to the 
 The default theme can be found at `src/viewer/shader/color.frag`. Other themes can be found in `theme`.
 
 ## Notes
-* libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
-To use a controller with Dolphin using the feeder, configure the vJoy Device as a Standard Controller instead.
 * Only supports port one on the adapter.
+* libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
+
+### **vJoy**
+To use a controller with Dolphin using the feeder, configure the vJoy Device as a Standard Controller instead.
 * Currently reads Force Feedback packets from all effects on vJoy to control rumble for compatibility (Dolphin seems to crash unless all effects are enabled).
