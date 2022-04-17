@@ -9,6 +9,8 @@ const Allocator = std.mem.Allocator;
 const Mutex = std.Thread.Mutex;
 const LinearFifo = std.fifo.LinearFifo;
 const Rumble = @import("../adapter.zig").Rumble;
+const max = std.math.max;
+const maxInt = std.math.maxInt;
 
 pub const XUSBReport = c.XUSB_REPORT;
 
@@ -99,18 +101,30 @@ pub const Device = struct {
 pub const Listener = struct {
     allocator: Allocator,
     mutex: Mutex,
-    queue: Fifo,
     device: *const Device,
+    rumble_state: struct {
+        index: usize = 0,
+        poll_count: u3 = 0,
+    },
 
-    const Fifo = LinearFifo(Rumble, .{ .Static = 16 });
+    const Pattern = u6;
+    const rumble_patterns = &[_]Pattern{
+        0b000000,
+        0b100000,
+        0b100100,
+        0b101010,
+        0b110110,
+        0b111110,
+        0b111111,
+    };
 
     pub fn init(allocator: Allocator, device: *const Device) Allocator.Error!*Listener {
         var self = try allocator.create(Listener);
         self.* = Listener{
             .allocator = allocator,
             .mutex = Mutex{},
-            .queue = Fifo.init(),
             .device = device,
+            .rumble_state = .{},
         };
 
         _ = switch (device.pad_type) {
@@ -134,18 +148,27 @@ pub const Listener = struct {
         self.mutex.lock();
         defer self.mutex.unlock();
 
-        return self.queue.readItem();
+        const state = &self.rumble_state;
+        defer state.poll_count = (state.poll_count + 1) % @bitSizeOf(Pattern);
+        if ((rumble_patterns[state.index] & (@as(u8, 1) << state.poll_count)) != 0) {
+            return .On;
+        } else {
+            return .Off;
+        }
     }
 
-    fn put(self: *Listener, packet: Rumble) void {
+    fn handlePacket(self: *Listener, large_motor: u8, small_motor: u8) void {
+        const strength = @as(usize, max(large_motor, small_motor));
+        const rumble_index = if (strength > 0)
+            1 + ((strength - 1) * (rumble_patterns.len - 1)) / maxInt(u8)
+        else
+            0;
+
         self.mutex.lock();
         defer self.mutex.unlock();
-
-        self.queue.ensureUnusedCapacity(1) catch {
-            self.queue.discard(1);
-        };
-
-        self.queue.writeItemAssumeCapacity(packet);
+        self.rumble_state.index = rumble_index;
+        self.rumble_state.poll_count = 0;
+        std.log.info("strength = {}, index = {}", .{ strength, rumble_index });
     }
 
     export fn x360Callback(
@@ -160,7 +183,7 @@ pub const Listener = struct {
         _ = target;
         _ = led_number;
         const self = @intToPtr(*Listener, @ptrToInt(user_data.?));
-        self.put(if (large_motor > 0 or small_motor > 0) .On else .Off);
+        self.handlePacket(large_motor, small_motor);
     }
 
     export fn ds4Callback(
@@ -175,6 +198,6 @@ pub const Listener = struct {
         _ = target;
         _ = lightbar_color;
         const self = @intToPtr(*Listener, @ptrToInt(user_data.?));
-        self.put(if (large_motor > 0 or small_motor > 0) .On else .Off);
+        self.handlePacket(large_motor, small_motor);
     }
 };
