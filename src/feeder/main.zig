@@ -198,6 +198,11 @@ fn rumbleLoop(context: *Context) void {
 
         context.mutex.unlock();
     }
+
+    context.mutex.lock();
+    defer context.mutex.unlock();
+
+    adapter.setRumble(.{ .Off, .Off, .Off, .Off }) catch {};
 }
 
 pub fn main() !void {
