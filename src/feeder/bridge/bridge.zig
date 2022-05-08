@@ -98,14 +98,14 @@ pub const VJoyBridge = struct {
 
         pos.lButtons = buttons.sliceCast(u12).get(0);
 
-        pos.wAxisX = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.stick_x) * windows_max));
-        pos.wAxisY = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.stick_y)) * windows_max));
+        pos.wAxisX = @floatToInt(c_long, @ceil(stick_range.normalize(input.stick_x) * windows_max));
+        pos.wAxisY = @floatToInt(c_long, @ceil((1.0 - stick_range.normalize(input.stick_y)) * windows_max));
 
-        pos.wAxisXRot = @floatToInt(c_long, std.math.ceil(stick_range.normalize(input.substick_x) * windows_max));
-        pos.wAxisYRot = @floatToInt(c_long, std.math.ceil((1.0 - stick_range.normalize(input.substick_y)) * windows_max));
+        pos.wAxisXRot = @floatToInt(c_long, @ceil(stick_range.normalize(input.substick_x) * windows_max));
+        pos.wAxisYRot = @floatToInt(c_long, @ceil((1.0 - stick_range.normalize(input.substick_y)) * windows_max));
 
-        pos.wAxisZ = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_left) * windows_max));
-        pos.wAxisZRot = @floatToInt(c_long, std.math.ceil(trigger_range.normalize(input.trigger_right) * windows_max));
+        pos.wAxisZ = @floatToInt(c_long, @ceil(trigger_range.normalize(input.trigger_left) * windows_max));
+        pos.wAxisZRot = @floatToInt(c_long, @ceil(trigger_range.normalize(input.trigger_right) * windows_max));
 
         return pos;
     }
@@ -215,11 +215,11 @@ pub const ViGEmBridge = struct {
 
         pos.wButtons = buttons.sliceCast(u16).get(0);
 
-        pos.sThumbLX = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.stick_x) - 1.0) * windows_max));
-        pos.sThumbLY = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.stick_y) - 1.0) * windows_max));
+        pos.sThumbLX = @floatToInt(c_short, @ceil((2.0 * stick_range.normalize(input.stick_x) - 1.0) * windows_max));
+        pos.sThumbLY = @floatToInt(c_short, @ceil((2.0 * stick_range.normalize(input.stick_y) - 1.0) * windows_max));
 
-        pos.sThumbRX = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_x) - 1.0) * windows_max));
-        pos.sThumbRY = @floatToInt(c_short, std.math.ceil((2.0 * stick_range.normalize(input.substick_y) - 1.0) * windows_max));
+        pos.sThumbRX = @floatToInt(c_short, @ceil((2.0 * stick_range.normalize(input.substick_x) - 1.0) * windows_max));
+        pos.sThumbRY = @floatToInt(c_short, @ceil((2.0 * stick_range.normalize(input.substick_y) - 1.0) * windows_max));
 
         pos.bLeftTrigger = trigger_res.l;
         pos.bRightTrigger = trigger_res.r;
