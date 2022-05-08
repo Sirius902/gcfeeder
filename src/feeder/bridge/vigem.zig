@@ -170,10 +170,15 @@ pub const Listener = struct {
 
     fn handlePacket(self: *Listener, large_motor: u8, small_motor: u8) void {
         const strength = @as(usize, max(large_motor, small_motor));
-        const rumble_index = if (strength > 0)
+        var rumble_index = if (strength > 0)
             1 + ((strength - 1) * (rumble_patterns.len - 1)) / maxInt(u8)
         else
             0;
+
+        // Defend against vigem passing values larger than 255 for motors.
+        if (rumble_index >= rumble_patterns.len) {
+            rumble_index = 0;
+        }
 
         self.mutex.lock();
         defer self.mutex.unlock();
