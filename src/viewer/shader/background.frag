@@ -7,8 +7,8 @@
 
 layout (location = 0) out vec4 diffuseColor;
 
-vec4 colorBackground();
+vec4 backgroundColor();
 
 void main() {
-    diffuseColor = colorBackground();
+    diffuseColor = backgroundColor();
 }

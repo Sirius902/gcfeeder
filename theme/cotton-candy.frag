@@ -28,18 +28,18 @@ vec2 screenPos = gl_FragCoord.xy / u_Resolution;
 
 vec4 waveColor = vec4((sin(u_Time) + 1.0) / 2.0, screenPos.y, 1.0, 1.0);
 
-vec4 colorBackground() {
+vec4 backgroundColor() {
     return vec4(0.0);
 }
 
-vec4 colorButton(bool pressed) {
+vec4 buttonColor(bool pressed) {
     return waveColor;
 }
 
-vec4 colorStick(vec2 stickPos) {
+vec4 stickColor(vec2 stickPos) {
     return waveColor;
 }
 
-vec4 colorTrigger(float fill, bool pressed) {
+vec4 triggerColor(float fill, bool pressed) {
     return waveColor;
 }

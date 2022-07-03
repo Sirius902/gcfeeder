@@ -87,18 +87,18 @@ vec4 waveColor(float lum, float chrom) {
     return vec4(rgbToSrgb(xyzToRgb(labToXyz(lchToLab(vec3(lum, chrom, u_Time + 2 * screenPos))))), 1.0);
 }
 
-vec4 colorBackground() {
+vec4 backgroundColor() {
     return vec4(0.0);
 }
 
-vec4 colorButton(bool pressed) {
+vec4 buttonColor(bool pressed) {
     return waveColor(80.0, 100.0);
 }
 
-vec4 colorStick(vec2 stickPos) {
+vec4 stickColor(vec2 stickPos) {
     return waveColor(80.0, 100.0);
 }
 
-vec4 colorTrigger(float fill, bool pressed) {
+vec4 triggerColor(float fill, bool pressed) {
     return waveColor(80.0, 100.0);
 }

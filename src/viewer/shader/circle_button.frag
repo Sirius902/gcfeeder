@@ -14,7 +14,7 @@ uniform bool u_Pressed;
 
 float radius = 0.1;
 
-vec4 colorButton(bool pressed);
+vec4 buttonColor(bool pressed);
 
 void main() {
     float dist = radius - sqrt((v_Position.x * v_Position.x) + (v_Position.y * v_Position.y));
@@ -23,5 +23,5 @@ void main() {
         discard;
     }
 
-    diffuseColor = colorButton(u_Pressed);
+    diffuseColor = buttonColor(u_Pressed);
 }

@@ -14,7 +14,7 @@ layout (location = 0) out vec4 diffuseColor;
 uniform sampler2D u_SdfTexture;
 uniform bool u_Pressed;
 
-vec4 colorButton(bool pressed);
+vec4 buttonColor(bool pressed);
 
 void main() {
     float dist = texture(u_SdfTexture, v_TexCoord).r;
@@ -23,5 +23,5 @@ void main() {
         discard;
     }
 
-    diffuseColor = colorButton(u_Pressed);
+    diffuseColor = buttonColor(u_Pressed);
 }

@@ -18,7 +18,7 @@ uniform bool u_IsCStick;
 
 float radius = 0.225 * (u_IsCStick ? 0.8 : 1.0);
 
-vec4 colorStick(vec2 stickPos);
+vec4 stickColor(vec2 stickPos);
 
 void main() {
     vec2 center = v_Position + ((u_Pos - 0.5) * 0.5);
@@ -32,5 +32,5 @@ void main() {
         discard;
     }
 
-    diffuseColor = colorStick(u_Pos);
+    diffuseColor = stickColor(u_Pos);
 }

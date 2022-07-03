@@ -28,11 +28,11 @@ vec2 screenPos = gl_FragCoord.xy / u_Resolution;
 
 const vec4 mainColor = vec4(0.95, 0.95, 0.95, 1.0);
 
-vec4 colorBackground() {
+vec4 backgroundColor() {
     return vec4(0.0);
 }
 
-vec4 colorButton(bool pressed) {
+vec4 buttonColor(bool pressed) {
     switch (u_Which) {
         case BUTTON_A:
             return vec4(0.0, 0.737, 0.556, 1.0);
@@ -53,7 +53,7 @@ vec4 colorButton(bool pressed) {
     }
 }
 
-vec4 colorStick(vec2 stickPos) {
+vec4 stickColor(vec2 stickPos) {
     switch (u_Which) {
         case STICK_MAIN:
             return mainColor;
@@ -64,6 +64,6 @@ vec4 colorStick(vec2 stickPos) {
     }
 }
 
-vec4 colorTrigger(float fill, bool pressed) {
+vec4 triggerColor(float fill, bool pressed) {
     return mainColor;
 }

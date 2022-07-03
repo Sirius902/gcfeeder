@@ -19,7 +19,7 @@ float radius = innerRadius + v_BorderWidth;
 const float threshold = 0.75;
 const float scale = 1.0 / threshold;
 
-vec4 colorTrigger(float fill, bool pressed);
+vec4 triggerColor(float fill, bool pressed);
 
 void left() {
     vec2 pos = v_Position + vec2(0.5 - radius, 0.0);
@@ -57,5 +57,5 @@ void main() {
         middle();
     }
 
-    diffuseColor = colorTrigger(u_Fill, u_Pressed);
+    diffuseColor = triggerColor(u_Fill, u_Pressed);
 }
