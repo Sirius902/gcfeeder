@@ -105,7 +105,7 @@ const DllStep = struct {
         const self = @fieldParentPtr(DllStep, "step", step);
         const b = self.builder;
 
-        var lib = try std.fs.cwd().openDir("lib", .{ .iterate = true });
+        var lib = try std.fs.cwd().openIterableDir("lib", .{});
         defer lib.close();
 
         var exe_dir = try std.fs.cwd().openDir(b.exe_dir, .{});
@@ -114,7 +114,7 @@ const DllStep = struct {
         var files = lib.iterate();
         while (try files.next()) |file| {
             if (std.mem.endsWith(u8, file.name, ".dll")) {
-                try lib.copyFile(file.name, exe_dir, file.name, .{});
+                try lib.dir.copyFile(file.name, exe_dir, file.name, .{});
             }
         }
     }
