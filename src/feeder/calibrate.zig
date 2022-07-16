@@ -152,7 +152,6 @@ pub const StickCalibration = struct {
                     try out_stream.writeByte(',');
                 }
                 if (child_options.whitespace) |child_whitespace| {
-                    try out_stream.writeByte('\n');
                     try child_whitespace.outputIndent(out_stream);
                 }
                 try std.json.stringify(Field.name, options, out_stream);
@@ -167,7 +166,6 @@ pub const StickCalibration = struct {
         }
         if (field_output) {
             if (options.whitespace) |whitespace| {
-                try out_stream.writeByte('\n');
                 try whitespace.outputIndent(out_stream);
             }
         }
