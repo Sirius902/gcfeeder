@@ -3,7 +3,6 @@ const Calibration = @import("calibrate.zig").Calibration;
 const ViGEmConfig = @import("bridge/bridge.zig").ViGEmBridge.Config;
 
 pub const Driver = enum {
-    vjoy,
     vigem,
 
     pub fn jsonStringify(

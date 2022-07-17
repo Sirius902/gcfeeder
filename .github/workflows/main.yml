@@ -29,7 +29,6 @@ jobs:
           zig-out/bin/gcfeeder.exe
           zig-out/bin/gcfeeder.pdb
           zig-out/bin/libusb-1.0.dll
-          zig-out/bin/vJoyInterface.dll
     - name: Upload Viewer
       uses: actions/upload-artifact@v2
       with:

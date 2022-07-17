@@ -57,7 +57,6 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     exe.addCSourceFile("src/feeder/bridge/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
 
     exe.linkSystemLibrary("libusb-1.0.dll");
-    exe.linkSystemLibrary("vJoyInterface");
     exe.linkSystemLibrary("setupapi");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");

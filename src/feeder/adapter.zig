@@ -1,5 +1,4 @@
 const std = @import("std");
-const c = @import("c.zig");
 const usb = @import("zusb");
 
 const payload_len = 37;

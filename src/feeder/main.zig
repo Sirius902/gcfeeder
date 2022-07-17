@@ -4,7 +4,6 @@ const clap = @import("clap");
 const calibrate = @import("calibrate.zig");
 const Calibration = @import("calibrate.zig").Calibration;
 const Bridge = @import("bridge/bridge.zig").Bridge;
-const VJoyBridge = @import("bridge/bridge.zig").VJoyBridge;
 const ViGEmBridge = @import("bridge/bridge.zig").ViGEmBridge;
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
@@ -67,7 +66,6 @@ fn inputLoop(context: *Context) void {
             defer context.mutex.unlock();
 
             const b = switch (config.driver) {
-                .vjoy => VJoyBridge.initBridge(context.allocator),
                 .vigem => ViGEmBridge.initBridge(context.allocator, config.vigem_config),
             } catch |err| {
                 std.log.err("{} in input thread", .{err});

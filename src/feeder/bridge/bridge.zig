@@ -1,5 +1,4 @@
 const std = @import("std");
-const vjoy = @import("vjoy.zig");
 const vigem = @import("vigem.zig");
 const Allocator = std.mem.Allocator;
 const Adapter = @import("../adapter.zig").Adapter;
@@ -10,106 +9,7 @@ const trigger_range = @import("../adapter.zig").Calibration.trigger_range;
 
 const windows_max = 32767;
 
-pub const Error = vjoy.Device.Error || vigem.Device.Error || Allocator.Error;
-
-pub const VJoyBridge = struct {
-    allocator: Allocator,
-    device: vjoy.Device,
-    receiver: *vjoy.FFBReceiver,
-    last_timestamp: ?i64 = null,
-
-    pub fn init(allocator: Allocator) Error!*VJoyBridge {
-        const device = try vjoy.Device.init(1);
-        const receiver = try vjoy.FFBReceiver.init(allocator);
-        errdefer receiver.deinit();
-
-        var self = try allocator.create(VJoyBridge);
-        self.* = VJoyBridge{
-            .allocator = allocator,
-            .device = device,
-            .receiver = receiver,
-        };
-        return self;
-    }
-
-    pub fn initBridge(allocator: Allocator) Error!Bridge {
-        const self = try VJoyBridge.init(allocator);
-        return self.bridge();
-    }
-
-    pub fn deinit(self: *VJoyBridge) void {
-        self.device.deinit();
-        self.receiver.deinit();
-        self.allocator.destroy(self);
-    }
-
-    pub fn feed(self: *VJoyBridge, input: Input) Error!void {
-        try self.device.update(toVJoy(input));
-    }
-
-    pub fn pollRumble(self: *VJoyBridge) ?Rumble {
-        var rumble: ?Rumble = null;
-
-        if (self.receiver.get()) |packet| {
-            if (packet.device_id == 1) {
-                rumble = switch (packet.effect.operation) {
-                    .Stop => .Off,
-                    else => .On,
-                };
-
-                if (self.last_timestamp) |last| {
-                    if (packet.timestamp_ms - last < 2) {
-                        rumble = .Off;
-                    }
-                }
-
-                self.last_timestamp = packet.timestamp_ms;
-            }
-        }
-
-        return rumble;
-    }
-
-    pub fn driverName() []const u8 {
-        return "vJoy";
-    }
-
-    pub fn bridge(self: *VJoyBridge) Bridge {
-        return Bridge.init(self, deinit, feed, pollRumble, driverName);
-    }
-
-    fn toVJoy(input: Input) vjoy.JoystickPosition {
-        var pos = std.mem.zeroes(vjoy.JoystickPosition);
-
-        var buttons = std.PackedIntArray(u1, 12).init([_]u1{
-            @boolToInt(input.button_a),
-            @boolToInt(input.button_b),
-            @boolToInt(input.button_x),
-            @boolToInt(input.button_y),
-            @boolToInt(input.button_z),
-            @boolToInt(input.button_r),
-            @boolToInt(input.button_l),
-            @boolToInt(input.button_start),
-            @boolToInt(input.button_up),
-            @boolToInt(input.button_down),
-            @boolToInt(input.button_left),
-            @boolToInt(input.button_right),
-        });
-
-        pos.lButtons = buttons.sliceCast(u12).get(0);
-
-        pos.wAxisX = @floatToInt(c_long, @ceil(stick_range.normalize(input.stick_x) * windows_max));
-        pos.wAxisY = @floatToInt(c_long, @ceil((1.0 - stick_range.normalize(input.stick_y)) * windows_max));
-
-        pos.wAxisXRot = @floatToInt(c_long, @ceil(stick_range.normalize(input.substick_x) * windows_max));
-        pos.wAxisYRot = @floatToInt(c_long, @ceil((1.0 - stick_range.normalize(input.substick_y)) * windows_max));
-
-        pos.wAxisZ = @floatToInt(c_long, @ceil(trigger_range.normalize(input.trigger_left) * windows_max));
-        pos.wAxisZRot = @floatToInt(c_long, @ceil(trigger_range.normalize(input.trigger_right) * windows_max));
-
-        return pos;
-    }
-};
+pub const Error = vigem.Device.Error || Allocator.Error;
 
 pub const ViGEmBridge = struct {
     allocator: Allocator,
