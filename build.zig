@@ -48,8 +48,9 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
     const cxx_flags = [_][]const u8{
         "-std=c++20",
         "-fno-exceptions",
-        // HACK: This isn't defined during zig build for some reason.
-        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=0x28AL",
+        // HACK: Define this Windows error used by the ViGEmClient because it's not
+        // defined in MinGW headers.
+        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
     };
 
     exe.linkLibCpp();
