@@ -4,24 +4,24 @@ const usb = @import("zusb");
 const payload_len = 37;
 
 pub const Adapter = struct {
-    pub const vid = 0x057E;
-    pub const pid = 0x0337;
+    handle: usb.DeviceHandle,
+    endpoints: Endpoints,
+    calibrations: [4]?Calibration,
 
     pub const Error = error{
         Unplugged,
         Payload,
     } || usb.Error;
 
-    const allowed_timeout_ms = 16;
-
     const Endpoints = struct {
         in: u8,
         out: u8,
     };
 
-    handle: usb.DeviceHandle,
-    endpoints: Endpoints,
-    calibrations: [4]?Calibration,
+    pub const vid = 0x057E;
+    pub const pid = 0x0337;
+
+    const allowed_timeout_ms = 16;
 
     pub fn init(ctx: *usb.Context) Error!Adapter {
         var handle = (try ctx.openDeviceWithVidPid(vid, pid)) orelse {
@@ -223,15 +223,15 @@ const AnalogRange = struct {
 };
 
 pub const Calibration = struct {
-    pub const stick_range = StickRange{ .center = 0x80, .radius = 0x7F };
-    pub const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
-
     stick_x: i10,
     stick_y: i10,
     substick_x: i10,
     substick_y: i10,
     trigger_left: i10,
     trigger_right: i10,
+
+    pub const stick_range = StickRange{ .center = 0x80, .radius = 0x7F };
+    pub const trigger_range = AnalogRange{ .min = 0x00, .max = 0xFF };
 
     pub fn init(initial: Input) Calibration {
         return Calibration{

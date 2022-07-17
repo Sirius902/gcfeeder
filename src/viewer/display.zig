@@ -15,6 +15,16 @@ var window_width: u32 = 512;
 var window_height: u32 = 256;
 
 const Display = struct {
+    background_program: zgl.Program,
+    circle_button_program: zgl.Program,
+    sdf_button_program: zgl.Program,
+    trigger_program: zgl.Program,
+    stick_program: zgl.Program,
+    vbo: zgl.Buffer,
+    vao: zgl.VertexArray,
+    ebo: zgl.Buffer,
+    timer: time.Timer,
+
     const Which = enum(i32) {
         button_a = 0,
         button_b = 1,
@@ -45,16 +55,6 @@ const Display = struct {
     const octagon_sdf = @embedFile("sdf/octagon-sdf.gray");
 
     const buttons_center = zlm.Mat4.createTranslationXYZ(0.5, -0.075, 0.0);
-
-    background_program: zgl.Program,
-    circle_button_program: zgl.Program,
-    sdf_button_program: zgl.Program,
-    trigger_program: zgl.Program,
-    stick_program: zgl.Program,
-    vbo: zgl.Buffer,
-    vao: zgl.VertexArray,
-    ebo: zgl.Buffer,
-    timer: time.Timer,
 
     pub fn init(
         allocator: std.mem.Allocator,
