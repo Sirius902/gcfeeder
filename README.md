@@ -20,7 +20,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 For info on the program arguments, run with `--help`.
 
 ## Config
-The configuration is stored in `config.json`.
+The configuration is stored in `gcfeeder.json`.
 
 ### ViGEm Options
 Options found under the `vigem_config` key.
