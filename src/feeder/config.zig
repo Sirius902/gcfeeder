@@ -1,4 +1,5 @@
 const std = @import("std");
+const build_info = @import("build_info");
 const Calibration = @import("calibrate.zig").Calibration;
 const ViGEmConfig = @import("bridge/bridge.zig").ViGEmBridge.Config;
 
@@ -40,7 +41,7 @@ pub const ConfigFile = struct {
         config_sets[0] = .{ .name = "default", .config = default };
 
         return ConfigFile{
-            .@"$schema" = "https://raw.githubusercontent.com/Sirius902/gcfeeder/main/schema/gcfeeder.schema.json",
+            .@"$schema" = build_info.schema_url,
             .default_set = "default",
             .config_sets = config_sets,
         };

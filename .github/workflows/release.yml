@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "v*.*.*"
 
 jobs:
   release:
@@ -18,7 +18,7 @@ jobs:
       with:
         version: master
     - name: Zig Build
-      run: zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe
+      run: zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
     - name: Compress Artifacts
       run: |
         7z a theme.zip ./theme/*

@@ -1,4 +1,5 @@
 const std = @import("std");
+const build_info = @import("build_info");
 const clap = @import("clap");
 const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
@@ -57,6 +58,7 @@ pub fn main() !void {
     const port = blk: {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help        Display this help and exit.
+            \\-v, --version     Display the program version and exit.
             \\-p, --port <PORT> Listen to UDP input server on specified port.
             \\
         );
@@ -77,6 +79,11 @@ pub fn main() !void {
 
         if (res.args.help) {
             try clap.help(std.io.getStdErr().writer(), clap.Help, &params, .{});
+            return;
+        }
+
+        if (res.args.version) {
+            std.io.getStdOut().writer().print("{s}", .{build_info.version}) catch {};
             return;
         }
 

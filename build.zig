@@ -2,12 +2,13 @@ const std = @import("std");
 const Builder = std.build.Builder;
 const Step = std.build.Step;
 const LibExeObjStep = std.build.LibExeObjStep;
+const OptionsStep = std.build.OptionsStep;
 
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
-
     const mode = b.standardReleaseOptions();
-    const strip = b.option(bool, "strip", "Strip binary") orelse false;
+
+    const version_opt = b.option([]const u8, "version", "Build version string");
 
     const feeder_exe = feederExecutable(b);
     const viewer_exe = viewerExecutable(b);
@@ -15,12 +16,28 @@ pub fn build(b: *Builder) void {
     const dll_step = DllStep.create(b);
     b.default_step.dependOn(&dll_step.step);
 
-    for ([_]*LibExeObjStep{ feeder_exe, viewer_exe }) |exe| {
-        if (strip) exe.strip = true;
+    const commit_hash = getGitCommitHash(b);
 
+    const version = version_opt orelse if (commit_hash) |h| h.short else "UNKNOWN";
+    const schema_url = std.mem.join(b.allocator, "", &[_][]const u8{
+        "https://raw.githubusercontent.com/Sirius902/gcfeeder/",
+        if (commit_hash) |h| h.long else "main",
+        "/schema/gcfeeder.schema.json",
+    }) catch |err| {
+        std.log.err("Failed to join schema url: {}", .{err});
+        return;
+    };
+
+    const optionStep = OptionsStep.create(b);
+    optionStep.addOption([]const u8, "version", version);
+    optionStep.addOption([]const u8, "schema_url", schema_url);
+
+    for ([_]*LibExeObjStep{ feeder_exe, viewer_exe }) |exe| {
         exe.setTarget(target);
         exe.setBuildMode(mode);
         exe.install();
+
+        exe.addPackage(optionStep.getPackage("build_info"));
 
         if (exe.install_step) |install_step| {
             dll_step.step.dependOn(&install_step.step);
@@ -85,6 +102,29 @@ fn viewerExecutable(b: *Builder) *LibExeObjStep {
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
     return exe;
+}
+
+pub const CommitHash = struct {
+    short: []const u8,
+    long: []const u8,
+};
+
+fn getGitCommitHash(b: *Builder) ?CommitHash {
+    const command = [_][]const u8{ "git", "rev-parse" };
+
+    const short_ret = std.ChildProcess.exec(.{
+        .allocator = b.allocator,
+        .argv = command ++ &[_][]const u8{ "--short", "HEAD" },
+    }) catch return null;
+    const long_ret = std.ChildProcess.exec(.{
+        .allocator = b.allocator,
+        .argv = command ++ &[_][]const u8{"HEAD"},
+    }) catch return null;
+
+    return CommitHash{
+        .short = std.mem.trim(u8, short_ret.stdout, &std.ascii.spaces),
+        .long = std.mem.trim(u8, long_ret.stdout, &std.ascii.spaces),
+    };
 }
 
 const DllStep = struct {

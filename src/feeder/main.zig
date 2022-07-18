@@ -1,4 +1,5 @@
 const std = @import("std");
+const build_info = @import("build_info");
 const usb = @import("zusb");
 const clap = @import("clap");
 const calibrate = @import("calibrate.zig");
@@ -224,6 +225,7 @@ pub fn main() !void {
     const options = blk: {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help            Display this help and exit.
+            \\-v, --version         Display the program version and exit.
             \\-c, --config <NAME>   Use the specified config set from the config file. Uses the default config set if omitted.
             \\-e, --ess             Enable ESS adapter with oot-vc mapping.
             \\-m, --mapping <NAME>  Enable ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
@@ -252,6 +254,11 @@ pub fn main() !void {
 
         if (res.args.help) {
             try clap.help(std.io.getStdErr().writer(), clap.Help, &params, .{});
+            return;
+        }
+
+        if (res.args.version) {
+            std.io.getStdOut().writer().print("{s}", .{build_info.version}) catch {};
             return;
         }
 
