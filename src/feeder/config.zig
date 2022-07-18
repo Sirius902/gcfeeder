@@ -24,6 +24,7 @@ pub const Config = struct {
 };
 
 pub const ConfigFile = struct {
+    @"$schema": []const u8,
     default_set: []const u8,
     config_sets: []ConfigSet,
 
@@ -39,6 +40,7 @@ pub const ConfigFile = struct {
         config_sets[0] = .{ .name = "default", .config = default };
 
         return ConfigFile{
+            .@"$schema" = "https://raw.githubusercontent.com/Sirius902/gcfeeder/main/schema/gcfeeder.schema.json",
             .default_set = "default",
             .config_sets = config_sets,
         };
