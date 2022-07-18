@@ -57,7 +57,7 @@ pub fn main() !void {
     const port = blk: {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help        Display this help and exit.
-            \\-p, --port <PORT> Listen to UDP input server on port.
+            \\-p, --port <PORT> Listen to UDP input server on specified port.
             \\
         );
 
