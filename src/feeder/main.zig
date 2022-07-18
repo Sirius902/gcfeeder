@@ -13,10 +13,12 @@ const Atomic = std.atomic.Atomic;
 const time = std.time;
 const emulator = @import("emulator.zig");
 const Config = @import("config.zig").Config;
+const ConfigFile = @import("config.zig").ConfigFile;
 
 pub const log_level = .info;
 
 const Options = struct {
+    config_set: ?[]const u8,
     ess_mapping: ?ess.Mapping,
     port: ?u16,
     use_calibration: bool,
@@ -33,7 +35,8 @@ pub const Context = struct {
     stop: Atomic(bool),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
-    config: Config,
+    config_file: *ConfigFile,
+    config: *Config,
     use_calibration: bool,
     emulator_rumble: bool,
     overscale: ?f32,
@@ -59,7 +62,7 @@ fn inputLoop(context: *Context) void {
             break :blk a;
         });
 
-        const config = &context.config;
+        const config = context.config;
 
         const bridge = context.bridge orelse blk: {
             context.mutex.lock();
@@ -96,8 +99,8 @@ fn inputLoop(context: *Context) void {
                 }
             };
             config.calibration = cal;
-            config.save(context.allocator) catch |err| {
-                std.log.warn("Failed to save {s}: {}", .{ Config.path, err });
+            context.config_file.save(context.allocator) catch |err| {
+                std.log.warn("Failed to save {s}: {}", .{ ConfigFile.path, err });
             };
         }
 
@@ -214,21 +217,26 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
     const options = blk: {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help            Display this help and exit.
-            \\-e, --ess             Enables ESS adapter with oot-vc mapping.
-            \\-m, --mapping <MAP>   Enables ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
-            \\-s, --server          Enables UDP input server.
-            \\-p, --port <PORT>     Enables UDP input server on port.
-            \\-c, --calibrate       Use calibration to scale controller to full Windows range.
+            \\-c, --config <NAME>   Use the specified config set from the config file. Uses the default config set if omitted.
+            \\-e, --ess             Enable ESS adapter with oot-vc mapping.
+            \\-m, --mapping <NAME>  Enable ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
+            \\-s, --server          Enable UDP input server on default port for gcviewer.
+            \\-p, --port <PORT>     Enable UDP input server on specified port.
+            \\    --calibrate       Use calibration to scale controller to full Windows range.
             \\-o, --overscale <f32> Scale control stick value by multipler. Requires --calibrate.
-            \\--oot                 Read rumble data from OoT 1.0 on emulator.
+            \\    --oot             Read rumble data from OoT 1.0 on emulator.
             \\
         );
 
         const parsers = comptime .{
-            .MAP = clap.parsers.string,
+            .NAME = clap.parsers.string,
             .PORT = clap.parsers.int(u16, 10),
             .f32 = clap.parsers.float(f32),
         };
@@ -268,6 +276,7 @@ pub fn main() !void {
         }
 
         break :blk Options{
+            .config_set = if (res.args.config) |s| try allocator.dupe(u8, s) else null,
             .ess_mapping = ess_mapping,
             .port = port,
             .use_calibration = res.args.calibrate,
@@ -275,22 +284,31 @@ pub fn main() !void {
             .overscale = res.args.overscale,
         };
     };
+    defer if (options.config_set) |s| allocator.free(s);
 
     std.log.info("Initializing. Press enter to exit...", .{});
-
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
 
     var ctx = try usb.Context.init();
     defer ctx.deinit();
 
-    const config = (try Config.load(allocator)) orelse blk: {
-        const c = Config{};
-        c.save(allocator) catch |err| {
-            std.log.warn("Failed to save {s}: {}", .{ Config.path, err });
+    ConfigFile.migrateOldConfig(allocator) catch {};
+
+    var arena = std.heap.ArenaAllocator.init(allocator);
+    defer arena.deinit();
+    const json_allocator = arena.allocator();
+
+    var config_file = (try ConfigFile.load(json_allocator)) orelse blk: {
+        const c = try ConfigFile.init(json_allocator, .{});
+        c.save(json_allocator) catch |err| {
+            std.log.warn("Failed to save {s}: {}", .{ ConfigFile.path, err });
         };
         break :blk c;
+    };
+
+    const config_name = options.config_set orelse config_file.default_set;
+    const config = config_file.lookupConfigSet(config_name) orelse {
+        std.log.err("Missing config set \"{s}\"", .{config_name});
+        return;
     };
 
     const sock = blk: {
@@ -322,6 +340,7 @@ pub fn main() !void {
         .stop = Atomic(bool).init(false),
         .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
+        .config_file = &config_file,
         .config = config,
         .use_calibration = options.use_calibration,
         .emulator_rumble = options.emulator_rumble,

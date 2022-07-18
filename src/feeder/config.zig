@@ -21,43 +21,95 @@ pub const Config = struct {
     driver: Driver = .vigem,
     vigem_config: ViGEmConfig = .{ .pad = .ds4 },
     calibration: ?Calibration = null,
+};
 
-    pub const path = "config.json";
+pub const ConfigFile = struct {
+    default_set: []const u8,
+    config_sets: []ConfigSet,
 
-    pub fn load(allocator: std.mem.Allocator) !?Config {
-        const payload: ?[]const u8 = blk: {
-            const exe_dir_path = std.fs.selfExeDirPathAlloc(allocator) catch break :blk null;
-            defer allocator.free(exe_dir_path);
+    pub const ConfigSet = struct {
+        name: []const u8,
+        config: Config,
+    };
 
-            var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
-            defer exe_dir.close();
+    pub const path = "gcfeeder.json";
 
-            const file = exe_dir.openFile(path, .{}) catch break :blk null;
-            defer file.close();
+    pub fn init(allocator: std.mem.Allocator, default: Config) !ConfigFile {
+        var config_sets = try allocator.alloc(ConfigSet, 1);
+        config_sets[0] = .{ .name = "default", .config = default };
 
-            break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));
+        return ConfigFile{
+            .default_set = "default",
+            .config_sets = config_sets,
         };
-
-        if (payload) |p| {
-            defer allocator.free(p);
-            var stream = std.json.TokenStream.init(p);
-            return try std.json.parse(Config, &stream, .{});
-        } else {
-            return null;
-        }
     }
 
-    pub fn save(self: Config, allocator: std.mem.Allocator) !void {
+    pub fn load(allocator: std.mem.Allocator) !?ConfigFile {
+        return try parseFromFile(ConfigFile, allocator, path);
+    }
+
+    pub fn save(self: ConfigFile, allocator: std.mem.Allocator) !void {
+        try saveToFile(path, allocator, self);
+    }
+
+    pub fn lookupConfigSet(self: *ConfigFile, name: []const u8) ?*Config {
+        for (self.config_sets) |*s| {
+            if (std.mem.eql(u8, s.name, name)) {
+                return &s.config;
+            }
+        }
+
+        return null;
+    }
+
+    pub fn migrateOldConfig(allocator: std.mem.Allocator) !void {
         const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
         defer allocator.free(exe_dir_path);
 
         var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
         defer exe_dir.close();
 
-        var file = try exe_dir.createFile(path, .{});
-        defer file.close();
-
-        const writer = file.writer();
-        try std.json.stringify(self, .{ .whitespace = .{} }, writer);
+        exe_dir.access(path, .{}) catch {
+            const old_path = "config.json";
+            const old_config = (try parseFromFile(Config, allocator, old_path)) orelse return;
+            try saveToFile(path, allocator, try init(allocator, old_config));
+            try exe_dir.deleteFile(old_path);
+        };
     }
 };
+
+fn parseFromFile(comptime T: type, allocator: std.mem.Allocator, path: []const u8) !?T {
+    const file_contents: ?[]const u8 = blk: {
+        const exe_dir_path = std.fs.selfExeDirPathAlloc(allocator) catch break :blk null;
+        defer allocator.free(exe_dir_path);
+
+        var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
+        defer exe_dir.close();
+
+        const file = exe_dir.openFile(path, .{}) catch break :blk null;
+        defer file.close();
+
+        break :blk try file.readToEndAlloc(allocator, std.math.maxInt(usize));
+    };
+
+    if (file_contents) |s| {
+        defer allocator.free(s);
+        var stream = std.json.TokenStream.init(s);
+        return try std.json.parse(T, &stream, .{ .allocator = allocator });
+    } else {
+        return null;
+    }
+}
+
+fn saveToFile(path: []const u8, allocator: std.mem.Allocator, config: anytype) !void {
+    const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
+    defer allocator.free(exe_dir_path);
+
+    var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
+    defer exe_dir.close();
+
+    var file = try exe_dir.createFile(path, .{});
+    defer file.close();
+
+    try std.json.stringify(config, .{ .whitespace = .{} }, file.writer());
+}
