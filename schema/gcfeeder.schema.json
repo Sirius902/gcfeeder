@@ -26,18 +26,18 @@
                         "properties": {
                             "driver": {
                                 "type": "string",
-                                "pattern": "vigem"
+                                "enum": ["vigem"]
                             },
                             "vigem_config": {
                                 "type": "object",
                                 "properties": {
                                     "pad": {
                                         "type": "string",
-                                        "pattern": "ds4|x360"
+                                        "enum": ["ds4", "x360"]
                                     },
                                     "trigger_mode": {
                                         "type": "string",
-                                        "pattern": "analog|digital|combination|stick_click"
+                                        "enum": ["analog", "digital", "combination", "stick_click"]
                                     }
                                 },
                                 "required": [
