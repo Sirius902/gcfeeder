@@ -8,59 +8,72 @@ pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
     const mode = b.standardReleaseOptions();
 
-    const version_opt = b.option([]const u8, "version", "Build version string");
+    const version_opt = b.option([]const u8, "version", "Override build version string");
+    const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
 
-    const feeder_exe = feederExecutable(b);
-    const viewer_exe = viewerExecutable(b);
+    const build_info = if (no_git)
+        BuildInfo{ .version = "unknown", .usercontent_ref = "main" }
+    else
+        getBuildInfoFromGit(b.allocator) catch |err| {
+            std.log.err("Failed to get build info from Git: {}", .{err});
+            return;
+        };
 
-    const dll_step = DllStep.create(b);
-    b.default_step.dependOn(&dll_step.step);
-
-    const commit_hash = getGitCommitHash(b);
-
-    const version = version_opt orelse if (commit_hash) |h| h.short else "UNKNOWN";
-    const schema_url = std.mem.join(b.allocator, "", &[_][]const u8{
-        "https://raw.githubusercontent.com/Sirius902/gcfeeder/",
-        if (commit_hash) |h| h.long else "main",
-        "/schema/gcfeeder.schema.json",
+    const usercontent_url = std.mem.join(b.allocator, "/", &[_][]const u8{
+        "https://raw.githubusercontent.com/Sirius902/gcfeeder",
+        build_info.usercontent_ref,
     }) catch |err| {
-        std.log.err("Failed to join schema url: {}", .{err});
+        std.log.err("Failed to join usercontent url: {}", .{err});
         return;
     };
 
-    const optionStep = OptionsStep.create(b);
-    optionStep.addOption([]const u8, "version", version);
-    optionStep.addOption([]const u8, "schema_url", schema_url);
+    const options = OptionsStep.create(b);
+    options.addOption([]const u8, "version", version_opt orelse build_info.version);
+    options.addOption([]const u8, "usercontent_url", usercontent_url);
 
-    for ([_]*LibExeObjStep{ feeder_exe, viewer_exe }) |exe| {
-        exe.setTarget(target);
-        exe.setBuildMode(mode);
-        exe.install();
+    const params = .{ .b = b, .target = target, .mode = mode, .options = options };
+    const feeder_exe = addFeederExecutable(params);
+    const viewer_exe = addViewerExecutable(params);
 
-        exe.addPackage(optionStep.getPackage("build_info"));
-
-        if (exe.install_step) |install_step| {
-            dll_step.step.dependOn(&install_step.step);
-        }
-    }
-
-    const run_cmd = feeder_exe.run();
-    run_cmd.step.dependOn(b.getInstallStep());
+    const run_feeder_cmd = feeder_exe.run();
+    run_feeder_cmd.step.dependOn(b.getInstallStep());
     if (b.args) |args| {
-        run_cmd.addArgs(args);
+        run_feeder_cmd.addArgs(args);
     }
 
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
+    const run_feeder_step = b.step("run-feeder", "Run gcfeeder");
+    run_feeder_step.dependOn(&run_feeder_cmd.step);
+
+    const run_viewer_cmd = viewer_exe.run();
+    run_viewer_cmd.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_viewer_cmd.addArgs(args);
+    }
+
+    const run_viewer_step = b.step("run-viewer", "Run gcviewer");
+    run_viewer_step.dependOn(&run_viewer_cmd.step);
 }
 
-fn feederExecutable(b: *Builder) *LibExeObjStep {
-    const exe = b.addExecutable("gcfeeder", "src/feeder/main.zig");
+const BuildParams = struct {
+    b: *Builder,
+    target: std.zig.CrossTarget,
+    mode: std.builtin.Mode,
+    options: *OptionsStep,
+};
 
-    exe.c_std = .C99;
+fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
+    const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
+    const dll_deps = .{.{ .lib = "libusb-1.0.dll", .dll = "libusb-1.0.dll" }};
+
     exe.addIncludeDir("include");
-
     exe.addLibPath("lib");
+
+    exe.linkLibCpp();
+    exe.linkSystemLibrary("setupapi");
+
+    inline for (dll_deps) |dep| {
+        exe.linkSystemLibrary(dep.lib);
+    }
 
     const cxx_flags = [_][]const u8{
         "-std=c++20",
@@ -70,92 +83,106 @@ fn feederExecutable(b: *Builder) *LibExeObjStep {
         "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
     };
 
-    exe.linkLibCpp();
     exe.addCSourceFile("src/feeder/bridge/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
-
-    exe.linkSystemLibrary("libusb-1.0.dll");
-    exe.linkSystemLibrary("setupapi");
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
     exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
 
+    exe.addPackage(params.options.getPackage("build_info"));
+
+    exe.setTarget(params.target);
+    exe.setBuildMode(params.mode);
+    exe.install();
+
+    if (exe.install_step) |install_step| {
+        inline for (dll_deps) |dep| {
+            const install_dll = params.b.addInstallFileWithDir(.{ .path = "lib/" ++ dep.dll }, .bin, dep.dll);
+            install_step.step.dependOn(&install_dll.step);
+        }
+    }
+
     return exe;
 }
 
-fn viewerExecutable(b: *Builder) *LibExeObjStep {
-    const exe = b.addExecutable("gcviewer", "src/viewer/main.zig");
+fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
+    const exe = params.b.addExecutable("gcviewer", "src/viewer/main.zig");
+    const dll_deps = .{
+        .{ .lib = "libepoxy.dll", .dll = "libepoxy-0.dll" },
+        .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
+    };
 
-    exe.c_std = .C99;
     exe.addIncludeDir("include");
-
     exe.addLibPath("lib");
 
     exe.linkLibC();
-    exe.linkSystemLibrary("libepoxy.dll");
-    exe.linkSystemLibrary("glfw3dll");
+
+    inline for (dll_deps) |dep| {
+        exe.linkSystemLibrary(dep.lib);
+    }
 
     exe.addPackagePath("adapter", "src/feeder/adapter.zig");
     exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
+    exe.addPackage(params.options.getPackage("build_info"));
+
+    exe.setTarget(params.target);
+    exe.setBuildMode(params.mode);
+    exe.install();
+
+    if (exe.install_step) |install_step| {
+        inline for (dll_deps) |dep| {
+            const install_dll = params.b.addInstallFileWithDir(.{ .path = "lib/" ++ dep.dll }, .bin, dep.dll);
+            install_step.step.dependOn(&install_dll.step);
+        }
+    }
+
     return exe;
 }
 
-pub const CommitHash = struct {
-    short: []const u8,
-    long: []const u8,
+const BuildInfo = struct {
+    version: []const u8,
+    usercontent_ref: []const u8,
 };
 
-fn getGitCommitHash(b: *Builder) ?CommitHash {
-    const command = [_][]const u8{ "git", "rev-parse" };
+fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {
+    const version = try execGetStdOut(allocator, &[_][]const u8{
+        "git",
+        "describe",
+        "--always",
+        "--dirty",
+        "--tags",
+    });
 
-    const short_ret = std.ChildProcess.exec(.{
-        .allocator = b.allocator,
-        .argv = command ++ &[_][]const u8{ "--short", "HEAD" },
-    }) catch return null;
-    const long_ret = std.ChildProcess.exec(.{
-        .allocator = b.allocator,
-        .argv = command ++ &[_][]const u8{"HEAD"},
-    }) catch return null;
+    const commit_hash = try execGetStdOut(allocator, &[_][]const u8{
+        "git",
+        "rev-parse",
+        "HEAD",
+    });
 
-    return CommitHash{
-        .short = std.mem.trim(u8, short_ret.stdout, &std.ascii.spaces),
-        .long = std.mem.trim(u8, long_ret.stdout, &std.ascii.spaces),
+    return BuildInfo{
+        .version = std.mem.trim(u8, version, &std.ascii.spaces),
+        .usercontent_ref = std.mem.trim(u8, commit_hash, &std.ascii.spaces),
     };
 }
 
-const DllStep = struct {
-    step: Step,
-    builder: *Builder,
+fn execGetStdOut(allocator: std.mem.Allocator, argv: []const []const u8) ![]const u8 {
+    const result = try std.ChildProcess.exec(.{
+        .allocator = allocator,
+        .argv = argv,
+    });
 
-    pub fn create(b: *Builder) *DllStep {
-        var self = b.allocator.create(DllStep) catch unreachable;
-        self.* = DllStep{
-            .step = Step.init(.custom, "dll", b.allocator, make),
-            .builder = b,
-        };
-
-        return self;
-    }
-
-    fn make(step: *Step) !void {
-        const self = @fieldParentPtr(DllStep, "step", step);
-        const b = self.builder;
-
-        var lib = try std.fs.cwd().openIterableDir("lib", .{});
-        defer lib.close();
-
-        var exe_dir = try std.fs.cwd().openDir(b.exe_dir, .{});
-        defer exe_dir.close();
-
-        var files = lib.iterate();
-        while (try files.next()) |file| {
-            if (std.mem.endsWith(u8, file.name, ".dll")) {
-                try lib.dir.copyFile(file.name, exe_dir, file.name, .{});
+    switch (result.term) {
+        .Exited => |code| {
+            if (code == 0) {
+                return result.stdout;
             }
-        }
+        },
+        else => {},
     }
-};
+
+    return error.ExecFail;
+}

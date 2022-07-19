@@ -41,7 +41,10 @@ pub const ConfigFile = struct {
         config_sets[0] = .{ .name = "default", .config = default };
 
         return ConfigFile{
-            .@"$schema" = build_info.schema_url,
+            .@"$schema" = try std.mem.join(allocator, "/", &[_][]const u8{
+                build_info.usercontent_url,
+                "schema/gcfeeder.schema.json",
+            }),
             .default_set = "default",
             .config_sets = config_sets,
         };
