@@ -1,6 +1,7 @@
 const c = @cImport({
     @cDefine("WIN32_LEAN_AND_MEAN", {});
     @cInclude("windows.h");
+    @cDefine("VIGEM_USE_CRASH_HANDLER", {});
     @cInclude("ViGEm/Client.h");
 });
 
