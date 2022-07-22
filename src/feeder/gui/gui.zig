@@ -6,10 +6,25 @@ const impl_gl3 = @import("imgui_impl_opengl3.zig");
 const glfw = @import("glfw.zig");
 const gl = @import("gl.zig");
 
+const roboto_ttf: []u8 = blk: {
+    const ttf_const = @embedFile("font/Roboto-Medium.ttf");
+    var buf: [ttf_const.len]u8 = undefined;
+    @memcpy(&buf, ttf_const, buf.len);
+    break :blk &buf;
+};
+
 const is_darwin = builtin.os.tag.isDarwin();
 
-fn glfwErrorCallback(err: c_int, description: ?[*:0]const u8) callconv(.C) void {
-    std.debug.print("Glfw Error {}: {s}\n", .{ err, description });
+var draw_log = true;
+fn drawGui() !void {
+    imgui.SetNextWindowSizeExt(.{ .x = 500.0, .y = 400.0 }, .{ .Once = true });
+
+    if (!imgui.BeginExt("Log", &draw_log, .{})) {
+        imgui.End();
+        return;
+    }
+
+    imgui.End();
 }
 
 pub fn runImGui(allocator: std.mem.Allocator) !void {
@@ -17,7 +32,7 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
         const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
         defer allocator.free(exe_dir_path);
 
-        break :blk try std.mem.joinZ(allocator, "/", &[_][]const u8{ exe_dir_path, "gcfeeder-imgui.ini" });
+        break :blk try std.mem.joinZ(allocator, "/", &[_][]const u8{ exe_dir_path, "imgui-gcfeeder.ini" });
     };
     defer allocator.free(ini_path);
 
@@ -55,8 +70,25 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     //io.ConfigFlags |= imgui.ConfigFlags.NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= imgui.ConfigFlags.NavEnableGamepad;      // Enable Gamepad Controls
 
+    const scale = blk: {
+        if (glfw.glfwGetPrimaryMonitor()) |monitor| {
+            var xscale: f32 = undefined;
+            var yscale: f32 = undefined;
+            glfw.glfwGetMonitorContentScale(monitor, &xscale, &yscale);
+            break :blk std.math.max(xscale, yscale);
+        } else {
+            break :blk 1.0;
+        }
+    };
+
     // Setup Dear ImGui style
     imgui.StyleColorsDark();
+    {
+        const style = imgui.GetStyle().?;
+        style.ScaleAllSizes(scale);
+        style.FrameRounding = 2.0;
+        style.WindowRounding = 5.0;
+    }
 
     // Setup Platform/Renderer bindings
     _ = impl_glfw.InitForOpenGL(window, true);
@@ -77,12 +109,22 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     //ImFont* font = io.Fonts.AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0, null, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    var font_cfg: imgui.FontConfig = undefined;
+    imgui.FontConfig.init_ImFontConfig(&font_cfg);
+    defer imgui.FontConfig.deinit(&font_cfg);
+
+    font_cfg.FontDataOwnedByAtlas = false;
+    _ = io.Fonts.?.AddFontFromMemoryTTFExt(
+        roboto_ttf.ptr,
+        @intCast(i32, roboto_ttf.len),
+        std.math.floor(16.0 * scale),
+        &font_cfg,
+        null,
+    );
+
     // Our state
     var show_demo_window = true;
-    var show_another_window = false;
     var clear_color = imgui.Vec4{ .x = 0.45, .y = 0.55, .z = 0.60, .w = 1.00 };
-    var slider_value: f32 = 0;
-    var counter: i32 = 0;
 
     // Main loop
     while (glfw.glfwWindowShouldClose(window) == 0) {
@@ -98,38 +140,10 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
         impl_glfw.NewFrame();
         imgui.NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             imgui.ShowDemoWindowExt(&show_demo_window);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            _ = imgui.Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
-
-            imgui.Text("This is some useful text."); // Display some text (you can use a format strings too)
-            _ = imgui.Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-            _ = imgui.Checkbox("Another Window", &show_another_window);
-
-            _ = imgui.SliderFloat("float", &slider_value, 0.0, 1.0); // Edit 1 float using a slider from 0.0 to 1.0
-            _ = imgui.ColorEdit3("clear color", @ptrCast(*[3]f32, &clear_color)); // Edit 3 floats representing a color
-
-            if (imgui.Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter += 1;
-            imgui.SameLine();
-            imgui.Text("counter = %d", counter);
-
-            imgui.Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / imgui.GetIO().Framerate, imgui.GetIO().Framerate);
-            imgui.End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window) {
-            _ = imgui.BeginExt("Another Window", &show_another_window, .{}); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            imgui.Text("Hello from another window!");
-            if (imgui.Button("Close Me"))
-                show_another_window = false;
-            imgui.End();
-        }
+        try drawGui();
 
         // Rendering
         imgui.Render();
@@ -156,4 +170,8 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
 
     glfw.glfwDestroyWindow(window);
     glfw.glfwTerminate();
+}
+
+fn glfwErrorCallback(err: c_int, description: ?[*:0]const u8) callconv(.C) void {
+    std.debug.print("Glfw Error {}: {s}\n", .{ err, description });
 }
