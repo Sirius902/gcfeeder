@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const build_info = @import("build_info");
 const usb = @import("zusb");
 const clap = @import("clap");
@@ -17,7 +18,7 @@ const Config = @import("config.zig").Config;
 const ConfigFile = @import("config.zig").ConfigFile;
 const gui = @import("gui/gui.zig");
 
-pub const log_level = .info;
+pub const log_level = if (builtin.mode == .Debug) .debug else .info;
 
 const Options = struct {
     config_set: ?[]const u8,
