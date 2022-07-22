@@ -258,7 +258,7 @@ pub fn main() !void {
         }
 
         if (res.args.version) {
-            std.io.getStdOut().writer().print("{s}", .{build_info.version}) catch {};
+            std.io.getStdErr().writer().print("{s}", .{build_info.version}) catch {};
             return;
         }
 
