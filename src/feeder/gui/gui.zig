@@ -17,11 +17,81 @@ const is_darwin = builtin.os.tag.isDarwin();
 
 var draw_log = true;
 fn drawGui() !void {
-    imgui.SetNextWindowSizeExt(.{ .x = 500.0, .y = 400.0 }, .{ .Once = true });
+    const viewport = imgui.GetMainViewport().?;
+    {
+        const extra_pixels = 4;
+        imgui.SetNextWindowPos(.{ .x = viewport.WorkPos.x - @divTrunc(extra_pixels, 2), .y = viewport.WorkPos.y });
+        imgui.SetNextWindowSize(.{ .x = viewport.WorkSize.x + extra_pixels, .y = viewport.WorkSize.y });
+    }
 
-    if (!imgui.BeginExt("Log", &draw_log, .{})) {
+    _ = imgui.BeginExt("gcfeeder", null, .{
+        .NoBackground = true,
+        .NoTitleBar = true,
+        .NoCollapse = true,
+        .NoMove = true,
+        .MenuBar = true,
+        .NoBringToFrontOnFocus = true,
+        .NoNavFocus = true,
+        .NoResize = true,
+    });
+
+    if (imgui.BeginMenuBar()) {
+        if (imgui.BeginMenu("View")) {
+            _ = imgui.MenuItem_BoolPtr("Log", null, &draw_log);
+
+            imgui.EndMenu();
+        }
+
+        imgui.EndMenuBar();
+    }
+
+    drawLog(&draw_log);
+
+    imgui.End();
+}
+
+var log_auto_scroll = true;
+fn drawLog(open: *bool) void {
+    if (!open.*) {
+        return;
+    }
+
+    imgui.SetNextWindowSizeExt(.{ .x = 400.0, .y = 250.0 }, .{ .Once = true });
+    if (!imgui.BeginExt("Log", open, .{ .NoFocusOnAppearing = true })) {
         imgui.End();
         return;
+    }
+
+    if (imgui.BeginPopup("Options")) {
+        _ = imgui.Checkbox("Auto-scroll", &log_auto_scroll);
+        imgui.EndPopup();
+    }
+
+    if (imgui.Button("Options")) {
+        imgui.OpenPopup_Str("Options");
+    }
+    imgui.SameLine();
+    const clear = imgui.Button("Clear");
+    imgui.SameLine();
+    const copy = imgui.Button("Copy");
+
+    imgui.Separator();
+
+    if (clear) {
+        std.log.debug("clear", .{});
+    }
+
+    if (copy) {
+        std.log.debug("copy", .{});
+    }
+
+    var i: usize = 0;
+    while (i < 30) : (i += 1) {
+        imgui.TextUnformatted("info: Hello world!");
+    }
+
+    if (log_auto_scroll and imgui.GetScrollY() >= imgui.GetScrollMaxY()) {
+        imgui.SetScrollHereYExt(1.0);
     }
 
     imgui.End();
