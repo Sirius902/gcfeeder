@@ -16,6 +16,8 @@ const emulator = @import("emulator.zig");
 const Config = @import("config.zig").Config;
 const ConfigFile = @import("config.zig").ConfigFile;
 
+const doImGuiTest = @import("example_glfw_opengl3.zig").doImGuiTest;
+
 pub const log_level = .info;
 
 const Options = struct {
@@ -371,6 +373,6 @@ pub fn main() !void {
         }
     }
 
-    // Wait for user to press enter to exit program.
-    _ = try std.io.getStdIn().reader().readByte();
+    // stuff
+    try doImGuiTest();
 }

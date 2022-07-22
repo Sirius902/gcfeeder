@@ -3,6 +3,7 @@ const Builder = std.build.Builder;
 const Step = std.build.Step;
 const LibExeObjStep = std.build.LibExeObjStep;
 const OptionsStep = std.build.OptionsStep;
+const imgui_build = @import("pkg/Zig-ImGui/zig-imgui/imgui_build.zig");
 
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
@@ -33,6 +34,8 @@ pub fn build(b: *Builder) void {
 
     const params = .{ .b = b, .target = target, .mode = mode, .options = options };
     const feeder_exe = addFeederExecutable(params);
+    imgui_build.link(feeder_exe);
+
     const viewer_exe = addViewerExecutable(params);
 
     const run_feeder_cmd = feeder_exe.run();
@@ -63,7 +66,11 @@ const BuildParams = struct {
 
 fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
-    const dll_deps = .{.{ .lib = "libusb-1.0.dll", .dll = "libusb-1.0.dll" }};
+    const dll_deps = .{
+        .{ .lib = "libusb-1.0.dll", .dll = "libusb-1.0.dll" },
+        .{ .lib = "libepoxy.dll", .dll = "libepoxy-0.dll" },
+        .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
+    };
 
     exe.addIncludeDir("include");
     exe.addLibPath("lib");
