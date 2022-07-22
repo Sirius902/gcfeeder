@@ -14,3 +14,6 @@
 [submodule "pkg/grindel"]
 	path = pkg/grindel
 	url = https://github.com/Sirius902/grindel.git
+[submodule "pkg/Zig-ImGui"]
+	path = pkg/Zig-ImGui
+	url = https://github.com/SpexGuy/Zig-ImGui.git
