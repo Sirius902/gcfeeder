@@ -1,7 +1,3 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
 const std = @import("std");
 const builtin = @import("builtin");
 const imgui = @import("imgui");
@@ -16,7 +12,15 @@ fn glfwErrorCallback(err: c_int, description: ?[*:0]const u8) callconv(.C) void 
     std.debug.print("Glfw Error {}: {s}\n", .{ err, description });
 }
 
-pub fn doImGuiTest() !void {
+pub fn runImGui(allocator: std.mem.Allocator) !void {
+    const ini_path = blk: {
+        const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
+        defer allocator.free(exe_dir_path);
+
+        break :blk try std.mem.joinZ(allocator, "/", &[_][]const u8{ exe_dir_path, "gcfeeder-imgui.ini" });
+    };
+    defer allocator.free(ini_path);
+
     // Setup window
     _ = glfw.glfwSetErrorCallback(glfwErrorCallback);
     if (glfw.glfwInit() == 0)
@@ -39,24 +43,20 @@ pub fn doImGuiTest() !void {
     }
 
     // Create window with graphics context
-    const window = glfw.glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", null, null) orelse return error.GlfwCreateWindowFailed;
+    const window = glfw.glfwCreateWindow(1280, 720, "gcfeeder", null, null) orelse return error.GlfwCreateWindowFailed;
     glfw.glfwMakeContextCurrent(window);
     glfw.glfwSwapInterval(1); // Enable vsync
-
-    // // Initialize OpenGL loader
-    // if (gl.gladLoadGL() == 0)
-    //     return error.GladLoadGLFailed;
 
     // Setup Dear ImGui context
     imgui.CHECKVERSION();
     _ = imgui.CreateContext();
-    //const io = imgui.GetIO();
+    const io = imgui.GetIO();
+    io.IniFilename = ini_path;
     //io.ConfigFlags |= imgui.ConfigFlags.NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= imgui.ConfigFlags.NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     imgui.StyleColorsDark();
-    //imgui.StyleColorsClassic();
 
     // Setup Platform/Renderer bindings
     _ = impl_glfw.InitForOpenGL(window, true);

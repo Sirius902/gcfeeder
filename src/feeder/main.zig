@@ -15,8 +15,7 @@ const time = std.time;
 const emulator = @import("emulator.zig");
 const Config = @import("config.zig").Config;
 const ConfigFile = @import("config.zig").ConfigFile;
-
-const doImGuiTest = @import("example_glfw_opengl3.zig").doImGuiTest;
+const gui = @import("gui/gui.zig");
 
 pub const log_level = .info;
 
@@ -373,6 +372,5 @@ pub fn main() !void {
         }
     }
 
-    // stuff
-    try doImGuiTest();
+    try gui.runImGui(allocator);
 }
