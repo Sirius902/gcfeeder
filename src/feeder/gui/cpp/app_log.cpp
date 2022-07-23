@@ -1,12 +1,6 @@
 #include "app_log.h"
 
-AppLog::AppLog() : auto_scroll(true) {
-    clear();
-
-    for (int i = 0; i < 36; i++) {
-        add("info: Hello world!\n");
-    }
-}
+AppLog::AppLog() : auto_scroll(true) { clear(); }
 
 void AppLog::clear() {
     buffer.clear();

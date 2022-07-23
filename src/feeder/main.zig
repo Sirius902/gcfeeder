@@ -22,6 +22,7 @@ const win = @cImport({
     @cInclude("windows.h");
 });
 
+pub const log = gui.log;
 pub const log_level = if (builtin.mode == .Debug) .debug else .info;
 
 const Options = struct {
@@ -303,7 +304,7 @@ pub fn main() !void {
     };
     defer if (options.config_set) |s| allocator.free(s);
 
-    std.log.info("Initializing. Press enter to exit...", .{});
+    std.log.info("Initializing...", .{});
 
     var ctx = try usb.Context.init();
     defer ctx.deinit();

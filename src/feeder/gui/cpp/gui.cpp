@@ -7,12 +7,13 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
 
 #include "app_log.h"
 #include "gui.h"
 
-static AppLog log;
+static AppLog app_log;
+
+extern "C" void addLogMessage(const char* message) { app_log.add(message); }
 
 static void drawGui(UIContext& context) {
     static bool draw_log = true;
@@ -52,7 +53,7 @@ static void drawGui(UIContext& context) {
         ImGui::EndMenuBar();
     }
 
-    log.draw("Log", draw_log);
+    app_log.draw("Log", draw_log);
 
     ImGui::End();
 }

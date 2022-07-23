@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const c = @cImport({
     @cInclude("gui.h");
 });
@@ -49,6 +50,34 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
 
     c.glfwDestroyWindow(window);
     c.glfwTerminate();
+}
+
+pub fn log(
+    comptime message_level: std.log.Level,
+    comptime scope: @Type(.EnumLiteral),
+    comptime format: []const u8,
+    args: anytype,
+) void {
+    const static = struct {
+        var mutex = std.Thread.Mutex{};
+        var message_buf: [4096]u8 = undefined;
+    };
+
+    if (builtin.os.tag == .freestanding)
+        @compileError(
+            \\freestanding targets do not have I/O configured;
+            \\please provide at least an empty `log` function declaration
+        );
+
+    const level_txt = comptime message_level.asText();
+    const prefix2 = if (scope == .default) ": " else "(" ++ @tagName(scope) ++ "): ";
+    const message = std.fmt.bufPrintZ(&static.message_buf, level_txt ++ prefix2 ++ format ++ "\n", args) catch |err| {
+        std.debug.print("Failed to log: {}", .{err});
+        return;
+    };
+    static.mutex.lock();
+    defer static.mutex.unlock();
+    nosuspend c.addLogMessage(message.ptr);
 }
 
 fn glfwErrorCallback(err: c_int, description: ?[*:0]const u8) callconv(.C) void {

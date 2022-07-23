@@ -17,6 +17,7 @@ typedef struct UIContext {
 } UIContext;
 
 int runImGui(UIContext* context);
+void addLogMessage(const char* message);
 
 #ifdef __cplusplus
 }
