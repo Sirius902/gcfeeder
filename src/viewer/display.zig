@@ -8,6 +8,7 @@ const time = std.time;
 const user_shader_path = @import("root").user_shader_path;
 
 const c = @cImport({
+    @cDefine("GLFW_INCLUDE_NONE", {});
     @cInclude("GLFW/glfw3.h");
 });
 

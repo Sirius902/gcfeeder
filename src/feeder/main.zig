@@ -17,6 +17,10 @@ const emulator = @import("emulator.zig");
 const Config = @import("config.zig").Config;
 const ConfigFile = @import("config.zig").ConfigFile;
 const gui = @import("gui/gui.zig");
+const win = @cImport({
+    @cDefine("WIN32_LEAN_AND_MEAN", {});
+    @cInclude("windows.h");
+});
 
 pub const log_level = if (builtin.mode == .Debug) .debug else .info;
 
@@ -220,6 +224,9 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn main() !void {
+    // Attach to console so output can be viewed when run from a terminal on Windows subsystem.
+    _ = win.AttachConsole(win.ATTACH_PARENT_PROCESS);
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();

@@ -3,7 +3,6 @@ const Builder = std.build.Builder;
 const Step = std.build.Step;
 const LibExeObjStep = std.build.LibExeObjStep;
 const OptionsStep = std.build.OptionsStep;
-const imgui_build = @import("pkg/Zig-ImGui/zig-imgui/imgui_build.zig");
 
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
@@ -34,7 +33,7 @@ pub fn build(b: *Builder) void {
 
     const params = .{ .b = b, .target = target, .mode = mode, .options = options };
     const feeder_exe = addFeederExecutable(params);
-    imgui_build.link(feeder_exe);
+    feeder_exe.subsystem = .Windows;
 
     const viewer_exe = addViewerExecutable(params);
 
@@ -57,8 +56,10 @@ pub fn build(b: *Builder) void {
     run_viewer_step.dependOn(&run_viewer_cmd.step);
 
     const zig_fmt = b.addSystemCommand(&[_][]const u8{ "zig", "fmt", "build.zig", "src" });
+    const clang_format = b.addSystemCommand(&[_][]const u8{ "clang-format", "-i", "-style=file" } ++ feeder_cxx_all);
     const fmt_step = b.step("fmt", "Format source excluding include and pkg");
     fmt_step.dependOn(&zig_fmt.step);
+    fmt_step.dependOn(&clang_format.step);
 }
 
 const BuildParams = struct {
@@ -67,6 +68,16 @@ const BuildParams = struct {
     mode: std.builtin.Mode,
     options: *OptionsStep,
 };
+
+const feeder_cxx_header = [_][]const u8{
+    "src/feeder/gui/cpp/gui.h",
+};
+
+const feeder_cxx_source = [_][]const u8{
+    "src/feeder/gui/cpp/gui.cpp",
+};
+
+const feeder_cxx_all = feeder_cxx_header ++ feeder_cxx_source;
 
 fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
@@ -77,6 +88,7 @@ fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     };
 
     exe.addIncludeDir("include");
+    exe.addIncludeDir("src/feeder/gui/cpp");
     exe.addLibPath("lib");
 
     exe.linkLibCpp();
@@ -86,15 +98,35 @@ fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
         exe.linkSystemLibrary(dep.lib);
     }
 
-    const cxx_flags = [_][]const u8{
+    const vigem_cxx_flags = [_][]const u8{
         "-std=c++20",
-        "-fno-exceptions",
         // HACK: Define this Windows error used by the ViGEmClient because it's not
         // defined in MinGW headers.
         "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
     };
 
-    exe.addCSourceFile("src/feeder/bridge/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
+    exe.addCSourceFile("include/ViGEmClient/ViGEmClient.cpp", &vigem_cxx_flags);
+
+    const cxx_flags = [_][]const u8{
+        "-std=c++20",
+        "-Wpedantic",
+        "-Werror",
+        "-Wall",
+        "-Wextra",
+        "-Iinclude/imgui",
+    };
+
+    const include_cxx_source = [_][]const u8{
+        "include/imgui/imgui_demo.cpp",
+        "include/imgui/imgui_draw.cpp",
+        "include/imgui/imgui_tables.cpp",
+        "include/imgui/imgui_widgets.cpp",
+        "include/imgui/imgui.cpp",
+        "include/imgui/backends/imgui_impl_glfw.cpp",
+        "include/imgui/backends/imgui_impl_opengl3.cpp",
+    };
+
+    exe.addCSourceFiles(&include_cxx_source ++ feeder_cxx_source, &cxx_flags);
 
     exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
