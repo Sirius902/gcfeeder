@@ -33,7 +33,6 @@ pub fn build(b: *Builder) void {
 
     const params = .{ .b = b, .target = target, .mode = mode, .options = options };
     const feeder_exe = addFeederExecutable(params);
-    feeder_exe.subsystem = .Windows;
 
     const viewer_exe = addViewerExecutable(params);
 
@@ -71,10 +70,12 @@ const BuildParams = struct {
 
 const feeder_cxx_header = [_][]const u8{
     "src/feeder/gui/cpp/gui.h",
+    "src/feeder/gui/cpp/app_log.h",
 };
 
 const feeder_cxx_source = [_][]const u8{
     "src/feeder/gui/cpp/gui.cpp",
+    "src/feeder/gui/cpp/app_log.cpp",
 };
 
 const feeder_cxx_all = feeder_cxx_header ++ feeder_cxx_source;

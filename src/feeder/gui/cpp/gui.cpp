@@ -9,17 +9,35 @@
 #include <cmath>
 #include <cstdio>
 
+#include "app_log.h"
 #include "gui.h"
 
-static void drawLog(bool& open);
+static AppLog log;
 
-static bool drawGui() {
+static void drawGui(UIContext& context) {
     static bool draw_log = true;
 
-    if (ImGui::BeginMainMenuBar()) {
+    const ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(io.DisplaySize);
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
+                                    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                    ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::Begin("Content", nullptr, window_flags);
+    ImGui::PopStyleVar(5);
+
+    if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Exit")) {
-                return true;
+            if (ImGui::MenuItem("Exit", "Alt+F4")) {
+                glfwSetWindowShouldClose(context.window, true);
             }
 
             ImGui::EndMenu();
@@ -31,66 +49,15 @@ static bool drawGui() {
             ImGui::EndMenu();
         }
 
-        ImGui::EndMainMenuBar();
+        ImGui::EndMenuBar();
     }
 
-    drawLog(draw_log);
-    return false;
-}
-
-static void drawLog(bool& open) {
-    if (!open) {
-        return;
-    }
-
-    static bool auto_scroll = true;
-
-    ImGui::SetNextWindowSize(ImVec2(400, 250), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Log", &open, ImGuiWindowFlags_NoFocusOnAppearing)) {
-        ImGui::End();
-        return;
-    }
-
-    if (ImGui::BeginPopup("Options")) {
-        ImGui::Checkbox("Auto-scroll", &auto_scroll);
-
-        ImGui::EndPopup();
-    }
-
-    if (ImGui::Button("Options")) {
-        ImGui::OpenPopup("Options");
-    }
-
-    ImGui::SameLine();
-    bool clear = ImGui::Button("Clear");
-    ImGui::SameLine();
-    bool copy = ImGui::Button("Copy");
-
-    ImGui::Separator();
-
-    if (clear) {
-        std::fprintf(stderr, "clear\n");
-    }
-
-    if (copy) {
-        std::fprintf(stderr, "copy\n");
-    }
-
-    for (std::size_t i = 0; i < 30; i++) {
-        ImGui::TextUnformatted("info: Hello world!");
-    }
-
-    if (auto_scroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
-        ImGui::SetScrollHereY(1.0f);
-    }
+    log.draw("Log", draw_log);
 
     ImGui::End();
 }
 
 extern "C" int runImGui(UIContext* context) {
-    // Reopen stderr to print messages to console from C++ on Windows subsystem.
-    std::freopen("CONOUT$", "w", stderr);
-
     GLFWwindow* window = context->window;
 
     // Setup Dear ImGui context
@@ -101,6 +68,7 @@ extern "C" int runImGui(UIContext* context) {
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable
     // Keyboard Controls io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //
     // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     float scale = [&]() {
         const auto monitor = glfwGetPrimaryMonitor();
@@ -158,9 +126,7 @@ extern "C" int runImGui(UIContext* context) {
         // Dear ImGui!).
         if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 
-        if (drawGui()) {
-            break;
-        }
+        drawGui(*context);
 
         // Rendering
         ImGui::Render();

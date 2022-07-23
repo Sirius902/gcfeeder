@@ -224,8 +224,9 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn main() !void {
-    // Attach to console so output can be viewed when run from a terminal on Windows subsystem.
-    _ = win.AttachConsole(win.ATTACH_PARENT_PROCESS);
+    // HACK: Hide console and use Console subsystem for the moment.
+    // Compiling with Windows subsystem hangs when creating a GLFW window.
+    _ = win.ShowWindow(win.GetConsoleWindow(), win.SW_HIDE);
 
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
