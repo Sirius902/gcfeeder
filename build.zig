@@ -83,8 +83,8 @@ const feeder_cxx_all = feeder_cxx_header ++ feeder_cxx_source;
 fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
     const dll_deps = .{
-        .{ .lib = "libusb-1.0.dll", .dll = "libusb-1.0.dll" },
-        .{ .lib = "libepoxy.dll", .dll = "libepoxy-0.dll" },
+        .{ .lib = "usb-1.0.dll", .dll = "libusb-1.0.dll" },
+        .{ .lib = "epoxy.dll", .dll = "libepoxy-0.dll" },
         .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
     };
 
@@ -153,7 +153,7 @@ fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
 fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcviewer", "src/viewer/main.zig");
     const dll_deps = .{
-        .{ .lib = "libepoxy.dll", .dll = "libepoxy-0.dll" },
+        .{ .lib = "epoxy.dll", .dll = "libepoxy-0.dll" },
         .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
     };
 
