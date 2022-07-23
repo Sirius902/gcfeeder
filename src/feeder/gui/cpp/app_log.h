@@ -3,12 +3,17 @@
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include <imgui/imgui.h>
 
-struct AppLog {
+#include <mutex>
+
+class AppLog {
+private:
     ImGuiTextBuffer buffer;
     ImGuiTextFilter filter;
     ImVector<int> line_offsets;
     bool auto_scroll;
+    std::mutex mutex;
 
+public:
     AppLog();
 
     void clear();

@@ -3,12 +3,16 @@
 AppLog::AppLog() : auto_scroll(true) { clear(); }
 
 void AppLog::clear() {
+    std::scoped_lock lock(mutex);
+
     buffer.clear();
     line_offsets.clear();
     line_offsets.push_back(0);
 }
 
 void AppLog::add(const char* message) {
+    std::scoped_lock lock(mutex);
+
     int prev_size = buffer.size();
     buffer.append(message);
     for (int i = prev_size; i < buffer.size(); i++) {
@@ -53,18 +57,23 @@ void AppLog::draw(const char* title, bool& open) {
 
     if (do_copy) ImGui::LogToClipboard();
 
-    const char* buf_start = buffer.begin();
-    const char* buf_end = buffer.end();
-    ImGuiListClipper clipper;
-    clipper.Begin(line_offsets.Size);
-    while (clipper.Step()) {
-        for (int line = clipper.DisplayStart; line < clipper.DisplayEnd; line++) {
-            const char* line_start = buf_start + line_offsets[line];
-            const char* line_end = (line + 1 < line_offsets.Size) ? (buf_start + line_offsets[line + 1] - 1) : buf_end;
-            ImGui::TextUnformatted(line_start, line_end);
+    {
+        std::scoped_lock lock(mutex);
+
+        const char* buf_start = buffer.begin();
+        const char* buf_end = buffer.end();
+        ImGuiListClipper clipper;
+        clipper.Begin(line_offsets.Size);
+        while (clipper.Step()) {
+            for (int line = clipper.DisplayStart; line < clipper.DisplayEnd; line++) {
+                const char* line_start = buf_start + line_offsets[line];
+                const char* line_end =
+                    (line + 1 < line_offsets.Size) ? (buf_start + line_offsets[line + 1] - 1) : buf_end;
+                ImGui::TextUnformatted(line_start, line_end);
+            }
         }
+        clipper.End();
     }
-    clipper.End();
 
     if (do_copy) ImGui::LogFinish();
 
