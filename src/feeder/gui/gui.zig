@@ -58,16 +58,16 @@ pub fn log(
     comptime format: []const u8,
     args: anytype,
 ) void {
-    const static = struct {
-        var mutex = std.Thread.Mutex{};
-        var message_buf: [4096]u8 = undefined;
-    };
-
     if (builtin.os.tag == .freestanding)
         @compileError(
             \\freestanding targets do not have I/O configured;
             \\please provide at least an empty `log` function declaration
         );
+
+    const static = struct {
+        var mutex = std.Thread.Mutex{};
+        var message_buf: [4096]u8 = undefined;
+    };
 
     const level_txt = comptime message_level.asText();
     const prefix2 = if (scope == .default) ": " else "(" ++ @tagName(scope) ++ "): ";
