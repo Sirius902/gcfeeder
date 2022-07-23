@@ -69,7 +69,7 @@ const BuildParams = struct {
 
 fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
-    const dll_deps = .{.{ .lib = "libusb-1.0.dll", .dll = "libusb-1.0.dll" }};
+    const dll_deps = .{.{ .lib = "usb-1.0.dll", .dll = "libusb-1.0.dll" }};
 
     exe.addIncludeDir("include");
     exe.addLibPath("lib");
@@ -113,7 +113,7 @@ fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
 fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
     const exe = params.b.addExecutable("gcviewer", "src/viewer/main.zig");
     const dll_deps = .{
-        .{ .lib = "libepoxy.dll", .dll = "libepoxy-0.dll" },
+        .{ .lib = "epoxy.dll", .dll = "libepoxy-0.dll" },
         .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
     };
 
