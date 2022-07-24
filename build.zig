@@ -3,6 +3,7 @@ const Builder = std.build.Builder;
 const Step = std.build.Step;
 const LibExeObjStep = std.build.LibExeObjStep;
 const OptionsStep = std.build.OptionsStep;
+const FmtStep = std.build.FmtStep;
 
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
@@ -43,7 +44,7 @@ pub fn build(b: *Builder) void {
     const run_viewer_step = b.step("run-viewer", "Run gcviewer");
     run_viewer_step.dependOn(&run_viewer_cmd.step);
 
-    const zig_fmt = b.addSystemCommand(&[_][]const u8{ "zig", "fmt", "build.zig", "src" });
+    const zig_fmt = FmtStep.create(b, &[_][]const u8{ "build.zig", "src" });
     const fmt_step = b.step("fmt", "Format source excluding include and pkg");
     fmt_step.dependOn(&zig_fmt.step);
 }
