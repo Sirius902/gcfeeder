@@ -1,5 +1,8 @@
 #include "app_log.h"
 
+#include <cstddef>
+#include <string_view>
+
 AppLog::AppLog() : auto_scroll(true) { clear(); }
 
 void AppLog::clear() {
@@ -7,17 +10,18 @@ void AppLog::clear() {
 
     buffer.clear();
     line_offsets.clear();
-    line_offsets.push_back(0);
 }
 
 void AppLog::add(const char* message) {
     std::scoped_lock lock(mutex);
+    std::string_view message_view(message);
 
-    int prev_size = buffer.size();
-    buffer.append(message);
-    for (int i = prev_size; i < buffer.size(); i++) {
-        if (buffer[i] == '\n') {
-            line_offsets.push_back(i + 1);
+    std::size_t line_start = 0;
+    for (std::size_t i = 0; i < message_view.size(); i++) {
+        if (message_view[i] == '\n') {
+            line_offsets.push_back(buffer.size());
+            buffer.append(&message_view[line_start], &message_view[i]);
+            line_start = i + 1;
         }
     }
 }
@@ -67,8 +71,7 @@ void AppLog::draw(const char* title, bool& open) {
         while (clipper.Step()) {
             for (int line = clipper.DisplayStart; line < clipper.DisplayEnd; line++) {
                 const char* line_start = buf_start + line_offsets[line];
-                const char* line_end =
-                    (line + 1 < line_offsets.Size) ? (buf_start + line_offsets[line + 1] - 1) : buf_end;
+                const char* line_end = (line + 1 < line_offsets.Size) ? (buf_start + line_offsets[line + 1]) : buf_end;
                 ImGui::TextUnformatted(line_start, line_end);
             }
         }
