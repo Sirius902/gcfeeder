@@ -12,30 +12,19 @@ pub fn build(b: *Builder) void {
     const version_opt = b.option([]const u8, "version", "Override build version string");
     const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
 
-    const build_info = if (no_git)
-        BuildInfo{ .version = "unknown", .usercontent_ref = "main" }
-    else
-        getBuildInfoFromGit(b.allocator) catch |err| {
-            std.log.err("Failed to get build info from Git: {}", .{err});
-            return;
-        };
+    const build_info = BuildInfoStep.create(b, .{
+        .no_git = no_git,
+        .version_override = version_opt,
+        .usercontent_root = "https://raw.githubusercontent.com/Sirius902/gcfeeder",
+        .default_build_info = .{ .version = "unknown", .usercontent_ref = "main" },
+    });
 
-    const usercontent_url = std.mem.join(b.allocator, "/", &[_][]const u8{
-        "https://raw.githubusercontent.com/Sirius902/gcfeeder",
-        build_info.usercontent_ref,
-    }) catch |err| {
-        std.log.err("Failed to join usercontent url: {}", .{err});
-        return;
-    };
-
-    const options = OptionsStep.create(b);
-    options.addOption([]const u8, "version", version_opt orelse build_info.version);
-    options.addOption([]const u8, "usercontent_url", usercontent_url);
-
-    const params = .{ .b = b, .target = target, .mode = mode, .options = options };
+    const params = .{ .b = b, .target = target, .mode = mode };
     const feeder_exe = addFeederExecutable(params);
+    build_info.addPackageTo(feeder_exe, "build_info");
 
     const viewer_exe = addViewerExecutable(params);
+    build_info.addPackageTo(viewer_exe, "build_info");
 
     const run_feeder_cmd = feeder_exe.run();
     run_feeder_cmd.step.dependOn(b.getInstallStep());
@@ -66,7 +55,6 @@ const BuildParams = struct {
     b: *Builder,
     target: std.zig.CrossTarget,
     mode: std.builtin.Mode,
-    options: *OptionsStep,
 };
 
 const feeder_cxx_header = [_][]const u8{
@@ -135,8 +123,6 @@ fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
     exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
 
-    exe.addPackage(params.options.getPackage("build_info"));
-
     exe.setTarget(params.target);
     exe.setBuildMode(params.mode);
     exe.install();
@@ -172,8 +158,6 @@ fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
     exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
     exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
 
-    exe.addPackage(params.options.getPackage("build_info"));
-
     exe.setTarget(params.target);
     exe.setBuildMode(params.mode);
     exe.install();
@@ -188,46 +172,98 @@ fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
     return exe;
 }
 
-const BuildInfo = struct {
-    version: []const u8,
-    usercontent_ref: []const u8,
-};
+const BuildInfoStep = struct {
+    step: Step,
+    options: *OptionsStep,
+    builder: *Builder,
+    config: Config,
 
-fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {
-    const version = try execGetStdOut(allocator, &[_][]const u8{
-        "git",
-        "describe",
-        "--always",
-        "--dirty",
-        "--tags",
-    });
-
-    const commit_hash = try execGetStdOut(allocator, &[_][]const u8{
-        "git",
-        "rev-parse",
-        "HEAD",
-    });
-
-    return BuildInfo{
-        .version = std.mem.trim(u8, version, &std.ascii.spaces),
-        .usercontent_ref = std.mem.trim(u8, commit_hash, &std.ascii.spaces),
+    pub const BuildInfo = struct {
+        version: []const u8,
+        usercontent_ref: []const u8,
     };
-}
 
-fn execGetStdOut(allocator: std.mem.Allocator, argv: []const []const u8) ![]const u8 {
-    const result = try std.ChildProcess.exec(.{
-        .allocator = allocator,
-        .argv = argv,
-    });
+    pub const Config = struct {
+        no_git: bool = false,
+        version_override: ?[]const u8 = null,
+        usercontent_root: []const u8,
+        default_build_info: BuildInfo,
+    };
 
-    switch (result.term) {
-        .Exited => |code| {
-            if (code == 0) {
-                return result.stdout;
-            }
-        },
-        else => {},
+    pub fn create(builder: *Builder, config: Config) *BuildInfoStep {
+        const self = builder.allocator.create(BuildInfoStep) catch unreachable;
+        self.* = .{
+            .builder = builder,
+            .step = Step.init(.custom, "BuildInfo", builder.allocator, make),
+            .options = OptionsStep.create(builder),
+            .config = config,
+        };
+
+        self.options.step.dependOn(&self.step);
+
+        return self;
     }
 
-    return error.ExecFail;
-}
+    pub fn addPackageTo(self: *BuildInfoStep, lib_exe: *LibExeObjStep, package_name: []const u8) void {
+        lib_exe.addPackage(self.options.getPackage(package_name));
+    }
+
+    fn make(step: *Step) !void {
+        const self = @fieldParentPtr(BuildInfoStep, "step", step);
+
+        const build_info = if (self.config.no_git)
+            self.config.default_build_info
+        else
+            getBuildInfoFromGit(self.builder.allocator) catch |err| {
+                std.debug.panic("Failed to get build info from Git: {}", .{err});
+                return;
+            };
+
+        const usercontent_url = std.mem.join(self.builder.allocator, "/", &[_][]const u8{
+            self.config.usercontent_root,
+            build_info.usercontent_ref,
+        }) catch unreachable;
+
+        self.options.addOption([]const u8, "version", self.config.version_override orelse build_info.version);
+        self.options.addOption([]const u8, "usercontent_url", usercontent_url);
+    }
+
+    fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {
+        const version = try execGetStdOut(allocator, &[_][]const u8{
+            "git",
+            "describe",
+            "--always",
+            "--dirty",
+            "--tags",
+        });
+
+        const commit_hash = try execGetStdOut(allocator, &[_][]const u8{
+            "git",
+            "rev-parse",
+            "HEAD",
+        });
+
+        return BuildInfo{
+            .version = std.mem.trim(u8, version, &std.ascii.spaces),
+            .usercontent_ref = std.mem.trim(u8, commit_hash, &std.ascii.spaces),
+        };
+    }
+
+    fn execGetStdOut(allocator: std.mem.Allocator, argv: []const []const u8) ![]const u8 {
+        const result = try std.ChildProcess.exec(.{
+            .allocator = allocator,
+            .argv = argv,
+        });
+
+        switch (result.term) {
+            .Exited => |code| {
+                if (code == 0) {
+                    return result.stdout;
+                }
+            },
+            else => {},
+        }
+
+        return error.ExecFail;
+    }
+};
