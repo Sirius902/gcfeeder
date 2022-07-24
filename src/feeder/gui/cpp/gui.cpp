@@ -16,6 +16,8 @@ static AppLog app_log;
 extern "C" void addLogMessage(const char* message) { app_log.add(message); }
 
 static void drawGui(UIContext& context) {
+    static bool draw_config = true;
+    static bool draw_calibration_data = true;
     static bool draw_log = true;
 
     const ImGuiIO& io = ImGui::GetIO();
@@ -37,6 +39,10 @@ static void drawGui(UIContext& context) {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Minimize")) {
+                // TOOD: Implement.
+            }
+
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
                 glfwSetWindowShouldClose(context.window, true);
             }
@@ -44,13 +50,47 @@ static void drawGui(UIContext& context) {
             ImGui::EndMenu();
         }
 
+        if (ImGui::BeginMenu("Calibrate")) {
+            if (ImGui::MenuItem("PC Scaling")) {
+                // TOOD: Implement.
+            }
+
+            if (ImGui::MenuItem("ESS Adapter")) {
+                // TOOD: Implement.
+            }
+
+            ImGui::EndMenu();
+        }
+
         if (ImGui::BeginMenu("View")) {
+            ImGui::MenuItem("Config", nullptr, &draw_config);
+            ImGui::MenuItem("Calibration Data", nullptr, &draw_calibration_data);
             ImGui::MenuItem("Log", nullptr, &draw_log);
 
             ImGui::EndMenu();
         }
 
         ImGui::EndMenuBar();
+    }
+
+    if (draw_config) {
+        ImGui::SetNextWindowPos(ImVec2(410.0f, 30.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(400.0f, 505.0f), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Config", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
+            ImGui::End();
+        } else {
+            ImGui::End();
+        }
+    }
+
+    if (draw_calibration_data) {
+        ImGui::SetNextWindowPos(ImVec2(5.0f, 285.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(400.0f, 250.0f), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Calibration Data", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
+            ImGui::End();
+        } else {
+            ImGui::End();
+        }
     }
 
     app_log.draw("Log", draw_log);
