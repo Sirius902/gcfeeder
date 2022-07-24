@@ -233,6 +233,8 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
+    gui.log_allocator = allocator;
+
     const options = blk: {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help            Display this help and exit.

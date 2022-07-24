@@ -4,6 +4,8 @@ const c = @cImport({
     @cInclude("gui.h");
 });
 
+pub var log_allocator: ?std.mem.Allocator = null;
+
 const roboto_ttf: []u8 = blk: {
     const ttf_const = @embedFile("font/Roboto-Medium.ttf");
     var buf: [ttf_const.len]u8 = undefined;
@@ -64,19 +66,18 @@ pub fn log(
             \\please provide at least an empty `log` function declaration
         );
 
-    const static = struct {
-        var mutex = std.Thread.Mutex{};
-        var message_buf: [4096]u8 = undefined;
+    const allocator = log_allocator orelse {
+        std.debug.print("Failed to log: log_allocator unset", .{});
+        return;
     };
 
     const level_txt = comptime message_level.asText();
     const prefix2 = if (scope == .default) ": " else "(" ++ @tagName(scope) ++ "): ";
-    const message = std.fmt.bufPrintZ(&static.message_buf, level_txt ++ prefix2 ++ format ++ "\n", args) catch |err| {
+    const message = std.fmt.allocPrintZ(allocator, level_txt ++ prefix2 ++ format ++ "\n", args) catch |err| {
         std.debug.print("Failed to log: {}", .{err});
         return;
     };
-    static.mutex.lock();
-    defer static.mutex.unlock();
+    defer allocator.free(message);
     nosuspend c.addLogMessage(message.ptr);
 }
 
