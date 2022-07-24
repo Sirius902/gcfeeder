@@ -12,6 +12,13 @@ pub fn build(b: *Builder) void {
     const version_opt = b.option([]const u8, "version", "Override build version string");
     const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
 
+    var build_feeder = b.option(bool, "feeder-only", "Build only gcfeeder") orelse false;
+    var build_viewer = b.option(bool, "viewer-only", "Build only gcviewer") orelse false;
+    if (!build_feeder and !build_viewer) {
+        build_feeder = true;
+        build_viewer = true;
+    }
+
     const build_info = BuildInfoStep.create(b, .{
         .no_git = no_git,
         .version_override = version_opt,
@@ -20,29 +27,34 @@ pub fn build(b: *Builder) void {
     });
 
     const params = .{ .b = b, .target = target, .mode = mode };
-    const feeder_exe = addFeederExecutable(params);
-    build_info.addPackageTo(feeder_exe, "build_info");
 
-    const viewer_exe = addViewerExecutable(params);
-    build_info.addPackageTo(viewer_exe, "build_info");
+    if (build_feeder) {
+        const feeder_exe = addFeederExecutable(params);
+        build_info.addPackageTo(feeder_exe, "build_info");
 
-    const run_feeder_cmd = feeder_exe.run();
-    run_feeder_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_feeder_cmd.addArgs(args);
+        const run_feeder_cmd = feeder_exe.run();
+        run_feeder_cmd.step.dependOn(b.getInstallStep());
+        if (b.args) |args| {
+            run_feeder_cmd.addArgs(args);
+        }
+
+        const run_feeder_step = b.step("run-feeder", "Run gcfeeder");
+        run_feeder_step.dependOn(&run_feeder_cmd.step);
     }
 
-    const run_feeder_step = b.step("run-feeder", "Run gcfeeder");
-    run_feeder_step.dependOn(&run_feeder_cmd.step);
+    if (build_viewer) {
+        const viewer_exe = addViewerExecutable(params);
+        build_info.addPackageTo(viewer_exe, "build_info");
 
-    const run_viewer_cmd = viewer_exe.run();
-    run_viewer_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_viewer_cmd.addArgs(args);
+        const run_viewer_cmd = viewer_exe.run();
+        run_viewer_cmd.step.dependOn(b.getInstallStep());
+        if (b.args) |args| {
+            run_viewer_cmd.addArgs(args);
+        }
+
+        const run_viewer_step = b.step("run-viewer", "Run gcviewer");
+        run_viewer_step.dependOn(&run_viewer_cmd.step);
     }
-
-    const run_viewer_step = b.step("run-viewer", "Run gcviewer");
-    run_viewer_step.dependOn(&run_viewer_cmd.step);
 
     const zig_fmt = FmtStep.create(b, &[_][]const u8{ "build.zig", "src" });
     const fmt_step = b.step("fmt", "Format source excluding include and pkg");
