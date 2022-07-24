@@ -59,6 +59,9 @@ static void drawGui(UIContext& context) {
 }
 
 extern "C" int runImGui(UIContext* context) {
+    // Reopen stderr to print messages to console from C++ on Windows subsystem.
+    std::freopen("CONOUT$", "w", stderr);
+
     GLFWwindow* window = context->window;
 
     // Setup Dear ImGui context

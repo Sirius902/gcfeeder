@@ -21,6 +21,7 @@ pub fn build(b: *Builder) void {
 
     const params = .{ .b = b, .target = target, .mode = mode };
     const feeder_exe = addFeederExecutable(params);
+    feeder_exe.subsystem = .Windows;
     build_info.addPackageTo(feeder_exe, "build_info");
 
     const viewer_exe = addViewerExecutable(params);
