@@ -11,93 +11,11 @@
 
 #include "app_log.h"
 #include "gui.h"
+#include "gui_impl.h"
 
-static AppLog app_log;
+static Gui gui;
 
-extern "C" void addLogMessage(const char* message) { app_log.add(message); }
-
-static void drawGui(UIContext& context) {
-    static bool draw_config = true;
-    static bool draw_calibration_data = true;
-    static bool draw_log = true;
-
-    const ImGuiIO& io = ImGui::GetIO();
-    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(io.DisplaySize);
-
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
-                                    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-                                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                    ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar;
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    ImGui::Begin("Content", nullptr, window_flags);
-    ImGui::PopStyleVar(5);
-
-    if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Minimize")) {
-                // TOOD: Implement.
-            }
-
-            if (ImGui::MenuItem("Exit", "Alt+F4")) {
-                glfwSetWindowShouldClose(context.window, true);
-            }
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Calibrate")) {
-            if (ImGui::MenuItem("PC Scaling")) {
-                // TOOD: Implement.
-            }
-
-            if (ImGui::MenuItem("ESS Adapter")) {
-                // TOOD: Implement.
-            }
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("View")) {
-            ImGui::MenuItem("Config", nullptr, &draw_config);
-            ImGui::MenuItem("Calibration Data", nullptr, &draw_calibration_data);
-            ImGui::MenuItem("Log", nullptr, &draw_log);
-
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
-    }
-
-    if (draw_config) {
-        ImGui::SetNextWindowPos(ImVec2(410.0f, 30.0f), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(400.0f, 505.0f), ImGuiCond_FirstUseEver);
-        if (!ImGui::Begin("Config", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
-            ImGui::End();
-        } else {
-            ImGui::End();
-        }
-    }
-
-    if (draw_calibration_data) {
-        ImGui::SetNextWindowPos(ImVec2(5.0f, 285.0f), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(400.0f, 250.0f), ImGuiCond_FirstUseEver);
-        if (!ImGui::Begin("Calibration Data", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
-            ImGui::End();
-        } else {
-            ImGui::End();
-        }
-    }
-
-    app_log.draw("Log", draw_log);
-
-    ImGui::End();
-}
+extern "C" void addLogMessage(const char* message) { gui.getLog().add(message); }
 
 extern "C" int runImGui(UIContext* context) {
     // Reopen stderr to print messages to console from C++ on Windows subsystem.
@@ -149,7 +67,6 @@ extern "C" int runImGui(UIContext* context) {
     IM_ASSERT(font != nullptr);
 
     // Our state
-    bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -171,12 +88,7 @@ extern "C" int runImGui(UIContext* context) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in
-        // ImGui::ShowDemoWindow()! You can browse its code to learn more about
-        // Dear ImGui!).
-        if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
-
-        drawGui(*context);
+        gui.drawAndUpdate(*context);
 
         // Rendering
         ImGui::Render();

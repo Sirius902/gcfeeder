@@ -36,7 +36,7 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     //c.glfwWindowHint(c.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);            // 3.0+ only
 
     // Create window with graphics context
-    const window = c.glfwCreateWindow(1280, 720, "gcfeeder", null, null) orelse
+    const window = c.glfwCreateWindow(815, 540, "gcfeeder", null, null) orelse
         return error.GlfwCreateWindowFailed;
     c.glfwMakeContextCurrent(window);
     c.glfwSwapInterval(1); // Enable vsync
