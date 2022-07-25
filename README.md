@@ -5,8 +5,8 @@ The process for reading adapter inputs is based on Dolphin's GameCube Adapter su
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
 
 ## Input Viewer
-gcviewer is an input viewer that can be used with gcfeeder. It used to be a part of this repository
-but has [moved to its own](https://github.com/Sirius902/gcviewer) after commit
+[gcviewer](https://github.com/Sirius902/gcviewer) is an input viewer that can be used with gcfeeder.
+It used to be a part of this repository but has moved to its own after commit
 [c4c65b2](https://github.com/Sirius902/gcfeeder/commit/c4c65b291bec4ac31879d24497caa13c22acbe81).
 
 ## ESS Adapter
