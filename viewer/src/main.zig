@@ -7,6 +7,12 @@ const Calibration = @import("adapter").Calibration;
 const display = @import("display.zig");
 const Atomic = std.atomic.Atomic;
 
+pub const gl = @cImport({
+    @cDefine("GL_TABLE_TOO_LARGE", "0x8031");
+    @cDefine("GL_TEXTURE_TOO_LARGE_EXT", "0x8065");
+    @cInclude("glad/glad.h");
+});
+
 pub const log_level = if (builtin.mode == .Debug) .debug else .info;
 pub const user_shader_path = "color.frag";
 

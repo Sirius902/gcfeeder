@@ -1,7 +1,7 @@
 #pragma once
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 #include <mutex>
 

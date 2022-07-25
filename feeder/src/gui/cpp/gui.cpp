@@ -1,12 +1,13 @@
-#include <epoxy/gl.h>
+#include <glad/glad.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <imgui.h>
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 
 #include "app_log.h"
 #include "gui.h"
@@ -101,6 +102,11 @@ static void drawGui(UIContext& context) {
 extern "C" int runImGui(UIContext* context) {
     // Reopen stderr to print messages to console from C++ on Windows subsystem.
     std::freopen("CONOUT$", "w", stderr);
+
+    if (gladLoadGL() == 0) {
+        std::fprintf(stderr, "gladLoadGL failed\n");
+        return 1;
+    }
 
     GLFWwindow* window = context->window;
 

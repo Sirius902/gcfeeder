@@ -5,6 +5,7 @@ const Input = @import("adapter").Input;
 const Calibration = @import("adapter").Calibration;
 const Context = @import("root").Context;
 const time = std.time;
+const gl = @import("root").gl;
 const user_shader_path = @import("root").user_shader_path;
 
 const c = @cImport({
@@ -577,8 +578,8 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     if (c.glfwInit() != c.GLFW_TRUE) return error.GlfwInitFailed;
     defer c.glfwTerminate();
 
-    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MAJOR, 3);
-    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MINOR, 3);
+    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MAJOR, 4);
+    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MINOR, 5);
     c.glfwWindowHint(c.GLFW_OPENGL_PROFILE, c.GLFW_OPENGL_CORE_PROFILE);
 
     const window = c.glfwCreateWindow(
@@ -591,6 +592,9 @@ pub fn show(context: *Context, color_shader_source: ?[]const u8) !void {
     defer c.glfwDestroyWindow(window);
 
     c.glfwMakeContextCurrent(window);
+
+    if (gl.gladLoadGL() == 0)
+        return error.GladLoadFailed;
 
     // wait for vsync to reduce cpu usage
     c.glfwSwapInterval(1);
