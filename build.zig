@@ -53,10 +53,10 @@ pub fn build(b: *Builder) void {
     exe.addIncludePath("src/gui/cpp");
     exe.addCSourceFiles(&cxx_source, &cxx_flags);
 
-    exe.addPackagePath("zusb", "../pkg/zusb/zusb.zig");
-    exe.addPackagePath("zlm", "../pkg/zlm/zlm.zig");
-    exe.addPackagePath("clap", "../pkg/zig-clap/clap.zig");
-    exe.addPackagePath("grindel", "../pkg/grindel/grindel.zig");
+    exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
+    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
+    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
+    exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
     build_info.addPackageTo(exe, "build_info");
 
     const run_cmd = exe.run();
