@@ -17,23 +17,12 @@ jobs:
       uses: goto-bus-stop/setup-zig@v1
       with:
         version: master
-    - name: Zig Build gcfeeder
+    - name: Zig Build
       run: |
-        cd feeder
         zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
         rm zig-out/bin/*.pdb
-        cd ..
-    - name: Zig Build gcviewer
-      run: |
-        cd viewer
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
-        rm zig-out/bin/*.pdb
-        cd ..
     - name: Compress Artifacts
-      run: |
-        7z a theme.zip ./viewer/theme/*
-        7z a gcfeeder.zip ./feeder/zig-out/bin/*
-        7z a gcviewer.zip ./viewer/zig-out/bin/*
+      run: 7z a gcfeeder.zip ./zig-out/bin/*
     - name: Automatic Release
       uses: marvinpinto/action-automatic-releases@latest
       with:
@@ -42,5 +31,3 @@ jobs:
         draft: true
         files: |
           gcfeeder.zip
-          gcviewer.zip
-          theme.zip

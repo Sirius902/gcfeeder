@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/Sirius902/gcfeeder/main/feeder/schema/gcfeeder.schema.json",
+    "$id": "https://raw.githubusercontent.com/Sirius902/gcfeeder/main/schema/gcfeeder.schema.json",
     "title": "gcfeeder config",
     "description": "Configuration for gcfeeder",
     "type": "object",

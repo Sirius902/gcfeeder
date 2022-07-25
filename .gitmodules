@@ -1,10 +1,6 @@
 [submodule "zusb"]
 	path = pkg/zusb
 	url = https://github.com/Sirius902/zusb.git
-[submodule "zgl"]
-	path = pkg/zgl
-	url = https://github.com/ziglibs/zgl.git
-	shallow = true
 [submodule "zlm"]
 	path = pkg/zlm
 	url = https://github.com/ziglibs/zlm.git

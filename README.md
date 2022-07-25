@@ -1,8 +1,13 @@
 # gcfeeder
-A ViGEm feeder and input viewer for GameCube controllers using the GameCube Controller Adapter.
+A ViGEm feeder for GameCube controllers using the GameCube Controller Adapter.
 
 The process for reading adapter inputs is based on Dolphin's GameCube Adapter support.
 Since this program uses the same driver as Dolphin, it does not conflict with Dolphin's passthrough.
+
+## Input Viewer
+gcviewer is an input viewer that can be used with gcfeeder. It used to be a part of this repository
+but has [moved to its own](https://github.com/Sirius902/gcviewer) after commit
+[c4c65b2](https://github.com/Sirius902/gcfeeder/commit/c4c65b291bec4ac31879d24497caa13c22acbe81).
 
 ## ESS Adapter
 A built-in ESS adapter for use in Dolphin with mappings for the following games is also included.
@@ -30,10 +35,6 @@ Options found under the `vigem_config` key.
     * `digital` - Only the digital trigger input on the GameCube controller will be mapped to the output trigger.
     * `combination` - If the digital trigger is pressed output trigger will max. Otherwise, analog trigger input is used.
     * `stick_click` - Digital trigger inputs will be treated as a stick click. Trigger output uses analog trigger input.
-
-## Themes
-To customize the theme of the input viewer, put a `color.frag` according to the specification in the same directory as the executable.
-The default theme can be found at `src/viewer/shader/color.frag`. Other themes can be found in `theme`.
 
 ## Notes
 * Only supports port one on the adapter.

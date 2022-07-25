@@ -1,84 +1,175 @@
 const std = @import("std");
 const Builder = std.build.Builder;
 const Step = std.build.Step;
+const LibExeObjStep = std.build.LibExeObjStep;
+const OptionsStep = std.build.OptionsStep;
 
 pub fn build(b: *Builder) void {
-    const version_opt = b.option([]const u8, "version", "Override build version string");
-    const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info");
+    const target = b.standardTargetOptions(.{});
+    const mode = b.standardReleaseOptions();
 
-    const zig_fmt = b.addFmt(&[_][]const u8{"build.zig"});
+    const version_opt = b.option([]const u8, "version", "Override build version string");
+    const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
+
+    const build_info = BuildInfoStep.create(b, .{
+        .no_git = no_git,
+        .version_override = version_opt,
+        .usercontent_root = "https://raw.githubusercontent.com/Sirius902/gcfeeder",
+        .default_build_info = .{ .version = "unknown", .usercontent_ref = "main" },
+    });
+
+    const exe = b.addExecutable("gcfeeder", "src/main.zig");
+    exe.setTarget(target);
+    exe.setBuildMode(mode);
+    exe.install();
+
+    exe.linkLibCpp();
+    linkLibusb(b, exe);
+    linkVigem(exe);
+
+    exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
+    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
+    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
+    exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
+    build_info.addPackageTo(exe, "build_info");
+
+    const run_cmd = exe.run();
+    run_cmd.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_cmd.addArgs(args);
+    }
+
+    const run_step = b.step("run", "Run the app");
+    run_step.dependOn(&run_cmd.step);
+
+    const zig_fmt = b.addFmt(&[_][]const u8{ "build.zig", "src" });
     const fmt_step = b.step("fmt", "Format source excluding pkg and external");
     fmt_step.dependOn(&zig_fmt.step);
+}
 
-    const options = blk: {
-        var opt = std.ArrayList([]const u8).init(b.allocator);
-        if (version_opt) |v| {
-            opt.append(std.mem.concat(
-                b.allocator,
-                u8,
-                &[_][]const u8{ "-Dversion=", v },
-            ) catch unreachable) catch unreachable;
-        }
-        if (no_git) |ng| {
-            const s = if (ng) "true" else "false";
-            opt.append(std.mem.concat(
-                b.allocator,
-                u8,
-                &[_][]const u8{ "-Dno-git=", s },
-            ) catch unreachable) catch unreachable;
-        }
-        break :blk opt.toOwnedSlice();
-    };
+fn linkLibusb(b: *Builder, lib_exe: *LibExeObjStep) void {
+    const sub_root = "external/libusb-1.0";
+    const dll_name = "libusb-1.0.dll";
+    const dll_path = sub_root ++ "/bin/" ++ dll_name;
+    lib_exe.addIncludePath(sub_root ++ "/include");
+    lib_exe.addLibraryPath(sub_root ++ "/lib");
 
-    inline for (.{ "feeder", "viewer" }) |name| {
-        var zig_sub_build_step = BuildStep.create(b, name, null, options);
-        var zig_sub_run_step = BuildStep.create(b, name, "run", options);
-        var zig_sub_fmt_step = BuildStep.create(b, name, "fmt", options);
+    lib_exe.linkSystemLibrary("usb-1.0.dll");
 
-        var sub_build_step = b.step("build-" ++ name, "Build gc" ++ name);
-        sub_build_step.dependOn(&zig_sub_build_step.step);
-        b.default_step.dependOn(sub_build_step);
-
-        var sub_run_step = b.step("run-" ++ name, "Run gc" ++ name);
-        sub_run_step.dependOn(&zig_sub_run_step.step);
-
-        var sub_fmt_step = b.step("fmt-" ++ name, "Format gc" ++ name);
-        sub_fmt_step.dependOn(&zig_sub_fmt_step.step);
-        fmt_step.dependOn(sub_fmt_step);
+    if (lib_exe.install_step) |install_step| {
+        const install_dll = b.addInstallFileWithDir(.{ .path = dll_path }, .bin, dll_name);
+        install_step.step.dependOn(&install_dll.step);
     }
 }
 
-pub const BuildStep = struct {
-    step: Step,
-    builder: *Builder,
-    cwd: []const u8,
-    argv: [][]const u8,
+fn linkVigem(lib_exe: *LibExeObjStep) void {
+    const sub_root = "external/ViGEm";
+    lib_exe.addIncludeDir(sub_root ++ "/include");
 
-    pub fn create(builder: *Builder, cwd: []const u8, command: ?[]const u8, args: []const []const u8) *BuildStep {
-        const self = builder.allocator.create(BuildStep) catch unreachable;
-        const name = "zig build";
-        const argc_extra: usize = if (command == null) 2 else 3;
-        self.* = BuildStep{
-            .step = Step.init(.custom, name, builder.allocator, make),
+    lib_exe.linkSystemLibrary("setupapi");
+
+    const cxx_flags = [_][]const u8{
+        "-std=c++20",
+        // HACK: Define this Windows error used by the ViGEmClient because it's not
+        // defined in MinGW headers.
+        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
+    };
+
+    lib_exe.addCSourceFile(sub_root ++ "/src/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
+}
+
+const BuildInfoStep = struct {
+    step: Step,
+    options: *OptionsStep,
+    builder: *Builder,
+    config: Config,
+
+    pub const BuildInfo = struct {
+        version: []const u8,
+        usercontent_ref: []const u8,
+    };
+
+    pub const Config = struct {
+        no_git: bool = false,
+        version_override: ?[]const u8 = null,
+        usercontent_root: []const u8,
+        default_build_info: BuildInfo,
+    };
+
+    pub fn create(builder: *Builder, config: Config) *BuildInfoStep {
+        const self = builder.allocator.create(BuildInfoStep) catch unreachable;
+        self.* = .{
             .builder = builder,
-            .cwd = cwd,
-            .argv = builder.allocator.alloc([]u8, args.len + argc_extra) catch unreachable,
+            .step = Step.init(.custom, "BuildInfo", builder.allocator, make),
+            .options = builder.addOptions(),
+            .config = config,
         };
 
-        self.argv[0] = builder.zig_exe;
-        self.argv[1] = "build";
-        if (command) |cmd| {
-            self.argv[2] = cmd;
-        }
-        for (args) |arg, i| {
-            self.argv[argc_extra + i] = arg;
-        }
+        self.options.step.dependOn(&self.step);
+
         return self;
     }
 
-    fn make(step: *Step) !void {
-        const self = @fieldParentPtr(BuildStep, "step", step);
+    pub fn addPackageTo(self: *BuildInfoStep, lib_exe: *LibExeObjStep, package_name: []const u8) void {
+        lib_exe.addPackage(self.options.getPackage(package_name));
+    }
 
-        return self.builder.spawnChildEnvMap(self.cwd, self.builder.env_map, self.argv);
+    fn make(step: *Step) !void {
+        const self = @fieldParentPtr(BuildInfoStep, "step", step);
+
+        const build_info = if (self.config.no_git)
+            self.config.default_build_info
+        else
+            getBuildInfoFromGit(self.builder.allocator) catch |err| {
+                std.debug.panic("Failed to get build info from Git: {}", .{err});
+                return;
+            };
+
+        const usercontent_url = std.mem.join(self.builder.allocator, "/", &[_][]const u8{
+            self.config.usercontent_root,
+            build_info.usercontent_ref,
+        }) catch unreachable;
+
+        self.options.addOption([]const u8, "version", self.config.version_override orelse build_info.version);
+        self.options.addOption([]const u8, "usercontent_url", usercontent_url);
+    }
+
+    fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {
+        const version = try execGetStdOut(allocator, &[_][]const u8{
+            "git",
+            "describe",
+            "--always",
+            "--dirty",
+            "--tags",
+        });
+
+        const commit_hash = try execGetStdOut(allocator, &[_][]const u8{
+            "git",
+            "rev-parse",
+            "HEAD",
+        });
+
+        return BuildInfo{
+            .version = std.mem.trim(u8, version, &std.ascii.spaces),
+            .usercontent_ref = std.mem.trim(u8, commit_hash, &std.ascii.spaces),
+        };
+    }
+
+    fn execGetStdOut(allocator: std.mem.Allocator, argv: []const []const u8) ![]const u8 {
+        const result = try std.ChildProcess.exec(.{
+            .allocator = allocator,
+            .argv = argv,
+        });
+
+        switch (result.term) {
+            .Exited => |code| {
+                if (code == 0) {
+                    return result.stdout;
+                }
+            },
+            else => {},
+        }
+
+        return error.ExecFail;
     }
 };

@@ -19,28 +19,10 @@ jobs:
       uses: goto-bus-stop/setup-zig@v1
       with:
         version: master
-    - name: Zig Build gcfeeder
-      run: |
-        cd feeder
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline
-        cd ..
-    - name: Upload Feeder
+    - name: Zig Build
+      run: zig build -Dtarget=x86_64-windows -Dcpu=baseline
+    - name: Upload gcfeeder
       uses: actions/upload-artifact@v2
       with:
         name: gcfeeder
-        path: feeder/zig-out/bin
-    - name: Zig Build gcviewer
-      run: |
-        cd viewer
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline
-        cd ..
-    - name: Upload Viewer
-      uses: actions/upload-artifact@v2
-      with:
-        name: gcviewer
-        path: viewer/zig-out/bin
-    - name: Upload Themes
-      uses: actions/upload-artifact@v2
-      with:
-        name: theme
-        path: viewer/theme
+        path: zig-out/bin
