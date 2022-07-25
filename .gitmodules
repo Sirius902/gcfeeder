@@ -15,6 +15,6 @@
 	path = pkg/grindel
 	url = https://github.com/Sirius902/grindel.git
 [submodule "imgui"]
-	path = feeder/external/imgui
+	path = external/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
