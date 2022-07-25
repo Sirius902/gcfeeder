@@ -31,7 +31,7 @@ jobs:
         cd ..
     - name: Compress Artifacts
       run: |
-        7z a theme.zip ./theme/*
+        7z a theme.zip ./viewer/theme/*
         7z a gcfeeder.zip ./feeder/zig-out/bin/*
         7z a gcviewer.zip ./viewer/zig-out/bin/*
     - name: Automatic Release
