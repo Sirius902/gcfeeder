@@ -21,22 +21,24 @@ jobs:
         version: master
     - name: Zig Build gcfeeder
       run: |
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Dfeeder-only
-        mv zig-out feeder-out
+        cd feeder
+        zig build -Dtarget=x86_64-windows -Dcpu=baseline
+        cd ..
     - name: Upload Feeder
       uses: actions/upload-artifact@v2
       with:
         name: gcfeeder
-        path: feeder-out/bin
+        path: feeder/zig-out/bin
     - name: Zig Build gcviewer
       run: |
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Dviewer-only
-        mv zig-out viewer-out
+        cd viewer
+        zig build -Dtarget=x86_64-windows -Dcpu=baseline
+        cd ..
     - name: Upload Viewer
       uses: actions/upload-artifact@v2
       with:
         name: gcviewer
-        path: viewer-out/bin
+        path: viewer/zig-out/bin
     - name: Upload Themes
       uses: actions/upload-artifact@v2
       with:

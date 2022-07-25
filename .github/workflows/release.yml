@@ -19,19 +19,21 @@ jobs:
         version: master
     - name: Zig Build gcfeeder
       run: |
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}" -Dfeeder-only
+        cd feeder
+        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
         rm zig-out/bin/*.pdb
-        mv zig-out feeder-out
+        cd ..
     - name: Zig Build gcviewer
       run: |
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}" -Dviewer-only
+        cd viewer
+        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
         rm zig-out/bin/*.pdb
-        mv zig-out viewer-out
+        cd ..
     - name: Compress Artifacts
       run: |
         7z a theme.zip ./theme/*
-        7z a gcfeeder.zip ./feeder-out/bin/*
-        7z a gcviewer.zip ./viewer-out/bin/*
+        7z a gcfeeder.zip ./feeder/zig-out/bin/*
+        7z a gcviewer.zip ./viewer/zig-out/bin/*
     - name: Automatic Release
       uses: marvinpinto/action-automatic-releases@latest
       with:

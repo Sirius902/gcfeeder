@@ -1,242 +1,84 @@
 const std = @import("std");
 const Builder = std.build.Builder;
 const Step = std.build.Step;
-const LibExeObjStep = std.build.LibExeObjStep;
-const OptionsStep = std.build.OptionsStep;
-const FmtStep = std.build.FmtStep;
 
 pub fn build(b: *Builder) void {
-    const target = b.standardTargetOptions(.{});
-    const mode = b.standardReleaseOptions();
-
     const version_opt = b.option([]const u8, "version", "Override build version string");
-    const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
+    const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info");
 
-    var build_feeder = b.option(bool, "feeder-only", "Build only gcfeeder") orelse false;
-    var build_viewer = b.option(bool, "viewer-only", "Build only gcviewer") orelse false;
-    if (!build_feeder and !build_viewer) {
-        build_feeder = true;
-        build_viewer = true;
-    }
-
-    const build_info = BuildInfoStep.create(b, .{
-        .no_git = no_git,
-        .version_override = version_opt,
-        .usercontent_root = "https://raw.githubusercontent.com/Sirius902/gcfeeder",
-        .default_build_info = .{ .version = "unknown", .usercontent_ref = "main" },
-    });
-
-    const params = .{ .b = b, .target = target, .mode = mode };
-
-    if (build_feeder) {
-        const feeder_exe = addFeederExecutable(params);
-        build_info.addPackageTo(feeder_exe, "build_info");
-
-        const run_feeder_cmd = feeder_exe.run();
-        run_feeder_cmd.step.dependOn(b.getInstallStep());
-        if (b.args) |args| {
-            run_feeder_cmd.addArgs(args);
-        }
-
-        const run_feeder_step = b.step("run-feeder", "Run gcfeeder");
-        run_feeder_step.dependOn(&run_feeder_cmd.step);
-    }
-
-    if (build_viewer) {
-        const viewer_exe = addViewerExecutable(params);
-        build_info.addPackageTo(viewer_exe, "build_info");
-
-        const run_viewer_cmd = viewer_exe.run();
-        run_viewer_cmd.step.dependOn(b.getInstallStep());
-        if (b.args) |args| {
-            run_viewer_cmd.addArgs(args);
-        }
-
-        const run_viewer_step = b.step("run-viewer", "Run gcviewer");
-        run_viewer_step.dependOn(&run_viewer_cmd.step);
-    }
-
-    const zig_fmt = FmtStep.create(b, &[_][]const u8{ "build.zig", "src" });
-    const fmt_step = b.step("fmt", "Format source excluding include and pkg");
+    const zig_fmt = b.addFmt(&[_][]const u8{"build.zig"});
+    const fmt_step = b.step("fmt", "Format source excluding pkg and external");
     fmt_step.dependOn(&zig_fmt.step);
-}
 
-const BuildParams = struct {
-    b: *Builder,
-    target: std.zig.CrossTarget,
-    mode: std.builtin.Mode,
-};
-
-fn addFeederExecutable(params: BuildParams) *LibExeObjStep {
-    const exe = params.b.addExecutable("gcfeeder", "src/feeder/main.zig");
-    const dll_deps = .{.{ .lib = "usb-1.0.dll", .dll = "libusb-1.0.dll" }};
-
-    exe.addIncludeDir("include");
-    exe.addLibPath("lib");
-
-    exe.linkLibCpp();
-    exe.linkSystemLibrary("setupapi");
-
-    inline for (dll_deps) |dep| {
-        exe.linkSystemLibrary(dep.lib);
-    }
-
-    const cxx_flags = [_][]const u8{
-        "-std=c++20",
-        "-fno-exceptions",
-        // HACK: Define this Windows error used by the ViGEmClient because it's not
-        // defined in MinGW headers.
-        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
+    const options = blk: {
+        var opt = std.ArrayList([]const u8).init(b.allocator);
+        if (version_opt) |v| {
+            opt.append(std.mem.concat(
+                b.allocator,
+                u8,
+                &[_][]const u8{ "-Dversion=", v },
+            ) catch unreachable) catch unreachable;
+        }
+        if (no_git) |ng| {
+            const s = if (ng) "true" else "false";
+            opt.append(std.mem.concat(
+                b.allocator,
+                u8,
+                &[_][]const u8{ "-Dno-git=", s },
+            ) catch unreachable) catch unreachable;
+        }
+        break :blk opt.toOwnedSlice();
     };
 
-    exe.addCSourceFile("src/feeder/bridge/ViGEmClient/ViGEmClient.cpp", &cxx_flags);
+    inline for (.{ "feeder", "viewer" }) |name| {
+        var zig_sub_build_step = BuildStep.create(b, name, null, options);
+        var zig_sub_run_step = BuildStep.create(b, name, "run", options);
+        var zig_sub_fmt_step = BuildStep.create(b, name, "fmt", options);
 
-    exe.addPackagePath("zusb", "pkg/zusb/zusb.zig");
-    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
-    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
-    exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
+        var sub_build_step = b.step("build-" ++ name, "Build gc" ++ name);
+        sub_build_step.dependOn(&zig_sub_build_step.step);
+        b.default_step.dependOn(sub_build_step);
 
-    exe.setTarget(params.target);
-    exe.setBuildMode(params.mode);
-    exe.install();
+        var sub_run_step = b.step("run-" ++ name, "Run gc" ++ name);
+        sub_run_step.dependOn(&zig_sub_run_step.step);
 
-    if (exe.install_step) |install_step| {
-        inline for (dll_deps) |dep| {
-            const install_dll = params.b.addInstallFileWithDir(.{ .path = "lib/" ++ dep.dll }, .bin, dep.dll);
-            install_step.step.dependOn(&install_dll.step);
-        }
+        var sub_fmt_step = b.step("fmt-" ++ name, "Format gc" ++ name);
+        sub_fmt_step.dependOn(&zig_sub_fmt_step.step);
+        fmt_step.dependOn(sub_fmt_step);
     }
-
-    return exe;
 }
 
-fn addViewerExecutable(params: BuildParams) *LibExeObjStep {
-    const exe = params.b.addExecutable("gcviewer", "src/viewer/main.zig");
-    const dll_deps = .{
-        .{ .lib = "epoxy.dll", .dll = "libepoxy-0.dll" },
-        .{ .lib = "glfw3dll", .dll = "glfw3.dll" },
-    };
-
-    exe.addIncludeDir("include");
-    exe.addLibPath("lib");
-
-    exe.linkLibC();
-
-    inline for (dll_deps) |dep| {
-        exe.linkSystemLibrary(dep.lib);
-    }
-
-    exe.addPackagePath("adapter", "src/feeder/adapter.zig");
-    exe.addPackagePath("zgl", "pkg/zgl/zgl.zig");
-    exe.addPackagePath("zlm", "pkg/zlm/zlm.zig");
-    exe.addPackagePath("clap", "pkg/zig-clap/clap.zig");
-
-    exe.setTarget(params.target);
-    exe.setBuildMode(params.mode);
-    exe.install();
-
-    if (exe.install_step) |install_step| {
-        inline for (dll_deps) |dep| {
-            const install_dll = params.b.addInstallFileWithDir(.{ .path = "lib/" ++ dep.dll }, .bin, dep.dll);
-            install_step.step.dependOn(&install_dll.step);
-        }
-    }
-
-    return exe;
-}
-
-const BuildInfoStep = struct {
+pub const BuildStep = struct {
     step: Step,
-    options: *OptionsStep,
     builder: *Builder,
-    config: Config,
+    cwd: []const u8,
+    argv: [][]const u8,
 
-    pub const BuildInfo = struct {
-        version: []const u8,
-        usercontent_ref: []const u8,
-    };
-
-    pub const Config = struct {
-        no_git: bool = false,
-        version_override: ?[]const u8 = null,
-        usercontent_root: []const u8,
-        default_build_info: BuildInfo,
-    };
-
-    pub fn create(builder: *Builder, config: Config) *BuildInfoStep {
-        const self = builder.allocator.create(BuildInfoStep) catch unreachable;
-        self.* = .{
+    pub fn create(builder: *Builder, cwd: []const u8, command: ?[]const u8, args: []const []const u8) *BuildStep {
+        const self = builder.allocator.create(BuildStep) catch unreachable;
+        const name = "zig build";
+        const argc_extra: usize = if (command == null) 2 else 3;
+        self.* = BuildStep{
+            .step = Step.init(.custom, name, builder.allocator, make),
             .builder = builder,
-            .step = Step.init(.custom, "BuildInfo", builder.allocator, make),
-            .options = OptionsStep.create(builder),
-            .config = config,
+            .cwd = cwd,
+            .argv = builder.allocator.alloc([]u8, args.len + argc_extra) catch unreachable,
         };
 
-        self.options.step.dependOn(&self.step);
-
+        self.argv[0] = builder.zig_exe;
+        self.argv[1] = "build";
+        if (command) |cmd| {
+            self.argv[2] = cmd;
+        }
+        for (args) |arg, i| {
+            self.argv[argc_extra + i] = arg;
+        }
         return self;
     }
 
-    pub fn addPackageTo(self: *BuildInfoStep, lib_exe: *LibExeObjStep, package_name: []const u8) void {
-        lib_exe.addPackage(self.options.getPackage(package_name));
-    }
-
     fn make(step: *Step) !void {
-        const self = @fieldParentPtr(BuildInfoStep, "step", step);
+        const self = @fieldParentPtr(BuildStep, "step", step);
 
-        const build_info = if (self.config.no_git)
-            self.config.default_build_info
-        else
-            getBuildInfoFromGit(self.builder.allocator) catch |err| {
-                std.debug.panic("Failed to get build info from Git: {}", .{err});
-                return;
-            };
-
-        const usercontent_url = std.mem.join(self.builder.allocator, "/", &[_][]const u8{
-            self.config.usercontent_root,
-            build_info.usercontent_ref,
-        }) catch unreachable;
-
-        self.options.addOption([]const u8, "version", self.config.version_override orelse build_info.version);
-        self.options.addOption([]const u8, "usercontent_url", usercontent_url);
-    }
-
-    fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {
-        const version = try execGetStdOut(allocator, &[_][]const u8{
-            "git",
-            "describe",
-            "--always",
-            "--dirty",
-            "--tags",
-        });
-
-        const commit_hash = try execGetStdOut(allocator, &[_][]const u8{
-            "git",
-            "rev-parse",
-            "HEAD",
-        });
-
-        return BuildInfo{
-            .version = std.mem.trim(u8, version, &std.ascii.spaces),
-            .usercontent_ref = std.mem.trim(u8, commit_hash, &std.ascii.spaces),
-        };
-    }
-
-    fn execGetStdOut(allocator: std.mem.Allocator, argv: []const []const u8) ![]const u8 {
-        const result = try std.ChildProcess.exec(.{
-            .allocator = allocator,
-            .argv = argv,
-        });
-
-        switch (result.term) {
-            .Exited => |code| {
-                if (code == 0) {
-                    return result.stdout;
-                }
-            },
-            else => {},
-        }
-
-        return error.ExecFail;
+        return self.builder.spawnChildEnvMap(self.cwd, self.builder.env_map, self.argv);
     }
 };
