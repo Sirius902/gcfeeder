@@ -100,6 +100,8 @@ extern "C" int runImGui(CUIContext* c_context) {
     font_config.FontDataOwnedByAtlas = false;
     ImFont* font = io.Fonts->AddFontFromMemoryTTF(context.ttf.data(), context.ttf.size(), std::floorf(16.0f * scale),
                                                   &font_config);
+    // Do this to avoid an unused variable error on ReleaseFast.
+    (void)font;
     IM_ASSERT(font != nullptr);
 
     // Our state
