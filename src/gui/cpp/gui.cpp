@@ -114,7 +114,12 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
         return;
     }
 
+    if (!config.has_value()) {
+        loadConfig();
+    }
+
     const auto& schema = config_schema;
+    auto& config = this->config.value();
 
     ImGui::Text("Profile");
 
@@ -175,16 +180,25 @@ void Gui::loadConfig() {
                                              context.config_path.string().c_str(), std::strerror(errno)));
     }
 
-    config.clear();
-    config_file >> config;
+    if (config.has_value()) {
+        config->clear();
+    } else {
+        config.emplace();
+    }
+
+    config_file >> config.value();
 }
 
 void Gui::saveConfig() {
-    std::ofstream config_file(context.config_path.c_str());
-    if (!config_file.is_open()) {
-        throw std::runtime_error(fmt::format("Failed to open for writing \"{}\": {}",
-                                             context.config_path.string().c_str(), std::strerror(errno)));
-    }
+    if (config.has_value()) {
+        std::ofstream config_file(context.config_path.c_str());
+        if (!config_file.is_open()) {
+            throw std::runtime_error(fmt::format("Failed to open for writing \"{}\": {}",
+                                                 context.config_path.string().c_str(), std::strerror(errno)));
+        }
 
-    config_file << config.dump(4);
+        config_file << config->dump(4);
+    } else {
+        log.add("warn: saveConfig(): config was null");
+    }
 }

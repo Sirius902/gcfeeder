@@ -6,6 +6,7 @@
 #include <atomic>
 #include <concepts>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <utility>
 
 #include "app_log.h"
@@ -15,7 +16,7 @@ class Gui {
 private:
     UIContext& context;
     AppLog& log;
-    nlohmann::json config;
+    std::optional<nlohmann::json> config;
     nlohmann::json config_schema;
 
     bool draw_config = true;
@@ -36,9 +37,7 @@ public:
 
     template <std::convertible_to<nlohmann::json> T>
     Gui(UIContext& context, AppLog& log, T&& config_schema)
-        : context(context), log(log), config_schema(std::forward<T>(config_schema)) {
-        loadConfig();
-    }
+        : context(context), log(log), config_schema(std::forward<T>(config_schema)) {}
 
     AppLog& getLog() { return log; }
 
