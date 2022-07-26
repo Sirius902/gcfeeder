@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <condition_variable>
 #include <filesystem>
@@ -20,6 +21,7 @@
 #include "gui.h"
 #include "gui_main.h"
 
+namespace chrono = std::chrono;
 namespace fs = std::filesystem;
 
 using json = nlohmann::json;
@@ -28,16 +30,16 @@ static AppLog app_log;
 
 static std::optional<Gui> gui;
 static std::mutex gui_created_mutex;
-static std::condition_variable_any gui_created_cond;
+static std::condition_variable gui_created_cond;
 
 extern "C" void addLogMessage(const char* message) { app_log.add(message); }
 
 extern "C" int isFeederReloadNeeded() { return gui.has_value() ? gui->feeder_needs_reload.load() : false; }
 
 extern "C" void notifyFeederReload() {
-    if (!gui.has_value()) {
+    while (!gui.has_value()) {
         std::unique_lock lock(gui_created_mutex);
-        gui_created_cond.wait(lock, [&]() { return gui.has_value(); });
+        gui_created_cond.wait_for(lock, chrono::milliseconds(100));
     }
 
     std::scoped_lock lock(gui->mutex);

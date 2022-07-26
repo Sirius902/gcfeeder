@@ -5,12 +5,14 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <chrono>
 #include <cstring>
 #include <exception>
 #include <filesystem>
 #include <fstream>
 #include <string>
 
+namespace chrono = std::chrono;
 namespace fs = std::filesystem;
 
 using json = nlohmann::json;
@@ -115,9 +117,9 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     const auto& schema = config_schema;
 
-    if (feeder_needs_reload) {
+    while (feeder_needs_reload) {
         std::unique_lock lock(mutex);
-        feeder_reload_cond.wait(lock, [&]() { return feeder_needs_reload.load(); });
+        feeder_reload_cond.wait_for(lock, chrono::milliseconds(100));
     }
 
     ImGui::Text("Profile");
