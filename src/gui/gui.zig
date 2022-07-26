@@ -1,8 +1,11 @@
 const std = @import("std");
 const builtin = @import("builtin");
+const build_info = @import("build_info");
 const c = @cImport({
     @cInclude("gui_main.h");
 });
+
+const schema_file = @embedFile(build_info.schema_path);
 
 pub var log_allocator: ?std.mem.Allocator = null;
 
@@ -14,14 +17,6 @@ const roboto_ttf: []u8 = blk: {
 };
 
 pub fn runImGui(allocator: std.mem.Allocator) !void {
-    const ini_path = blk: {
-        const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
-        defer allocator.free(exe_dir_path);
-
-        break :blk try std.mem.joinZ(allocator, "/", &[_][]const u8{ exe_dir_path, "imgui-gcfeeder.ini" });
-    };
-    defer allocator.free(ini_path);
-
     // Setup window
     _ = c.glfwSetErrorCallback(glfwErrorCallback);
     if (c.glfwInit() == 0)
@@ -35,18 +30,33 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     //c.glfwWindowHint(c.GLFW_OPENGL_PROFILE, c.GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     //c.glfwWindowHint(c.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);            // 3.0+ only
 
+    const window_title = "gcfeeder | " ++ build_info.version;
+
     // Create window with graphics context
-    const window = c.glfwCreateWindow(800, 600, "gcfeeder", null, null) orelse
+    const window = c.glfwCreateWindow(800, 600, window_title, null, null) orelse
         return error.GlfwCreateWindowFailed;
     c.glfwMakeContextCurrent(window);
     c.glfwSwapInterval(1); // Enable vsync
 
-    var context = c.UIContext{
+    const exe_dir_path_z = blk: {
+        const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
+        defer allocator.free(exe_dir_path);
+        break :blk try allocator.dupeZ(u8, exe_dir_path);
+    };
+    defer allocator.free(exe_dir_path_z);
+
+    var context = c.CUIContext{
         .ttf_ptr = roboto_ttf.ptr,
         .ttf_len = roboto_ttf.len,
-        .ini_path = ini_path.ptr,
+        .exe_dir_path = exe_dir_path_z.ptr,
         .window = window,
         .glsl_version = glsl_version,
+        .program_version = build_info.version.ptr,
+        .usercontent_url = build_info.usercontent_url.ptr,
+        .config_path = build_info.config_path.ptr,
+        .schema_rel_path = build_info.schema_rel_path.ptr,
+        .schema_file_ptr = schema_file,
+        .schema_file_len = schema_file.len,
     };
     _ = c.runImGui(&context);
 

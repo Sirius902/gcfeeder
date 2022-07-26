@@ -26,6 +26,11 @@ pub fn build(b: *Builder) void {
         .default_build_info = .{ .version = "unknown", .usercontent_ref = "main" },
     });
 
+    const schema_path = "schema/gcfeeder.schema.json";
+    build_info.options.addOption([:0]const u8, "config_path", "gcfeeder.json");
+    build_info.options.addOption([:0]const u8, "schema_rel_path", schema_path);
+    build_info.options.addOptionFileSource("schema_path", .{ .path = schema_path });
+
     const exe = b.addExecutable("gcfeeder", "src/main.zig");
     exe.setTarget(target);
     exe.setBuildMode(mode);
@@ -37,6 +42,8 @@ pub fn build(b: *Builder) void {
     linkGlad(exe);
     linkGlfw(b, exe);
     linkImGui(exe);
+    linkJson(exe);
+    linkFmt(exe);
 
     const cxx_header = [_][]const u8{
         "src/gui/cpp/gui_main.h",
@@ -149,6 +156,23 @@ fn linkImGui(lib_exe: *LibExeObjStep) void {
     lib_exe.addCSourceFiles(&imgui_cxx_source, &imgui_cxx_flags);
 }
 
+fn linkJson(lib_exe: *LibExeObjStep) void {
+    const sub_root = "external/nlohmann_json";
+    lib_exe.addIncludePath(sub_root ++ "/include");
+}
+
+fn linkFmt(lib_exe: *LibExeObjStep) void {
+    const sub_root = "external/fmt";
+    lib_exe.addIncludePath(sub_root ++ "/include");
+
+    const fmt_cxx_source = [_][]const u8{
+        sub_root ++ "/src/format.cc",
+        sub_root ++ "/src/os.cc",
+    };
+
+    lib_exe.addCSourceFiles(&fmt_cxx_source, &cxx_flags);
+}
+
 const BuildInfoStep = struct {
     step: Step,
     options: *OptionsStep,
@@ -196,13 +220,18 @@ const BuildInfoStep = struct {
                 return;
             };
 
-        const usercontent_url = std.mem.join(self.builder.allocator, "/", &[_][]const u8{
+        const version = self.builder.allocator.dupeZ(
+            u8,
+            self.config.version_override orelse build_info.version,
+        ) catch unreachable;
+
+        const usercontent_url = std.mem.joinZ(self.builder.allocator, "/", &[_][]const u8{
             self.config.usercontent_root,
             build_info.usercontent_ref,
         }) catch unreachable;
 
-        self.options.addOption([]const u8, "version", self.config.version_override orelse build_info.version);
-        self.options.addOption([]const u8, "usercontent_url", usercontent_url);
+        self.options.addOption([:0]const u8, "version", version);
+        self.options.addOption([:0]const u8, "usercontent_url", usercontent_url);
     }
 
     fn getBuildInfoFromGit(allocator: std.mem.Allocator) !BuildInfo {

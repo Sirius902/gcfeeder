@@ -34,7 +34,7 @@ pub const ConfigFile = struct {
         config: Config,
     };
 
-    pub const path = "gcfeeder.json";
+    pub const path = build_info.config_path;
 
     pub fn init(allocator: std.mem.Allocator, default: Config) !ConfigFile {
         var config_sets = try allocator.alloc(ConfigSet, 1);
@@ -43,7 +43,7 @@ pub const ConfigFile = struct {
         return ConfigFile{
             .@"$schema" = try std.mem.join(allocator, "/", &[_][]const u8{
                 build_info.usercontent_url,
-                "schema/gcfeeder.schema.json",
+                build_info.schema_rel_path,
             }),
             .default_set = "default",
             .config_sets = config_sets,

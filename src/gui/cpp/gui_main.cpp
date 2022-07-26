@@ -1,35 +1,48 @@
+#include <fmt/core.h>
 #include <glad/glad.h>
+
+#include <algorithm>
+#include <cmath>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+#include <string>
+#include <string_view>
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <imgui.h>
 
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
-
 #include "app_log.h"
 #include "gui.h"
 #include "gui_main.h"
 
-static Gui gui;
+namespace fs = std::filesystem;
+namespace nl = nlohmann;
 
-extern "C" void addLogMessage(const char* message) { gui.getLog().add(message); }
+static AppLog app_log;
 
-extern "C" int runImGui(UIContext* context) {
+extern "C" void addLogMessage(const char* message) { app_log.add(message); }
+
+extern "C" int runImGui(CUIContext* c_context) {
     if (gladLoadGL() == 0) {
-        std::fprintf(stderr, "gladLoadGL failed\n");
+        fmt::print(stderr, "gladLoadGL failed\n");
         return 1;
     }
 
-    GLFWwindow* window = context->window;
+    UIContext context(*c_context);
+    GLFWwindow* window = context.window;
+
+    const fs::path ini_path = context.exe_dir / "imgui-gcfeeder.ini";
+    const std::u8string ini_path_str = ini_path.u8string();
+
+    Gui gui(app_log, nl::json::parse(context.schema_str));
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.IniFilename = context->ini_path;
+    io.IniFilename = reinterpret_cast<const char*>(ini_path_str.c_str());
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable
     // Keyboard Controls io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //
     // Enable Gamepad Controls
@@ -55,12 +68,12 @@ extern "C" int runImGui(UIContext* context) {
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(context->glsl_version);
+    ImGui_ImplOpenGL3_Init(context.glsl_version.data());
 
     ImFontConfig font_config;
     font_config.FontDataOwnedByAtlas = false;
-    ImFont* font =
-        io.Fonts->AddFontFromMemoryTTF(context->ttf_ptr, context->ttf_len, std::floorf(16.0f * scale), &font_config);
+    ImFont* font = io.Fonts->AddFontFromMemoryTTF(context.ttf.data(), context.ttf.size(), std::floorf(16.0f * scale),
+                                                  &font_config);
     IM_ASSERT(font != nullptr);
 
     // Our state
@@ -85,7 +98,7 @@ extern "C" int runImGui(UIContext* context) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        gui.drawAndUpdate(*context);
+        gui.drawAndUpdate(context);
 
         // Rendering
         ImGui::Render();
