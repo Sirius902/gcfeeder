@@ -104,7 +104,7 @@ void Gui::drawAndUpdate(UIContext& context) {
     }
 
     if (draw_calibration_data) {
-        if (!ImGui::Begin("Calibration Data", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
+        if (!ImGui::Begin("Calibration Data", &draw_calibration_data, ImGuiWindowFlags_NoFocusOnAppearing)) {
             ImGui::End();
         } else {
             ImGui::End();
