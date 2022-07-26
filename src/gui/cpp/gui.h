@@ -5,8 +5,6 @@
 
 #include <atomic>
 #include <concepts>
-#include <condition_variable>
-#include <mutex>
 #include <nlohmann/json.hpp>
 #include <utility>
 
@@ -34,9 +32,7 @@ private:
     void saveConfig();
 
 public:
-    std::mutex mutex;
     std::atomic_bool feeder_needs_reload = true;
-    std::condition_variable feeder_reload_cond;
 
     template <std::convertible_to<nlohmann::json> T>
     Gui(UIContext& context, AppLog& log, T&& config_schema)

@@ -42,9 +42,7 @@ extern "C" void notifyFeederReload() {
         gui_created_cond.wait_for(lock, chrono::milliseconds(100));
     }
 
-    std::scoped_lock lock(gui->mutex);
     gui->feeder_needs_reload = false;
-    gui->feeder_reload_cond.notify_all();
 }
 
 extern "C" int runImGui(CUIContext* c_context) {
@@ -59,9 +57,9 @@ extern "C" int runImGui(CUIContext* c_context) {
     const fs::path ini_path = context.exe_dir / "imgui-gcfeeder.ini";
     const std::u8string ini_path_str = ini_path.u8string();
 
-    gui.emplace(context, app_log, json::parse(context.schema_str));
     {
         std::unique_lock lock(gui_created_mutex);
+        gui.emplace(context, app_log, json::parse(context.schema_str));
         gui_created_cond.notify_all();
     }
 
