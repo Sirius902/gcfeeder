@@ -2,23 +2,24 @@
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "app_log.h"
+#include "gui_main.h"
 
-typedef struct UIContext {
-    char* ttf_ptr;
-    size_t ttf_len;
-    const char* ini_path;
-    GLFWwindow* window;
-    const char* glsl_version;
-} UIContext;
+class Gui {
+private:
+    AppLog log;
 
-int runImGui(UIContext* context);
-void addLogMessage(const char* message);
+    bool draw_config = true;
+    bool draw_calibration_data = true;
+    bool draw_log = true;
+    bool rumble_enabled = true;
+    ImGuiID dockspace_id;
 
-#ifdef __cplusplus
-}
-#endif
+    bool draw_demo_window = false;
+
+public:
+    AppLog& getLog() { return log; }
+
+    void drawAndUpdate(UIContext& context);
+};

@@ -1,7 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const c = @cImport({
-    @cInclude("gui.h");
+    @cInclude("gui_main.h");
 });
 
 pub var log_allocator: ?std.mem.Allocator = null;

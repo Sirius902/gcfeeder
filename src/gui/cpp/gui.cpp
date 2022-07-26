@@ -1,112 +1,122 @@
-#include <glad/glad.h>
+#include "gui.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 #include <imgui.h>
+#include <imgui_internal.h>
 
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
+void Gui::drawAndUpdate(UIContext& context) {
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
+                                    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                    ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar |
+                                    ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 
-#include "app_log.h"
-#include "gui.h"
-#include "gui_impl.h"
+    const ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(io.DisplaySize);
 
-static Gui gui;
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::Begin("Content", nullptr, window_flags);
+    ImGui::PopStyleVar(5);
 
-extern "C" void addLogMessage(const char* message) { gui.getLog().add(message); }
+    dockspace_id = ImGui::GetID("ContentDockSpace");
+    if (ImGui::DockBuilderGetNode(dockspace_id) == nullptr) {
+        ImGui::DockBuilderRemoveNode(dockspace_id);                             // Clear out existing layout
+        ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);  // Add empty node
+        ImGui::DockBuilderSetNodeSize(dockspace_id, io.DisplaySize);
 
-extern "C" int runImGui(UIContext* context) {
-    // Reopen stderr to print messages to console from C++ on Windows subsystem.
-    std::freopen("CONOUT$", "w", stderr);
+        ImGuiID dock_main_id = dockspace_id;
+        ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.5f, nullptr, &dock_main_id);
+        ImGuiID dock_id_left_bottom =
+            ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
 
-    if (gladLoadGL() == 0) {
-        std::fprintf(stderr, "gladLoadGL failed\n");
-        return 1;
+        ImGui::DockBuilderDockWindow("Content", dock_main_id);
+        ImGui::DockBuilderDockWindow("Calibration Data", dock_id_left);
+        ImGui::DockBuilderDockWindow("Log", dock_id_left_bottom);
+        ImGui::DockBuilderDockWindow("Config", dock_main_id);
+        ImGui::DockBuilderFinish(dockspace_id);
     }
 
-    GLFWwindow* window = context->window;
+    ImGui::DockSpace(dockspace_id, io.DisplaySize);
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.IniFilename = context->ini_path;
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable
-    // Keyboard Controls io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //
-    // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Minimize")) {
+                // TOOD: Implement.
+            }
 
-    float scale = [&]() {
-        const auto monitor = glfwGetPrimaryMonitor();
-        if (monitor != nullptr) {
-            float xscale, yscale;
-            glfwGetMonitorContentScale(monitor, &xscale, &yscale);
-            return std::max(xscale, yscale);
-        } else {
-            return 1.0f;
+            if (ImGui::MenuItem("Exit", "Alt+F4")) {
+                glfwSetWindowShouldClose(context.window, true);
+            }
+
+            ImGui::EndMenu();
         }
-    }();
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.ScaleAllSizes(scale);
-    style.FrameRounding = 2.0f;
-    style.WindowRounding = 5.0f;
+        if (ImGui::BeginMenu("Calibrate")) {
+            if (ImGui::MenuItem("PC Scaling")) {
+                // TOOD: Implement.
+            }
 
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(context->glsl_version);
+            if (ImGui::MenuItem("ESS Adapter")) {
+                // TOOD: Implement.
+            }
 
-    ImFontConfig font_config;
-    font_config.FontDataOwnedByAtlas = false;
-    ImFont* font =
-        io.Fonts->AddFontFromMemoryTTF(context->ttf_ptr, context->ttf_len, std::floorf(16.0f * scale), &font_config);
-    IM_ASSERT(font != nullptr);
+            ImGui::EndMenu();
+        }
 
-    // Our state
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        if (ImGui::BeginMenu("View")) {
+            ImGui::MenuItem("Config", nullptr, &draw_config);
+            ImGui::MenuItem("Calibration Data", nullptr, &draw_calibration_data);
+            ImGui::MenuItem("Log", nullptr, &draw_log);
+            ImGui::MenuItem("[DEBUG] Demo Window", nullptr, &draw_demo_window);
 
-    // Main loop
-    while (!glfwWindowShouldClose(window)) {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
-        // tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data
-        // to your main application, or clear/overwrite your copy of the mouse
-        // data.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input
-        // data to your main application, or clear/overwrite your copy of the
-        // keyboard data. Generally you may always pass all inputs to dear
-        // imgui, and hide them from your application based on those two flags.
-        glfwPollEvents();
+            ImGui::EndMenu();
+        }
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        gui.drawAndUpdate(*context);
-
-        // Rendering
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w,
-                     clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window);
+        ImGui::EndMenuBar();
     }
 
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    if (draw_config) {
+        if (!ImGui::Begin("Config", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
+            ImGui::End();
+        } else {
+            ImGui::Text("Profile");
 
-    return 0;
+            ImGui::Separator();
+
+            ImGui::Text("Misc");
+
+            bool update_schema = ImGui::Button("Update Schema URL");
+            (void)update_schema;
+
+            ImGui::Separator();
+
+            ImGui::Text("Settings");
+
+            ImGui::Checkbox("Rumble Enabled", &rumble_enabled);
+
+            ImGui::End();
+        }
+    }
+
+    if (draw_calibration_data) {
+        if (!ImGui::Begin("Calibration Data", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
+            ImGui::End();
+        } else {
+            ImGui::End();
+        }
+    }
+
+    log.draw("Log", draw_log);
+
+    // 1. Show the big demo window (Most of the sample code is in
+    // ImGui::ShowDemoWindow()! You can browse its code to learn more about
+    // Dear ImGui!).
+    if (draw_demo_window) ImGui::ShowDemoWindow(&draw_demo_window);
+
+    ImGui::End();
 }

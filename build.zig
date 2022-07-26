@@ -39,14 +39,14 @@ pub fn build(b: *Builder) void {
     linkImGui(exe);
 
     const cxx_header = [_][]const u8{
+        "src/gui/cpp/gui_main.h",
         "src/gui/cpp/gui.h",
-        "src/gui/cpp/gui_impl.h",
         "src/gui/cpp/app_log.h",
     };
 
     const cxx_source = [_][]const u8{
+        "src/gui/cpp/gui_main.cpp",
         "src/gui/cpp/gui.cpp",
-        "src/gui/cpp/gui_impl.cpp",
         "src/gui/cpp/app_log.cpp",
     };
 
