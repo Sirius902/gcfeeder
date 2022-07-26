@@ -67,6 +67,7 @@ extern "C" int runImGui(CUIContext* c_context) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+    // TODO: Find out if this is safe.
     io.IniFilename = reinterpret_cast<const char*>(ini_path_str.c_str());
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable
     // Keyboard Controls io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //
