@@ -95,6 +95,8 @@ fn loadAndSetConfig(context: *Context) !void {
 }
 
 fn inputLoop(context: *Context) void {
+    gui.waitForInit();
+
     while (!context.stop.load(.Acquire)) {
         if (context.config == null or gui.isReloadNeeded()) {
             loadAndSetConfig(context) catch |err| {
