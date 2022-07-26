@@ -1,10 +1,21 @@
 #include "gui.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+#include <fmt/core.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 
-void Gui::drawAndUpdate(UIContext& context) {
+#include <cstring>
+#include <exception>
+#include <filesystem>
+#include <fstream>
+#include <string>
+
+namespace fs = std::filesystem;
+
+using json = nlohmann::json;
+
+void Gui::drawAndUpdate() {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
                                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
                                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
@@ -80,37 +91,8 @@ void Gui::drawAndUpdate(UIContext& context) {
         ImGui::EndMenuBar();
     }
 
-    if (draw_config) {
-        if (!ImGui::Begin("Config", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
-            ImGui::End();
-        } else {
-            ImGui::Text("Profile");
-
-            ImGui::Separator();
-
-            ImGui::Text("Misc");
-
-            bool update_schema = ImGui::Button("Update Schema URL");
-            (void)update_schema;
-
-            ImGui::Separator();
-
-            ImGui::Text("Settings");
-
-            ImGui::Checkbox("Rumble Enabled", &rumble_enabled);
-
-            ImGui::End();
-        }
-    }
-
-    if (draw_calibration_data) {
-        if (!ImGui::Begin("Calibration Data", &draw_calibration_data, ImGuiWindowFlags_NoFocusOnAppearing)) {
-            ImGui::End();
-        } else {
-            ImGui::End();
-        }
-    }
-
+    drawConfigEditor("Config", draw_config);
+    drawCalibrationData("Calibration Data", draw_calibration_data);
     log.draw("Log", draw_log);
 
     // 1. Show the big demo window (Most of the sample code is in
@@ -119,4 +101,81 @@ void Gui::drawAndUpdate(UIContext& context) {
     if (draw_demo_window) ImGui::ShowDemoWindow(&draw_demo_window);
 
     ImGui::End();
+}
+
+void Gui::drawConfigEditor(const char* title, bool& open) {
+    if (!open) {
+        return;
+    }
+
+    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing)) {
+        ImGui::End();
+        return;
+    }
+
+    const auto& schema = config_schema;
+
+    ImGui::Text("Profile");
+
+    ImGui::Separator();
+
+    ImGui::Text("Misc");
+
+    if (ImGui::Button("Reload Config")) {
+        loadConfig();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Update Schema URL")) {
+        config["$schema"] = fmt::format("{}{}{}", context.usercontent_url, '/', context.schema_rel_path_str);
+        saveConfig();
+    }
+
+    ImGui::Separator();
+
+    ImGui::Text("Settings");
+
+    const auto& profile_properties =
+        schema.at("properties").at("config_sets").at("items").at("properties").at("config").at("properties");
+
+    for (const auto& [key, value] : profile_properties.items()) {
+        ImGui::TextUnformatted(key.c_str());
+    }
+
+    ImGui::End();
+}
+
+void Gui::drawCalibrationData(const char* title, bool& open) {
+    if (!open) {
+        return;
+    }
+
+    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing)) {
+        ImGui::End();
+        return;
+    }
+
+    ImGui::End();
+}
+
+void Gui::loadConfig() {
+    std::ifstream config_file(context.config_path.c_str());
+    if (!config_file.is_open()) {
+        throw std::runtime_error(fmt::format("Failed to open for reading \"{}\": {}",
+                                             context.config_path.string().c_str(), std::strerror(errno)));
+    }
+
+    config.clear();
+    config_file >> config;
+}
+
+void Gui::saveConfig() {
+    std::ofstream config_file(context.config_path.c_str());
+    if (!config_file.is_open()) {
+        throw std::runtime_error(fmt::format("Failed to open for writing \"{}\": {}",
+                                             context.config_path.string().c_str(), std::strerror(errno)));
+    }
+
+    config_file << config.dump(4);
 }

@@ -11,22 +11,32 @@
 
 class Gui {
 private:
-    nlohmann::json config_schema;
+    UIContext& context;
     AppLog& log;
+    nlohmann::json config;
+    nlohmann::json config_schema;
 
     bool draw_config = true;
     bool draw_calibration_data = true;
     bool draw_log = true;
-    bool rumble_enabled = true;
     ImGuiID dockspace_id;
 
     bool draw_demo_window = false;
 
+    void drawConfigEditor(const char* title, bool& open);
+    void drawCalibrationData(const char* title, bool& open);
+
+    void loadConfig();
+    void saveConfig();
+
 public:
     template <typename T>
-    Gui(AppLog& log, T&& config_schema) : config_schema(std::forward<T>(config_schema)), log(log) {}
+    Gui(UIContext& context, AppLog& log, T&& config_schema)
+        : context(context), log(log), config_schema(std::forward<T>(config_schema)) {
+        loadConfig();
+    }
 
     AppLog& getLog() { return log; }
 
-    void drawAndUpdate(UIContext& context);
+    void drawAndUpdate();
 };

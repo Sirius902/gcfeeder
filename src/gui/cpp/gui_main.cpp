@@ -18,7 +18,8 @@
 #include "gui_main.h"
 
 namespace fs = std::filesystem;
-namespace nl = nlohmann;
+
+using json = nlohmann::json;
 
 static AppLog app_log;
 
@@ -36,7 +37,7 @@ extern "C" int runImGui(CUIContext* c_context) {
     const fs::path ini_path = context.exe_dir / "imgui-gcfeeder.ini";
     const std::u8string ini_path_str = ini_path.u8string();
 
-    Gui gui(app_log, nl::json::parse(context.schema_str));
+    Gui gui(context, app_log, json::parse(context.schema_str));
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -98,7 +99,7 @@ extern "C" int runImGui(CUIContext* c_context) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        gui.drawAndUpdate(context);
+        gui.drawAndUpdate();
 
         // Rendering
         ImGui::Render();
