@@ -108,7 +108,8 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
         return;
     }
 
-    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing) || feeder_needs_reload) {
+    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing) ||
+        feeder_needs_reload.load(std::memory_order_acquire)) {
         ImGui::End();
         return;
     }
