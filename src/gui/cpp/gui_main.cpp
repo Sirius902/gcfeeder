@@ -34,7 +34,9 @@ static std::condition_variable gui_created_cond;
 
 extern "C" void addLogMessage(const char* message) { app_log.add(message); }
 
-extern "C" int isFeederReloadNeeded() { return gui.has_value() ? gui->feeder_needs_reload.load() : false; }
+extern "C" int isFeederReloadNeeded() {
+    return gui.has_value() ? gui->feeder_needs_reload.load(std::memory_order_acquire) : false;
+}
 
 extern "C" void notifyFeederReload() {
     while (!gui.has_value()) {
@@ -42,7 +44,7 @@ extern "C" void notifyFeederReload() {
         gui_created_cond.wait_for(lock, chrono::milliseconds(100));
     }
 
-    gui->feeder_needs_reload = false;
+    gui->feeder_needs_reload.store(false, std::memory_order_release);
 }
 
 extern "C" int runImGui(CUIContext* c_context) {

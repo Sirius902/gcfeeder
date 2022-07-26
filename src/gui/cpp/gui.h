@@ -32,7 +32,7 @@ private:
     void saveConfig();
 
 public:
-    std::atomic_bool feeder_needs_reload = true;
+    std::atomic_bool feeder_needs_reload{true};
 
     template <std::convertible_to<nlohmann::json> T>
     Gui(UIContext& context, AppLog& log, T&& config_schema)

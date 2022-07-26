@@ -123,7 +123,7 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     if (ImGui::Button("Reload Config")) {
         loadConfig();
-        feeder_needs_reload = true;
+        feeder_needs_reload.store(true, std::memory_order_release);
     }
 
     ImGui::SameLine();
@@ -148,7 +148,7 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     if (config_modified) {
         saveConfig();
-        feeder_needs_reload = true;
+        feeder_needs_reload.store(true, std::memory_order_release);
     }
 
     ImGui::End();
