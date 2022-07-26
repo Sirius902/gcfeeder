@@ -64,7 +64,7 @@ fn linkLibusb(b: *Builder, lib_exe: *LibExeObjStep) void {
 
 fn linkVigem(lib_exe: *LibExeObjStep) void {
     const sub_root = "external/ViGEm";
-    lib_exe.addIncludeDir(sub_root ++ "/include");
+    lib_exe.addIncludePath(sub_root ++ "/include");
 
     lib_exe.linkSystemLibrary("setupapi");
 
