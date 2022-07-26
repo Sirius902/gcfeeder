@@ -2,16 +2,18 @@
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include <imgui.h>
+#include <imgui_internal.h>
 
 void Gui::drawAndUpdate(UIContext& context) {
-    const ImGuiIO& io = ImGui::GetIO();
-    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(io.DisplaySize);
-
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
                                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
                                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                    ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar;
+                                    ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar |
+                                    ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+
+    const ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(io.DisplaySize);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -20,6 +22,26 @@ void Gui::drawAndUpdate(UIContext& context) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::Begin("Content", nullptr, window_flags);
     ImGui::PopStyleVar(5);
+
+    dockspace_id = ImGui::GetID("ContentDockSpace");
+    if (ImGui::DockBuilderGetNode(dockspace_id) == nullptr) {
+        ImGui::DockBuilderRemoveNode(dockspace_id);                             // Clear out existing layout
+        ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);  // Add empty node
+        ImGui::DockBuilderSetNodeSize(dockspace_id, io.DisplaySize);
+
+        ImGuiID dock_main_id = dockspace_id;
+        ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.5f, nullptr, &dock_main_id);
+        ImGuiID dock_id_left_bottom =
+            ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
+
+        ImGui::DockBuilderDockWindow("Content", dock_main_id);
+        ImGui::DockBuilderDockWindow("Calibration Data", dock_id_left);
+        ImGui::DockBuilderDockWindow("Log", dock_id_left_bottom);
+        ImGui::DockBuilderDockWindow("Config", dock_main_id);
+        ImGui::DockBuilderFinish(dockspace_id);
+    }
+
+    ImGui::DockSpace(dockspace_id, io.DisplaySize);
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
@@ -50,7 +72,7 @@ void Gui::drawAndUpdate(UIContext& context) {
             ImGui::MenuItem("Config", nullptr, &draw_config);
             ImGui::MenuItem("Calibration Data", nullptr, &draw_calibration_data);
             ImGui::MenuItem("Log", nullptr, &draw_log);
-            ImGui::MenuItem("DEBUG: Demo Window", nullptr, &draw_demo_window);
+            ImGui::MenuItem("[DEBUG] Demo Window", nullptr, &draw_demo_window);
 
             ImGui::EndMenu();
         }
@@ -59,8 +81,6 @@ void Gui::drawAndUpdate(UIContext& context) {
     }
 
     if (draw_config) {
-        ImGui::SetNextWindowPos(ImVec2(410.0f, 30.0f), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(400.0f, 505.0f), ImGuiCond_FirstUseEver);
         if (!ImGui::Begin("Config", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
             ImGui::End();
         } else {
@@ -84,8 +104,6 @@ void Gui::drawAndUpdate(UIContext& context) {
     }
 
     if (draw_calibration_data) {
-        ImGui::SetNextWindowPos(ImVec2(5.0f, 285.0f), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(400.0f, 250.0f), ImGuiCond_FirstUseEver);
         if (!ImGui::Begin("Calibration Data", &draw_config, ImGuiWindowFlags_NoFocusOnAppearing)) {
             ImGui::End();
         } else {

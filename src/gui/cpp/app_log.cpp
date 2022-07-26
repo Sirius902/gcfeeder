@@ -31,8 +31,6 @@ void AppLog::draw(const char* title, bool& open) {
         return;
     }
 
-    ImGui::SetNextWindowPos(ImVec2(5.0f, 30.0f), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(400.0f, 250.0f), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing)) {
         ImGui::End();
         return;

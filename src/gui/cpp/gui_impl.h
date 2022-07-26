@@ -11,6 +11,7 @@ private:
     bool draw_calibration_data = true;
     bool draw_log = true;
     bool rumble_enabled = true;
+    ImGuiID dockspace_id;
 
     bool draw_demo_window = false;
 
