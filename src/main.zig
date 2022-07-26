@@ -225,9 +225,6 @@ fn rumbleLoop(context: *Context) void {
 }
 
 pub fn main() !void {
-    // Attach to console so output can be viewed when run from a terminal on Windows subsystem.
-    _ = win.AttachConsole(win.ATTACH_PARENT_PROCESS);
-
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();

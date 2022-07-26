@@ -61,8 +61,6 @@ pub fn build(b: *Builder) void {
     exe.addPackagePath("grindel", "pkg/grindel/grindel.zig");
     build_info.addPackageTo(exe, "build_info");
 
-    exe.subsystem = .Windows;
-
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
     if (b.args) |args| {

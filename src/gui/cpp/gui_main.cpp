@@ -18,9 +18,6 @@ static Gui gui;
 extern "C" void addLogMessage(const char* message) { gui.getLog().add(message); }
 
 extern "C" int runImGui(UIContext* context) {
-    // Reopen stderr to print messages to console from C++ on Windows subsystem.
-    std::freopen("CONOUT$", "w", stderr);
-
     if (gladLoadGL() == 0) {
         std::fprintf(stderr, "gladLoadGL failed\n");
         return 1;
