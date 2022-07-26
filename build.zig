@@ -112,7 +112,7 @@ fn linkVigem(lib_exe: *LibExeObjStep) void {
 
 fn linkGlad(lib_exe: *LibExeObjStep) void {
     const sub_root = "external/glad";
-    lib_exe.addIncludeDir(sub_root ++ "/include");
+    lib_exe.addIncludePath(sub_root ++ "/include");
 
     lib_exe.addCSourceFile(sub_root ++ "/src/glad.c", &[_][]const u8{"-std=c17"});
 }
@@ -121,7 +121,7 @@ fn linkGlfw(b: *Builder, lib_exe: *LibExeObjStep) void {
     const sub_root = "external/GLFW";
     const dll_name = "glfw3.dll";
     const dll_path = sub_root ++ "/bin/" ++ dll_name;
-    lib_exe.addIncludeDir(sub_root ++ "/include");
+    lib_exe.addIncludePath(sub_root ++ "/include");
     lib_exe.addLibraryPath(sub_root ++ "/lib");
 
     lib_exe.linkSystemLibrary("glfw3dll");
@@ -134,7 +134,7 @@ fn linkGlfw(b: *Builder, lib_exe: *LibExeObjStep) void {
 
 fn linkImGui(lib_exe: *LibExeObjStep) void {
     const sub_root = "external/imgui";
-    lib_exe.addIncludeDir(sub_root);
+    lib_exe.addIncludePath(sub_root);
 
     const imgui_cxx_source = [_][]const u8{
         sub_root ++ "/imgui_demo.cpp",
