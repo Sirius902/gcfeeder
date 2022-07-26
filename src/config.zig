@@ -26,10 +26,10 @@ pub const Config = struct {
 
 pub const ConfigFile = struct {
     @"$schema": []const u8,
-    default_set: []const u8,
-    config_sets: []ConfigSet,
+    current_profile: []const u8,
+    profiles: []Profile,
 
-    pub const ConfigSet = struct {
+    pub const Profile = struct {
         name: []const u8,
         config: Config,
     };
@@ -37,16 +37,16 @@ pub const ConfigFile = struct {
     pub const path = build_info.config_path;
 
     pub fn init(allocator: std.mem.Allocator, default: Config) !ConfigFile {
-        var config_sets = try allocator.alloc(ConfigSet, 1);
-        config_sets[0] = .{ .name = "default", .config = default };
+        var profiles = try allocator.alloc(Profile, 1);
+        profiles[0] = .{ .name = "default", .config = default };
 
         return ConfigFile{
             .@"$schema" = try std.mem.join(allocator, "/", &[_][]const u8{
                 build_info.usercontent_url,
                 build_info.schema_rel_path,
             }),
-            .default_set = "default",
-            .config_sets = config_sets,
+            .current_profile = "default",
+            .profiles = profiles,
         };
     }
 
@@ -58,29 +58,14 @@ pub const ConfigFile = struct {
         try saveToFile(path, allocator, self);
     }
 
-    pub fn lookupConfigSet(self: *ConfigFile, name: []const u8) ?*Config {
-        for (self.config_sets) |*s| {
+    pub fn lookupProfile(self: ConfigFile, name: []const u8) ?*Profile {
+        for (self.profiles) |s, i| {
             if (std.mem.eql(u8, s.name, name)) {
-                return &s.config;
+                return &self.profiles[i];
             }
         }
 
         return null;
-    }
-
-    pub fn migrateOldConfig(allocator: std.mem.Allocator) !void {
-        const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);
-        defer allocator.free(exe_dir_path);
-
-        var exe_dir = try std.fs.cwd().openDir(exe_dir_path, .{});
-        defer exe_dir.close();
-
-        exe_dir.access(path, .{}) catch {
-            const old_path = "config.json";
-            const old_config = (try parseFromFile(Config, allocator, old_path)) orelse return;
-            try saveToFile(path, allocator, try init(allocator, old_config));
-            try exe_dir.deleteFile(old_path);
-        };
     }
 };
 

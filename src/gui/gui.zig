@@ -64,6 +64,14 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     c.glfwTerminate();
 }
 
+pub inline fn isReloadNeeded() bool {
+    return c.isFeederReloadNeeded() != 0;
+}
+
+pub inline fn notifyReload() void {
+    c.notifyFeederReload();
+}
+
 pub fn log(
     comptime message_level: std.log.Level,
     comptime scope: @Type(.EnumLiteral),

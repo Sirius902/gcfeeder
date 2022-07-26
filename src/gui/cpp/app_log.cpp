@@ -52,7 +52,7 @@ void AppLog::draw(const char* title, bool& open) {
     bool do_copy = ImGui::Button("Copy");
 
     ImGui::Separator();
-    ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("scrolling", ImVec2(0.0f, 0.0f), false, ImGuiWindowFlags_HorizontalScrollbar);
 
     if (do_clear) clear();
 
@@ -78,6 +78,9 @@ void AppLog::draw(const char* title, bool& open) {
     }
 
     if (do_copy) ImGui::LogFinish();
+
+    // TODO: Workaround for scroll bar being partially off screen. Properly fix.
+    ImGui::TextUnformatted("\n");
 
     ImGui::PopStyleVar();
 

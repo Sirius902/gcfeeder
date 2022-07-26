@@ -3,8 +3,11 @@
 
 #include <algorithm>
 #include <cmath>
+#include <condition_variable>
 #include <filesystem>
+#include <mutex>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -23,7 +26,24 @@ using json = nlohmann::json;
 
 static AppLog app_log;
 
+static std::optional<Gui> gui;
+static std::mutex gui_created_mutex;
+static std::condition_variable_any gui_created_cond;
+
 extern "C" void addLogMessage(const char* message) { app_log.add(message); }
+
+extern "C" int isFeederReloadNeeded() { return gui.has_value() ? gui->feeder_needs_reload.load() : false; }
+
+extern "C" void notifyFeederReload() {
+    if (!gui.has_value()) {
+        std::unique_lock lock(gui_created_mutex);
+        gui_created_cond.wait(lock, [&]() { return gui.has_value(); });
+    }
+
+    std::scoped_lock lock(gui->mutex);
+    gui->feeder_needs_reload = false;
+    gui->feeder_reload_cond.notify_all();
+}
 
 extern "C" int runImGui(CUIContext* c_context) {
     if (gladLoadGL() == 0) {
@@ -37,7 +57,11 @@ extern "C" int runImGui(CUIContext* c_context) {
     const fs::path ini_path = context.exe_dir / "imgui-gcfeeder.ini";
     const std::u8string ini_path_str = ini_path.u8string();
 
-    Gui gui(context, app_log, json::parse(context.schema_str));
+    gui.emplace(context, app_log, json::parse(context.schema_str));
+    {
+        std::unique_lock lock(gui_created_mutex);
+        gui_created_cond.notify_all();
+    }
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -99,7 +123,7 @@ extern "C" int runImGui(CUIContext* c_context) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        gui.drawAndUpdate();
+        gui->drawAndUpdate();
 
         // Rendering
         ImGui::Render();

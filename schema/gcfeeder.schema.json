@@ -8,12 +8,12 @@
         "$schema": {
             "type": "string"
         },
-        "default_set": {
-            "description": "The default configuration set",
+        "current_profile": {
+            "description": "The configuration profile to be used",
             "type": "string"
         },
-        "config_sets": {
-            "description": "A list of configurations",
+        "profiles": {
+            "description": "The list of configuration profiles",
             "type": "array",
             "items": {
                 "type": "object",
@@ -162,8 +162,8 @@
         }
     },
     "required": [
-        "default_set",
-        "config_sets"
+        "current_profile",
+        "profiles"
     ],
     "additionalProperties": false
 }

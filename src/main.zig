@@ -14,8 +14,8 @@ const ess = @import("ess/ess.zig");
 const Atomic = std.atomic.Atomic;
 const time = std.time;
 const emulator = @import("emulator.zig");
-const Config = @import("config.zig").Config;
 const ConfigFile = @import("config.zig").ConfigFile;
+const Config = @import("config.zig").Config;
 const gui = @import("gui/gui.zig");
 const win = @cImport({
     @cDefine("WIN32_LEAN_AND_MEAN", {});
@@ -26,7 +26,6 @@ pub const log = gui.log;
 pub const log_level = if (builtin.mode == .Debug) .debug else .info;
 
 const Options = struct {
-    config_set: ?[]const u8,
     ess_mapping: ?ess.Mapping,
     port: ?u16,
     use_calibration: bool,
@@ -36,15 +35,17 @@ const Options = struct {
 
 pub const Context = struct {
     allocator: std.mem.Allocator,
+    config_arena: ?std.heap.ArenaAllocator = null,
     mutex: std.Thread.Mutex,
     usb_ctx: *usb.Context,
     adapter: ?Adapter = null,
     bridge: ?Bridge = null,
-    stop: Atomic(bool),
+    config_reloading: Atomic(bool) = Atomic(bool).init(false),
+    stop: Atomic(bool) = Atomic(bool).init(false),
     sock: ?*const std.x.os.Socket,
     ess_mapping: ?ess.Mapping,
-    config_file: *ConfigFile,
-    config: *Config,
+    config_file: ?ConfigFile = null,
+    config: ?*Config = null,
     use_calibration: bool,
     emulator_rumble: bool,
     overscale: ?f32,
@@ -52,8 +53,55 @@ pub const Context = struct {
 
 const fail_wait = 100 * time.ns_per_ms;
 
+fn loadAndSetConfig(context: *Context) !void {
+    context.config_reloading.store(true, .Release);
+    defer context.config_reloading.store(false, .Release);
+    context.mutex.lock();
+    defer context.mutex.unlock();
+
+    var config_arena = std.heap.ArenaAllocator.init(context.allocator);
+    const json_allocator = config_arena.allocator();
+
+    const config_file = (try ConfigFile.load(json_allocator)) orelse blk: {
+        const c = try ConfigFile.init(json_allocator, .{});
+        c.save(json_allocator) catch |err| {
+            // TODO: error to gui
+            std.debug.panic("Failed to save {s}: {}", .{ ConfigFile.path, err });
+        };
+        break :blk c;
+    };
+
+    const profile_name = config_file.current_profile;
+    const profile = config_file.lookupProfile(profile_name) orelse {
+        // TODO: error to gui
+        std.debug.panic("Missing profile \"{s}\"", .{profile_name});
+    };
+
+    if (context.bridge) |bridge| {
+        bridge.deinit();
+        context.bridge = null;
+    }
+
+    if (context.config_arena) |prev_arena| {
+        prev_arena.deinit();
+    }
+
+    context.config_arena = config_arena;
+    context.config_file = config_file;
+    context.config = &profile.config;
+
+    std.log.info("Config loaded with profile \"{s}\"", .{profile_name});
+    gui.notifyReload();
+}
+
 fn inputLoop(context: *Context) void {
     while (!context.stop.load(.Acquire)) {
+        if (context.config == null or gui.isReloadNeeded()) {
+            loadAndSetConfig(context) catch |err| {
+                std.debug.panic("Failed to load config: {}", .{err});
+            };
+        }
+
         const adapter = &(context.adapter orelse blk: {
             context.mutex.lock();
             defer context.mutex.unlock();
@@ -70,7 +118,8 @@ fn inputLoop(context: *Context) void {
             break :blk a;
         });
 
-        const config = context.config;
+        const config_file = &context.config_file.?;
+        const config = context.config.?;
 
         const bridge = context.bridge orelse blk: {
             context.mutex.lock();
@@ -90,6 +139,7 @@ fn inputLoop(context: *Context) void {
             break :blk b;
         };
 
+        // TODO: Calibrate when requested from gui
         if (context.use_calibration and config.calibration == null) {
             const cal = calibrate.generateCalibration(adapter) catch |err| {
                 switch (err) {
@@ -107,8 +157,9 @@ fn inputLoop(context: *Context) void {
                 }
             };
             config.calibration = cal;
-            context.config_file.save(context.allocator) catch |err| {
-                std.log.warn("Failed to save {s}: {}", .{ ConfigFile.path, err });
+            config_file.save(context.allocator) catch |err| {
+                // TODO: error to gui
+                std.debug.panic("Failed to save \"{s}\": {}", .{ ConfigFile.path, err });
             };
         }
 
@@ -165,7 +216,7 @@ fn rumbleLoop(context: *Context) void {
     defer if (handle) |h| h.close();
 
     while (!context.stop.load(.Acquire)) {
-        if (context.adapter == null or context.bridge == null) {
+        if (context.config_reloading.load(.Acquire) or context.adapter == null or context.bridge == null) {
             time.sleep(8 * time.ns_per_ms);
             continue;
         }
@@ -235,7 +286,6 @@ pub fn main() !void {
         const params = comptime clap.parseParamsComptime(
             \\-h, --help            Display this help and exit.
             \\-v, --version         Display the program version and exit.
-            \\-c, --config <NAME>   Use the specified config set from the config file. Uses the default config set if omitted.
             \\-e, --ess             Enable ESS adapter with oot-vc mapping.
             \\-m, --mapping <NAME>  Enable ESS adapter with the specified mapping. Available mappings are: oot-vc, mm-vc, z64-gc.
             \\-s, --server          Enable UDP input server on default port for gcviewer.
@@ -292,7 +342,6 @@ pub fn main() !void {
         }
 
         break :blk Options{
-            .config_set = if (res.args.config) |s| try allocator.dupe(u8, s) else null,
             .ess_mapping = ess_mapping,
             .port = port,
             .use_calibration = res.args.calibrate,
@@ -300,32 +349,11 @@ pub fn main() !void {
             .overscale = res.args.overscale,
         };
     };
-    defer if (options.config_set) |s| allocator.free(s);
 
     std.log.info("Initializing...", .{});
 
     var ctx = try usb.Context.init();
     defer ctx.deinit();
-
-    ConfigFile.migrateOldConfig(allocator) catch {};
-
-    var arena = std.heap.ArenaAllocator.init(allocator);
-    defer arena.deinit();
-    const json_allocator = arena.allocator();
-
-    var config_file = (try ConfigFile.load(json_allocator)) orelse blk: {
-        const c = try ConfigFile.init(json_allocator, .{});
-        c.save(json_allocator) catch |err| {
-            std.log.warn("Failed to save {s}: {}", .{ ConfigFile.path, err });
-        };
-        break :blk c;
-    };
-
-    const config_name = options.config_set orelse config_file.default_set;
-    const config = config_file.lookupConfigSet(config_name) orelse {
-        std.log.err("Missing config set \"{s}\"", .{config_name});
-        return;
-    };
 
     const sock = blk: {
         if (options.port) |p| {
@@ -353,16 +381,14 @@ pub fn main() !void {
         .allocator = allocator,
         .mutex = std.Thread.Mutex{},
         .usb_ctx = &ctx,
-        .stop = Atomic(bool).init(false),
         .sock = if (sock) |*s| s else null,
         .ess_mapping = options.ess_mapping,
-        .config_file = &config_file,
-        .config = config,
         .use_calibration = options.use_calibration,
         .emulator_rumble = options.emulator_rumble,
         .overscale = options.overscale,
     };
     defer {
+        if (thread_ctx.config_arena) |a| a.deinit();
         if (thread_ctx.adapter) |a| a.deinit();
         if (thread_ctx.bridge) |b| b.deinit();
     }
@@ -371,7 +397,6 @@ pub fn main() !void {
         try std.Thread.spawn(.{}, inputLoop, .{&thread_ctx}),
         try std.Thread.spawn(.{}, rumbleLoop, .{&thread_ctx}),
     };
-
     defer {
         thread_ctx.stop.store(true, .Release);
 

@@ -24,6 +24,8 @@ typedef struct CUIContext {
 
 int runImGui(CUIContext* c_context);
 void addLogMessage(const char* message);
+int isFeederReloadNeeded(void);
+void notifyFeederReload(void);
 
 #ifdef __cplusplus
 }

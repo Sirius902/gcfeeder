@@ -115,6 +115,11 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     const auto& schema = config_schema;
 
+    if (feeder_needs_reload) {
+        std::unique_lock lock(mutex);
+        feeder_reload_cond.wait(lock, [&]() { return feeder_needs_reload.load(); });
+    }
+
     ImGui::Text("Profile");
 
     ImGui::Separator();
@@ -123,13 +128,16 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     if (ImGui::Button("Reload Config")) {
         loadConfig();
+        feeder_needs_reload = true;
     }
 
     ImGui::SameLine();
 
+    bool config_modified = false;
+
     if (ImGui::Button("Update Schema URL")) {
         config["$schema"] = fmt::format("{}{}{}", context.usercontent_url, '/', context.schema_rel_path_str);
-        saveConfig();
+        config_modified = true;
     }
 
     ImGui::Separator();
@@ -137,10 +145,15 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     ImGui::Text("Settings");
 
     const auto& profile_properties =
-        schema.at("properties").at("config_sets").at("items").at("properties").at("config").at("properties");
+        schema.at("properties").at("profiles").at("items").at("properties").at("config").at("properties");
 
     for (const auto& [key, value] : profile_properties.items()) {
         ImGui::TextUnformatted(key.c_str());
+    }
+
+    if (config_modified) {
+        saveConfig();
+        feeder_needs_reload = true;
     }
 
     ImGui::End();
