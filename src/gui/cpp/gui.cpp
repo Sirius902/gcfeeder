@@ -223,11 +223,18 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
             }
         };
 
+        const auto warningText = [](const char* text) {
+            constexpr auto warn_color = ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
+            ImGui::PushStyleColor(ImGuiCol_Text, warn_color);
+            ImGui::TextUnformatted(text);
+            ImGui::PopStyleColor();
+        };
+
         if (value.contains("anyOf")) {
             const auto warning = fmt::format("Unimplemented json anyOf: {}\n", key);
             ImGui::TextUnformatted(key.c_str());
             addDescription();
-            ImGui::TextUnformatted(warning.c_str());
+            warningText(warning.c_str());
         } else if (auto it = value.find("type"); it != value.end()) {
             const auto type = it->get_ref<const std::string&>();
 
@@ -267,13 +274,13 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                 const auto warning = fmt::format("Unimplemented json type: {}\n", type);
                 ImGui::TextUnformatted(key.c_str());
                 addDescription();
-                ImGui::TextUnformatted(warning.c_str());
+                warningText(warning.c_str());
             }
         } else {
             const auto warning = fmt::format("Unknown json property with name: {}\n", key);
             ImGui::TextUnformatted(key.c_str());
             addDescription();
-            ImGui::TextUnformatted(warning.c_str());
+            warningText(warning.c_str());
         }
     }
 }
