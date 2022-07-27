@@ -57,98 +57,173 @@
                                 "additionalProperties": false
                             },
                             "calibration": {
-                                "description": "Calibration data",
-                                "anyOf": [
-                                    {
-                                        "type": "null"
+                                "description": "Calibration settings",
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {
+                                        "type": "boolean"
                                     },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "main_stick": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "notch_points": {
-                                                        "type": "array",
-                                                        "minItems": 8,
-                                                        "maxItems": 8,
-                                                        "items": {
-                                                            "type": "array",
-                                                            "minItems": 2,
-                                                            "maxItems": 2,
-                                                            "items": {
-                                                                "type": "integer",
-                                                                "minimum": 0,
-                                                                "maximum": 255
-                                                            }
-                                                        }
-                                                    },
-                                                    "stick_center": {
-                                                        "type": "array",
-                                                        "minItems": 2,
-                                                        "maxItems": 2,
-                                                        "items": {
-                                                            "type": "integer",
-                                                            "minimum": 0,
-                                                            "maximum": 255
-                                                        }
-                                                    }
-                                                },
-                                                "required": [
-                                                    "notch_points",
-                                                    "stick_center"
-                                                ],
-                                                "additionalProperties": false
+                                    "data": {
+                                        "description": "Calibration data",
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
                                             },
-                                            "c_stick": {
+                                            {
                                                 "type": "object",
                                                 "properties": {
-                                                    "notch_points": {
-                                                        "type": "array",
-                                                        "minItems": 8,
-                                                        "maxItems": 8,
-                                                        "items": {
-                                                            "type": "array",
-                                                            "minItems": 2,
-                                                            "maxItems": 2,
-                                                            "items": {
-                                                                "type": "integer",
-                                                                "minimum": 0,
-                                                                "maximum": 255
+                                                    "main_stick": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "notch_points": {
+                                                                "type": "array",
+                                                                "minItems": 8,
+                                                                "maxItems": 8,
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 2,
+                                                                    "maxItems": 2,
+                                                                    "items": {
+                                                                        "type": "integer",
+                                                                        "minimum": 0,
+                                                                        "maximum": 255
+                                                                    }
+                                                                }
+                                                            },
+                                                            "stick_center": {
+                                                                "type": "array",
+                                                                "minItems": 2,
+                                                                "maxItems": 2,
+                                                                "items": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0,
+                                                                    "maximum": 255
+                                                                }
                                                             }
-                                                        }
+                                                        },
+                                                        "required": [
+                                                            "notch_points",
+                                                            "stick_center"
+                                                        ],
+                                                        "additionalProperties": false
                                                     },
-                                                    "stick_center": {
-                                                        "type": "array",
-                                                        "minItems": 2,
-                                                        "maxItems": 2,
-                                                        "items": {
-                                                            "type": "integer",
-                                                            "minimum": 0,
-                                                            "maximum": 255
-                                                        }
+                                                    "c_stick": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "notch_points": {
+                                                                "type": "array",
+                                                                "minItems": 8,
+                                                                "maxItems": 8,
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 2,
+                                                                    "maxItems": 2,
+                                                                    "items": {
+                                                                        "type": "integer",
+                                                                        "minimum": 0,
+                                                                        "maximum": 255
+                                                                    }
+                                                                }
+                                                            },
+                                                            "stick_center": {
+                                                                "type": "array",
+                                                                "minItems": 2,
+                                                                "maxItems": 2,
+                                                                "items": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0,
+                                                                    "maximum": 255
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "notch_points",
+                                                            "stick_center"
+                                                        ],
+                                                        "additionalProperties": false
                                                     }
                                                 },
                                                 "required": [
-                                                    "notch_points",
-                                                    "stick_center"
+                                                    "main_stick",
+                                                    "c_stick"
                                                 ],
                                                 "additionalProperties": false
                                             }
-                                        },
-                                        "required": [
-                                            "main_stick",
-                                            "c_stick"
-                                        ],
-                                        "additionalProperties": false
+                                        ]
                                     }
+                                },
+                                "required": [
+                                    "enabled",
+                                    "data"
+                                ],
+                                "additionalProperties": false
+                            },
+                            "ess": {
+                                "description": "ESS adapter settings",
+                                "type": "object",
+                                "properties": {
+                                    "inversion_mapping": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "string",
+                                                "enum": [
+                                                    "oot-vc",
+                                                    "mm-vc",
+                                                    "z64-gc"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "inversion_mapping"
+                                ],
+                                "additionalProperties": false
+                            },
+                            "analog_scale": {
+                                "description": "Analog stick input multiplier",
+                                "type": "number",
+                                "minimum": 0.0
+                            },
+                            "rumble": {
+                                "description": "Rumble setting",
+                                "type": "string",
+                                "enum": [
+                                    "on",
+                                    "off",
+                                    "emulator"
                                 ]
+                            },
+                            "input_server": {
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {
+                                        "type": "boolean"
+                                    },
+                                    "port": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 65535
+                                    }
+                                },
+                                "required": [
+                                    "enabled",
+                                    "port"
+                                ],
+                                "additionalProperties": false
                             }
                         },
                         "required": [
                             "driver",
                             "vigem_config",
-                            "calibration"
+                            "calibration",
+                            "ess",
+                            "analog_scale",
+                            "rumble",
+                            "input_server"
                         ],
                         "additionalProperties": false
                     }

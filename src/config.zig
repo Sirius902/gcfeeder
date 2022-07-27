@@ -1,7 +1,10 @@
 const std = @import("std");
 const build_info = @import("build_info");
+const ess = @import("ess/ess.zig");
 const Calibration = @import("calibrate.zig").Calibration;
 const ViGEmConfig = @import("bridge/bridge.zig").ViGEmBridge.Config;
+
+const json_branch_quota = 2000;
 
 pub const Driver = enum {
     vigem,
@@ -21,7 +24,36 @@ pub const Driver = enum {
 pub const Config = struct {
     driver: Driver = .vigem,
     vigem_config: ViGEmConfig = .{ .pad = .ds4 },
-    calibration: ?Calibration = null,
+    calibration: struct {
+        enabled: bool = false,
+        data: ?Calibration = null,
+    } = .{},
+    ess: struct {
+        inversion_mapping: ?ess.Mapping = null,
+    } = .{},
+    analog_scale: f32 = 1.0,
+    rumble: RumbleSetting = .on,
+    input_server: struct {
+        enabled: bool = false,
+        port: u16 = 4096,
+    } = .{},
+
+    pub const RumbleSetting = enum {
+        on,
+        off,
+        emulator,
+
+        pub fn jsonStringify(
+            value: RumbleSetting,
+            options: std.json.StringifyOptions,
+            out_stream: anytype,
+        ) @TypeOf(out_stream).Error!void {
+            _ = options;
+            try out_stream.writeByte('"');
+            try out_stream.writeAll(std.meta.fieldNames(RumbleSetting)[@enumToInt(value)]);
+            try out_stream.writeByte('"');
+        }
+    };
 };
 
 pub const ConfigFile = struct {
@@ -86,6 +118,8 @@ fn parseFromFile(comptime T: type, allocator: std.mem.Allocator, path: []const u
     if (file_contents) |s| {
         defer allocator.free(s);
         var stream = std.json.TokenStream.init(s);
+
+        @setEvalBranchQuota(json_branch_quota);
         return try std.json.parse(T, &stream, .{ .allocator = allocator });
     } else {
         return null;
@@ -102,5 +136,6 @@ fn saveToFile(path: []const u8, allocator: std.mem.Allocator, config: anytype) !
     var file = try exe_dir.createFile(path, .{});
     defer file.close();
 
+    @setEvalBranchQuota(json_branch_quota);
     try std.json.stringify(config, .{ .whitespace = .{} }, file.writer());
 }

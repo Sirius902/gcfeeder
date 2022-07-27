@@ -44,6 +44,29 @@ pub const Mapping = enum {
 
         unreachable;
     }
+
+    pub fn jsonStringify(
+        value: Mapping,
+        options: std.json.StringifyOptions,
+        out_stream: anytype,
+    ) @TypeOf(out_stream).Error!void {
+        _ = options;
+        try out_stream.writeByte('"');
+
+        comptime var written = false;
+        inline for (comptime std.enums.values(Mapping)) |variant| {
+            if (value == variant) {
+                try out_stream.writeAll(comptime variant.fileName());
+                written = true;
+            }
+        }
+
+        if (!written) {
+            unreachable;
+        }
+
+        try out_stream.writeByte('"');
+    }
 };
 
 /// Mapping of normalized quadrant one GC coordinates using a LUT.
