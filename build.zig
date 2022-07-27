@@ -49,6 +49,7 @@ pub fn build(b: *Builder) void {
         "src/gui/cpp/gui_main.h",
         "src/gui/cpp/gui.h",
         "src/gui/cpp/app_log.h",
+        "src/gui/cpp/util.h",
     };
 
     const cxx_source = [_][]const u8{

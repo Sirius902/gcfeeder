@@ -5,11 +5,14 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <cstddef>
 #include <cstring>
 #include <exception>
 #include <filesystem>
 #include <fstream>
 #include <string>
+
+#include "util.h"
 
 namespace fs = std::filesystem;
 
@@ -118,14 +121,38 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
         loadConfig();
     }
 
+    constexpr auto header_color = ImVec4(0x61 / 255.0f, 0x8C / 255.0f, 0xCA / 255.0f, 1.0f);
+
     const auto& schema = config_schema;
     auto& config = this->config.value();
 
-    ImGui::Text("Profile");
+    ImGui::TextColored(header_color, "Profiles");
+    ImGui::Spacing();
+
+    auto& profiles = config.at("profiles");
+
+    const auto current_profile_name = config.at("current_profile").get_ref<const std::string&>();
+    ImGui::Text("Current");
+    ImGui::SameLine();
+    if (ImGui::BeginCombo("##combo", current_profile_name.c_str())) {
+        for (const auto& [_, profile] : profiles.items()) {
+            const auto name = profile.at("name").get_ref<const std::string&>();
+            bool selected = name == current_profile_name;
+
+            if (ImGui::Selectable(name.c_str(), selected)) {
+                fmt::print(stderr, "Selected \"{}\"!\n", name);
+            }
+
+            if (selected) ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
 
     ImGui::Separator();
 
-    ImGui::Text("Misc");
+    ImGui::TextColored(header_color, "Misc");
+    ImGui::Spacing();
 
     if (ImGui::Button("Reload Config")) {
         loadConfig();
@@ -143,21 +170,112 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
 
     ImGui::Separator();
 
-    ImGui::Text("Settings");
+    ImGui::TextColored(header_color, "Settings");
+    ImGui::Spacing();
 
     const auto& profile_properties =
         schema.at("properties").at("profiles").at("items").at("properties").at("config").at("properties");
 
-    for (const auto& [key, value] : profile_properties.items()) {
-        ImGui::TextUnformatted(key.c_str());
-    }
+    auto& current_profile = [&]() -> json& {
+        for (auto& [_, value] : config.at("profiles").items()) {
+            if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
+                return value.at("config");
+            }
+        }
+
+        // TODO: Don't crash if profile is not in list.
+        throw std::runtime_error(fmt::format("profile not found: \"{}\"", current_profile_name));
+    }();
+    drawConfigEditorObject(profile_properties, current_profile);
 
     if (config_modified) {
         saveConfig();
         feeder_needs_reload.store(true, std::memory_order_release);
     }
 
+    // TODO: Workaround for scroll bar being partially off screen. Properly fix.
+    ImGui::TextUnformatted("\n");
+
     ImGui::End();
+}
+
+void Gui::drawConfigEditorObject(const json& properties, json& data) {
+    for (const auto& [key, value] : properties.items()) {
+        const auto& description = [](const json& value) {
+            if (auto it = value.find("description"); it != value.end()) {
+                return it->get_ref<const std::string&>();
+            } else {
+                return std::string{};
+            }
+        }(value);
+
+        const auto addDescription = [&]() {
+            if (!description.empty()) {
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+                    ImGui::TextUnformatted(description.c_str());
+                    ImGui::PopTextWrapPos();
+                    ImGui::EndTooltip();
+                }
+            }
+        };
+
+        if (value.contains("anyOf")) {
+            const auto warning = fmt::format("Unimplemented json anyOf: {}\n", key);
+            ImGui::TextUnformatted(key.c_str());
+            addDescription();
+            ImGui::TextUnformatted(warning.c_str());
+        } else if (auto it = value.find("type"); it != value.end()) {
+            const auto type = it->get_ref<const std::string&>();
+
+            if (type == "object") {
+                if (ImGui::TreeNode(key.c_str())) {
+                    addDescription();
+                    drawConfigEditorObject(value.at("properties"), data.at(key));
+                    ImGui::TreePop();
+                } else {
+                    addDescription();
+                }
+            } else if (type == "boolean") {
+                if (ImGui::Checkbox(key.c_str(), data.at(key).get_ptr<bool*>())) {
+                    fmt::print(stderr, "Toggled checkbox :D\n");
+                }
+                addDescription();
+            } else if (type == "integer") {
+                auto& field = data.at(key).get_ref<std::int64_t&>();
+                const auto minimum = value.find("minimum");
+                const auto maximum = value.find("maximum");
+
+                // TODO: Complain if field is too large.
+                int v = util::lossy_cast<int>(field);
+                if (ImGui::InputInt(key.c_str(), &v)) {
+                    field = static_cast<std::int64_t>(v);
+                    if (minimum != value.end()) {
+                        field = std::max(field, minimum->get<std::int64_t>());
+                    }
+                    if (maximum != value.end()) {
+                        field = std::min(field, maximum->get<std::int64_t>());
+                    }
+
+                    fmt::print(stderr, "Inputted integer text! :D\n");
+                }
+                addDescription();
+            } else {
+                const auto warning = fmt::format("Unimplemented json type: {}\n", type);
+                ImGui::TextUnformatted(key.c_str());
+                addDescription();
+                ImGui::TextUnformatted(warning.c_str());
+            }
+        } else {
+            const auto warning = fmt::format("Unknown json property with name: {}\n", key);
+            ImGui::TextUnformatted(key.c_str());
+            addDescription();
+            ImGui::TextUnformatted(warning.c_str());
+        }
+    }
 }
 
 void Gui::drawCalibrationData(const char* title, bool& open) {

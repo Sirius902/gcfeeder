@@ -27,6 +27,7 @@ private:
     bool draw_demo_window = false;
 
     void drawConfigEditor(const char* title, bool& open);
+    void drawConfigEditorObject(const nlohmann::json& properties, nlohmann::json& data);
     void drawCalibrationData(const char* title, bool& open);
 
     void loadConfig();
