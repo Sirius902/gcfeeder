@@ -100,5 +100,5 @@ pub fn log(
 }
 
 fn glfwErrorCallback(err: c_int, description: ?[*:0]const u8) callconv(.C) void {
-    std.debug.print("Glfw Error {}: {s}\n", .{ err, description });
+    std.debug.print("Glfw Error {}: {?s}\n", .{ err, description });
 }
