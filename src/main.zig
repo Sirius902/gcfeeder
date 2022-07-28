@@ -124,8 +124,6 @@ inline fn shouldReloadBridge(context: *Context) bool {
 fn configLoop(context: *Context) void {
     var failed = false;
 
-    gui.waitForInit();
-
     while (!context.stop.load(.Acquire)) {
         if (failed) {
             time.sleep(fail_timeout);

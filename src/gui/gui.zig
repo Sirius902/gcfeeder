@@ -64,10 +64,6 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
     c.glfwTerminate();
 }
 
-pub inline fn waitForInit() void {
-    c.waitForGuiInit();
-}
-
 pub inline fn isReloadNeeded() bool {
     return c.isFeederReloadNeeded() != 0;
 }

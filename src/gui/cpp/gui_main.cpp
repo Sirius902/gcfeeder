@@ -34,16 +34,26 @@ static std::condition_variable gui_created_cond;
 
 extern "C" void addLogMessage(const char* message) { app_log.add(message); }
 
-extern "C" void waitForGuiInit() {
-    while (!gui.has_value()) {
+static void waitForGuiInit() {
+    static std::once_flag once;
+
+    std::call_once(once, []() {
         std::unique_lock lock(gui_created_mutex);
-        gui_created_cond.wait_for(lock, chrono::milliseconds(100));
-    }
+        while (!gui.has_value()) {
+            gui_created_cond.wait_for(lock, chrono::milliseconds(100));
+        }
+    });
 }
 
-extern "C" int isFeederReloadNeeded() { return gui->feeder_needs_reload.load(std::memory_order_acquire); }
+extern "C" int isFeederReloadNeeded() {
+    waitForGuiInit();
+    return gui->feeder_needs_reload.load(std::memory_order_acquire);
+}
 
-extern "C" void notifyFeederReload() { gui->feeder_needs_reload.store(false, std::memory_order_release); }
+extern "C" void notifyFeederReload() {
+    waitForGuiInit();
+    gui->feeder_needs_reload.store(false, std::memory_order_release);
+}
 
 extern "C" int runImGui(CUIContext* c_context) {
     if (gladLoadGL() == 0) {
@@ -60,6 +70,7 @@ extern "C" int runImGui(CUIContext* c_context) {
     {
         std::unique_lock lock(gui_created_mutex);
         gui.emplace(context, app_log, json::parse(context.schema_str));
+        lock.unlock();
         gui_created_cond.notify_all();
     }
 
