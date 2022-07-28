@@ -16,7 +16,7 @@ pub const Driver = enum {
     ) @TypeOf(out_stream).Error!void {
         _ = options;
         try out_stream.writeByte('"');
-        try out_stream.writeAll(std.meta.fieldNames(Driver)[@enumToInt(value)]);
+        try out_stream.writeAll(std.meta.tagName(value));
         try out_stream.writeByte('"');
     }
 };
@@ -50,7 +50,7 @@ pub const Config = struct {
         ) @TypeOf(out_stream).Error!void {
             _ = options;
             try out_stream.writeByte('"');
-            try out_stream.writeAll(std.meta.fieldNames(RumbleSetting)[@enumToInt(value)]);
+            try out_stream.writeAll(std.meta.tagName(value));
             try out_stream.writeByte('"');
         }
     };

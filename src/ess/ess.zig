@@ -5,34 +5,16 @@ const Input = @import("../adapter.zig").Input;
 const stick_range = @import("../adapter.zig").Calibration.stick_range;
 
 pub const Mapping = enum {
-    oot_vc,
-    mm_vc,
-    z64_gc,
+    @"oot-vc",
+    @"mm-vc",
+    @"z64-gc",
 
-    pub fn fileName(comptime self: Mapping) []const u8 {
-        comptime {
-            const tag_name = std.meta.tagName(self);
-            var name: [tag_name.len]u8 = undefined;
-
-            for (tag_name) |c, i| {
-                name[i] = switch (c) {
-                    '_' => '-',
-                    else => c,
-                };
-            }
-
-            return &name;
-        }
+    pub fn fileName(self: Mapping) []const u8 {
+        return std.meta.tagName(self);
     }
 
     pub fn fromFileName(file_name: []const u8) ?Mapping {
-        inline for (comptime std.enums.values(Mapping)) |variant| {
-            if (std.mem.eql(u8, file_name, variant.fileName())) {
-                return variant;
-            }
-        }
-
-        return null;
+        return std.meta.stringToEnum(Mapping, file_name);
     }
 
     pub fn normalizedMap(self: Mapping) NormalizedMap {
@@ -52,19 +34,7 @@ pub const Mapping = enum {
     ) @TypeOf(out_stream).Error!void {
         _ = options;
         try out_stream.writeByte('"');
-
-        comptime var written = false;
-        inline for (comptime std.enums.values(Mapping)) |variant| {
-            if (value == variant) {
-                try out_stream.writeAll(comptime variant.fileName());
-                written = true;
-            }
-        }
-
-        if (!written) {
-            unreachable;
-        }
-
+        try out_stream.writeAll(std.meta.tagName(value));
         try out_stream.writeByte('"');
     }
 };
