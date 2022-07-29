@@ -14,10 +14,12 @@
 
 class Gui {
 private:
+    using json = nlohmann::ordered_json;
+
     UIContext& context;
     AppLog& log;
-    std::optional<nlohmann::json> config;
-    nlohmann::json config_schema;
+    std::optional<json> config;
+    json config_schema;
 
     bool draw_config = true;
     bool draw_calibration_data = true;
@@ -27,7 +29,7 @@ private:
     bool draw_demo_window = false;
 
     void drawConfigEditor(const char* title, bool& open);
-    void drawConfigEditorObject(const nlohmann::json& properties, nlohmann::json& data);
+    void drawConfigEditorObject(const json& properties, json& data);
     void drawCalibrationData(const char* title, bool& open);
 
     void loadConfig();
@@ -36,11 +38,9 @@ private:
 public:
     std::atomic_bool feeder_needs_reload{true};
 
-    template <std::convertible_to<nlohmann::json> T>
+    template <std::convertible_to<json> T>
     Gui(UIContext& context, AppLog& log, T&& config_schema)
         : context(context), log(log), config_schema(std::forward<T>(config_schema)) {}
-
-    AppLog& getLog() { return log; }
 
     void drawAndUpdate();
 };

@@ -11,12 +11,11 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <string_view>
 
 #include "util.h"
 
 namespace fs = std::filesystem;
-
-using json = nlohmann::json;
 
 void Gui::drawAndUpdate() {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
@@ -230,11 +229,34 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
             ImGui::PopStyleColor();
         };
 
-        if (value.contains("anyOf")) {
-            const auto warning = fmt::format("Unimplemented json anyOf: {}\n", key);
-            ImGui::TextUnformatted(key.c_str());
-            addDescription();
-            warningText(warning.c_str());
+        if (auto it = value.find("anyOf"); it != value.end()) {
+            if (ImGui::TreeNode(key.c_str())) {
+                addDescription();
+
+                ImGui::TextUnformatted("Variant");
+                ImGui::SameLine();
+                // TODO: null is considered an object by nlohmann_json. Currently reports object instead of null.
+                if (ImGui::BeginCombo("##combo", data.type_name())) {
+                    for (const auto& [_, variant] : it->items()) {
+                        const auto type = variant.at("type").get_ref<const std::string&>();
+                        bool selected = type == data.type_name();
+
+                        if (ImGui::Selectable(type.c_str(), selected)) {
+                            fmt::print(stderr, "Selected \"{}\"!\n", type);
+                        }
+
+                        if (selected) ImGui::SetItemDefaultFocus();
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                // TODO: Render value from config based on variant.
+
+                ImGui::TreePop();
+            } else {
+                addDescription();
+            }
         } else if (auto it = value.find("type"); it != value.end()) {
             const auto type = it->get_ref<const std::string&>();
 
@@ -252,19 +274,19 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                 }
                 addDescription();
             } else if (type == "integer") {
-                auto& field = data.at(key).get_ref<std::int64_t&>();
+                auto& field = data.at(key).get_ref<json::number_integer_t&>();
                 const auto minimum = value.find("minimum");
                 const auto maximum = value.find("maximum");
 
                 // TODO: Complain if field is too large.
                 int v = util::lossy_cast<int>(field);
                 if (ImGui::InputInt(key.c_str(), &v)) {
-                    field = static_cast<std::int64_t>(v);
+                    field = static_cast<json::number_integer_t>(v);
                     if (minimum != value.end()) {
-                        field = std::max(field, minimum->get<std::int64_t>());
+                        field = std::max(field, minimum->get<json::number_integer_t>());
                     }
                     if (maximum != value.end()) {
-                        field = std::min(field, maximum->get<std::int64_t>());
+                        field = std::min(field, maximum->get<json::number_integer_t>());
                     }
 
                     fmt::print(stderr, "Inputted integer text! :D\n");
@@ -314,6 +336,9 @@ void Gui::loadConfig() {
     config_file >> config.value();
 }
 
+using FormatCallback = std::size_t (*)(const char* bytes_ptr, std::size_t bytes_len, void* userdata);
+extern "C" void formatConfigJson(const char* json_ptr, std::size_t json_len, FormatCallback callback, void* userdata);
+
 void Gui::saveConfig() {
     if (config.has_value()) {
         std::ofstream config_file(context.config_path.c_str());
@@ -322,7 +347,15 @@ void Gui::saveConfig() {
                                                  context.config_path.string().c_str(), std::strerror(errno)));
         }
 
-        config_file << config->dump(4);
+        const auto dump = config->dump();
+        formatConfigJson(
+            dump.c_str(), dump.size(),
+            [](const char* bytes_ptr, std::size_t bytes_len, void* userdata) {
+                std::ofstream& config_file = *static_cast<std::ofstream*>(userdata);
+                config_file << std::string_view{bytes_ptr, bytes_len};
+                return bytes_len;
+            },
+            static_cast<void*>(&config_file));
     } else {
         log.add("warn: saveConfig(): config was null");
     }

@@ -139,3 +139,48 @@ fn saveToFile(path: []const u8, allocator: std.mem.Allocator, config: anytype) !
     @setEvalBranchQuota(json_branch_quota);
     try std.json.stringify(config, .{ .whitespace = .{} }, file.writer());
 }
+
+const CallbackError = error{};
+const CallbackWriter = std.io.Writer(CallbackContext, CallbackError, CallbackContext.write);
+
+const CallbackContext = struct {
+    callback: Callback,
+    userdata: ?*anyopaque,
+
+    pub const Callback = fn (
+        bytes_ptr: [*c]const u8,
+        bytes_len: usize,
+        userdata: ?*anyopaque,
+    ) callconv(.C) usize;
+
+    pub fn write(self: CallbackContext, bytes: []const u8) CallbackError!usize {
+        return self.callback(bytes.ptr, bytes.len, self.userdata);
+    }
+};
+
+export fn formatConfigJson(
+    json_ptr: [*c]const u8,
+    json_len: usize,
+    callback: CallbackContext.Callback,
+    userdata: ?*anyopaque,
+) void {
+    @setEvalBranchQuota(json_branch_quota);
+    const unformatted = (json_ptr orelse return)[0..json_len];
+    const allocator = std.heap.c_allocator;
+    var writer = CallbackWriter{ .context = .{ .callback = callback, .userdata = userdata } };
+    var buffered = std.io.bufferedWriter(writer);
+    defer buffered.flush() catch |err| {
+        std.debug.panic("Failed to flush buffered callback writer: {}", .{err});
+    };
+
+    var stream = std.json.TokenStream.init(unformatted);
+    const options = std.json.ParseOptions{ .allocator = allocator };
+    const config = std.json.parse(ConfigFile, &stream, options) catch |err| {
+        std.debug.panic("Failed to parse json: {}", .{err});
+    };
+    defer std.json.parseFree(ConfigFile, config, options);
+
+    std.json.stringify(config, .{ .whitespace = .{} }, buffered.writer()) catch |err| {
+        std.debug.panic("Failed to stringify json: {}", .{err});
+    };
+}
