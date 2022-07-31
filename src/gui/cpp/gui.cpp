@@ -110,14 +110,22 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
         return;
     }
 
-    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing) ||
-        feeder_needs_reload.load(std::memory_order_acquire)) {
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
+    if (editor_profile_dirty) flags |= ImGuiWindowFlags_UnsavedDocument;
+
+    if (!ImGui::Begin(title, &open, flags) || feeder_needs_reload.load(std::memory_order_acquire)) {
         ImGui::End();
         return;
     }
 
     if (!config.has_value()) {
         loadConfig();
+    } else if (scheduled_reload) {
+        loadConfig();
+        feeder_needs_reload.store(true, std::memory_order_release);
+        editor_profile.reset();
+        editor_profile_dirty = false;
+        scheduled_reload = false;
     }
 
     constexpr auto header_color = ImVec4(0x61 / 255.0f, 0x8C / 255.0f, 0xCA / 255.0f, 1.0f);
@@ -125,21 +133,26 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     const auto& schema = config_schema;
     auto& config = this->config.value();
 
+    bool config_modified = false;
+
     ImGui::TextColored(header_color, "Profiles");
     ImGui::Spacing();
 
     auto& profiles = config.at("profiles");
 
-    const auto current_profile_name = config.at("current_profile").get_ref<const std::string&>();
+    auto& current_profile_name = config.at("current_profile").get_ref<std::string&>();
     ImGui::Text("Current");
     ImGui::SameLine();
     if (ImGui::BeginCombo("##combo", current_profile_name.c_str())) {
         for (const auto& [_, profile] : profiles.items()) {
-            const auto name = profile.at("name").get_ref<const std::string&>();
+            const auto& name = profile.at("name").get_ref<const std::string&>();
             bool selected = name == current_profile_name;
 
             if (ImGui::Selectable(name.c_str(), selected)) {
-                fmt::print(stderr, "Selected \"{}\"!\n", name);
+                current_profile_name = name;
+                config_modified = true;
+                editor_profile.reset();
+                editor_profile_dirty = false;
             }
 
             if (selected) ImGui::SetItemDefaultFocus();
@@ -154,13 +167,10 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     ImGui::Spacing();
 
     if (ImGui::Button("Reload Config")) {
-        loadConfig();
-        feeder_needs_reload.store(true, std::memory_order_release);
+        scheduled_reload = true;
     }
 
     ImGui::SameLine();
-
-    bool config_modified = false;
 
     if (ImGui::Button("Update Schema URL")) {
         config["$schema"] = fmt::format("{}{}{}", context.usercontent_url, '/', context.schema_rel_path_str);
@@ -172,20 +182,55 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     ImGui::TextColored(header_color, "Settings");
     ImGui::Spacing();
 
+    bool save_profile = ImGui::Button("Save Changes");
+    ImGui::SameLine();
+    if (ImGui::Button("Discard Changes")) {
+        editor_profile.reset();
+        editor_profile_dirty = false;
+    }
+    ImGui::Spacing();
+
     const auto& profile_properties =
         schema.at("properties").at("profiles").at("items").at("properties").at("config").at("properties");
 
     auto& current_profile = [&]() -> json& {
-        for (auto& [_, value] : config.at("profiles").items()) {
-            if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
-                return value.at("config");
+        if (!editor_profile.has_value()) {
+            for (auto& [_, value] : config.at("profiles").items()) {
+                if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
+                    editor_profile = value.at("config");
+                    break;
+                }
+            }
+
+            if (!editor_profile.has_value()) {
+                // TODO: Don't crash if profile is not in list.
+                throw std::runtime_error(fmt::format("profile not found: \"{}\"", current_profile_name));
             }
         }
 
-        // TODO: Don't crash if profile is not in list.
-        throw std::runtime_error(fmt::format("profile not found: \"{}\"", current_profile_name));
+        return editor_profile.value();
     }();
+
+    ImGui::PushItemWidth(0.55f * ImGui::GetWindowWidth());
     drawConfigEditorObject(profile_properties, current_profile);
+    ImGui::PopItemWidth();
+
+    if (save_profile) {
+        // TODO: Extract to member function
+        bool found = false;
+        for (auto& [_, value] : config.at("profiles").items()) {
+            if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
+                value.at("config") = current_profile;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw std::runtime_error(fmt::format("profile not found: \"{}\"", current_profile_name));
+        }
+        editor_profile_dirty = false;
+        config_modified = true;
+    }
 
     if (config_modified) {
         saveConfig();
@@ -230,6 +275,7 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
         };
 
         if (auto it = value.find("anyOf"); it != value.end()) {
+            ImGui::SetNextItemOpen(true);
             if (ImGui::TreeNode(key.c_str())) {
                 addDescription();
 
@@ -242,7 +288,7 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                         bool selected = type == data.type_name();
 
                         if (ImGui::Selectable(type.c_str(), selected)) {
-                            fmt::print(stderr, "Selected \"{}\"!\n", type);
+                            editor_profile_dirty = true;
                         }
 
                         if (selected) ImGui::SetItemDefaultFocus();
@@ -258,9 +304,10 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                 addDescription();
             }
         } else if (auto it = value.find("type"); it != value.end()) {
-            const auto type = it->get_ref<const std::string&>();
+            const auto& type = it->get_ref<const std::string&>();
 
             if (type == "object") {
+                ImGui::SetNextItemOpen(true);
                 if (ImGui::TreeNode(key.c_str())) {
                     addDescription();
                     drawConfigEditorObject(value.at("properties"), data.at(key));
@@ -270,7 +317,7 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                 }
             } else if (type == "boolean") {
                 if (ImGui::Checkbox(key.c_str(), data.at(key).get_ptr<bool*>())) {
-                    fmt::print(stderr, "Toggled checkbox :D\n");
+                    editor_profile_dirty = true;
                 }
                 addDescription();
             } else if (type == "integer") {
@@ -289,7 +336,48 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
                         field = std::min(field, maximum->get<json::number_integer_t>());
                     }
 
-                    fmt::print(stderr, "Inputted integer text! :D\n");
+                    editor_profile_dirty = true;
+                }
+                addDescription();
+            } else if (type == "number") {
+                auto& field = data.at(key).get_ref<json::number_float_t&>();
+                const auto minimum = value.find("minimum");
+                const auto maximum = value.find("maximum");
+
+                double v = util::lossy_cast<double>(field);
+                if (ImGui::InputDouble(key.c_str(), &v, 0.1, 0.0, "%.2f")) {
+                    field = static_cast<json::number_float_t>(v);
+                    if (minimum != value.end()) {
+                        field = std::max(field, minimum->get<json::number_float_t>());
+                    }
+                    if (maximum != value.end()) {
+                        field = std::min(field, maximum->get<json::number_float_t>());
+                    }
+                    editor_profile_dirty = true;
+                }
+                addDescription();
+            } else if (type == "string") {
+                const auto variants = value.find("enum");
+                if (variants == value.end()) {
+                    warningText(fmt::format("{}: non-enum strings unsupported", key).c_str());
+                    continue;
+                }
+
+                auto& current_variant = data.at(key).get_ref<std::string&>();
+                if (ImGui::BeginCombo(key.c_str(), current_variant.c_str())) {
+                    for (const auto& [_, variant_obj] : variants->items()) {
+                        const auto& variant = variant_obj.get_ref<const std::string&>();
+                        bool selected = variant == current_variant;
+
+                        if (ImGui::Selectable(variant.c_str(), selected)) {
+                            current_variant = variant;
+                            editor_profile_dirty = true;
+                        }
+
+                        if (selected) ImGui::SetItemDefaultFocus();
+                    }
+
+                    ImGui::EndCombo();
                 }
                 addDescription();
             } else {

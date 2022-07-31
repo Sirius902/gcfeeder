@@ -18,8 +18,11 @@ private:
 
     UIContext& context;
     AppLog& log;
-    std::optional<json> config;
     json config_schema;
+    std::optional<json> config;
+    std::optional<json> editor_profile;
+    bool editor_profile_dirty = false;
+    bool scheduled_reload = false;
 
     bool draw_config = true;
     bool draw_calibration_data = true;
