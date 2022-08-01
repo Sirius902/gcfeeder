@@ -5,11 +5,14 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstring>
 #include <exception>
 #include <filesystem>
 #include <fstream>
+#include <numbers>
 #include <string>
 #include <string_view>
 
@@ -141,7 +144,7 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     auto& profiles = config.at("profiles");
 
     auto& current_profile_name = config.at("current_profile").get_ref<std::string&>();
-    ImGui::Text("Current");
+    ImGui::TextUnformatted("Current");
     ImGui::SameLine();
     if (ImGui::BeginCombo("##combo", current_profile_name.c_str())) {
         for (const auto& [_, profile] : profiles.items()) {
@@ -243,6 +246,32 @@ void Gui::drawConfigEditor(const char* title, bool& open) {
     ImGui::End();
 }
 
+[[nodiscard]] static auto defaultNotchPoints() {
+    constexpr auto pi = std::numbers::pi;
+
+    std::array<std::array<std::uint8_t, 2>, 8> points;
+    for (std::size_t i = 0; i < points.size(); i++) {
+        double angle = pi / 2 - (i * pi / 4);
+        std::uint8_t x = util::lossy_cast<std::uint8_t>(127.0f * std::cos(angle) + 128.0f);
+        std::uint8_t y = util::lossy_cast<std::uint8_t>(127.0f * std::sin(angle) + 128.0f);
+        points[i] = {x, y};
+    }
+    return points;
+}
+
+[[nodiscard]] static Gui::json defaultCalibration() {
+    static constexpr auto defaultStickCenter = std::to_array<std::uint8_t>({128, 128});
+
+    Gui::json obj;
+    auto& main_stick = obj["main_stick"];
+    main_stick["notch_points"] = defaultNotchPoints();
+    main_stick["stick_center"] = defaultStickCenter;
+    obj["c_stick"] = main_stick;
+    return obj;
+}
+
+static constexpr std::string_view defaultInversionMapping = "oot-vc";
+
 void Gui::drawConfigEditorObject(const json& properties, json& data) {
     for (const auto& [key, value] : properties.items()) {
         const auto& description = [](const json& value) {
@@ -275,33 +304,50 @@ void Gui::drawConfigEditorObject(const json& properties, json& data) {
         };
 
         if (auto it = value.find("anyOf"); it != value.end()) {
-            ImGui::SetNextItemOpen(true);
-            if (ImGui::TreeNode(key.c_str())) {
-                addDescription();
-
-                ImGui::TextUnformatted("Variant");
-                ImGui::SameLine();
-                // TODO: null is considered an object by nlohmann_json. Currently reports object instead of null.
-                if (ImGui::BeginCombo("##combo", data.type_name())) {
-                    for (const auto& [_, variant] : it->items()) {
-                        const auto type = variant.at("type").get_ref<const std::string&>();
-                        bool selected = type == data.type_name();
-
-                        if (ImGui::Selectable(type.c_str(), selected)) {
-                            editor_profile_dirty = true;
+            bool is_nullable = [&it]() {
+                for (const auto& [key, value] : it->items()) {
+                    if (auto type = value.find("type"); type != value.end()) {
+                        if (type->get_ref<const std::string&>() == "null") {
+                            return it->size() == 2;
                         }
-
-                        if (selected) ImGui::SetItemDefaultFocus();
                     }
-
-                    ImGui::EndCombo();
                 }
+                return false;
+            }();
 
-                // TODO: Render value from config based on variant.
+            auto non_null_variant = std::find_if(it->begin(), it->end(), [](const auto& e) -> bool {
+                auto type = e.find("type");
+                return type != e.end() && type->template get_ref<const std::string&>() != "null";
+            });
 
-                ImGui::TreePop();
-            } else {
+            if (is_nullable && non_null_variant != it->end()) {
+                auto& nullable = data.at(key.c_str());
+                bool checked = nullable.is_null();
+                if (ImGui::Checkbox(key.c_str(), &checked)) {
+                    // TODO: Safer check, ensure object hierarchy is correct
+                    if (nullable.is_null()) {
+                        if (key == "data") {
+                            nullable = defaultCalibration();
+                        } else if (key == "inversion_mapping") {
+                            nullable = defaultInversionMapping;
+                        } else {
+                            fmt::print(stderr, "Type for key has no default: {}\n", key);
+                        }
+                    } else {
+                        nullable = nullptr;
+                    }
+                    editor_profile_dirty = true;
+                }
                 addDescription();
+                if (checked) {
+                    // Create appropriate UI for non-null variant
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.25f, 1.0f, 1.0f));
+                    ImGui::TextUnformatted(non_null_variant->at("type").get_ref<const std::string&>().c_str());
+                    ImGui::PopStyleColor();
+                }
+            } else {
+                ImGui::TextUnformatted(key.c_str());
+                warningText(fmt::format("anyOf without null / two variants not supported").c_str());
             }
         } else if (auto it = value.find("type"); it != value.end()) {
             const auto& type = it->get_ref<const std::string&>();

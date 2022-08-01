@@ -13,9 +13,18 @@
 #include "gui_main.h"
 
 class Gui {
-private:
+public:
     using json = nlohmann::ordered_json;
 
+    std::atomic_bool feeder_needs_reload{true};
+
+    template <std::convertible_to<json> T>
+    Gui(UIContext& context, AppLog& log, T&& config_schema)
+        : context(context), log(log), config_schema(std::forward<T>(config_schema)) {}
+
+    void drawAndUpdate();
+
+private:
     UIContext& context;
     AppLog& log;
     json config_schema;
@@ -37,13 +46,4 @@ private:
 
     void loadConfig();
     void saveConfig();
-
-public:
-    std::atomic_bool feeder_needs_reload{true};
-
-    template <std::convertible_to<json> T>
-    Gui(UIContext& context, AppLog& log, T&& config_schema)
-        : context(context), log(log), config_schema(std::forward<T>(config_schema)) {}
-
-    void drawAndUpdate();
 };
