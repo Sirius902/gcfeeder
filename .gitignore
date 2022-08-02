@@ -1,22 +1,22 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/zig,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=zig,visualstudiocode
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
+.vscode/
 
 # Local History for Visual Studio Code
 .history/
+
+# Built Visual Studio Code Extensions
+*.vsix
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
 .ionide
+
+# Ignore code-workspaces
+*.code-workspace
 
 ### zig ###
 # Zig programming language
