@@ -48,14 +48,20 @@ pub fn build(b: *Builder) void {
     const cxx_header = [_][]const u8{
         "src/gui/cpp/gui_main.h",
         "src/gui/cpp/gui.h",
+        "src/gui/cpp/gui_state.h",
         "src/gui/cpp/app_log.h",
+        "src/gui/cpp/config_editor.h",
+        "src/gui/cpp/config.h",
         "src/gui/cpp/util.h",
     };
 
     const cxx_source = [_][]const u8{
         "src/gui/cpp/gui_main.cpp",
         "src/gui/cpp/gui.cpp",
+        "src/gui/cpp/gui_state.cpp",
         "src/gui/cpp/app_log.cpp",
+        "src/gui/cpp/config_editor.cpp",
+        "src/gui/cpp/config.cpp",
     };
 
     const cxx_all = cxx_header ++ cxx_source;

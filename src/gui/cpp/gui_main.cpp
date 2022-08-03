@@ -7,7 +7,6 @@
 #include <condition_variable>
 #include <filesystem>
 #include <mutex>
-#include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -23,8 +22,6 @@
 
 namespace chrono = std::chrono;
 namespace fs = std::filesystem;
-
-using json = nlohmann::ordered_json;
 
 static AppLog app_log;
 
@@ -47,12 +44,12 @@ static void waitForGuiInit() {
 
 extern "C" int isFeederReloadNeeded() {
     waitForGuiInit();
-    return gui->feeder_needs_reload.load(std::memory_order_acquire);
+    return gui->isFeederReloadNeeded();
 }
 
 extern "C" void notifyFeederReload() {
     waitForGuiInit();
-    gui->feeder_needs_reload.store(false, std::memory_order_release);
+    gui->notifyFeederReload();
 }
 
 extern "C" int runImGui(CUIContext* c_context) {
@@ -69,7 +66,7 @@ extern "C" int runImGui(CUIContext* c_context) {
 
     {
         std::unique_lock lock(gui_created_mutex);
-        gui.emplace(context, app_log, json::parse(context.schema_str));
+        gui.emplace(context, app_log);
         lock.unlock();
         gui_created_cond.notify_all();
     }

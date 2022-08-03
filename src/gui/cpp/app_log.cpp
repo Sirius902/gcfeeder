@@ -26,7 +26,7 @@ void AppLog::add(const char* message) {
     }
 }
 
-void AppLog::draw(const char* title, bool& open) {
+void AppLog::drawAndUpdate(const char* title, bool& open) {
     if (!open) {
         return;
     }

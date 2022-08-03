@@ -18,5 +18,5 @@ public:
 
     void clear();
     void add(const char* message);
-    void draw(const char* title, bool& open);
+    void drawAndUpdate(const char* title, bool& open);
 };
