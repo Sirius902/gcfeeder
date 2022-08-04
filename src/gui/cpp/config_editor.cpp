@@ -104,10 +104,10 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     }
     ImGui::Spacing();
 
-    const auto& profile_properties =
-        state.config.schema.at("properties").at("profiles").at("items").at("properties").at("config").at("properties");
+    const auto& profile_schema =
+        state.config.schema.at("properties").at("profiles").at("items").at("properties").at("config");
 
-    auto& current_profile = [&]() -> json& {
+    auto& profile_data = [&]() -> json& {
         if (!profile.has_value()) {
             for (auto& [_, value] : config.at("profiles").items()) {
                 if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
@@ -125,14 +125,14 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         return profile.value();
     }();
 
-    drawObject(profile_properties, current_profile);
+    drawJsonObject(profile_schema, profile_data, std::nullopt);
 
     if (save_profile) {
         // TODO: Extract to member function
         bool found = false;
         for (auto& [_, value] : config.at("profiles").items()) {
             if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
-                value.at("config") = current_profile;
+                value.at("config") = profile_data;
                 found = true;
                 break;
             }
@@ -181,195 +181,203 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
 
 static constexpr std::string_view defaultInversionMapping = "oot-vc";
 
-void ConfigEditor::drawObject(const json& properties, json& data) {
-    for (const auto& [key, value] : properties.items()) {
-        const auto getDescription = [](const json& value) {
-            if (auto it = value.find("description"); it != value.end()) {
-                return it->get_ref<const std::string&>();
-            } else {
-                return std::string{};
-            }
-        };
+static void drawWarningText(const char* text) {
+    constexpr auto warn_color = ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Text, warn_color);
+    ImGui::TextUnformatted(text);
+    ImGui::PopStyleColor();
+}
 
-        static const auto addDescription = [&](const json& value) {
-            if (!getDescription(value).empty()) {
-                ImGui::SameLine();
-                ImGui::TextDisabled("(?)");
-                if (ImGui::IsItemHovered()) {
-                    ImGui::BeginTooltip();
-                    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-                    ImGui::TextUnformatted(getDescription(value).c_str());
-                    ImGui::PopTextWrapPos();
-                    ImGui::EndTooltip();
-                }
-            }
-        };
+static std::string getDescription(const json& value) {
+    if (auto it = value.find("description"); it != value.end()) {
+        return it->get_ref<const std::string&>();
+    } else {
+        return std::string{};
+    }
+}
 
-        static const auto warningText = [](const char* text) {
-            constexpr auto warn_color = ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_Text, warn_color);
-            ImGui::TextUnformatted(text);
-            ImGui::PopStyleColor();
-        };
-
-        static const auto drawTypedObject = [this](const json& schema_obj, const std::string& key, const json& value,
-                                                   json& data) {
-            const auto& type = schema_obj.get_ref<const std::string&>();
-
-            if (type == "object") {
-                ImGui::SetNextItemOpen(true);
-                if (ImGui::TreeNode(key.c_str())) {
-                    addDescription(value);
-                    drawObject(value.at("properties"), data.at(key));
-                    ImGui::TreePop();
-                } else {
-                    addDescription(value);
-                }
-            } else if (type == "boolean") {
-                if (ImGui::Checkbox(key.c_str(), data.at(key).get_ptr<bool*>())) {
-                    profile_dirty = true;
-                }
-                addDescription(value);
-            } else if (type == "integer") {
-                auto& field = data.at(key).get_ref<json::number_integer_t&>();
-                const auto minimum = value.find("minimum");
-                const auto maximum = value.find("maximum");
-
-                // TODO: Complain if field is too large.
-                int v = util::lossy_cast<int>(field);
-                if (ImGui::InputInt(key.c_str(), &v)) {
-                    field = static_cast<json::number_integer_t>(v);
-                    if (minimum != value.end()) {
-                        field = std::max(field, minimum->get<json::number_integer_t>());
-                    }
-                    if (maximum != value.end()) {
-                        field = std::min(field, maximum->get<json::number_integer_t>());
-                    }
-
-                    profile_dirty = true;
-                }
-                addDescription(value);
-            } else if (type == "number") {
-                auto& field = data.at(key).get_ref<json::number_float_t&>();
-                const auto minimum = value.find("minimum");
-                const auto maximum = value.find("maximum");
-
-                double v = util::lossy_cast<double>(field);
-                if (ImGui::InputDouble(key.c_str(), &v, 0.1, 0.0, "%.2f")) {
-                    field = static_cast<json::number_float_t>(v);
-                    if (minimum != value.end()) {
-                        field = std::max(field, minimum->get<json::number_float_t>());
-                    }
-                    if (maximum != value.end()) {
-                        field = std::min(field, maximum->get<json::number_float_t>());
-                    }
-                    profile_dirty = true;
-                }
-                addDescription(value);
-            } else if (type == "string") {
-                const auto variants = value.find("enum");
-                if (variants == value.end()) {
-                    warningText(fmt::format("{}: non-enum strings unsupported", key).c_str());
-                    return;
-                }
-
-                auto& current_variant = data.at(key).get_ref<std::string&>();
-                if (ImGui::BeginCombo(key.c_str(), current_variant.c_str())) {
-                    for (const auto& [_, variant_obj] : variants->items()) {
-                        const auto& variant = variant_obj.get_ref<const std::string&>();
-                        bool selected = variant == current_variant;
-
-                        if (ImGui::Selectable(variant.c_str(), selected)) {
-                            current_variant = variant;
-                            profile_dirty = true;
-                        }
-
-                        if (selected) ImGui::SetItemDefaultFocus();
-                    }
-
-                    ImGui::EndCombo();
-                }
-                addDescription(value);
-            } else if (type == "array") {
-                const auto& value_type = value.at("items").at("type").get_ref<const std::string&>();
-                const auto min_items_it = value.find("minItems");
-
-                if (min_items_it != value.end() && value_type == "integer") {
-                    auto& arr = data.at(key).get_ref<json::array_t&>();
-                    const auto min_items = min_items_it->get<json::number_unsigned_t>();
-                    for (json::number_unsigned_t i = 0; i < min_items; i++) {
-                        if (i > 0) ImGui::SameLine();
-
-                        auto& elem = arr.at(i).get_ref<json::number_integer_t&>();
-                        int v = util::lossy_cast<int>(elem);
-                        if (ImGui::InputInt(fmt::format("##array[{}]", i).c_str(), &v, 0)) {
-                            elem = util::lossy_cast<json::number_integer_t>(v);
-                            profile_dirty = true;
-                        }
-                    }
-                } else {
-                    warningText(fmt::format("non-integer arrays without minItems unsupported: {}", key).c_str());
-                }
-            } else {
-                const auto warning = fmt::format("Unimplemented json type: {}\n", type);
-                ImGui::TextUnformatted(key.c_str());
-                addDescription(value);
-                warningText(warning.c_str());
-            }
-        };
-
-        if (auto it = value.find("anyOf"); it != value.end()) {
-            bool is_nullable = [&it]() {
-                for (const auto& [key, value] : it->items()) {
-                    if (auto type = value.find("type"); type != value.end()) {
-                        if (type->get_ref<const std::string&>() == "null") {
-                            return it->size() == 2;
-                        }
-                    }
-                }
-                return false;
-            }();
-
-            auto non_null_variant = std::find_if(it->begin(), it->end(), [](const auto& e) -> bool {
-                auto type = e.find("type");
-                return type != e.end() && type->template get_ref<const std::string&>() != "null";
-            });
-
-            if (is_nullable && non_null_variant != it->end()) {
-                auto& nullable = data.at(key.c_str());
-                bool checked = !nullable.is_null();
-                if (ImGui::Checkbox("##check", &checked)) {
-                    // TODO: Safer check, ensure object hierarchy is correct
-                    if (nullable.is_null()) {
-                        if (key == "data") {
-                            nullable = defaultCalibration();
-                        } else if (key == "inversion_mapping") {
-                            nullable = defaultInversionMapping;
-                        } else {
-                            fmt::print(stderr, "Type for key has no default: {}\n", key);
-                        }
-                    } else {
-                        nullable = nullptr;
-                    }
-                    profile_dirty = true;
-                }
-                ImGui::SameLine();
-                ImGui::TextUnformatted(key.c_str());
-                addDescription(value);
-                if (checked) {
-                    drawTypedObject(non_null_variant->at("type"), key, *non_null_variant, data);
-                }
-            } else {
-                ImGui::TextUnformatted(key.c_str());
-                warningText(fmt::format("anyOf without null / two variants not supported").c_str());
-            }
-        } else if (auto it = value.find("type"); it != value.end()) {
-            drawTypedObject(*it, key, value, data);
-        } else {
-            const auto warning = fmt::format("Unknown json property with name: {}\n", key);
-            ImGui::TextUnformatted(key.c_str());
-            addDescription(value);
-            warningText(warning.c_str());
+static void drawDescription(const json& value) {
+    if (!getDescription(value).empty()) {
+        ImGui::SameLine();
+        ImGui::TextDisabled("(?)");
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+            ImGui::TextUnformatted(getDescription(value).c_str());
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
         }
+    }
+}
+
+void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
+                                  std::optional<std::reference_wrapper<const std::string>> name, bool is_top_level) {
+    if (auto it = schema_obj.find("type"); it != schema_obj.end()) {
+        const auto& type = it->get_ref<const std::string&>();
+        if (type == "object") {
+            bool draw_properties = true;
+            if (name.has_value()) {
+                if (is_top_level) {
+                    if (!ImGui::CollapsingHeader(name->get().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+                        draw_properties = false;
+                    }
+                } else {
+                    if (!ImGui::TreeNodeEx(name->get().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+                        draw_properties = false;
+                    }
+                }
+            }
+
+            if (draw_properties) {
+                const auto& properties = schema_obj.at("properties");
+                for (const auto& [child_name, child_schema_obj] : properties.items()) {
+                    drawJsonObject(child_schema_obj, data_obj.at(child_name), child_name, !name.has_value());
+                }
+            }
+
+            if (name.has_value() && !is_top_level && draw_properties) ImGui::TreePop();
+        } else if (type == "boolean") {
+            if (ImGui::Checkbox(name->get().c_str(), data_obj.get_ptr<bool*>())) {
+                profile_dirty = true;
+            }
+            drawDescription(schema_obj);
+        } else if (type == "integer") {
+            auto& field = data_obj.get_ref<json::number_integer_t&>();
+            const auto minimum = schema_obj.find("minimum");
+            const auto maximum = schema_obj.find("maximum");
+
+            // TODO: Derive reasonable width
+            ImGui::SetNextItemWidth(ImGui::CalcTextSize("000000").x);
+
+            // TODO: Complain if field is too large.
+            int v = util::lossy_cast<int>(field);
+            if (ImGui::InputInt(name->get().c_str(), &v, 0)) {
+                field = static_cast<json::number_integer_t>(v);
+                if (minimum != schema_obj.end()) {
+                    field = std::max(field, minimum->get<json::number_integer_t>());
+                }
+                if (maximum != schema_obj.end()) {
+                    field = std::min(field, maximum->get<json::number_integer_t>());
+                }
+
+                profile_dirty = true;
+            }
+            drawDescription(schema_obj);
+        } else if (type == "number") {
+            auto& field = data_obj.get_ref<json::number_float_t&>();
+            const auto minimum = schema_obj.find("minimum");
+            const auto maximum = schema_obj.find("maximum");
+
+            double v = util::lossy_cast<double>(field);
+            if (ImGui::InputDouble(name->get().c_str(), &v, 0.1, 0.0, "%.2f")) {
+                field = static_cast<json::number_float_t>(v);
+                if (minimum != schema_obj.end()) {
+                    field = std::max(field, minimum->get<json::number_float_t>());
+                }
+                if (maximum != schema_obj.end()) {
+                    field = std::min(field, maximum->get<json::number_float_t>());
+                }
+                profile_dirty = true;
+            }
+            drawDescription(schema_obj);
+        } else if (type == "string") {
+            const auto variants = schema_obj.find("enum");
+            if (variants == schema_obj.end()) {
+                drawWarningText(fmt::format("{}: non-enum strings unsupported", name->get()).c_str());
+                return;
+            }
+
+            auto& current_variant = data_obj.get_ref<std::string&>();
+            if (ImGui::BeginCombo(name->get().c_str(), current_variant.c_str())) {
+                for (const auto& [_, variant_obj] : variants->items()) {
+                    const auto& variant = variant_obj.get_ref<const std::string&>();
+                    bool selected = variant == current_variant;
+
+                    if (ImGui::Selectable(variant.c_str(), selected)) {
+                        current_variant = variant;
+                        profile_dirty = true;
+                    }
+
+                    if (selected) ImGui::SetItemDefaultFocus();
+                }
+
+                ImGui::EndCombo();
+            }
+            drawDescription(schema_obj);
+        } else if (type == "array") {
+            const auto& value_type = schema_obj.at("items");
+            auto& data_array = data_obj.get_ref<json::array_t&>();
+
+            bool is_root = !name->get().starts_with("##");
+            if (is_root) {
+                // TODO: Don't hardcode height
+                ImGui::BeginChild(fmt::format("scrolling\"{}\"", name->get()).c_str(), ImVec2(0.0f, 50.0f), false,
+                                  ImGuiWindowFlags_HorizontalScrollbar);
+                ImGui::TextUnformatted(name->get().c_str());
+                ImGui::SameLine();
+            }
+
+            ImGui::TextUnformatted("[");
+            ImGui::SameLine();
+
+            for (std::size_t i = 0; i < data_array.size(); i++) {
+                const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
+                if (i > 0) {
+                    ImGui::SameLine();
+                    ImGui::TextUnformatted(",");
+                    ImGui::SameLine();
+                }
+
+                drawJsonObject(value_type, data_array.at(i), child_name, false);
+            }
+
+            ImGui::SameLine();
+            ImGui::TextUnformatted("]");
+
+            if (is_root) ImGui::EndChild();
+        } else {
+            drawWarningText(fmt::format("Unsupported type: {}", type).c_str());
+        }
+    } else if (auto it = schema_obj.find("anyOf"); it != schema_obj.end()) {
+        if (!name.has_value()) {
+            drawWarningText("Unnamed anyOf");
+            return;
+        } else if (!ImGui::TreeNodeEx(name->get().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+            return;
+        }
+
+        drawDescription(schema_obj);
+
+        auto non_null_variant = std::find_if(it->begin(), it->end(), [](const json& e) {
+            auto type = e.find("type");
+            return type != e.end() && type->get_ref<const std::string&>() != "null";
+        });
+
+        bool present = !data_obj.is_null();
+        if (ImGui::Checkbox("Present", &present)) {
+            // TODO: Safer check, ensure object hierarchy is correct
+            if (data_obj.is_null()) {
+                if (name->get() == "data") {
+                    data_obj = defaultCalibration();
+                } else if (name->get() == "inversion_mapping") {
+                    data_obj = defaultInversionMapping;
+                } else {
+                    throw std::runtime_error{fmt::format("Type for key has no default: {}\n", name->get())};
+                }
+            } else {
+                data_obj = nullptr;
+            }
+            profile_dirty = true;
+        }
+
+        if (present) {
+            ImGui::Separator();
+            static const std::string value_str = "Value";
+            drawJsonObject(*non_null_variant, data_obj, value_str, false);
+        }
+
+        ImGui::TreePop();
+    } else {
+        drawWarningText("Object without \"type\" or \"anyOf\" unsupported");
     }
 }
