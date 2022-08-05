@@ -243,8 +243,11 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
             const auto minimum = schema_obj.find("minimum");
             const auto maximum = schema_obj.find("maximum");
 
-            // TODO: Derive reasonable width
-            ImGui::SetNextItemWidth(ImGui::CalcTextSize("000000").x);
+            if (maximum != schema_obj.end()) {
+                float width = (std::floorf(std::log10f(maximum->get<json::number_integer_t>())) + 2.0f) *
+                              ImGui::CalcTextSize("0").x;
+                ImGui::SetNextItemWidth(width);
+            }
 
             // TODO: Complain if field is too large.
             int v = util::lossy_cast<int>(field);
