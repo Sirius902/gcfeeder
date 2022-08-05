@@ -157,6 +157,7 @@ fn linkImGui(lib_exe: *LibExeObjStep) void {
         sub_root ++ "/imgui.cpp",
         sub_root ++ "/backends/imgui_impl_glfw.cpp",
         sub_root ++ "/backends/imgui_impl_opengl3.cpp",
+        sub_root ++ "/misc/cpp/imgui_stdlib.cpp",
     };
 
     const imgui_cxx_flags = cxx_flags ++ [_][]const u8{"-Iinclude/imgui"};

@@ -4,10 +4,12 @@
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include <imgui.h>
+#include <misc/cpp/imgui_stdlib.h>
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstddef>
 #include <exception>
 #include <numbers>
 #include <utility>
@@ -42,19 +44,18 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     constexpr auto header_color = ImVec4(0x61 / 255.0f, 0x8C / 255.0f, 0xCA / 255.0f, 1.0f);
 
     auto& config = state.config.getJson();
+    auto& profiles = config.at("profiles").get_ref<json::array_t&>();
 
     bool config_modified = false;
 
     ImGui::TextColored(header_color, "Profiles");
     ImGui::Spacing();
 
-    auto& profiles = config.at("profiles");
-
     auto& current_profile_name = config.at("current_profile").get_ref<std::string&>();
     ImGui::TextUnformatted("Current");
     ImGui::SameLine();
     if (ImGui::BeginCombo("##combo", current_profile_name.c_str())) {
-        for (const auto& [_, profile] : profiles.items()) {
+        for (const auto& profile : profiles) {
             const auto& name = profile.at("name").get_ref<const std::string&>();
             bool selected = name == current_profile_name;
 
@@ -69,6 +70,40 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         }
 
         ImGui::EndCombo();
+    }
+
+    if (ImGui::Button("Add Profile")) {
+        ImGui::OpenPopup("##add_profile_popup");
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::BeginPopup("##add_profile_popup")) {
+        ImGui::InputText("Profile Name", &add_profile_name);
+        if (ImGui::Button("Add")) {
+            ImGui::CloseCurrentPopup();
+            // TODO: Prevent empty names.
+            scheduled_add = true;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+            add_profile_name.clear();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Remove Profile")) {
+        if (profiles.size() > 1) {
+            scheduled_remove.emplace(current_profile_name);
+        } else {
+            fmt::print(stderr, "Cannot remove all profiles!\n");
+        }
     }
 
     ImGui::Separator();
@@ -141,8 +176,48 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         config_modified = true;
     }
 
+    if (scheduled_add && this->profile.has_value()) {
+        auto it = std::find_if(profiles.begin(), profiles.end(), [this](const json& p) {
+            return p.at("name").get_ref<const std::string&>() == add_profile_name;
+        });
+
+        auto& profile = (it != profiles.end()) ? *it : profiles.emplace_back(json::object());
+        profile["name"] = add_profile_name;
+        profile["config"] = *this->profile;
+
+        auto& current_profile = config.at("current_profile").get_ref<std::string&>();
+
+        current_profile = add_profile_name;
+        this->profile.reset();
+        profile_dirty = false;
+
+        add_profile_name.clear();
+        scheduled_add = false;
+        config_modified = true;
+    }
+
+    if (scheduled_remove.has_value()) {
+        auto it = std::find_if(profiles.begin(), profiles.end(), [this](const json& p) {
+            return p.at("name").get_ref<const std::string&>() == *scheduled_remove;
+        });
+
+        if (it != profiles.end()) {
+            profiles.erase(it);
+        }
+
+        auto& current_profile = config.at("current_profile").get_ref<std::string&>();
+        if (*scheduled_remove == current_profile) {
+            current_profile = profiles.at(0).at("name");
+            this->profile.reset();
+            profile_dirty = false;
+        }
+
+        scheduled_remove.reset();
+        config_modified = true;
+    }
+
     if (config_modified) {
-        state.config.load();
+        state.config.save();
         state.feeder_needs_reload.store(true, std::memory_order_release);
     }
 
