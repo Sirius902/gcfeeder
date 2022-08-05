@@ -3,13 +3,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include <cstddef>
-#include <filesystem>
-#include <string>
-#include <string_view>
-
-namespace fs = std::filesystem;
-
 void Gui::drawAndUpdate() {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
                                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
@@ -41,7 +34,7 @@ void Gui::drawAndUpdate() {
             ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
 
         ImGui::DockBuilderDockWindow("Content", dock_main_id);
-        ImGui::DockBuilderDockWindow("Calibration Data", dock_id_left);
+        ImGui::DockBuilderDockWindow("Calibration", dock_id_left);
         ImGui::DockBuilderDockWindow("Log", dock_id_left_bottom);
         ImGui::DockBuilderDockWindow("Config", dock_main_id);
         ImGui::DockBuilderFinish(dockspace_id);
@@ -62,21 +55,9 @@ void Gui::drawAndUpdate() {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Calibrate")) {
-            if (ImGui::MenuItem("PC Scaling")) {
-                // TOOD: Implement.
-            }
-
-            if (ImGui::MenuItem("ESS Adapter")) {
-                // TOOD: Implement.
-            }
-
-            ImGui::EndMenu();
-        }
-
         if (ImGui::BeginMenu("View")) {
-            ImGui::MenuItem("Config", nullptr, &draw_config);
-            ImGui::MenuItem("Calibration Data", nullptr, &draw_calibration_data);
+            ImGui::MenuItem("Config", nullptr, &draw_config_editor);
+            ImGui::MenuItem("Calibration", nullptr, &draw_calibration_window);
             ImGui::MenuItem("Log", nullptr, &draw_log);
             ImGui::MenuItem("[DEBUG] Demo Window", nullptr, &draw_demo_window);
 
@@ -86,27 +67,12 @@ void Gui::drawAndUpdate() {
         ImGui::EndMenuBar();
     }
 
-    config_editor.drawAndUpdate("Config", draw_config);
-    drawCalibrationData("Calibration Data", draw_calibration_data);
+    config_editor.drawAndUpdate("Config", draw_config_editor);
+    calibration_window.drawAndUpdate("Calibration", draw_calibration_window);
     state.log.drawAndUpdate("Log", draw_log);
 
-    // 1. Show the big demo window (Most of the sample code is in
-    // ImGui::ShowDemoWindow()! You can browse its code to learn more about
-    // Dear ImGui!).
+    // TODO: Remove
     if (draw_demo_window) ImGui::ShowDemoWindow(&draw_demo_window);
-
-    ImGui::End();
-}
-
-void Gui::drawCalibrationData(const char* title, bool& open) {
-    if (!open) {
-        return;
-    }
-
-    if (!ImGui::Begin(title, &open, ImGuiWindowFlags_NoFocusOnAppearing)) {
-        ImGui::End();
-        return;
-    }
 
     ImGui::End();
 }

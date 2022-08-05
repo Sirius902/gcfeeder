@@ -53,6 +53,7 @@ pub fn build(b: *Builder) void {
         "src/gui/cpp/config_editor.h",
         "src/gui/cpp/config.h",
         "src/gui/cpp/util.h",
+        "src/gui/cpp/calibration_window.h",
     };
 
     const cxx_source = [_][]const u8{
@@ -62,6 +63,7 @@ pub fn build(b: *Builder) void {
         "src/gui/cpp/app_log.cpp",
         "src/gui/cpp/config_editor.cpp",
         "src/gui/cpp/config.cpp",
+        "src/gui/cpp/calibration_window.cpp",
     };
 
     const cxx_all = cxx_header ++ cxx_source;

@@ -10,12 +10,9 @@
 #include <cmath>
 #include <exception>
 #include <numbers>
-#include <ranges>
 #include <utility>
 
 #include "util.h"
-
-namespace ranges = std::ranges;
 
 using json = Config::json;
 

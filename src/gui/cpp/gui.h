@@ -3,10 +3,10 @@
 #include <atomic>
 
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#include <fmt/core.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include "calibration_window.h"
 #include "config_editor.h"
 #include "gui_main.h"
 #include "gui_state.h"
@@ -23,9 +23,10 @@ public:
 private:
     GuiState state;
     ConfigEditor config_editor;
+    CalibrationWindow calibration_window;
 
-    bool draw_config = true;
-    bool draw_calibration_data = true;
+    bool draw_config_editor = true;
+    bool draw_calibration_window = true;
     bool draw_log = true;
     ImGuiID dockspace_id;
 
