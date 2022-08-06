@@ -18,6 +18,13 @@
 
 using json = Config::json;
 
+static void drawWarningText(const char* text) {
+    constexpr auto warn_color = ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Text, warn_color);
+    ImGui::TextUnformatted(text);
+    ImGui::PopStyleColor();
+}
+
 void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     if (!open) {
         return;
@@ -82,8 +89,13 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         ImGui::InputText("Profile Name", &add_profile_name);
         if (ImGui::Button("Add")) {
             ImGui::CloseCurrentPopup();
-            // TODO: Prevent empty names.
-            scheduled_add = true;
+
+            if (!add_profile_name.empty()) {
+                scheduled_add = true;
+                profile_error.clear();
+            } else {
+                profile_error = "Add error: profile name must not be empty.";
+            }
         }
 
         ImGui::SameLine();
@@ -101,9 +113,14 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     if (ImGui::Button("Remove Profile")) {
         if (profiles.size() > 1) {
             scheduled_remove.emplace(current_profile_name);
+            profile_error.clear();
         } else {
-            fmt::print(stderr, "Cannot remove all profiles!\n");
+            profile_error = "Remove error: cannot remove all profiles.";
         }
+    }
+
+    if (!profile_error.empty()) {
+        drawWarningText(profile_error.c_str());
     }
 
     ImGui::Separator();
@@ -252,13 +269,6 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
 }
 
 static constexpr std::string_view defaultInversionMapping = "oot-vc";
-
-static void drawWarningText(const char* text) {
-    constexpr auto warn_color = ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
-    ImGui::PushStyleColor(ImGuiCol_Text, warn_color);
-    ImGui::TextUnformatted(text);
-    ImGui::PopStyleColor();
-}
 
 static std::string getDescription(const json& value) {
     if (auto it = value.find("description"); it != value.end()) {

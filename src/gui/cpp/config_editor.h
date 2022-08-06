@@ -12,6 +12,7 @@ private:
     GuiState& state;
     std::optional<Config::json> profile;
     std::string add_profile_name;
+    std::string profile_error;
 
     bool profile_dirty = false;
     bool scheduled_reload = false;
