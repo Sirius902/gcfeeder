@@ -390,36 +390,123 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
             }
             drawDescription(schema_obj);
         } else if (type == "array") {
-            const auto& value_type = schema_obj.at("items");
+            std::size_t depth = 0;
+            const auto* value_type_obj = &schema_obj;
+            while (true) {
+                if (auto it = value_type_obj->find("items"); it != value_type_obj->end()) {
+                    depth++;
+                    value_type_obj = &*it;
+                } else {
+                    break;
+                }
+            }
+
             auto& data_array = data_obj.get_ref<json::array_t&>();
 
-            bool is_root = !name->get().starts_with("##");
-            if (is_root) {
-                // TODO: Don't hardcode height
-                ImGui::BeginChild(fmt::format("scrolling\"{}\"", name->get()).c_str(), ImVec2(0.0f, 50.0f), false,
-                                  ImGuiWindowFlags_HorizontalScrollbar);
-                ImGui::TextUnformatted(name->get().c_str());
-                ImGui::SameLine();
+            if (data_array.empty()) {
+                drawWarningText(fmt::format("Empty array: {}", name->get()).c_str());
+                return;
+            } else if (depth > 2) {
+                drawWarningText(fmt::format("Array depth greater than 2 not supported: {}", name->get()).c_str());
+                return;
             }
 
-            ImGui::TextUnformatted("[");
-            ImGui::SameLine();
+            ImGui::TextUnformatted(name->get().c_str());
 
-            for (std::size_t i = 0; i < data_array.size(); i++) {
-                const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
-                if (i > 0) {
-                    ImGui::SameLine();
-                    ImGui::TextUnformatted(",");
-                    ImGui::SameLine();
+            // TODO: Figure out a sane height computation.
+            const float height = depth * 50.0f + 4.0f;
+            if (!ImGui::BeginTable(name->get().c_str(), static_cast<int>(data_array.size()),
+                                   ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX,
+                                   ImVec2(0.0f, height))) {
+                return;
+            }
+
+            for (std::size_t col = 0; col < data_array.size(); col++) {
+                ImGui::TableSetupColumn(fmt::format("{}", col).c_str(), ImGuiTableColumnFlags_WidthFixed);
+            }
+
+            ImGui::TableHeadersRow();
+
+            switch (depth) {
+                case 1:
+                    ImGui::TableNextRow();
+                    for (std::size_t col = 0; col < data_array.size(); col++) {
+                        ImGui::TableSetColumnIndex(static_cast<int>(col));
+                        const auto child_name = fmt::format("##{}[{}]", name->get(), col);
+                        drawJsonObject(*value_type_obj, data_array.at(col), child_name, false);
+                    }
+                    break;
+                case 2: {
+                    std::size_t rows = 0;
+                    for (const auto& row_data : data_array) {
+                        if (row_data.size() > rows) rows = row_data.size();
+                    }
+
+                    for (std::size_t row = 0; row < rows; row++) {
+                        ImGui::TableNextRow();
+
+                        for (std::size_t col = 0; col < data_array.size(); col++) {
+                            ImGui::TableSetColumnIndex(static_cast<int>(col));
+                            const auto child_name = fmt::format("##{}[{}][{}]", name->get(), col, row);
+                            auto& elem = data_array.at(col).get_ref<json::array_t&>().at(row);
+                            drawJsonObject(*value_type_obj, elem, child_name, false);
+                        }
+                    }
+                    break;
                 }
-
-                drawJsonObject(value_type, data_array.at(i), child_name, false);
+                default:
+                    throw std::runtime_error{fmt::format("Unexpected array depth: {}", depth)};
             }
 
-            ImGui::SameLine();
-            ImGui::TextUnformatted("]");
+            ImGui::EndTable();
 
-            if (is_root) ImGui::EndChild();
+            // // bool is_root = !name->get().starts_with("##");
+            // std::size_t size = data_array.size() - 1;
+            // if (!ImGui::BeginTable(name->get().c_str(), 1, ImGuiTableFlags_NoSavedSettings |
+            // ImGuiTableFlags_Borders)) {
+            //     return;
+            // }
+
+            // ImGui::TableSetColumnIndex(0);
+            // for (std::size_t i = 0; i < size; i++) {
+            //     ImGui::TableNextRow();
+
+            //     // const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
+            //     // drawJsonObject(value_type, data_array.at(row), child_name, false);
+            //     (void)value_type;
+            //     ImGui::TextUnformatted("hey");
+            // }
+
+            // // if (is_root) ImGui::EndTable();
+            // ImGui::EndTable();
+
+            // bool is_root = !name->get().starts_with("##");
+            // if (is_root) {
+            //     // TODO: Don't hardcode height
+            //     ImGui::BeginChild(fmt::format("scrolling\"{}\"", name->get()).c_str(), ImVec2(0.0f, 50.0f), false,
+            //                       ImGuiWindowFlags_HorizontalScrollbar);
+            //     ImGui::TextUnformatted(name->get().c_str());
+            //     ImGui::SameLine();
+            // }
+
+            // ImGui::TextUnformatted("[");
+            // ImGui::SameLine();
+
+            // for (std::size_t i = 0; i < data_array.size(); i++) {
+            //     const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
+            //     if (i > 0) {
+            //         ImGui::SameLine();
+            //         ImGui::TextUnformatted(",");
+            //         ImGui::SameLine();
+            //     }
+
+            //     drawJsonObject(value_type, data_array.at(i), child_name, false);
+            // }
+
+            // ImGui::SameLine();
+            // ImGui::TextUnformatted("]");
+
+            // if (is_root) ImGui::EndChild();
         } else {
             drawWarningText(fmt::format("Unsupported type: {}", type).c_str());
         }
