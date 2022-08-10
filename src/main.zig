@@ -233,6 +233,7 @@ fn inputLoop(context: *Context) void {
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
             const calibrated = if (config.calibration.enabled and config.calibration.data != null)
+                // TODO: Make analog scale orthogonal to calibration.
                 config.calibration.data.?.map(ess_mapped, config.analog_scale)
             else
                 ess_mapped;
