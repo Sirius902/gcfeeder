@@ -27,11 +27,13 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
         ImGui::TextUnformatted("Calibrating...");
 
         if (ImGui::Button("Cancel")) {
-            is_calibrating.store(false, std::memory_order_release);
             ImGui::CloseCurrentPopup();
+            is_calibrating.store(false, std::memory_order_release);
         }
 
         ImGui::EndPopup();
+    } else {
+        is_calibrating.store(false, std::memory_order_release);
     }
 
     const auto inputs = [this]() {
