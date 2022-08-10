@@ -11,7 +11,7 @@
 class CalibrationWindow {
 private:
     std::mutex mutex;
-    Inputs inputs;
+    Inputs inputs{};
     std::atomic<bool> is_calibrating{false};
 
 public:
