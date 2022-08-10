@@ -75,9 +75,8 @@ extern "C" int runImGui(CUIContext* c_context) {
     const std::u8string ini_path_str = ini_path.u8string();
 
     {
-        std::unique_lock lock(gui_created_mutex);
+        std::scoped_lock lock(gui_created_mutex);
         gui.emplace(context, app_log);
-        lock.unlock();
         gui_created_cond.notify_all();
     }
 
