@@ -459,54 +459,6 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
             }
 
             ImGui::EndTable();
-
-            // // bool is_root = !name->get().starts_with("##");
-            // std::size_t size = data_array.size() - 1;
-            // if (!ImGui::BeginTable(name->get().c_str(), 1, ImGuiTableFlags_NoSavedSettings |
-            // ImGuiTableFlags_Borders)) {
-            //     return;
-            // }
-
-            // ImGui::TableSetColumnIndex(0);
-            // for (std::size_t i = 0; i < size; i++) {
-            //     ImGui::TableNextRow();
-
-            //     // const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
-            //     // drawJsonObject(value_type, data_array.at(row), child_name, false);
-            //     (void)value_type;
-            //     ImGui::TextUnformatted("hey");
-            // }
-
-            // // if (is_root) ImGui::EndTable();
-            // ImGui::EndTable();
-
-            // bool is_root = !name->get().starts_with("##");
-            // if (is_root) {
-            //     // TODO: Don't hardcode height
-            //     ImGui::BeginChild(fmt::format("scrolling\"{}\"", name->get()).c_str(), ImVec2(0.0f, 50.0f), false,
-            //                       ImGuiWindowFlags_HorizontalScrollbar);
-            //     ImGui::TextUnformatted(name->get().c_str());
-            //     ImGui::SameLine();
-            // }
-
-            // ImGui::TextUnformatted("[");
-            // ImGui::SameLine();
-
-            // for (std::size_t i = 0; i < data_array.size(); i++) {
-            //     const auto child_name = fmt::format("##\"{}\"[{}]", name->get(), i);
-            //     if (i > 0) {
-            //         ImGui::SameLine();
-            //         ImGui::TextUnformatted(",");
-            //         ImGui::SameLine();
-            //     }
-
-            //     drawJsonObject(value_type, data_array.at(i), child_name, false);
-            // }
-
-            // ImGui::SameLine();
-            // ImGui::TextUnformatted("]");
-
-            // if (is_root) ImGui::EndChild();
         } else {
             drawWarningText(fmt::format("Unsupported type: {}", type).c_str());
         }
