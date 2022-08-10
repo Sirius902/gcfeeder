@@ -83,9 +83,8 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         ImGui::OpenPopup("##add_profile_popup");
     }
 
-    ImGui::SameLine();
-
     if (ImGui::BeginPopup("##add_profile_popup")) {
+        ImGui::SameLine();
         ImGui::InputText("Profile Name", &add_profile_name);
         if (ImGui::Button("Add")) {
             ImGui::CloseCurrentPopup();

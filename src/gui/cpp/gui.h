@@ -18,6 +18,9 @@ public:
     bool isFeederReloadNeeded() const { return state.feeder_needs_reload.load(std::memory_order_acquire); }
     void notifyFeederReload() { state.feeder_needs_reload.store(false, std::memory_order_release); }
 
+    void updateInputs(Inputs inputs) { calibration_window.updateInputs(inputs); }
+    bool isCalibrating() const { return calibration_window.isCalibrating(); }
+
     void drawAndUpdate();
 
 private:

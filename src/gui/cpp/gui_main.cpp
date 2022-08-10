@@ -52,6 +52,16 @@ extern "C" void notifyFeederReload() {
     gui->notifyFeederReload();
 }
 
+extern "C" void updateInputs(Inputs inputs) {
+    waitForGuiInit();
+    gui->updateInputs(inputs);
+}
+
+extern "C" int isCalibrating() {
+    waitForGuiInit();
+    return gui->isCalibrating();
+}
+
 extern "C" int runImGui(CUIContext* c_context) {
     if (gladLoadGL() == 0) {
         fmt::print(stderr, "gladLoadGL failed\n");

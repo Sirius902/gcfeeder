@@ -218,30 +218,6 @@ fn inputLoop(context: *Context) void {
         const bridge = context.bridge.?;
         const config = context.config.?;
 
-        // TODO: Calibrate when requested from gui
-        // if (context.use_calibration and config.calibration == null) {
-        //     const cal = calibrate.generateCalibration(adapter) catch |err| {
-        //         switch (err) {
-        //             error.Timeout => continue,
-        //             else => {
-        //                 context.mutex.lock();
-        //                 defer context.mutex.unlock();
-
-        //                 adapter.deinit();
-        //                 context.adapter = null;
-        //                 std.log.err("{} in input thread", .{err});
-        //                 std.log.info("Disconnected from adapter", .{});
-        //                 continue;
-        //             },
-        //         }
-        //     };
-        //     config.calibration = cal;
-        //     config_file.save(context.allocator) catch |err| {
-        //         // TODO: error to gui
-        //         std.debug.panic("Failed to save \"{s}\": {}", .{ ConfigFile.path, err });
-        //     };
-        // }
-
         const inputs = adapter.readInputs() catch |err| {
             switch (err) {
                 error.Timeout => continue,
@@ -261,7 +237,29 @@ fn inputLoop(context: *Context) void {
             else
                 ess_mapped;
 
-            bridge.feed(calibrated) catch |err| {
+            gui.updateInputs(.{
+                .main_stick = .{
+                    .raw = .{ .x = input.stick_x, .y = input.stick_y },
+                    .mapped = .{ .x = ess_mapped.stick_x, .y = ess_mapped.stick_y },
+                    .calibrated = .{ .x = calibrated.stick_x, .y = calibrated.stick_y },
+                },
+                .c_stick = .{
+                    .raw = .{ .x = input.substick_x, .y = input.substick_y },
+                    .mapped = .{ .x = ess_mapped.substick_x, .y = ess_mapped.substick_y },
+                    .calibrated = .{ .x = calibrated.substick_x, .y = calibrated.substick_y },
+                },
+                .a_pressed = @boolToInt(input.button_a),
+                .active_stages = blk: {
+                    var s = gui.Stage.raw;
+                    if (context.ess_mapping != null) s |= gui.Stage.mapped;
+                    if (config.calibration.enabled and config.calibration.data != null) s |= gui.Stage.calibrated;
+                    break :blk s;
+                },
+            });
+
+            const to_feed = if (gui.isCalibrating()) Input.default else calibrated;
+
+            bridge.feed(to_feed) catch |err| {
                 context.bridge_errored.store(true, .Release);
                 std.log.err("{} in input thread", .{err});
                 failed = true;

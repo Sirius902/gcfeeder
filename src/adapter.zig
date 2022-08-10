@@ -291,6 +291,30 @@ pub const Input = struct {
     trigger_left: u8,
     trigger_right: u8,
 
+    pub const default = Input{
+        .button_a = false,
+        .button_b = false,
+        .button_x = false,
+        .button_y = false,
+
+        .button_left = false,
+        .button_right = false,
+        .button_down = false,
+        .button_up = false,
+
+        .button_start = false,
+        .button_z = false,
+        .button_r = false,
+        .button_l = false,
+
+        .stick_x = Calibration.stick_range.center,
+        .stick_y = Calibration.stick_range.center,
+        .substick_x = Calibration.stick_range.center,
+        .substick_y = Calibration.stick_range.center,
+        .trigger_left = Calibration.trigger_range.min,
+        .trigger_right = Calibration.trigger_range.min,
+    };
+
     pub fn serialize(self: Input, buffer: *[@sizeOf(Input)]u8) void {
         inline for (@typeInfo(Input).Struct.fields) |field, i| {
             buffer[i] = switch (field.field_type) {

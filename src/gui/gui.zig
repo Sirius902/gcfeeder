@@ -72,6 +72,24 @@ pub inline fn notifyReload() void {
     c.notifyFeederReload();
 }
 
+pub const Inputs = c.Inputs;
+
+pub const Stage = struct {
+    pub const Type = @TypeOf(std.mem.zeroes(c.Inputs).active_stages);
+
+    pub const raw: Type = c.STAGE_RAW;
+    pub const mapped: Type = c.STAGE_MAPPED;
+    pub const calibrated: Type = c.STAGE_CALIBRATED;
+};
+
+pub inline fn updateInputs(inputs: Inputs) void {
+    c.updateInputs(inputs);
+}
+
+pub inline fn isCalibrating() bool {
+    return c.isCalibrating() != 0;
+}
+
 pub fn log(
     comptime message_level: std.log.Level,
     comptime scope: @Type(.EnumLiteral),

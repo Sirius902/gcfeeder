@@ -3,10 +3,33 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define STAGE_RAW (1 << 0)
+#define STAGE_MAPPED (1 << 1)
+#define STAGE_CALIBRATED (1 << 2)
+
+typedef struct Vec2 {
+    uint8_t x;
+    uint8_t y;
+} Vec2;
+
+typedef struct StickInputs {
+    Vec2 raw;
+    Vec2 mapped;
+    Vec2 calibrated;
+} StickInputs;
+
+typedef struct Inputs {
+    StickInputs main_stick;
+    StickInputs c_stick;
+    uint8_t a_pressed;
+    uint8_t active_stages;
+} Inputs;
 
 typedef struct CUIContext {
     char* ttf_ptr;
@@ -26,6 +49,8 @@ int runImGui(CUIContext* c_context);
 void addLogMessage(const char* message);
 int isFeederReloadNeeded(void);
 void notifyFeederReload(void);
+void updateInputs(Inputs inputs);
+int isCalibrating(void);
 
 #ifdef __cplusplus
 }
