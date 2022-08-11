@@ -8,7 +8,11 @@ pub const StickCalibration = struct {
     notch_points: [8][2]u8,
     stick_center: [2]u8,
 
-    pub fn map(self: StickCalibration, pos: [2]u8, overscale: ?f32) [2]u8 {
+    pub const Error = error{
+        BadCalibration,
+    };
+
+    pub fn map(self: StickCalibration, pos: [2]u8, overscale: ?f32) Error![2]u8 {
         const q = self.quadrant(pos);
         const qn = (q + self.notch_points.len - 1) % self.notch_points.len;
 
@@ -57,7 +61,7 @@ pub const StickCalibration = struct {
             .{ 1.0, 1.0, 1.0 },
         } };
 
-        const t = mat3Mul(x, mat3Invert(a) orelse unreachable);
+        const t = mat3Mul(x, mat3Invert(a) orelse return error.BadCalibration);
         const res = zlm.Vec3.new(@intToFloat(f32, pos[0]), @intToFloat(f32, pos[1]), 1.0).transform(t);
 
         if (overscale) |o| {
@@ -177,9 +181,11 @@ pub const Calibration = struct {
     main_stick: StickCalibration,
     c_stick: StickCalibration,
 
-    pub fn map(self: Calibration, input: Input, overscale: ?f32) Input {
-        const main_stick = self.main_stick.map([_]u8{ input.stick_x, input.stick_y }, overscale);
-        const c_stick = self.c_stick.map([_]u8{ input.substick_x, input.substick_y }, overscale);
+    pub const Error = StickCalibration.Error;
+
+    pub fn map(self: Calibration, input: Input, overscale: ?f32) Error!Input {
+        const main_stick = try self.main_stick.map([_]u8{ input.stick_x, input.stick_y }, overscale);
+        const c_stick = try self.c_stick.map([_]u8{ input.substick_x, input.substick_y }, overscale);
 
         var res = input;
         res.stick_x = main_stick[0];
@@ -189,71 +195,6 @@ pub const Calibration = struct {
         return res;
     }
 };
-
-fn waitForA(adapter: *Adapter) !Input {
-    var pressed = false;
-
-    while (true) {
-        const inputs = try adapter.readInputs();
-
-        if (inputs[0]) |input| {
-            if (input.button_a) {
-                pressed = true;
-            } else if (pressed) {
-                return input;
-            }
-        }
-    }
-}
-
-pub fn generateCalibration(adapter: *Adapter) !Calibration {
-    var calibration: Calibration = undefined;
-
-    std.debug.print("Generating calibration\n", .{});
-
-    var main_stick = true;
-    while (true) {
-        const stick_name = if (main_stick) "main " else "C-";
-        std.debug.print("Center {s}stick and press A\n", .{stick_name});
-        {
-            const input = try waitForA(adapter);
-            if (main_stick) {
-                calibration.main_stick.stick_center[0] = input.stick_x;
-                calibration.main_stick.stick_center[1] = input.stick_y;
-            } else {
-                calibration.c_stick.stick_center[0] = input.substick_x;
-                calibration.c_stick.stick_center[1] = input.substick_y;
-            }
-        }
-
-        const notch_names = [_][]const u8{
-            "top",
-            "top-right",
-            "right",
-            "bottom-right",
-            "bottom",
-            "bottom-left",
-            "left",
-            "top-left",
-        };
-
-        for (if (main_stick) calibration.main_stick.notch_points else calibration.c_stick.notch_points) |*p, i| {
-            std.debug.print("Move {s}stick to center then to {s} notch then press A\n", .{ stick_name, notch_names[i] });
-
-            const input = try waitForA(adapter);
-            p.*[0] = if (main_stick) input.stick_x else input.substick_x;
-            p.*[1] = if (main_stick) input.stick_y else input.substick_y;
-        }
-
-        if (main_stick) {
-            main_stick = false;
-        } else {
-            break;
-        }
-    }
-
-    return calibration;
-}
 
 fn mat3Invert(m: zlm.Mat3) ?zlm.Mat3 {
     var m4 = zlm.Mat4{ .fields = .{

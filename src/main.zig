@@ -39,6 +39,7 @@ pub const Context = struct {
     ess_mapping: ?ess.Mapping = null,
     config_file: ?ConfigFile = null,
     config: ?*Config = null,
+    is_calibration_bad: bool = false,
 };
 
 const fail_timeout = 100 * time.ns_per_ms;
@@ -108,6 +109,7 @@ fn loadAndSetConfig(context: *Context) !void {
     context.config = config;
     context.sock = sock;
     context.ess_mapping = config.ess.inversion_mapping;
+    context.is_calibration_bad = false;
 
     std.log.info("Config loaded with profile \"{s}\"", .{profile_name});
     if (config.calibration.enabled and config.calibration.data == null) {
@@ -232,9 +234,13 @@ fn inputLoop(context: *Context) void {
 
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
-            const calibrated = if (config.calibration.enabled and config.calibration.data != null)
+            const calibrated = if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad)
                 // TODO: Make analog scale orthogonal to calibration.
-                config.calibration.data.?.map(ess_mapped, config.analog_scale)
+                config.calibration.data.?.map(ess_mapped, config.analog_scale) catch {
+                    context.is_calibration_bad = true;
+                    std.log.warn("Ignoring calibration: bad calibration data", .{});
+                    continue;
+                }
             else
                 ess_mapped;
 
@@ -253,7 +259,7 @@ fn inputLoop(context: *Context) void {
                 .active_stages = blk: {
                     var s = gui.Stage.raw;
                     if (context.ess_mapping != null) s |= gui.Stage.mapped;
-                    if (config.calibration.enabled and config.calibration.data != null) s |= gui.Stage.calibrated;
+                    if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad) s |= gui.Stage.calibrated;
                     break :blk s;
                 },
             });
