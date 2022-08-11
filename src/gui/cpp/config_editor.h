@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <optional>
 #include <string>
@@ -24,6 +25,14 @@ private:
 
 public:
     ConfigEditor(GuiState& state) : state(state) {}
+
+    template <std::convertible_to<Config::json> Json>
+    void updateProfileCalibration(Json&& calibration) {
+        if (profile.has_value()) {
+            profile->at("calibration").at("data") = calibration;
+            profile_dirty = true;
+        }
+    }
 
     void drawAndUpdate(const char* title, bool& open);
 };
