@@ -38,9 +38,7 @@ private:
     bool draw_demo_window = false;
 
     CalibrationWindow::ApplyFunc getCalibrationApplyFn() {
-        return [this](Config::json&& calibration) {
-            config_editor.updateProfileCalibration(std::forward<Config::json>(calibration));
-        };
+        return [this](Config::json&& calibration) { config_editor.updateProfileCalibration(std::move(calibration)); };
     }
 
     void drawCalibrationData(const char* title, bool& open);
