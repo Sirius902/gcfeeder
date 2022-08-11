@@ -4,6 +4,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <utility>
 
 #include "config.h"
 #include "gui_state.h"
@@ -29,7 +30,9 @@ public:
     template <std::convertible_to<Config::json> Json>
     void updateProfileCalibration(Json&& calibration) {
         if (profile.has_value()) {
-            profile->at("calibration").at("data") = calibration;
+            auto& config_calibration = profile->at("calibration");
+            config_calibration.at("enabled") = true;
+            config_calibration.at("data") = std::forward<Json>(calibration);
             profile_dirty = true;
         }
     }

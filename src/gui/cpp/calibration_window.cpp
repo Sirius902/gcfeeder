@@ -163,7 +163,12 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
 
         ImGui::BeginChild("scrolling", ImVec2(500.0f, 300.0f), false, ImGuiWindowFlags_HorizontalScrollbar);
 
+        ImGui::TextUnformatted("Calibrating...");
+        drawCalibrationProgress();
+
         if (isCalibrationFinished()) {
+            ImGui::Separator();
+
             ImGui::TextUnformatted("Calibration finished. Apply to config editor profile?");
             if (ImGui::Button("Apply")) {
                 applyCalibration();
@@ -177,9 +182,6 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
                 ImGui::CloseCurrentPopup();
                 endCalibration();
             }
-        } else {
-            ImGui::TextUnformatted("Calibrating...");
-            drawCalibrationProgress();
         }
 
         if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
