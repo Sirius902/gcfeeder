@@ -80,6 +80,7 @@ pub const Stage = struct {
     pub const raw: Type = c.STAGE_RAW;
     pub const mapped: Type = c.STAGE_MAPPED;
     pub const calibrated: Type = c.STAGE_CALIBRATED;
+    pub const scaled: Type = c.STAGE_SCALED;
 };
 
 pub inline fn updateInputs(inputs: Inputs) void {

@@ -235,8 +235,7 @@ fn inputLoop(context: *Context) void {
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
             const calibrated = if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad)
-                // TODO: Make analog scale orthogonal to calibration.
-                config.calibration.data.?.map(ess_mapped, config.analog_scale) catch {
+                config.calibration.data.?.map(ess_mapped) catch {
                     context.is_calibration_bad = true;
                     std.log.warn("Ignoring calibration: bad calibration data", .{});
                     continue;
@@ -244,22 +243,31 @@ fn inputLoop(context: *Context) void {
             else
                 ess_mapped;
 
+            const should_apply_scaling = !std.math.approxEqAbs(f32, config.analog_scale, 1.0, 1e-5);
+            const scaled = if (should_apply_scaling)
+                calibrate.applyScaling(calibrated, config.analog_scale)
+            else
+                calibrated;
+
             gui.updateInputs(.{
                 .main_stick = .{
                     .raw = .{ .x = input.stick_x, .y = input.stick_y },
                     .mapped = .{ .x = ess_mapped.stick_x, .y = ess_mapped.stick_y },
                     .calibrated = .{ .x = calibrated.stick_x, .y = calibrated.stick_y },
+                    .scaled = .{ .x = scaled.stick_x, .y = scaled.stick_y },
                 },
                 .c_stick = .{
                     .raw = .{ .x = input.substick_x, .y = input.substick_y },
                     .mapped = .{ .x = ess_mapped.substick_x, .y = ess_mapped.substick_y },
                     .calibrated = .{ .x = calibrated.substick_x, .y = calibrated.substick_y },
+                    .scaled = .{ .x = scaled.substick_x, .y = scaled.substick_y },
                 },
                 .a_pressed = @boolToInt(input.button_a),
                 .active_stages = blk: {
                     var s = gui.Stage.raw;
                     if (context.ess_mapping != null) s |= gui.Stage.mapped;
                     if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad) s |= gui.Stage.calibrated;
+                    if (should_apply_scaling) s |= gui.Stage.scaled;
                     break :blk s;
                 },
             });

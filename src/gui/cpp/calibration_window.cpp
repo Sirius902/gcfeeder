@@ -143,6 +143,13 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
         drawStick("c_calibrated", inputs.c_stick.calibrated, c_stick_color, points_span, center);
     }
 
+    if (inputs.active_stages & STAGE_SCALED) {
+        ImGui::TextUnformatted("Scaled");
+        drawStick("main_scaled", inputs.main_stick.scaled, main_stick_color);
+        ImGui::SameLine();
+        drawStick("c_scaled", inputs.c_stick.scaled, c_stick_color);
+    }
+
     ImGui::End();
 }
 

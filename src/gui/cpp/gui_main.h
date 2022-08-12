@@ -12,6 +12,7 @@ extern "C" {
 #define STAGE_RAW (1 << 0)
 #define STAGE_MAPPED (1 << 1)
 #define STAGE_CALIBRATED (1 << 2)
+#define STAGE_SCALED (1 << 3)
 
 typedef struct Vec2 {
     uint8_t x;
@@ -22,6 +23,7 @@ typedef struct StickInputs {
     Vec2 raw;
     Vec2 mapped;
     Vec2 calibrated;
+    Vec2 scaled;
 } StickInputs;
 
 typedef struct Inputs {
