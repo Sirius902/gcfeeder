@@ -272,7 +272,7 @@ fn inputLoop(context: *Context) void {
                 },
             });
 
-            const to_feed = if (gui.isCalibrating()) Input.default else calibrated;
+            const to_feed = if (gui.isCalibrating()) Input.default else scaled;
 
             bridge.feed(to_feed) catch |err| {
                 context.bridge_errored.store(true, .Release);
