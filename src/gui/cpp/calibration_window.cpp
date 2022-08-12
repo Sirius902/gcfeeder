@@ -264,9 +264,14 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
     }
 }
 
+static ImColor colorWithAlpha(ImColor color, float alpha) {
+    color.Value.w = alpha;
+    return color;
+}
+
 void CalibrationWindow::drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
                                   std::optional<std::span<const Point>> points, std::optional<Point> center) {
-    main_color.Value.w = 255.0f;
+    main_color.Value.w = 1.0f;
     static constexpr auto size = 60.0f;
     static constexpr auto octagon_radius = size * 0.4f;
     const auto background_color = ImColor(main_color.Value.x, main_color.Value.y, main_color.Value.z, 0.6f);
@@ -296,6 +301,8 @@ void CalibrationWindow::drawStick(const char* str_id, Vec2 stick_pos, ImColor ma
         draw_list->AddRectFilled(rect_p1, rect_p2, color);
     };
 
+    draw_list->AddRectFilled(cursor_pos, ImVec2(cursor_pos.x + size, cursor_pos.y + size),
+                             colorWithAlpha(main_color, 0.1f));
     draw_list->AddRect(cursor_pos, ImVec2(cursor_pos.x + size, cursor_pos.y + size), background_color);
     draw_list->AddNgonFilled(center_pos, octagon_radius, background_color, 8);
 
