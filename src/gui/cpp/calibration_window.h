@@ -55,6 +55,6 @@ private:
     void drawPopup(const Inputs& inputs);
 
     static void drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
-                          std::optional<std::span<Point>> points = std::nullopt,
+                          std::optional<std::span<const Point>> points = std::nullopt,
                           std::optional<Point> center = std::nullopt);
 };

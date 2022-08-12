@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <cstdint>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -14,6 +16,9 @@ public:
 
     const std::filesystem::path json_path;
     const json schema;
+
+    static constexpr std::string_view default_inversion_mapping = "oot-vc";
+    static constexpr std::array<std::uint8_t, 2> default_stick_center{128, 128};
 
     Config(const std::filesystem::path& json_path, std::string_view schema_str);
 
@@ -30,6 +35,9 @@ public:
         return const_cast<json&>(const_cast<const Config*>(this)->getCurrentProfile());
     }
     const json& getCurrentProfile() const;
+
+    [[nodiscard]] static std::array<std::array<std::uint8_t, 2>, 8> defaultNotchPoints();
+    [[nodiscard]] static json defaultCalibration();
 
     void load();
     void save();

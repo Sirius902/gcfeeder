@@ -2,11 +2,15 @@
 
 #include <fmt/core.h>
 
+#include <cmath>
 #include <cstddef>
 #include <cstring>
 #include <exception>
 #include <fstream>
+#include <numbers>
 #include <string>
+
+#include "util.h"
 
 namespace fs = std::filesystem;
 
@@ -24,6 +28,28 @@ const Config::json& Config::getCurrentProfile() const {
     }
 
     throw std::runtime_error(fmt::format("Profile not found: \"{}\"", current_profile_str));
+}
+
+std::array<std::array<std::uint8_t, 2>, 8> Config::defaultNotchPoints() {
+    constexpr auto pi = std::numbers::pi;
+
+    std::array<std::array<std::uint8_t, 2>, 8> points;
+    for (std::size_t i = 0; i < points.size(); i++) {
+        double angle = pi / 2 - (i * pi / 4);
+        std::uint8_t x = util::lossy_cast<std::uint8_t>(127.0f * std::cos(angle) + 128.0f);
+        std::uint8_t y = util::lossy_cast<std::uint8_t>(127.0f * std::sin(angle) + 128.0f);
+        points[i] = {x, y};
+    }
+    return points;
+}
+
+Config::json Config::defaultCalibration() {
+    json obj;
+    auto& main_stick = obj["main_stick"];
+    main_stick["notch_points"] = defaultNotchPoints();
+    main_stick["stick_center"] = default_stick_center;
+    obj["c_stick"] = main_stick;
+    return obj;
 }
 
 void Config::load() {

@@ -8,10 +8,8 @@
 
 #include <algorithm>
 #include <array>
-#include <cmath>
 #include <cstddef>
 #include <exception>
-#include <numbers>
 #include <utility>
 
 #include "util.h"
@@ -234,32 +232,6 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     ImGui::End();
 }
 
-[[nodiscard]] static auto defaultNotchPoints() {
-    constexpr auto pi = std::numbers::pi;
-
-    std::array<std::array<std::uint8_t, 2>, 8> points;
-    for (std::size_t i = 0; i < points.size(); i++) {
-        double angle = pi / 2 - (i * pi / 4);
-        std::uint8_t x = util::lossy_cast<std::uint8_t>(127.0f * std::cos(angle) + 128.0f);
-        std::uint8_t y = util::lossy_cast<std::uint8_t>(127.0f * std::sin(angle) + 128.0f);
-        points[i] = {x, y};
-    }
-    return points;
-}
-
-[[nodiscard]] static Config::json defaultCalibration() {
-    static constexpr auto defaultStickCenter = std::to_array<std::uint8_t>({128, 128});
-
-    Config::json obj;
-    auto& main_stick = obj["main_stick"];
-    main_stick["notch_points"] = defaultNotchPoints();
-    main_stick["stick_center"] = defaultStickCenter;
-    obj["c_stick"] = main_stick;
-    return obj;
-}
-
-static constexpr std::string_view defaultInversionMapping = "oot-vc";
-
 static std::string getDescription(const json& value) {
     if (auto it = value.find("description"); it != value.end()) {
         return it->get_ref<const std::string&>();
@@ -472,9 +444,9 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
             // TODO: Safer check, ensure object hierarchy is correct
             if (data_obj.is_null()) {
                 if (name->get() == "data") {
-                    data_obj = defaultCalibration();
+                    data_obj = Config::defaultCalibration();
                 } else if (name->get() == "inversion_mapping") {
-                    data_obj = defaultInversionMapping;
+                    data_obj = Config::default_inversion_mapping;
                 } else {
                     throw std::runtime_error{fmt::format("Type for key has no default: {}\n", name->get())};
                 }

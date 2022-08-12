@@ -52,6 +52,9 @@ static constexpr auto notch_names = std::to_array<std::string_view>({
     "top-left",
 });
 
+static const auto main_stick_color = ImColor(255, 255, 255);
+static const auto c_stick_color = ImColor(255, 255, 0);
+
 static CalibrationWindow::Point toPoint(Vec2 v) { return {v.x, v.y}; }
 
 void CalibrationWindow::updateInputs(Inputs inputs) {
@@ -69,6 +72,13 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
         return;
     }
 
+    const auto inputs = [this]() {
+        std::scoped_lock lock(this->mutex);
+        return this->inputs;
+    }();
+
+    if (!(inputs.active_stages & STAGE_RAW)) ImGui::BeginDisabled();
+
     if (ImGui::Button("Calibrate")) {
         ImGui::OpenPopup("##calibration_popup");
         is_calibrating.store(true, std::memory_order_release);
@@ -76,15 +86,9 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
 
     ImGui::Checkbox("View Calibration Points", &view_calibration_points);
 
-    const auto inputs = [this]() {
-        std::scoped_lock lock(this->mutex);
-        return this->inputs;
-    }();
+    if (!(inputs.active_stages & STAGE_RAW)) ImGui::EndDisabled();
 
     drawPopup(inputs);
-
-    static const auto main_stick_color = ImColor(255, 255, 255);
-    static const auto c_stick_color = ImColor(255, 255, 0);
 
     StickCalibration main_stick_calibration;
     std::optional<std::span<Point>> main_stick_points;
@@ -127,11 +131,16 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
     }
 
     if (inputs.active_stages & STAGE_CALIBRATED) {
+        static const auto points = Config::defaultNotchPoints();
+        const auto points_span = view_calibration_points
+                                     ? std::optional{std::span(points.data(), points.data() + points.size())}
+                                     : std::nullopt;
+        const auto center = view_calibration_points ? std::optional{Config::default_stick_center} : std::nullopt;
+
         ImGui::TextUnformatted("Calibrated");
-        drawStick("main_calibrated", inputs.main_stick.calibrated, main_stick_color, main_stick_points,
-                  main_stick_center);
+        drawStick("main_calibrated", inputs.main_stick.calibrated, main_stick_color, points_span, center);
         ImGui::SameLine();
-        drawStick("c_calibrated", inputs.c_stick.calibrated, c_stick_color, c_stick_points, c_stick_center);
+        drawStick("c_calibrated", inputs.c_stick.calibrated, c_stick_color, points_span, center);
     }
 
     ImGui::End();
@@ -178,11 +187,11 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
             auto& center = is_main_stick ? main_stick_center : c_stick_center;
             auto& points = is_main_stick ? main_stick_points : c_stick_points;
             const auto& stick = is_main_stick ? inputs.main_stick : inputs.c_stick;
+            const auto& color = is_main_stick ? main_stick_color : c_stick_color;
 
-            if (center.has_value()) {
-                ImGui::TextUnformatted(
-                    fmt::format("{}stick center: ({}, {})", stick_name, (*center)[0], (*center)[1]).c_str());
-            } else {
+            drawStick(fmt::format("{} stick", stick_name).c_str(), stick.raw, color, points, center);
+
+            if (!center.has_value()) {
                 ImGui::TextUnformatted(fmt::format("Center {}stick and press A", stick_name).c_str());
                 if (shouldConfirm()) {
                     center = {stick.raw.x, stick.raw.y};
@@ -193,11 +202,7 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
             for (std::size_t notch = 0; notch < notch_names.size(); notch++) {
                 const auto& notch_name = notch_names.at(notch);
 
-                if (notch < points.size()) {
-                    const auto& point = points.at(notch);
-                    ImGui::TextUnformatted(
-                        fmt::format("{}stick {} notch: ({}, {})", stick_name, notch_name, point[0], point[1]).c_str());
-                } else {
+                if (notch >= points.size()) {
                     ImGui::TextUnformatted(
                         fmt::format("Move {}stick to center then to {} then press A", stick_name, notch_name).c_str());
                     if (shouldConfirm()) {
@@ -260,7 +265,7 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
 }
 
 void CalibrationWindow::drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
-                                  std::optional<std::span<Point>> points, std::optional<Point> center) {
+                                  std::optional<std::span<const Point>> points, std::optional<Point> center) {
     main_color.Value.w = 255.0f;
     static constexpr auto size = 60.0f;
     static constexpr auto octagon_radius = size * 0.4f;
