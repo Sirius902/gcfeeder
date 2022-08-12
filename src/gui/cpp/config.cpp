@@ -6,11 +6,25 @@
 #include <cstring>
 #include <exception>
 #include <fstream>
+#include <string>
 
 namespace fs = std::filesystem;
 
 Config::Config(const fs::path& json_path, std::string_view schema_str)
     : json_path(json_path), schema(json::parse(schema_str)) {}
+
+const Config::json& Config::getCurrentProfile() const {
+    const auto& config = getJson();
+    const auto& current_profile_str = config.at("current_profile").get_ref<const std::string&>();
+
+    for (const auto& [_, value] : config.at("profiles").items()) {
+        if (value.at("name").get_ref<const std::string&>() == current_profile_str) {
+            return value.at("config");
+        }
+    }
+
+    throw std::runtime_error(fmt::format("Profile not found: \"{}\"", current_profile_str));
+}
 
 void Config::load() {
     std::ifstream config_file(json_path.c_str());

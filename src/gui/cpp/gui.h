@@ -15,7 +15,7 @@
 class Gui {
 public:
     Gui(UIContext& context, AppLog& log)
-        : state{context, log}, config_editor(state), calibration_window(getCalibrationApplyFn()) {}
+        : state{context, log}, config_editor(state), calibration_window(state, getCalibrationApplyCallback()) {}
 
     bool isFeederReloadNeeded() const { return state.feeder_needs_reload.load(std::memory_order_acquire); }
     void notifyFeederReload() { state.feeder_needs_reload.store(false, std::memory_order_release); }
@@ -37,7 +37,7 @@ private:
 
     bool draw_demo_window = false;
 
-    CalibrationWindow::ApplyFunc getCalibrationApplyFn() {
+    CalibrationWindow::ApplyCallback getCalibrationApplyCallback() {
         return [this](Config::json&& calibration) { config_editor.updateProfileCalibration(std::move(calibration)); };
     }
 

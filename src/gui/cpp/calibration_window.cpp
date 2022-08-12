@@ -2,6 +2,8 @@
 
 #include <fmt/core.h>
 
+#include <cmath>
+#include <cstddef>
 #include <string_view>
 #include <utility>
 
@@ -9,10 +11,35 @@
 
 namespace chrono = std::chrono;
 
-void CalibrationWindow::updateInputs(Inputs inputs) {
-    std::scoped_lock lock(mutex);
-    this->inputs = inputs;
-}
+using json = Config::json;
+
+struct StickCalibration {
+    using Point = CalibrationWindow::Point;
+
+    std::array<Point, 8> notch_points;
+    Point stick_center;
+
+    StickCalibration() = default;
+
+    StickCalibration(const json& data) {
+        const auto& notch_points_data = data.at("notch_points").get_ref<const json::array_t&>();
+        const auto& stick_center_data = data.at("stick_center").get_ref<const json::array_t&>();
+
+        for (std::size_t i = 0; i < notch_points_data.size(); i++) {
+            const auto& point = notch_points_data.at(i).get_ref<const json::array_t&>();
+
+            for (std::size_t j = 0; j < point.size(); j++) {
+                const auto value = util::lossy_cast<std::uint8_t>(point.at(j).get<json::number_unsigned_t>());
+                notch_points[i][j] = value;
+            }
+        }
+
+        for (std::size_t i = 0; i < stick_center_data.size(); i++) {
+            const auto value = util::lossy_cast<std::uint8_t>(stick_center_data.at(i).get<json::number_unsigned_t>());
+            stick_center[i] = value;
+        }
+    }
+};
 
 static constexpr auto notch_names = std::to_array<std::string_view>({
     "top",
@@ -24,6 +51,13 @@ static constexpr auto notch_names = std::to_array<std::string_view>({
     "left",
     "top-left",
 });
+
+static CalibrationWindow::Point toPoint(Vec2 v) { return {v.x, v.y}; }
+
+void CalibrationWindow::updateInputs(Inputs inputs) {
+    std::scoped_lock lock(mutex);
+    this->inputs = inputs;
+}
 
 void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
     if (!open) {
@@ -40,6 +74,8 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
         is_calibrating.store(true, std::memory_order_release);
     }
 
+    ImGui::Checkbox("View Calibration Points", &view_calibration_points);
+
     const auto inputs = [this]() {
         std::scoped_lock lock(this->mutex);
         return this->inputs;
@@ -47,34 +83,62 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
 
     drawPopup(inputs);
 
+    static const auto main_stick_color = ImColor(255, 255, 255);
+    static const auto c_stick_color = ImColor(255, 255, 0);
+
+    StickCalibration main_stick_calibration;
+    std::optional<std::span<Point>> main_stick_points;
+    std::optional<Point> main_stick_center;
+
+    StickCalibration c_stick_calibration;
+    std::optional<std::span<Point>> c_stick_points;
+    std::optional<Point> c_stick_center;
+
+    if (state.config.isLoaded() && view_calibration_points) {
+        const auto& profile = state.config.getCurrentProfile();
+        const auto& calibration_data = profile.at("calibration").at("data");
+
+        if (!calibration_data.is_null()) {
+            const auto& main_stick_data = calibration_data.at("main_stick");
+            const auto& c_stick_data = calibration_data.at("c_stick");
+
+            main_stick_calibration = StickCalibration(main_stick_data);
+            main_stick_points = std::span(main_stick_calibration.notch_points);
+            main_stick_center = main_stick_calibration.stick_center;
+
+            c_stick_calibration = StickCalibration(c_stick_data);
+            c_stick_points = std::span(c_stick_calibration.notch_points);
+            c_stick_center = c_stick_calibration.stick_center;
+        }
+    }
+
     if (inputs.active_stages & STAGE_RAW) {
-        ImGui::TextUnformatted(fmt::format("Raw: ({}, {}) | ({}, {})", inputs.main_stick.raw.x, inputs.main_stick.raw.y,
-                                           inputs.c_stick.raw.x, inputs.c_stick.raw.y)
-                                   .c_str());
+        ImGui::TextUnformatted("Raw");
+        drawStick("main_raw", inputs.main_stick.raw, main_stick_color, main_stick_points, main_stick_center);
+        ImGui::SameLine();
+        drawStick("c_raw", inputs.c_stick.raw, c_stick_color, c_stick_points, c_stick_center);
     }
 
     if (inputs.active_stages & STAGE_MAPPED) {
-        ImGui::TextUnformatted(fmt::format("Mapped: ({}, {}) | ({}, {})", inputs.main_stick.mapped.x,
-                                           inputs.main_stick.mapped.y, inputs.c_stick.mapped.x, inputs.c_stick.mapped.y)
-                                   .c_str());
+        ImGui::TextUnformatted("Mapped");
+        drawStick("main_mapped", inputs.main_stick.mapped, main_stick_color, main_stick_points, main_stick_center);
+        ImGui::SameLine();
+        drawStick("c_mapped", inputs.c_stick.mapped, c_stick_color, c_stick_points, c_stick_center);
     }
 
     if (inputs.active_stages & STAGE_CALIBRATED) {
-        ImGui::TextUnformatted(fmt::format("Calibrated: ({}, {}) | ({}, {})", inputs.main_stick.calibrated.x,
-                                           inputs.main_stick.calibrated.y, inputs.c_stick.calibrated.x,
-                                           inputs.c_stick.calibrated.y)
-                                   .c_str());
-    }
-
-    if (inputs.active_stages & STAGE_RAW) {
-        ImGui::TextUnformatted(fmt::format("A Pressed: {}", inputs.a_pressed != 0).c_str());
+        ImGui::TextUnformatted("Calibrated");
+        drawStick("main_calibrated", inputs.main_stick.calibrated, main_stick_color, main_stick_points,
+                  main_stick_center);
+        ImGui::SameLine();
+        drawStick("c_calibrated", inputs.c_stick.calibrated, c_stick_color, c_stick_points, c_stick_center);
     }
 
     ImGui::End();
 }
 
 void CalibrationWindow::applyCalibration() {
-    Config::json calibration;
+    json calibration;
 
     auto& main_stick = calibration["main_stick"];
     main_stick["notch_points"] = main_stick_points;
@@ -193,4 +257,54 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
     } else {
         if (isCalibrating()) endCalibration();
     }
+}
+
+void CalibrationWindow::drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
+                                  std::optional<std::span<Point>> points, std::optional<Point> center) {
+    main_color.Value.w = 255.0f;
+    static constexpr auto size = 60.0f;
+    static constexpr auto octagon_radius = size * 0.4f;
+    const auto background_color = ImColor(main_color.Value.x, main_color.Value.y, main_color.Value.z, 0.6f);
+    const auto calibration_color =
+        ImColor(1.0f - background_color.Value.x, 1.0f - background_color.Value.y, 1.0f - background_color.Value.z);
+
+    ImGui::BeginChild(str_id, ImVec2(size, size));
+
+    const auto cursor_pos = ImGui::GetCursorScreenPos();
+    const auto center_pos = ImVec2(cursor_pos.x + 0.5f * size, cursor_pos.y + 0.5f * size);
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+    const auto drawStickPoint = [&](Point coords, const ImColor& color) {
+        static constexpr float half_size = size / 20.0f;
+
+        float x_norm = static_cast<float>(coords[0]) / 255.0f - 0.5f;
+        float y_norm = static_cast<float>(coords[1]) / 255.0f - 0.5f;
+
+        float radius = std::sqrtf(x_norm * x_norm + y_norm * y_norm);
+        float angle = std::atan2f(y_norm, x_norm);
+        float x = 2.0f * octagon_radius * radius * std::cos(angle);
+        float y = 2.0f * octagon_radius * radius * std::sin(angle);
+
+        const auto rect_p1 = ImVec2(center_pos.x - half_size + x, center_pos.y - half_size - y);
+        const auto rect_p2 = ImVec2(center_pos.x + half_size + x, center_pos.y + half_size - y);
+        draw_list->AddRectFilled(rect_p1, rect_p2, color);
+    };
+
+    draw_list->AddRect(cursor_pos, ImVec2(cursor_pos.x + size, cursor_pos.y + size), background_color);
+    draw_list->AddNgonFilled(center_pos, octagon_radius, background_color, 8);
+
+    if (center.has_value()) {
+        drawStickPoint(center.value(), calibration_color);
+    }
+
+    if (points.has_value()) {
+        for (const auto& point : points.value()) {
+            drawStickPoint(point, calibration_color);
+        }
+    }
+
+    drawStickPoint(toPoint(stick_pos), main_color);
+
+    ImGui::EndChild();
 }

@@ -8,6 +8,7 @@
 #include <mutex>
 #include <nlohmann/json.hpp>
 #include <optional>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -16,13 +17,16 @@
 
 #include "config.h"
 #include "gui_main.h"
+#include "gui_state.h"
 
 class CalibrationWindow {
 public:
-    using ApplyFunc = std::function<void(Config::json&&)>;
+    using Point = std::array<std::uint8_t, 2>;
+    using ApplyCallback = std::function<void(Config::json&&)>;
 
-    template <std::convertible_to<ApplyFunc> ApplyFuncT>
-    CalibrationWindow(ApplyFuncT&& apply_fn) : apply_fn(std::forward<ApplyFuncT>(apply_fn)) {}
+    template <std::convertible_to<ApplyCallback> ApplyCallbackT>
+    CalibrationWindow(const GuiState& state, ApplyCallbackT&& apply_fn)
+        : state(state), apply_fn(std::forward<ApplyCallbackT>(apply_fn)) {}
 
     bool isCalibrating() const { return is_calibrating.load(std::memory_order_acquire); }
 
@@ -31,9 +35,9 @@ public:
 
 private:
     using clock = std::chrono::steady_clock;
-    using Point = std::array<std::uint8_t, 2>;
 
-    ApplyFunc apply_fn;
+    const GuiState& state;
+    ApplyCallback apply_fn;
 
     std::mutex mutex;
     Inputs inputs{};
@@ -44,8 +48,13 @@ private:
     std::vector<Point> main_stick_points;
     std::vector<Point> c_stick_points;
 
+    bool view_calibration_points{false};
     bool was_pressed{false};
 
     void applyCalibration();
     void drawPopup(const Inputs& inputs);
+
+    static void drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
+                          std::optional<std::span<Point>> points = std::nullopt,
+                          std::optional<Point> center = std::nullopt);
 };

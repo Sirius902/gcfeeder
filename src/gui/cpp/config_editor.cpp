@@ -155,19 +155,10 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
     const auto& profile_schema =
         state.config.schema.at("properties").at("profiles").at("items").at("properties").at("config");
 
-    auto& profile_data = [&]() -> json& {
+    // TODO: Don't crash if profile is not in list.
+    auto& profile_data = [this]() -> json& {
         if (!profile.has_value()) {
-            for (auto& [_, value] : config.at("profiles").items()) {
-                if (value.at("name").get_ref<const std::string&>() == current_profile_name) {
-                    profile = value.at("config");
-                    break;
-                }
-            }
-
-            if (!profile.has_value()) {
-                // TODO: Don't crash if profile is not in list.
-                throw std::runtime_error(fmt::format("profile not found: \"{}\"", current_profile_name));
-            }
+            profile.emplace(state.config.getCurrentProfile());
         }
 
         return profile.value();
