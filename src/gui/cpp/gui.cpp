@@ -59,7 +59,6 @@ void Gui::drawAndUpdate() {
             ImGui::MenuItem("Config", nullptr, &draw_config_editor);
             ImGui::MenuItem("Calibration", nullptr, &draw_calibration_window);
             ImGui::MenuItem("Log", nullptr, &draw_log);
-            ImGui::MenuItem("[DEBUG] Demo Window", nullptr, &draw_demo_window);
 
             ImGui::EndMenu();
         }
@@ -70,9 +69,6 @@ void Gui::drawAndUpdate() {
     config_editor.drawAndUpdate("Config", draw_config_editor);
     calibration_window.drawAndUpdate("Calibration", draw_calibration_window);
     state.log.drawAndUpdate("Log", draw_log);
-
-    // TODO: Remove
-    if (draw_demo_window) ImGui::ShowDemoWindow(&draw_demo_window);
 
     ImGui::End();
 }

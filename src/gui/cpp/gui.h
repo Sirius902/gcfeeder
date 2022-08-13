@@ -37,8 +37,6 @@ private:
     bool draw_log = true;
     ImGuiID dockspace_id;
 
-    bool draw_demo_window = false;
-
     CalibrationWindow::ApplyCallback getStickCalibrationApplyCallback() {
         return
             [this](Config::json&& calibration) { config_editor.updateProfileStickCalibration(std::move(calibration)); };
