@@ -18,6 +18,7 @@ pub fn build(b: *Builder) void {
 
     const version_opt = b.option([]const u8, "version", "Override build version string");
     const no_git = b.option(bool, "no-git", "Do not use Git to obtain build info") orelse false;
+    const console = b.option(bool, "console", "Build with Windows subsystem") orelse false;
 
     const build_info = BuildInfoStep.create(b, .{
         .no_git = no_git,
@@ -35,6 +36,8 @@ pub fn build(b: *Builder) void {
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
+
+    if (console) exe.subsystem = .Windows;
 
     exe.linkLibCpp();
     linkLibusb(b, exe);
