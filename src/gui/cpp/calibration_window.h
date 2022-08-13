@@ -53,13 +53,23 @@ private:
     std::vector<Point> main_stick_points;
     std::vector<Point> c_stick_points;
 
-    bool view_calibration_points{false};
+    std::array<std::optional<std::uint8_t>, 2> l_trigger_range;
+    std::array<std::optional<std::uint8_t>, 2> r_trigger_range;
+
+    bool view_calibration_data{false};
     bool a_was_pressed{false};
 
     void applyStickCalibration();
-    void drawPopup(const Inputs& inputs);
+    void applyTriggerCalibration();
 
-    static void drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,
+    bool shouldConfirm(const Inputs& inputs);
+    void drawStickPopup(const Inputs& inputs);
+    void drawTriggerPopup(const Inputs& inputs);
+
+    static void drawStick(const char* str_id, Vec2 stick_pos, ImColor color,
                           std::optional<std::span<const Point>> points = std::nullopt,
                           std::optional<Point> center = std::nullopt);
+
+    static void drawTrigger(const char* str_id, std::uint8_t value, char signifier, ImColor color,
+                            std::optional<std::array<std::uint8_t, 2>> range = std::nullopt);
 };

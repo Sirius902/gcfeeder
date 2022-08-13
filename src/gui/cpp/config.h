@@ -19,6 +19,7 @@ public:
 
     static constexpr std::string_view default_inversion_mapping = "oot-vc";
     static constexpr std::array<std::uint8_t, 2> default_stick_center{128, 128};
+    static constexpr std::array<std::uint8_t, 2> default_trigger_range{0, 255};
 
     Config(const std::filesystem::path& json_path, std::string_view schema_str);
 

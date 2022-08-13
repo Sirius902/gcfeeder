@@ -19,18 +19,24 @@ typedef struct Vec2 {
     uint8_t y;
 } Vec2;
 
-typedef struct StickInputs {
-    Vec2 raw;
-    Vec2 mapped;
-    Vec2 calibrated;
-    Vec2 scaled;
-} StickInputs;
+typedef struct Stage {
+    Vec2 main_stick;
+    Vec2 c_stick;
+    uint8_t l_trigger;
+    uint8_t r_trigger;
+} Stage;
+
+typedef struct Stages {
+    Stage raw;
+    Stage mapped;
+    Stage calibrated;
+    Stage scaled;
+} Stages;
 
 typedef struct Inputs {
-    StickInputs main_stick;
-    StickInputs c_stick;
-    uint8_t a_pressed;
+    Stages stages;
     uint8_t active_stages;
+    uint8_t a_pressed;
 } Inputs;
 
 typedef struct CUIContext {

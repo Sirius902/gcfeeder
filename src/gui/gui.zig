@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const build_info = @import("build_info");
+const Input = @import("../adapter.zig").Input;
 const c = @cImport({
     @cInclude("gui_main.h");
 });
@@ -72,9 +73,19 @@ pub inline fn notifyReload() void {
     c.notifyFeederReload();
 }
 
-pub const Inputs = c.Inputs;
+pub const CInputs = c.Inputs;
+pub const CStage = c.Stage;
 
 pub const Stage = struct {
+    pub fn fromInput(input: Input) CStage {
+        return .{
+            .main_stick = .{ .x = input.stick_x, .y = input.stick_y },
+            .c_stick = .{ .x = input.substick_x, .y = input.substick_y },
+            .l_trigger = input.trigger_left,
+            .r_trigger = input.trigger_right,
+        };
+    }
+
     pub const Type = @TypeOf(std.mem.zeroes(c.Inputs).active_stages);
 
     pub const raw: Type = c.STAGE_RAW;
@@ -83,7 +94,7 @@ pub const Stage = struct {
     pub const scaled: Type = c.STAGE_SCALED;
 };
 
-pub inline fn updateInputs(inputs: Inputs) void {
+pub inline fn updateInputs(inputs: CInputs) void {
     c.updateInputs(inputs);
 }
 

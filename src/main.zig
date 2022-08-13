@@ -263,19 +263,12 @@ fn inputLoop(context: *Context) void {
                 calibrated;
 
             gui.updateInputs(.{
-                .main_stick = .{
-                    .raw = .{ .x = input.stick_x, .y = input.stick_y },
-                    .mapped = .{ .x = ess_mapped.stick_x, .y = ess_mapped.stick_y },
-                    .calibrated = .{ .x = calibrated.stick_x, .y = calibrated.stick_y },
-                    .scaled = .{ .x = scaled.stick_x, .y = scaled.stick_y },
+                .stages = .{
+                    .raw = gui.Stage.fromInput(input),
+                    .mapped = gui.Stage.fromInput(ess_mapped),
+                    .calibrated = gui.Stage.fromInput(calibrated),
+                    .scaled = gui.Stage.fromInput(scaled),
                 },
-                .c_stick = .{
-                    .raw = .{ .x = input.substick_x, .y = input.substick_y },
-                    .mapped = .{ .x = ess_mapped.substick_x, .y = ess_mapped.substick_y },
-                    .calibrated = .{ .x = calibrated.substick_x, .y = calibrated.substick_y },
-                    .scaled = .{ .x = scaled.substick_x, .y = scaled.substick_y },
-                },
-                .a_pressed = @boolToInt(input.button_a),
                 .active_stages = blk: {
                     var s = gui.Stage.raw;
                     if (context.ess_mapping != null) s |= gui.Stage.mapped;
@@ -288,6 +281,7 @@ fn inputLoop(context: *Context) void {
                     if (should_apply_scaling) s |= gui.Stage.scaled;
                     break :blk s;
                 },
+                .a_pressed = @boolToInt(input.button_a),
             });
 
             const to_feed = if (gui.isCalibrating()) Input.default else scaled;
