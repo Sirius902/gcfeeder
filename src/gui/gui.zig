@@ -3,6 +3,7 @@ const builtin = @import("builtin");
 const build_info = @import("build_info");
 const Input = @import("../adapter.zig").Input;
 const c = @cImport({
+    @cInclude("glad/glad.h");
     @cInclude("gui_main.h");
 });
 
@@ -38,6 +39,9 @@ pub fn runImGui(allocator: std.mem.Allocator) !void {
         return error.GlfwCreateWindowFailed;
     c.glfwMakeContextCurrent(window);
     c.glfwSwapInterval(1); // Enable vsync
+
+    if (c.gladLoadGL() == 0)
+        return error.GladInitFailed;
 
     const exe_dir_path_z = blk: {
         const exe_dir_path = try std.fs.selfExeDirPathAlloc(allocator);

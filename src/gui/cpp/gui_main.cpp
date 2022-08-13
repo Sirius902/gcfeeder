@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cmath>
 #include <condition_variable>
-#include <cstdio>
 #include <filesystem>
 #include <mutex>
 #include <optional>
@@ -64,11 +63,6 @@ extern "C" int isCalibrating() {
 }
 
 extern "C" int runImGui(CUIContext* c_context) {
-    if (gladLoadGL() == 0) {
-        fmt::print(stderr, "gladLoadGL failed\n");
-        return 1;
-    }
-
     UIContext context(*c_context);
     GLFWwindow* window = context.window;
 
