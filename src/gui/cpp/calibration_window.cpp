@@ -127,10 +127,10 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
     std::optional<Point> c_stick_center;
 
     TriggerCalibration l_trigger_calibration;
-    std::optional<std::array<std::uint8_t, 2>> l_trigger_range;
+    std::optional<std::span<std::uint8_t>> l_trigger_range;
 
     TriggerCalibration r_trigger_calibration;
-    std::optional<std::array<std::uint8_t, 2>> r_trigger_range;
+    std::optional<std::span<std::uint8_t>> r_trigger_range;
 
     if (state.config.isLoaded() && view_calibration_data) {
         const auto& profile = state.config.getCurrentProfile();
@@ -198,11 +198,13 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
 
         ImGui::SameLine();
 
-        const auto range = view_calibration_data ? std::optional{Config::default_trigger_range} : std::nullopt;
+        const auto& range = Config::default_trigger_range;
+        const auto range_span =
+            view_calibration_data ? std::optional{std::span(range.data(), range.data() + range.size())} : std::nullopt;
 
-        drawTrigger("l_trigger_calibrated", stage.l_trigger, 'L', main_stick_color, range);
+        drawTrigger("l_trigger_calibrated", stage.l_trigger, 'L', main_stick_color, range_span);
         ImGui::SameLine();
-        drawTrigger("r_trigger_calibrated", stage.r_trigger, 'R', main_stick_color, range);
+        drawTrigger("r_trigger_calibrated", stage.r_trigger, 'R', main_stick_color, range_span);
     }
 
     if (inputs.active_stages & STAGE_SCALED) {
@@ -227,11 +229,11 @@ void CalibrationWindow::applyStickCalibration() {
 
     auto& main_stick = calibration["main_stick"];
     main_stick["notch_points"] = main_stick_points;
-    main_stick["stick_center"] = *main_stick_center;
+    main_stick["stick_center"] = main_stick_center.value();
 
     auto& c_stick = calibration["c_stick"];
     c_stick["notch_points"] = c_stick_points;
-    c_stick["stick_center"] = *c_stick_center;
+    c_stick["stick_center"] = c_stick_center.value();
 
     stick_apply_fn(std::move(calibration));
 }
@@ -369,7 +371,22 @@ void CalibrationWindow::drawTriggerPopup(const Inputs& inputs) {
             const auto& value = is_left_stick ? inputs.stages.raw.l_trigger : inputs.stages.raw.r_trigger;
             const auto& color = main_stick_color;
 
-            drawTrigger(fmt::format("{} trigger", trigger_name).c_str(), value, is_left_stick ? 'L' : 'R', color);
+            std::size_t nullopt_count = 0;
+            for (std::size_t i = 0; i < range.size(); i++) {
+                if (!range[i].has_value()) {
+                    nullopt_count++;
+                }
+            }
+
+            const auto bounds_to_draw = std::to_array({
+                range[0].value_or(0),
+                range[1].value_or(0),
+            });
+            const auto bounds_to_draw_span =
+                std::optional{std::span(bounds_to_draw.data(), bounds_to_draw.data() + (range.size() - nullopt_count))};
+
+            drawTrigger(fmt::format("{} trigger", trigger_name).c_str(), value, is_left_stick ? 'L' : 'R', color,
+                        bounds_to_draw_span);
 
             for (std::size_t i = 0; i < range.size(); i++) {
                 if (!range[i].has_value()) {
@@ -498,7 +515,7 @@ void CalibrationWindow::drawStick(const char* str_id, Vec2 stick_pos, ImColor co
 }
 
 void CalibrationWindow::drawTrigger(const char* str_id, std::uint8_t value, char signifier, ImColor color,
-                                    std::optional<std::array<std::uint8_t, 2>> range) {
+                                    std::optional<std::span<const std::uint8_t>> range) {
     constexpr auto size = ImVec2(15.0f, 60.0f);
     const auto main_color = colorWithAlpha(color, 1.0f);
     const auto background_color = colorWithAlpha(color, 0.6f);

@@ -71,5 +71,5 @@ private:
                           std::optional<Point> center = std::nullopt);
 
     static void drawTrigger(const char* str_id, std::uint8_t value, char signifier, ImColor color,
-                            std::optional<std::array<std::uint8_t, 2>> range = std::nullopt);
+                            std::optional<std::span<const std::uint8_t>> range = std::nullopt);
 };
