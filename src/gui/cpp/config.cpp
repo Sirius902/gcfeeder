@@ -43,12 +43,21 @@ std::array<std::array<std::uint8_t, 2>, 8> Config::defaultNotchPoints() {
     return points;
 }
 
-Config::json Config::defaultCalibration() {
+Config::json Config::defaultStickCalibration() {
     json obj;
     auto& main_stick = obj["main_stick"];
     main_stick["notch_points"] = defaultNotchPoints();
     main_stick["stick_center"] = default_stick_center;
     obj["c_stick"] = main_stick;
+    return obj;
+}
+
+Config::json Config::defaultTriggerCalibration() {
+    json obj;
+    auto& l_trigger = obj["l_trigger"];
+    l_trigger["min"] = 0;
+    l_trigger["max"] = 255;
+    obj["r_trigger"] = l_trigger;
     return obj;
 }
 

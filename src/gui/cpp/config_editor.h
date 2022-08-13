@@ -28,11 +28,21 @@ public:
     ConfigEditor(GuiState& state) : state(state) {}
 
     template <std::convertible_to<Config::json> Json>
-    void updateProfileCalibration(Json&& calibration) {
+    void updateProfileStickCalibration(Json&& calibration) {
         if (profile.has_value()) {
             auto& config_calibration = profile->at("calibration");
             config_calibration.at("enabled") = true;
-            config_calibration.at("data") = std::forward<Json>(calibration);
+            config_calibration.at("stick_data") = std::forward<Json>(calibration);
+            profile_dirty = true;
+        }
+    }
+
+    template <std::convertible_to<Config::json> Json>
+    void updateProfileTriggerCalibration(Json&& calibration) {
+        if (profile.has_value()) {
+            auto& config_calibration = profile->at("calibration");
+            config_calibration.at("enabled") = true;
+            config_calibration.at("trigger_data") = std::forward<Json>(calibration);
             profile_dirty = true;
         }
     }

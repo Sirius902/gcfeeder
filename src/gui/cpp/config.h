@@ -37,7 +37,8 @@ public:
     const json& getCurrentProfile() const;
 
     [[nodiscard]] static std::array<std::array<std::uint8_t, 2>, 8> defaultNotchPoints();
-    [[nodiscard]] static json defaultCalibration();
+    [[nodiscard]] static json defaultStickCalibration();
+    [[nodiscard]] static json defaultTriggerCalibration();
 
     void load();
     void save();

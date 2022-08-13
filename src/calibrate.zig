@@ -3,14 +3,13 @@ const zlm = @import("zlm");
 const Adapter = @import("adapter.zig").Adapter;
 const Input = @import("adapter.zig").Input;
 const stick_range = @import("adapter.zig").Calibration.stick_range;
+const trigger_range = @import("adapter.zig").Calibration.trigger_range;
+
+pub const Error = error{BadCalibration};
 
 pub const StickCalibration = struct {
     notch_points: [8][2]u8,
     stick_center: [2]u8,
-
-    pub const Error = error{
-        BadCalibration,
-    };
 
     pub fn map(self: StickCalibration, pos: [2]u8) Error![2]u8 {
         const q = self.quadrant(pos);
@@ -169,13 +168,30 @@ pub const StickCalibration = struct {
     }
 };
 
-pub const Calibration = struct {
+pub const TriggerCalibration = struct {
+    min: u8,
+    max: u8,
+
+    pub fn map(self: TriggerCalibration, value: u8) Error!u8 {
+        if (self.min >= self.max) return error.BadCalibration;
+
+        const min = @intToFloat(f32, self.min);
+        const max = @intToFloat(f32, self.max);
+        const trigger_min = @intToFloat(f32, trigger_range.min);
+        const trigger_max = @intToFloat(f32, trigger_range.max);
+
+        const value_norm = (@intToFloat(f32, value) - min) / (max - min);
+        return std.math.lossyCast(u8, @round(
+            value_norm * (trigger_max - trigger_min) + trigger_min,
+        ));
+    }
+};
+
+pub const SticksCalibration = struct {
     main_stick: StickCalibration,
     c_stick: StickCalibration,
 
-    pub const Error = StickCalibration.Error;
-
-    pub fn map(self: Calibration, input: Input) Error!Input {
+    pub fn map(self: SticksCalibration, input: Input) Error!Input {
         const main_stick = try self.main_stick.map([_]u8{ input.stick_x, input.stick_y });
         const c_stick = try self.c_stick.map([_]u8{ input.substick_x, input.substick_y });
 
@@ -184,6 +200,18 @@ pub const Calibration = struct {
         res.stick_y = main_stick[1];
         res.substick_x = c_stick[0];
         res.substick_y = c_stick[1];
+        return res;
+    }
+};
+
+pub const TriggersCalibration = struct {
+    l_trigger: TriggerCalibration,
+    r_trigger: TriggerCalibration,
+
+    pub fn map(self: TriggersCalibration, input: Input) Error!Input {
+        var res = input;
+        res.trigger_left = try self.l_trigger.map(res.trigger_left);
+        res.trigger_right = try self.r_trigger.map(res.trigger_right);
         return res;
     }
 };

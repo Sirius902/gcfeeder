@@ -100,7 +100,7 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
 
     if (state.config.isLoaded() && view_calibration_points) {
         const auto& profile = state.config.getCurrentProfile();
-        const auto& calibration_data = profile.at("calibration").at("data");
+        const auto& calibration_data = profile.at("calibration").at("stick_data");
 
         if (!calibration_data.is_null()) {
             const auto& main_stick_data = calibration_data.at("main_stick");
@@ -153,7 +153,7 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
     ImGui::End();
 }
 
-void CalibrationWindow::applyCalibration() {
+void CalibrationWindow::applyStickCalibration() {
     json calibration;
 
     auto& main_stick = calibration["main_stick"];
@@ -164,7 +164,7 @@ void CalibrationWindow::applyCalibration() {
     c_stick["notch_points"] = c_stick_points;
     c_stick["stick_center"] = *c_stick_center;
 
-    apply_fn(std::move(calibration));
+    stick_apply_fn(std::move(calibration));
 }
 
 void CalibrationWindow::drawPopup(const Inputs& inputs) {
@@ -177,11 +177,11 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
     };
 
     static auto shouldConfirm = [&]() -> bool {
-        if (inputs.a_pressed && !was_pressed) {
-            was_pressed = true;
+        if (inputs.a_pressed && !a_was_pressed) {
+            a_was_pressed = true;
             return true;
         } else if (!inputs.a_pressed) {
-            was_pressed = false;
+            a_was_pressed = false;
         }
 
         return false;
@@ -247,7 +247,7 @@ void CalibrationWindow::drawPopup(const Inputs& inputs) {
 
             ImGui::TextUnformatted("Calibration finished. Apply to config editor profile?");
             if (ImGui::Button("Apply")) {
-                applyCalibration();
+                applyStickCalibration();
                 ImGui::CloseCurrentPopup();
                 endCalibration();
             }

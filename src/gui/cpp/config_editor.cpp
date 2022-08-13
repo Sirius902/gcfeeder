@@ -443,8 +443,10 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
         if (ImGui::Checkbox("Present", &present)) {
             // TODO: Safer check, ensure object hierarchy is correct
             if (data_obj.is_null()) {
-                if (name->get() == "data") {
-                    data_obj = Config::defaultCalibration();
+                if (name->get() == "stick_data") {
+                    data_obj = Config::defaultStickCalibration();
+                } else if (name->get() == "trigger_data") {
+                    data_obj = Config::defaultTriggerCalibration();
                 } else if (name->get() == "inversion_mapping") {
                     data_obj = Config::default_inversion_mapping;
                 } else {

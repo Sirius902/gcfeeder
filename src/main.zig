@@ -112,8 +112,8 @@ fn loadAndSetConfig(context: *Context) !void {
     context.is_calibration_bad = false;
 
     std.log.info("Config loaded with profile \"{s}\"", .{profile_name});
-    if (config.calibration.enabled and config.calibration.data == null) {
-        std.log.warn("Ignoring calibration: missing data", .{});
+    if (config.calibration.enabled and config.calibration.stick_data == null and config.calibration.trigger_data == null) {
+        std.log.warn("Ignoring calibration: missing both stick and trigger data", .{});
     }
     gui.notifyReload();
 }
@@ -234,14 +234,27 @@ fn inputLoop(context: *Context) void {
 
         if (inputs[0]) |input| {
             const ess_mapped = if (context.ess_mapping) |m| ess.map(m, input) else input;
-            const calibrated = if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad)
-                config.calibration.data.?.map(ess_mapped) catch {
-                    context.is_calibration_bad = true;
-                    std.log.warn("Ignoring calibration: bad calibration data", .{});
-                    continue;
-                }
-            else
-                ess_mapped;
+            const calibrated = blk: {
+                const stick_calibrated = if (config.calibration.enabled and config.calibration.stick_data != null and !context.is_calibration_bad)
+                    config.calibration.stick_data.?.map(ess_mapped) catch {
+                        context.is_calibration_bad = true;
+                        std.log.warn("Ignoring calibration: bad stick calibration data", .{});
+                        continue;
+                    }
+                else
+                    ess_mapped;
+
+                const trigger_calibrated = if (config.calibration.enabled and config.calibration.trigger_data != null and !context.is_calibration_bad)
+                    config.calibration.trigger_data.?.map(stick_calibrated) catch {
+                        context.is_calibration_bad = true;
+                        std.log.warn("Ignoring calibration: bad trigger calibration data", .{});
+                        continue;
+                    }
+                else
+                    stick_calibrated;
+
+                break :blk trigger_calibrated;
+            };
 
             const should_apply_scaling = !std.math.approxEqAbs(f32, config.analog_scale, 1.0, 1e-5);
             const scaled = if (should_apply_scaling)
@@ -266,7 +279,12 @@ fn inputLoop(context: *Context) void {
                 .active_stages = blk: {
                     var s = gui.Stage.raw;
                     if (context.ess_mapping != null) s |= gui.Stage.mapped;
-                    if (config.calibration.enabled and config.calibration.data != null and !context.is_calibration_bad) s |= gui.Stage.calibrated;
+                    if (config.calibration.enabled and
+                        (config.calibration.stick_data != null or config.calibration.trigger_data != null) and
+                        !context.is_calibration_bad)
+                    {
+                        s |= gui.Stage.calibrated;
+                    }
                     if (should_apply_scaling) s |= gui.Stage.scaled;
                     break :blk s;
                 },

@@ -63,8 +63,8 @@
                                     "enabled": {
                                         "type": "boolean"
                                     },
-                                    "data": {
-                                        "description": "Calibration data",
+                                    "stick_data": {
+                                        "description": "Analog stick calibration data",
                                         "anyOf": [
                                             {
                                                 "type": "null"
@@ -150,11 +150,70 @@
                                                 "additionalProperties": false
                                             }
                                         ]
+                                    },
+                                    "trigger_data": {
+                                        "description": "Trigger calibration data",
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "l_trigger": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "min": {
+                                                                "type": "integer",
+                                                                "minimum": 0,
+                                                                "maximum": 255
+                                                            },
+                                                            "max": {
+                                                                "type": "integer",
+                                                                "minimum": 0,
+                                                                "maximum": 255
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "min",
+                                                            "max"
+                                                        ],
+                                                        "additionalProperties": false
+                                                    },
+                                                    "r_trigger": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "min": {
+                                                                "type": "integer",
+                                                                "minimum": 0,
+                                                                "maximum": 255
+                                                            },
+                                                            "max": {
+                                                                "type": "integer",
+                                                                "minimum": 0,
+                                                                "maximum": 255
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "min",
+                                                            "max"
+                                                        ],
+                                                        "additionalProperties": false
+                                                    }
+                                                },
+                                                "required": [
+                                                    "l_trigger",
+                                                    "r_trigger"
+                                                ],
+                                                "additionalProperties": false
+                                            }
+                                        ]
                                     }
                                 },
                                 "required": [
                                     "enabled",
-                                    "data"
+                                    "stick_data",
+                                    "trigger_data"
                                 ],
                                 "additionalProperties": false
                             },

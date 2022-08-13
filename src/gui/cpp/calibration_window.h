@@ -24,9 +24,13 @@ public:
     using Point = std::array<std::uint8_t, 2>;
     using ApplyCallback = std::function<void(Config::json&&)>;
 
-    template <std::convertible_to<ApplyCallback> ApplyCallbackT>
-    CalibrationWindow(const GuiState& state, ApplyCallbackT&& apply_fn)
-        : state(state), apply_fn(std::forward<ApplyCallbackT>(apply_fn)) {}
+    template <std::convertible_to<ApplyCallback> StickApplyCallback,
+              std::convertible_to<ApplyCallback> TriggerApplyCallback>
+    CalibrationWindow(const GuiState& state, StickApplyCallback&& stick_apply_fn,
+                      TriggerApplyCallback&& trigger_apply_fn)
+        : state(state),
+          stick_apply_fn(std::forward<StickApplyCallback>(stick_apply_fn)),
+          trigger_apply_fn(std::forward<TriggerApplyCallback>(trigger_apply_fn)) {}
 
     bool isCalibrating() const { return is_calibrating.load(std::memory_order_acquire); }
 
@@ -37,7 +41,8 @@ private:
     using clock = std::chrono::steady_clock;
 
     const GuiState& state;
-    ApplyCallback apply_fn;
+    ApplyCallback stick_apply_fn;
+    ApplyCallback trigger_apply_fn;
 
     std::mutex mutex;
     Inputs inputs{};
@@ -49,9 +54,9 @@ private:
     std::vector<Point> c_stick_points;
 
     bool view_calibration_points{false};
-    bool was_pressed{false};
+    bool a_was_pressed{false};
 
-    void applyCalibration();
+    void applyStickCalibration();
     void drawPopup(const Inputs& inputs);
 
     static void drawStick(const char* str_id, Vec2 stick_pos, ImColor main_color,

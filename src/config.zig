@@ -1,7 +1,8 @@
 const std = @import("std");
 const build_info = @import("build_info");
 const ess = @import("ess/ess.zig");
-const Calibration = @import("calibrate.zig").Calibration;
+const SticksCalibration = @import("calibrate.zig").SticksCalibration;
+const TriggersCalibration = @import("calibrate.zig").TriggersCalibration;
 const ViGEmConfig = @import("bridge/bridge.zig").ViGEmBridge.Config;
 
 const json_branch_quota = 2000;
@@ -26,7 +27,8 @@ pub const Config = struct {
     vigem_config: ViGEmConfig = .{ .pad = .ds4 },
     calibration: struct {
         enabled: bool = false,
-        data: ?Calibration = null,
+        stick_data: ?SticksCalibration = null,
+        trigger_data: ?TriggersCalibration = null,
     } = .{},
     ess: struct {
         inversion_mapping: ?ess.Mapping = null,
