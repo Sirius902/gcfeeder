@@ -146,7 +146,9 @@ void CalibrationWindow::drawAndUpdate(const char* title, bool& open) {
             c_stick_calibration = StickCalibration(stick_data.at("c_stick"));
             c_stick_points = std::span(c_stick_calibration.notch_points);
             c_stick_center = c_stick_calibration.stick_center;
+        }
 
+        if (!trigger_data.is_null()) {
             l_trigger_calibration = TriggerCalibration(trigger_data.at("l_trigger"));
             l_trigger_range = l_trigger_calibration.range;
 
