@@ -6,10 +6,10 @@ const OptionsStep = std.build.OptionsStep;
 
 const cxx_flags = [_][]const u8{
     "-std=c++20",
-    "-Wpedantic",
-    "-Werror",
     "-Wall",
+    "-Werror",
     "-Wextra",
+    "-Wpedantic",
 };
 
 pub fn build(b: *Builder) void {
@@ -120,7 +120,7 @@ fn linkVigem(lib_exe: *LibExeObjStep) void {
         "-std=c++20",
         // HACK: Define this Windows error used by the ViGEmClient because it's not
         // defined in MinGW headers.
-        "-D ERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
+        "-DERROR_INVALID_DEVICE_OBJECT_PARAMETER=650L",
     };
 
     lib_exe.addCSourceFile(sub_root ++ "/src/ViGEmClient/ViGEmClient.cpp", &vigem_cxx_flags);
