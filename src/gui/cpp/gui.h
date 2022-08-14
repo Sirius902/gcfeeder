@@ -32,9 +32,9 @@ private:
     ConfigEditor config_editor;
     CalibrationWindow calibration_window;
 
-    bool draw_config_editor = true;
-    bool draw_calibration_window = true;
-    bool draw_log = true;
+    bool draw_config_editor{true};
+    bool draw_calibration_window{true};
+    bool draw_log{true};
     ImGuiID dockspace_id;
 
     CalibrationWindow::ApplyCallback getStickCalibrationApplyCallback() {
@@ -47,6 +47,4 @@ private:
             config_editor.updateProfileTriggerCalibration(std::move(calibration));
         };
     }
-
-    void drawCalibrationData(const char* title, bool& open);
 };

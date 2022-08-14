@@ -44,10 +44,6 @@ void Gui::drawAndUpdate() {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Minimize")) {
-                // TOOD: Implement.
-            }
-
             if (ImGui::MenuItem("Exit", "Alt+F4")) {
                 glfwSetWindowShouldClose(state.context.window, true);
             }
