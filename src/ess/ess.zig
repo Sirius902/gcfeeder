@@ -27,6 +27,10 @@ pub const Mapping = enum {
         unreachable;
     }
 
+    pub fn applyScaling(self: Mapping, coords: *[2]u8) void {
+        gcToN64(coords);
+    }
+
     pub fn jsonStringify(
         value: Mapping,
         options: std.json.StringifyOptions,
@@ -56,16 +60,16 @@ pub const NormalizedMap = struct {
 };
 
 pub const Quadrant = enum {
-    One,
-    Two,
-    Three,
-    Four,
+    one,
+    two,
+    three,
+    four,
 
     pub fn of(coords: *const [2]u8) Quadrant {
         if (coords[0] >= stick_range.center) {
-            return if (coords[1] >= stick_range.center) .One else .Four;
+            return if (coords[1] >= stick_range.center) .one else .four;
         } else {
-            return if (coords[1] >= stick_range.center) .Two else .Three;
+            return if (coords[1] >= stick_range.center) .two else .three;
         }
     }
 };
@@ -79,17 +83,17 @@ fn normalize(coords: *[2]u8) Quadrant {
     const y = @as(i10, coords[1]);
 
     const xx = switch (original) {
-        .One, .Four => x - stick_range.center,
-        .Two, .Three => math.min(stick_range.center - x, stick_range.radius),
+        .one, .four => x - stick_range.center,
+        .two, .three => math.min(stick_range.center - x, stick_range.radius),
     };
 
     const yy = switch (original) {
-        .One, .Two => y - stick_range.center,
-        .Three, .Four => math.min(stick_range.center - y, stick_range.radius),
+        .one, .two => y - stick_range.center,
+        .three, .four => math.min(stick_range.center - y, stick_range.radius),
     };
 
-    coords[0] = @intCast(u8, math.clamp(xx, math.minInt(u8), math.maxInt(u8)));
-    coords[1] = @intCast(u8, math.clamp(yy, math.minInt(u8), math.maxInt(u8)));
+    coords[0] = math.lossyCast(u8, xx);
+    coords[1] = math.lossyCast(u8, yy);
     return original;
 }
 
@@ -99,17 +103,17 @@ fn denormalize(coords: *[2]u8, original: Quadrant) void {
     const y = @as(i10, coords[1]);
 
     const xx = switch (original) {
-        .One, .Four => x + stick_range.center,
-        .Two, .Three => stick_range.center - x,
+        .one, .four => x + stick_range.center,
+        .two, .three => stick_range.center - x,
     };
 
     const yy = switch (original) {
-        .One, .Two => y + stick_range.center,
-        .Three, .Four => stick_range.center - y,
+        .one, .two => y + stick_range.center,
+        .three, .four => stick_range.center - y,
     };
 
-    coords[0] = @intCast(u8, math.clamp(xx, math.minInt(u8), math.maxInt(u8)));
-    coords[1] = @intCast(u8, math.clamp(yy, math.minInt(u8), math.maxInt(u8)));
+    coords[0] = math.lossyCast(u8, xx);
+    coords[1] = math.lossyCast(u8, yy);
 }
 
 /// Maps first quadrant normalized GC coordinates to fit to the shape of the N64 controller.
@@ -133,7 +137,7 @@ pub fn map(mapping: Mapping, input: Input) Input {
     const q = normalize(&coords);
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
-    gcToN64(&coords);
+    mapping.applyScaling(&coords);
 
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
