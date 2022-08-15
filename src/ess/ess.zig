@@ -137,7 +137,7 @@ pub fn map(mapping: Mapping, input: Input) Input {
     const q = normalize(&coords);
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
-    mapping.applyScaling(&coords);
+    Mapping.applyScaling(&coords);
 
     if (swap) std.mem.swap(u8, &coords[0], &coords[1]);
 
