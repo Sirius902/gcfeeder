@@ -27,7 +27,7 @@ pub const Mapping = enum {
         unreachable;
     }
 
-    pub fn applyScaling(self: Mapping, coords: *[2]u8) void {
+    pub fn applyScaling(coords: *[2]u8) void {
         gcToN64(coords);
     }
 
