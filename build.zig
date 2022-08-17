@@ -37,7 +37,7 @@ pub fn build(b: *Builder) void {
     exe.setBuildMode(mode);
     exe.install();
 
-    if (console) exe.subsystem = .Windows;
+    if (!console) exe.subsystem = .Windows;
 
     exe.linkLibCpp();
     linkLibusb(b, exe);
