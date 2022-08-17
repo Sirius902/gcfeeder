@@ -163,9 +163,7 @@ fn linkImGui(lib_exe: *LibExeObjStep) void {
         sub_root ++ "/misc/cpp/imgui_stdlib.cpp",
     };
 
-    const imgui_cxx_flags = cxx_flags ++ [_][]const u8{"-Iinclude/imgui"};
-
-    lib_exe.addCSourceFiles(&imgui_cxx_source, &imgui_cxx_flags);
+    lib_exe.addCSourceFiles(&imgui_cxx_source, &cxx_flags);
 }
 
 fn linkJson(lib_exe: *LibExeObjStep) void {
