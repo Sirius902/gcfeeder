@@ -226,9 +226,6 @@ void ConfigEditor::drawAndUpdate(const char* title, bool& open) {
         state.feeder_needs_reload.store(true, std::memory_order_release);
     }
 
-    // TODO: Workaround for scroll bar being partially off screen. Properly fix.
-    ImGui::TextUnformatted("\n");
-
     ImGui::End();
 }
 
@@ -450,7 +447,7 @@ void ConfigEditor::drawJsonObject(const json& schema_obj, json& data_obj,
                 } else if (name->get() == "inversion_mapping") {
                     data_obj = Config::default_inversion_mapping;
                 } else {
-                    throw std::runtime_error{fmt::format("Type for key has no default: {}\n", name->get())};
+                    throw std::runtime_error{fmt::format("Type for key has no default: {}", name->get())};
                 }
             } else {
                 data_obj = nullptr;

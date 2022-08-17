@@ -22,11 +22,13 @@ void Gui::drawAndUpdate() {
     ImGui::Begin("Content", nullptr, window_flags);
     ImGui::PopStyleVar(5);
 
+    const auto region_avail = ImGui::GetContentRegionAvail();
+
     dockspace_id = ImGui::GetID("ContentDockSpace");
     if (ImGui::DockBuilderGetNode(dockspace_id) == nullptr) {
         ImGui::DockBuilderRemoveNode(dockspace_id);                             // Clear out existing layout
         ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);  // Add empty node
-        ImGui::DockBuilderSetNodeSize(dockspace_id, io.DisplaySize);
+        ImGui::DockBuilderSetNodeSize(dockspace_id, region_avail);
 
         ImGuiID dock_main_id = dockspace_id;
         ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.5f, nullptr, &dock_main_id);
@@ -40,7 +42,7 @@ void Gui::drawAndUpdate() {
         ImGui::DockBuilderFinish(dockspace_id);
     }
 
-    ImGui::DockSpace(dockspace_id, io.DisplaySize);
+    ImGui::DockSpace(dockspace_id, region_avail);
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {

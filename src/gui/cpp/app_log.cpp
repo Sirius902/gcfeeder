@@ -79,9 +79,6 @@ void AppLog::drawAndUpdate(const char* title, bool& open) {
 
     if (do_copy) ImGui::LogFinish();
 
-    // TODO: Workaround for scroll bar being partially off screen. Properly fix.
-    ImGui::TextUnformatted("\n");
-
     ImGui::PopStyleVar();
 
     if (auto_scroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
