@@ -307,7 +307,7 @@ fn inputLoop(context: *Context) void {
 
 fn rumbleLoop(context: *Context) void {
     var failed = false;
-    var rumble = Rumble.Off;
+    var rumble = Rumble.off;
 
     var handle: ?emulator.Handle = null;
     defer if (handle) |h| h.close();
@@ -332,7 +332,7 @@ fn rumbleLoop(context: *Context) void {
 
         switch (config.rumble) {
             .off => {
-                rumble = .Off;
+                rumble = .off;
             },
             .on => {
                 if (bridge.pollRumble()) |r| {
@@ -345,7 +345,7 @@ fn rumbleLoop(context: *Context) void {
                         std.log.info("Disconnected from {s}", .{h.emulatorTitle()});
                         h.close();
                         handle = null;
-                        break :blk .Off;
+                        break :blk .off;
                     };
                 } else {
                     handle = emulator.Handle.open() catch blk: {
@@ -353,12 +353,12 @@ fn rumbleLoop(context: *Context) void {
                         break :blk null;
                     };
                     if (handle) |h| std.log.info("Connected to {s} OoT 1.0", .{h.emulatorTitle()});
-                    rumble = .Off;
+                    rumble = .off;
                 }
             },
         }
 
-        adapter.setRumble(.{ rumble, .Off, .Off, .Off }) catch |err| {
+        adapter.setRumble(.{ rumble, .off, .off, .off }) catch |err| {
             switch (err) {
                 error.Timeout => continue,
                 else => {
@@ -372,7 +372,7 @@ fn rumbleLoop(context: *Context) void {
     }
 
     if (context.adapter) |adapter| {
-        adapter.setRumble(.{ .Off, .Off, .Off, .Off }) catch {};
+        adapter.setRumble(.{ .off, .off, .off, .off }) catch {};
     }
 }
 

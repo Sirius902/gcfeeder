@@ -63,7 +63,7 @@ pub const Handle = struct {
 
     pub fn rumbleState(self: Handle) Error!Rumble {
         const address = try self.addresses().oot_rumble.resolve(&self.process);
-        return if ((try self.process.read(u8, address)) != 0) Rumble.On else Rumble.Off;
+        return if ((try self.process.read(u8, address)) != 0) .on else .off;
     }
 
     pub fn emulatorTitle(self: Handle) []const u8 {

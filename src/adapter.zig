@@ -55,7 +55,7 @@ pub const Adapter = struct {
         const payload = try self.readPayload();
         var inputs = [_]?Input{null} ** 4;
 
-        for (Port.all()) |port| {
+        for (Port.all) |port| {
             const chan = port.channel();
             // type is 0 if no controller is plugged, 1 if wired, and 2 if wireless
             const controller_type = payload[1 + (9 * chan)] >> 4;
@@ -97,7 +97,7 @@ pub const Adapter = struct {
     }
 
     pub fn resetRumble(self: Adapter) Error!void {
-        try self.setRumble(.{ .Off, .Off, .Off, .Off });
+        try self.setRumble(.{ .off, .off, .off, .off });
     }
 
     fn findEndpoints(handle: usb.DeviceHandle) Error!Endpoints {
@@ -149,34 +149,32 @@ pub const Adapter = struct {
 };
 
 pub const Rumble = enum {
-    On,
-    Off,
+    on,
+    off,
 
     pub fn toByte(self: Rumble) u8 {
         return switch (self) {
-            .Off => 0,
-            .On => 1,
+            .off => 0,
+            .on => 1,
         };
     }
 };
 
 pub const Port = enum {
-    One,
-    Two,
-    Three,
-    Four,
+    one,
+    two,
+    three,
+    four,
+
+    pub const all = std.enums.values(Port);
 
     pub fn channel(self: Port) usize {
         return switch (self) {
-            .One => 0,
-            .Two => 1,
-            .Three => 2,
-            .Four => 3,
+            .one => 0,
+            .two => 1,
+            .three => 2,
+            .four => 3,
         };
-    }
-
-    pub fn all() [4]Port {
-        return [_]Port{ .One, .Two, .Three, .Four };
     }
 };
 

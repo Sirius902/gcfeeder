@@ -163,9 +163,9 @@ pub const Listener = struct {
         const state = &self.rumble_state;
         defer state.poll_count = (state.poll_count + 1) % @bitSizeOf(Pattern);
         if ((rumble_patterns[state.index] & (@as(u8, 1) << state.poll_count)) != 0) {
-            return .On;
+            return .on;
         } else {
-            return .Off;
+            return .off;
         }
     }
 
