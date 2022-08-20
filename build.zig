@@ -13,6 +13,9 @@ const cxx_flags = [_][]const u8{
 };
 
 pub fn build(b: *Builder) void {
+    // TODO: Use stage 1 compiler until stage 2 can build gcfeeder.
+    b.use_stage1 = true;
+
     const target = b.standardTargetOptions(.{});
     const mode = b.standardReleaseOptions();
 
