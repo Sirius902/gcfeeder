@@ -228,8 +228,8 @@ impl Default for Config {
 }
 
 #[derive(Copy, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Pad {
-    #[serde(rename = "x360")]
     Xbox360,
     // TODO: DualShock4 support in the ViGEm client library is not complete.
     // DualShock4,
