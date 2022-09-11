@@ -2,29 +2,26 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*.*.*"
 
 jobs:
   release:
     runs-on: windows-latest
+    env:
+      CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
+      VERSION: "${{ github.ref_name }}"
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: "recursive"
-    - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v1
-      with:
-        version: master
-    - name: Zig Build
-      run: |
-        zig build -Dtarget=x86_64-windows -Dcpu=baseline -Drelease-safe -Dversion="${{github.ref_name}}"
-        rm zig-out/bin/*.pdb
+      uses: actions/checkout@v3
+    - name: Cargo Build
+      run: cargo build --release
     - name: Compress Artifacts
-      run: 7z a gcfeeder.zip ./zig-out/bin/*
+      run: 7z a gcfeeder.zip "./target/${{ CARGO_BUILD_TARGET }}/gcfeeder.exe"
     - name: Automatic Release
-      uses: marvinpinto/action-automatic-releases@latest
+      uses: marvinpinto/action-automatic-releases@v1
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false

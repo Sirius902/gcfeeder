@@ -21,9 +21,6 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 ### **ViGEm**
 * [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases) must be installed.
 
-## Program Arguments
-For info on the program arguments, run with `--help`.
-
 ## Config
 The configuration is stored in `gcfeeder.json`.
 
