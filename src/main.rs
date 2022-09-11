@@ -239,6 +239,10 @@ impl MyApp {
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        if panic::panicked() {
+            frame.close();
+        }
+
         if let Ok(message) = self.tray_reciever.try_recv() {
             match message {
                 TrayMessage::Minimize => frame.set_visible(false),
@@ -282,9 +286,16 @@ impl eframe::App for MyApp {
 }
 
 mod panic {
-    use std::{fs, io, panic::PanicInfo, thread};
+    use std::{
+        fs, io,
+        panic::PanicInfo,
+        sync::atomic::{AtomicBool, Ordering},
+        thread,
+    };
 
     use backtrace::Backtrace;
+
+    const PANICKED: AtomicBool = AtomicBool::new(false);
 
     /// Attempts to log panic information with a backtrace to `panic.log` in
     /// the current working directory.
@@ -315,5 +326,11 @@ mod panic {
 
             write(&mut log);
         }
+
+        PANICKED.store(true, Ordering::Release);
+    }
+
+    pub fn panicked() -> bool {
+        PANICKED.load(Ordering::Acquire)
     }
 }
