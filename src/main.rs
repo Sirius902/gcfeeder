@@ -1,8 +1,9 @@
 #![deny(clippy::all)]
-#![cfg_attr(
-    all(target_os = "windows", not(debug_assertions)),
-    windows_subsystem = "windows"
-)]
+// TODO: Uncomment after https://github.com/rust-windowing/glutin/issues/1467 is resolved.
+// #![cfg_attr(
+//     all(target_os = "windows", not(debug_assertions)),
+//     windows_subsystem = "windows"
+// )]
 
 use std::{
     env, fs,
