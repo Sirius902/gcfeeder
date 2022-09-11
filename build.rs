@@ -31,7 +31,7 @@ struct BuildInfo {
 impl BuildInfo {
     pub fn from_git() -> io::Result<Self> {
         let version_output = Command::new("git")
-            .args(["describe", "--always", "--dirty", "--tags"])
+            .args(["rev-parse", "--short=7", "HEAD"])
             .stdout(Stdio::piped())
             .spawn()?
             .wait_with_output()?;
@@ -42,7 +42,7 @@ impl BuildInfo {
             .filter(|c| *c == 0)
             .expect("failed to execute version command");
 
-        let version = String::from_utf8_lossy(&version_output.stdout).to_string();
+        let version = format!("g{}", String::from_utf8_lossy(&version_output.stdout));
 
         Ok(Self { version })
     }
@@ -51,7 +51,7 @@ impl BuildInfo {
 impl Default for BuildInfo {
     fn default() -> Self {
         Self {
-            version: "unknown".to_owned(),
+            version: "unknown version".to_owned(),
         }
     }
 }
