@@ -22,5 +22,5 @@ jobs:
       with:
         name: gcfeeder
         path: |
-          "target/${{ env.CARGO_BUILD_TARGET }}/gcfeeder.exe"
-          "target/${{ env.CARGO_BUILD_TARGET }}/gcfeeder.pdb"
+          "target/${{ env.CARGO_BUILD_TARGET }}/debug/gcfeeder.exe"
+          "target/${{ env.CARGO_BUILD_TARGET }}/debug/gcfeeder.pdb"
