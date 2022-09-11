@@ -42,8 +42,8 @@ impl ViGEmBridge {
         let mut rs: bool = false;
 
         let Input {
-            left_trigger: trigger_left,
-            right_trigger: trigger_right,
+            left_trigger,
+            right_trigger,
             button_l,
             button_r,
             ..
@@ -51,20 +51,20 @@ impl ViGEmBridge {
 
         match self.config.trigger_mode {
             TriggerMode::Analog => {
-                l = trigger_left;
-                r = trigger_right;
+                l = left_trigger;
+                r = right_trigger;
             }
             TriggerMode::Digital => {
                 l = if button_l { u8::MAX } else { u8::MIN };
                 r = if button_r { u8::MAX } else { u8::MIN };
             }
             TriggerMode::Combination => {
-                l = if button_l { u8::MAX } else { trigger_left };
-                r = if button_r { u8::MAX } else { trigger_right };
+                l = if button_l { u8::MAX } else { left_trigger };
+                r = if button_r { u8::MAX } else { right_trigger };
             }
             TriggerMode::StickClick => {
-                l = trigger_left;
-                r = trigger_right;
+                l = left_trigger;
+                r = right_trigger;
                 ls = button_l;
                 rs = button_r;
             }
