@@ -239,10 +239,12 @@ impl MyApp {
     }
 
     fn log_ui(&mut self, ui: &mut Ui) {
+        ui.set_min_height(100.0);
         ui.heading("Log");
     }
 
     fn calibration_ui(&mut self, ui: &mut Ui) {
+        ui.set_min_width(200.0);
         ui.heading("Calibration");
 
         let poll_avg = self
@@ -253,6 +255,8 @@ impl MyApp {
             .unwrap_or_else(|| "-".to_owned());
 
         ui.label(format!("Average poll time: {}ms", poll_avg));
+
+        ui.spacing();
 
         for port in all::<Port>() {
             let feeder = &self.feeders[port.index()];
