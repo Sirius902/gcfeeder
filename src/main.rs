@@ -93,7 +93,7 @@ struct MyApp {
     ctrlc_reciever: channel::Receiver<()>,
     tray_reciever: channel::Receiver<TrayMessage>,
     poller: Poller<Usb>,
-    feeders: [(Feeder<Usb>, Option<UdpSocket>); Port::COUNT],
+    feeders: [Feeder<Usb>; Port::COUNT],
 }
 
 impl MyApp {
@@ -183,18 +183,11 @@ impl MyApp {
         }
     }
 
-    fn feeders_from_config(
-        config: &Config,
-        poller: &Poller<Usb>,
-    ) -> [(Feeder<Usb>, Option<UdpSocket>); Port::COUNT] {
+    fn feeders_from_config(config: &Config, poller: &Poller<Usb>) -> [Feeder<Usb>; Port::COUNT] {
         array::from_fn(|i| Self::feeder_from_config(config, poller, i.try_into().unwrap()))
     }
 
-    fn feeder_from_config(
-        config: &Config,
-        poller: &Poller<Usb>,
-        port: Port,
-    ) -> (Feeder<Usb>, Option<UdpSocket>) {
+    fn feeder_from_config(config: &Config, poller: &Poller<Usb>, port: Port) -> Feeder<Usb> {
         let index = port.index();
         let profile = {
             let selected = &config.profile.selected[index];
@@ -232,7 +225,17 @@ impl MyApp {
             }
         };
 
-        (feeder, socket)
+        if let Some(socket) = socket {
+            feeder.on_feed(move |record| {
+                if let Some(input) = record.raw_input.as_ref() {
+                    let bytes =
+                        bincode::serialize(input).expect("Failed to serialize Input to bytes");
+                    let _ = socket.send(&bytes);
+                }
+            });
+        }
+
+        feeder
     }
 
     fn log_ui(&mut self, ui: &mut Ui) {
@@ -252,7 +255,7 @@ impl MyApp {
         ui.label(format!("Average poll time: {}ms", poll_avg));
 
         for port in all::<Port>() {
-            let (feeder, _) = &self.feeders[port.index()];
+            let feeder = &self.feeders[port.index()];
 
             let feed_avg = feeder
                 .average_feed_time()
