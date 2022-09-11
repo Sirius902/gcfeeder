@@ -39,7 +39,7 @@ impl BuildInfo {
         version_output
             .status
             .code()
-            .and_then(|c| if c == 0 { Some(()) } else { None })
+            .filter(|c| *c == 0)
             .expect("failed to execute version command");
 
         let version = String::from_utf8_lossy(&version_output.stdout).to_string();
