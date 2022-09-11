@@ -5,15 +5,17 @@
 )]
 
 use std::{
-    env, fs,
+    array, env, fs,
     io::{Read, Write},
     mem,
+    net::UdpSocket,
     path::{Path, PathBuf},
 };
 
 use eframe::egui::{self, Ui};
 
 use crossbeam::channel;
+use enum_iterator::all;
 use gcfeeder::{
     adapter::{poller::Poller, Port},
     config::{Config, Profile},
@@ -83,13 +85,15 @@ enum TrayMessage {
     Exit,
 }
 
+type Usb = rusb::GlobalContext;
+
 struct MyApp {
     config: Config,
     config_path: PathBuf,
     ctrlc_reciever: channel::Receiver<()>,
     tray_reciever: channel::Receiver<TrayMessage>,
-    poller: Poller<rusb::GlobalContext>,
-    feeder: Feeder<rusb::GlobalContext>,
+    poller: Poller<Usb>,
+    feeders: [(Feeder<Usb>, Option<UdpSocket>); Port::COUNT],
 }
 
 impl MyApp {
@@ -102,21 +106,8 @@ impl MyApp {
         let config_path = Path::new(Self::CONFIG_PATH).to_path_buf();
 
         let config = Self::load_or_create_config(&config_path);
-        let profile = {
-            let selected = &config.profile.selected[Port::One.index()];
-            config
-                .profile
-                .list
-                .get(selected)
-                .cloned()
-                .unwrap_or_else(|| {
-                    warn!("Missing profile \'{}\', using default", selected);
-                    Profile::default()
-                })
-        };
-
-        let poller = Poller::new(rusb::GlobalContext {});
-        let feeder = Feeder::new(profile, poller.add_listener(Port::One));
+        let poller = Poller::new(Usb {});
+        let feeders = Self::feeders_from_config(&config, &poller);
 
         Self {
             config,
@@ -124,7 +115,7 @@ impl MyApp {
             ctrlc_reciever,
             tray_reciever,
             poller,
-            feeder,
+            feeders,
         }
     }
 
@@ -192,6 +183,58 @@ impl MyApp {
         }
     }
 
+    fn feeders_from_config(
+        config: &Config,
+        poller: &Poller<Usb>,
+    ) -> [(Feeder<Usb>, Option<UdpSocket>); Port::COUNT] {
+        array::from_fn(|i| Self::feeder_from_config(config, poller, i.try_into().unwrap()))
+    }
+
+    fn feeder_from_config(
+        config: &Config,
+        poller: &Poller<Usb>,
+        port: Port,
+    ) -> (Feeder<Usb>, Option<UdpSocket>) {
+        let index = port.index();
+        let profile = {
+            let selected = &config.profile.selected[index];
+            config
+                .profile
+                .list
+                .get(selected)
+                .cloned()
+                .unwrap_or_else(|| {
+                    warn!(
+                        "Missing profile \'{}\' set for port {:?}, using default",
+                        selected, port
+                    );
+                    Profile::default()
+                })
+        };
+
+        let feeder = Feeder::new(profile, poller.add_listener(port));
+
+        let socket = {
+            let server_config = &config.input_server[index];
+            if server_config.enabled {
+                UdpSocket::bind("0.0.0.0:0")
+                    .and_then(|s| s.connect(("127.0.0.1", server_config.port)).map(|()| s))
+                    .map(Option::Some)
+                    .unwrap_or_else(|e| {
+                        warn!(
+                            "Failed to connect to input server on localhost:{} set for port {:?}: {}",
+                            server_config.port, port, e
+                        );
+                        None
+                    })
+            } else {
+                None
+            }
+        };
+
+        (feeder, socket)
+    }
+
     fn log_ui(&mut self, ui: &mut Ui) {
         ui.heading("Log");
     }
@@ -206,15 +249,20 @@ impl MyApp {
             .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
             .unwrap_or_else(|| "-".to_owned());
 
-        let feed_avg = self
-            .feeder
-            .average_feed_time()
-            .filter(|_| self.feeder.connected())
-            .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
-            .unwrap_or_else(|| "-".to_owned());
-
         ui.label(format!("Average poll time: {}ms", poll_avg));
-        ui.label(format!("Average feed time: {}ms", feed_avg));
+
+        for port in all::<Port>() {
+            let (feeder, _) = &self.feeders[port.index()];
+
+            let feed_avg = feeder
+                .average_feed_time()
+                .filter(|_| feeder.connected())
+                .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
+                .unwrap_or_else(|| "-".to_owned());
+
+            ui.label(format!("Port {:?}", port));
+            ui.label(format!("Average feed time: {}ms", feed_avg));
+        }
     }
 
     fn config_ui(&mut self, ui: &mut Ui) {
