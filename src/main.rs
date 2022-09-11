@@ -10,11 +10,11 @@ use std::{
     io::{Read, Write},
     mem,
     path::{Path, PathBuf},
-    sync::mpsc,
 };
 
 use eframe::egui::{self, Ui};
 
+use crossbeam::channel;
 use gcfeeder::{
     adapter::{poller::Poller, Port},
     config::{Config, Profile},
@@ -39,17 +39,17 @@ pub fn main() {
         ..Default::default()
     };
 
-    let (tx, rx) = mpsc::channel();
+    let (tx, rx) = channel::bounded(1);
 
     mem::drop(ctrlc::set_handler(move || {
-        let _ = tx.send(());
+        let _ = tx.try_send(());
     }));
 
     const ICON: &[u8] = include_bytes!("../resource/icon.ico");
-    let (tray_tx, tray_rx) = mpsc::channel();
+    let (tray_tx, tray_rx) = channel::unbounded();
 
     let _tray_icon = TrayIconBuilder::new()
-        .sender(tray_tx)
+        .sender_crossbeam(tray_tx)
         .icon_from_buffer(ICON)
         .tooltip("gcfeeder")
         .menu(
@@ -78,8 +78,8 @@ enum TrayMessage {
 struct MyApp {
     config: Config,
     config_path: PathBuf,
-    ctrlc_reciever: mpsc::Receiver<()>,
-    tray_reciever: mpsc::Receiver<TrayMessage>,
+    ctrlc_reciever: channel::Receiver<()>,
+    tray_reciever: channel::Receiver<TrayMessage>,
     poller: Poller<rusb::GlobalContext>,
     feeder: Feeder<rusb::GlobalContext>,
 }
@@ -88,8 +88,8 @@ impl MyApp {
     const CONFIG_PATH: &'static str = "gcfeeder.toml";
 
     pub fn new(
-        ctrlc_reciever: mpsc::Receiver<()>,
-        tray_reciever: mpsc::Receiver<TrayMessage>,
+        ctrlc_reciever: channel::Receiver<()>,
+        tray_reciever: channel::Receiver<TrayMessage>,
     ) -> Self {
         let exe_path = env::current_exe().expect("Failed to get current exe path");
         let mut config_path =
