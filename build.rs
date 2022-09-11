@@ -4,16 +4,13 @@ use std::{
     process::{Command, Stdio},
 };
 
-use regex::Regex;
-
 const VERSION_VAR: &str = "VERSION";
 
 pub fn main() {
-    let regular_semver = Regex::new(r"^v\d+(\.\d+)?{2}$").unwrap();
     let version = match env::var(VERSION_VAR) {
         Ok(v) => {
             let package_version = format!("v{}", env!("CARGO_PKG_VERSION"));
-            if regular_semver.is_match(&v) && v != package_version {
+            if v != package_version {
                 panic!(
                     "Expected {} to be {}, was {}",
                     VERSION_VAR, package_version, v

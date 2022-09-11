@@ -17,7 +17,7 @@ jobs:
     - name: Cargo Build
       run: cargo build --release
     - name: Compress Artifacts
-      run: 7z a gcfeeder.zip "./target/${{ env.CARGO_BUILD_TARGET }}/release/gcfeeder.exe"
+      run: 7z a gcfeeder.zip "./target/${{ env.CARGO_BUILD_TARGET }}/gcfeeder.exe"
     - name: Automatic Release
       uses: marvinpinto/action-automatic-releases@latest
       with:
