@@ -21,7 +21,7 @@ use gcfeeder::{
     config::{Config, Profile},
     feeder::Feeder,
 };
-use log::warn;
+use log::{info, warn};
 use simple_logger::SimpleLogger;
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
@@ -281,11 +281,13 @@ impl MyApp {
                     // TODO: Send config update to feeder instead of re-creating it.
                     self.feeders = Self::feeders_from_config(&config, &self.poller);
                     self.config = config;
+                    info!("Reloaded config");
                 }
             }
 
             if ui.button("Save").clicked() {
                 Self::write_config(&self.config, &self.config_path);
+                info!("Saved config");
             }
         });
     }
