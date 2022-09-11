@@ -277,10 +277,10 @@ impl MyApp {
 
         ui.horizontal(|ui| {
             if ui.button("Reload").clicked() {
-                if let Some(_config) = Self::load_config(&self.config_path) {
-                    // TODO: Send config update to feeder instead of re-creating it. Be able
-                    // to handle re-creating on feed callback when making a new feeder.
-                    todo!();
+                if let Some(config) = Self::load_config(&self.config_path) {
+                    // TODO: Send config update to feeder instead of re-creating it.
+                    self.feeders = Self::feeders_from_config(&config, &self.poller);
+                    self.config = config;
                 }
             }
 
