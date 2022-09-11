@@ -295,7 +295,7 @@ mod panic {
 
     use backtrace::Backtrace;
 
-    const PANICKED: AtomicBool = AtomicBool::new(false);
+    static PANICKED: AtomicBool = AtomicBool::new(false);
 
     /// Attempts to log panic information with a backtrace to `panic.log` in
     /// the current working directory.
