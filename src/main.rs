@@ -23,7 +23,6 @@ use log::warn;
 use simple_logger::SimpleLogger;
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
-// TODO: Handle mutex poisoning.
 pub fn main() {
     std::panic::set_hook(Box::new(panic::hook));
 
