@@ -215,17 +215,19 @@ impl MyApp {
     fn config_ui(&mut self, ui: &mut Ui) {
         ui.heading("Config");
 
-        if ui.button("Reload Config").clicked() {
-            if let Some(_config) = Self::load_config(&self.config_path) {
-                // TODO: Send config update to feeder instead of re-creating it. Be able
-                // to handle re-creating on feed callback when making a new feeder.
-                todo!();
+        ui.horizontal(|ui| {
+            if ui.button("Reload").clicked() {
+                if let Some(_config) = Self::load_config(&self.config_path) {
+                    // TODO: Send config update to feeder instead of re-creating it. Be able
+                    // to handle re-creating on feed callback when making a new feeder.
+                    todo!();
+                }
             }
-        }
 
-        if ui.button("Save Config").clicked() {
-            Self::write_config(&self.config, &self.config_path);
-        }
+            if ui.button("Save").clicked() {
+                Self::write_config(&self.config, &self.config_path);
+            }
+        });
     }
 }
 
