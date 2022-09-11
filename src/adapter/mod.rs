@@ -391,15 +391,3 @@ fn inputs_from_payload(payload: &[u8; PAYLOAD_LEN]) -> [Option<Input>; Port::COU
 
     inputs
 }
-
-#[cfg(test)]
-mod tests {
-    use crossbeam::atomic::AtomicCell;
-
-    use crate::adapter::Input;
-
-    #[test]
-    fn input_is_atomic() {
-        assert!(AtomicCell::<Input>::is_lock_free());
-    }
-}
