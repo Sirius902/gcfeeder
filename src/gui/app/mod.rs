@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use eframe::egui::{self, Ui};
+use eframe::egui;
 use trayicon::TrayIcon;
 
 use super::log::Message as LogMessage;
@@ -16,8 +16,10 @@ use crate::{
     panic,
 };
 use crossbeam::channel;
-use enum_iterator::all;
 use log::{info, warn};
+use panel::{CalibrationPanel, ConfigEditor, LogPanel};
+
+mod panel;
 
 type Usb = rusb::GlobalContext;
 
@@ -29,13 +31,12 @@ pub enum TrayMessage {
 }
 
 pub struct App {
+    log_panel: LogPanel,
     config: Config,
     config_path: PathBuf,
     ctrlc_receiver: channel::Receiver<()>,
     _tray_icon: TrayIcon<TrayMessage>,
     tray_receiver: channel::Receiver<TrayMessage>,
-    log_receiver: channel::Receiver<LogMessage>,
-    log_messages: Vec<LogMessage>,
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
 }
@@ -56,13 +57,12 @@ impl App {
         let feeders = Self::feeders_from_config(&config, &poller);
 
         Self {
+            log_panel: LogPanel::new(log_receiver),
             config,
             config_path,
             ctrlc_receiver,
             _tray_icon: tray_icon,
             tray_receiver,
-            log_receiver,
-            log_messages: Vec::new(),
             poller,
             feeders,
         }
@@ -186,76 +186,6 @@ impl App {
 
         feeder
     }
-
-    fn log_ui(&mut self, ui: &mut Ui) {
-        ui.set_max_height(150.0);
-        ui.heading("Log");
-        ui.add_space(5.0);
-
-        while let Ok(message) = self.log_receiver.try_recv() {
-            self.log_messages.push(message);
-        }
-
-        egui::ScrollArea::both().show(ui, |ui| {
-            let grid = egui::Grid::new("messages").num_columns(3);
-            grid.show(ui, |ui| {
-                for message in self.log_messages.iter().rev() {
-                    message.draw(ui);
-                }
-            });
-        });
-    }
-
-    fn calibration_ui(&mut self, ui: &mut Ui) {
-        ui.set_min_width(200.0);
-        ui.heading("Calibration");
-        ui.add_space(5.0);
-
-        let poll_avg = self
-            .poller
-            .average_poll_time()
-            .filter(|_| self.poller.connected())
-            .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
-            .unwrap_or_else(|| "-".to_owned());
-
-        ui.label(format!("Average poll time: {}ms", poll_avg));
-
-        ui.spacing();
-
-        for port in all::<Port>() {
-            let feeder = &self.feeders[port.index()];
-
-            let feed_avg = feeder
-                .average_feed_time()
-                .filter(|_| feeder.connected())
-                .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
-                .unwrap_or_else(|| "-".to_owned());
-
-            ui.label(format!("Port {:?}", port));
-            ui.label(format!("Average feed time: {}ms", feed_avg));
-        }
-    }
-
-    fn config_ui(&mut self, ui: &mut Ui) {
-        ui.heading("Config");
-        ui.add_space(5.0);
-
-        ui.horizontal(|ui| {
-            if ui.button("Reload").clicked() {
-                if let Some(config) = Self::load_config(&self.config_path) {
-                    // TODO: Send config update to feeder instead of re-creating it.
-                    self.feeders = Self::feeders_from_config(&config, &self.poller);
-                    self.config = config;
-                    info!("Reloaded config");
-                }
-            }
-
-            if ui.button("Save").clicked() {
-                Self::write_config(&self.config, &self.config_path);
-                info!("Saved config");
-            }
-        });
-    }
 }
 
 impl eframe::App for App {
@@ -298,15 +228,33 @@ impl eframe::App for App {
         });
 
         egui::TopBottomPanel::bottom("log_panel").show(ctx, |ui| {
-            self.log_ui(ui);
+            self.log_panel.ui(ui);
         });
 
         egui::SidePanel::left("calibration_panel").show(ctx, |ui| {
-            self.calibration_ui(ui);
+            CalibrationPanel::new(&mut self.poller, &mut self.feeders).ui(ui);
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.config_ui(ui);
+            let state = {
+                let mut config_editor = ConfigEditor::new(&mut self.config);
+                config_editor.ui(ui);
+                config_editor.into_state()
+            };
+
+            if state.reload() {
+                if let Some(config) = Self::load_config(&self.config_path) {
+                    // TODO: Send config update to feeder instead of re-creating it.
+                    self.feeders = Self::feeders_from_config(&config, &self.poller);
+                    self.config = config;
+                    info!("Reloaded config");
+                }
+            }
+
+            if state.save() {
+                Self::write_config(&self.config, &self.config_path);
+                info!("Saved config");
+            }
         });
     }
 }
