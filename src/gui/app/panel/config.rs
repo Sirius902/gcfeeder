@@ -35,6 +35,7 @@ impl<'a> ConfigEditor<'a> {
 
         ui.separator();
 
+        // TODO: Implement fully.
         for port in all::<Port>() {
             ui.label(format!(
                 "Profile for Port {:?}: {}",

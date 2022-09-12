@@ -8,6 +8,8 @@ use std::{
 use eframe::egui;
 use trayicon::TrayIcon;
 
+use self::panel::StatsPanel;
+
 use super::log::Message as LogMessage;
 use crate::{
     adapter::{poller::Poller, Port},
@@ -32,6 +34,7 @@ pub enum TrayMessage {
 
 pub struct App {
     log_panel: LogPanel,
+    stats_open: bool,
     config: Config,
     config_path: PathBuf,
     ctrlc_receiver: channel::Receiver<()>,
@@ -58,6 +61,7 @@ impl App {
 
         Self {
             log_panel: LogPanel::new(log_receiver),
+            stats_open: false,
             config,
             config_path,
             ctrlc_receiver,
@@ -221,18 +225,30 @@ impl eframe::App for App {
                     }
                 });
 
+                ui.menu_button("View", |ui| {
+                    if ui.toggle_value(&mut self.stats_open, "Stats").clicked() {
+                        ui.close_menu();
+                    }
+                });
+
                 if ui.button("Minimize").clicked() {
                     frame.set_visible(false);
                 }
             });
         });
 
+        egui::Window::new("Stats")
+            .open(&mut self.stats_open)
+            .show(ctx, |ui| {
+                StatsPanel::new(&mut self.poller, &mut self.feeders).ui(ui);
+            });
+
         egui::TopBottomPanel::bottom("log_panel").show(ctx, |ui| {
             self.log_panel.ui(ui);
         });
 
         egui::SidePanel::left("calibration_panel").show(ctx, |ui| {
-            CalibrationPanel::new(&mut self.poller, &mut self.feeders).ui(ui);
+            CalibrationPanel::new(&mut self.feeders).ui(ui);
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {

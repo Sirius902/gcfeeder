@@ -25,7 +25,7 @@ impl LogPanel {
             received_message = true
         }
 
-        ui.set_max_height(150.0);
+        ui.set_height(125.0);
 
         ui.horizontal(|ui| {
             ui.heading("Log");
