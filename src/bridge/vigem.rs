@@ -125,7 +125,7 @@ impl Bridge for ViGEmBridge {
 
             target.update(&self.input_to_xinput(input))?;
         } else if target.is_attached() {
-            Device::unplug_locked(target, &mut thread)?;
+            target.unplug()?;
         }
 
         Ok(())
@@ -173,32 +173,32 @@ impl Device {
         notification_thread: &mut Option<thread::JoinHandle<()>>,
         rumbler: Arc<Mutex<PatternRumbler>>,
     ) -> super::Result<()> {
-        target.plugin()?;
+        let thread = target
+            .plugin()
+            .and_then(|()| target.wait_ready())
+            .and_then(|()| target.request_notification())
+            .map(|notification| {
+                notification.spawn_thread(move |_, data| {
+                    rumbler
+                        .lock()
+                        .unwrap()
+                        .update_strength(data.small_motor.max(data.large_motor));
+                })
+            });
 
-        let thread = target.request_notification()?.spawn_thread(move |_, data| {
-            rumbler
-                .lock()
-                .unwrap()
-                .update_strength(data.small_motor.max(data.large_motor));
-        });
+        match thread {
+            Ok(thread) => {
+                *notification_thread = Some(thread);
+                Ok(())
+            }
+            Err(e) => {
+                if target.is_attached() {
+                    let _ = target.unplug();
+                }
 
-        target.wait_ready()?;
-
-        *notification_thread = Some(thread);
-        Ok(())
-    }
-
-    pub fn unplug_locked(
-        target: &mut client::XTarget,
-        notification_thread: &mut Option<thread::JoinHandle<()>>,
-    ) -> super::Result<()> {
-        target.unplug()?;
-
-        if let Some(thread) = notification_thread.take() {
-            mem::drop(thread.join());
+                Err(e.into())
+            }
         }
-
-        Ok(())
     }
 }
 
