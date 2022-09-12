@@ -188,24 +188,28 @@ impl App {
     }
 
     fn log_ui(&mut self, ui: &mut Ui) {
-        ui.set_min_height(100.0);
+        ui.set_max_height(150.0);
         ui.heading("Log");
+        ui.add_space(5.0);
 
         while let Ok(message) = self.log_receiver.try_recv() {
             self.log_messages.push(message);
         }
 
-        let grid = egui::Grid::new("messages").num_columns(3);
-        grid.show(ui, |ui| {
-            for message in self.log_messages.iter() {
-                message.draw(ui);
-            }
+        egui::ScrollArea::both().show(ui, |ui| {
+            let grid = egui::Grid::new("messages").num_columns(3);
+            grid.show(ui, |ui| {
+                for message in self.log_messages.iter().rev() {
+                    message.draw(ui);
+                }
+            });
         });
     }
 
     fn calibration_ui(&mut self, ui: &mut Ui) {
         ui.set_min_width(200.0);
         ui.heading("Calibration");
+        ui.add_space(5.0);
 
         let poll_avg = self
             .poller
@@ -234,6 +238,7 @@ impl App {
 
     fn config_ui(&mut self, ui: &mut Ui) {
         ui.heading("Config");
+        ui.add_space(5.0);
 
         ui.horizontal(|ui| {
             if ui.button("Reload").clicked() {
@@ -276,13 +281,13 @@ impl eframe::App for App {
         egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("File", |ui| {
-                    if ui.button("Exit").clicked() {
-                        frame.close();
-                    }
-
                     if ui.button("Reset Layout").clicked() {
                         *ui.ctx().memory() = Default::default();
                         ui.close_menu();
+                    }
+
+                    if ui.button("Exit").clicked() {
+                        frame.close();
                     }
                 });
 
