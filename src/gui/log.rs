@@ -104,11 +104,10 @@ impl Message {
         ui.horizontal(|ui| {
             ui.label(timestamp);
 
-            let level_str = format!("{:<5}", level);
             if let Some(color) = Self::level_color(*level) {
-                ui.colored_label(color, &level_str);
+                ui.colored_label(color, level.to_string());
             } else {
-                ui.label(&level_str);
+                ui.label(level.to_string());
             }
 
             ui.label(message);
