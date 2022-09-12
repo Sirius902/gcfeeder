@@ -3,16 +3,16 @@ use crossbeam::channel;
 use egui::Align;
 
 pub struct LogPanel {
-    log_receiver: channel::Receiver<Message>,
-    log_messages: Vec<Message>,
+    receiver: channel::Receiver<Message>,
+    messages: Vec<Message>,
     auto_scroll: bool,
 }
 
 impl LogPanel {
-    pub fn new(log_receiver: channel::Receiver<Message>) -> Self {
+    pub fn new(receiver: channel::Receiver<Message>) -> Self {
         Self {
-            log_receiver,
-            log_messages: Vec::new(),
+            receiver,
+            messages: Vec::new(),
             auto_scroll: true,
         }
     }
@@ -20,8 +20,8 @@ impl LogPanel {
     pub fn ui(&mut self, ui: &mut egui::Ui) {
         let mut received_message = false;
 
-        while let Ok(message) = self.log_receiver.try_recv() {
-            self.log_messages.push(message);
+        while let Ok(message) = self.receiver.try_recv() {
+            self.messages.push(message);
             received_message = true
         }
 
@@ -35,10 +35,12 @@ impl LogPanel {
 
         ui.separator();
 
-        egui::ScrollArea::both().show(ui, |ui| {
+        let row_height = ui.text_style_height(&egui::TextStyle::Body);
+
+        egui::ScrollArea::both().show_rows(ui, row_height, self.messages.len(), |ui, rows| {
             let grid = egui::Grid::new("messages").num_columns(3);
             grid.show(ui, |ui| {
-                for message in self.log_messages.iter() {
+                for message in rows.map(|i| &self.messages[i]) {
                     message.draw(ui);
                 }
 
