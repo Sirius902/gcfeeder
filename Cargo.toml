@@ -10,19 +10,26 @@ conv = "0.3.3"
 crossbeam = "0.8.2"
 ctrlc = "3.2.3"
 eframe = "0.19.0"
+egui = "0.19.0"
 enclose = "1.1.8"
 enum-iterator = "1.2.0"
-log = "0.4.17"
 nalgebra = "0.31.1"
 rayon = "1.5.3"
 rusb = "0.9.1"
-simple_logger = "2.3.0"
 thiserror = "1.0.34"
 toml = "0.5.9"
+
+[dependencies.log]
+version = "0.4.17"
+features = ["std"]
 
 [dependencies.serde]
 version = "1.0.144"
 features = ["derive"]
+
+[dependencies.time]
+version = "0.3.14"
+features = ["macros", "formatting", "local-offset"]
 
 [dependencies.trayicon]
 version = "0.1.3"

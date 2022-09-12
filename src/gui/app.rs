@@ -6,7 +6,9 @@ use std::{
 };
 
 use eframe::egui::{self, Ui};
+use trayicon::TrayIcon;
 
+use super::log::Message as LogMessage;
 use crate::{
     adapter::{poller::Poller, Port},
     config::{Config, Profile},
@@ -29,8 +31,11 @@ pub enum TrayMessage {
 pub struct App {
     config: Config,
     config_path: PathBuf,
-    ctrlc_reciever: channel::Receiver<()>,
-    tray_reciever: channel::Receiver<TrayMessage>,
+    ctrlc_receiver: channel::Receiver<()>,
+    _tray_icon: TrayIcon<TrayMessage>,
+    tray_receiver: channel::Receiver<TrayMessage>,
+    log_receiver: channel::Receiver<LogMessage>,
+    log_messages: Vec<LogMessage>,
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
 }
@@ -39,8 +44,10 @@ impl App {
     const CONFIG_PATH: &'static str = "gcfeeder.toml";
 
     pub fn new(
-        ctrlc_reciever: channel::Receiver<()>,
-        tray_reciever: channel::Receiver<TrayMessage>,
+        ctrlc_receiver: channel::Receiver<()>,
+        tray_icon: TrayIcon<TrayMessage>,
+        tray_receiver: channel::Receiver<TrayMessage>,
+        log_receiver: channel::Receiver<LogMessage>,
     ) -> Self {
         let config_path = Path::new(Self::CONFIG_PATH).to_path_buf();
 
@@ -51,8 +58,11 @@ impl App {
         Self {
             config,
             config_path,
-            ctrlc_reciever,
-            tray_reciever,
+            ctrlc_receiver,
+            _tray_icon: tray_icon,
+            tray_receiver,
+            log_receiver,
+            log_messages: Vec::new(),
             poller,
             feeders,
         }
@@ -180,6 +190,14 @@ impl App {
     fn log_ui(&mut self, ui: &mut Ui) {
         ui.set_min_height(100.0);
         ui.heading("Log");
+
+        while let Ok(message) = self.log_receiver.try_recv() {
+            self.log_messages.push(message);
+        }
+
+        for message in self.log_messages.iter() {
+            message.draw(ui);
+        }
     }
 
     fn calibration_ui(&mut self, ui: &mut Ui) {
@@ -238,7 +256,7 @@ impl eframe::App for App {
             frame.close();
         }
 
-        if let Ok(message) = self.tray_reciever.try_recv() {
+        if let Ok(message) = self.tray_receiver.try_recv() {
             match message {
                 TrayMessage::Minimize => frame.set_visible(false),
                 TrayMessage::Restore => frame.set_visible(true),
@@ -246,7 +264,7 @@ impl eframe::App for App {
             }
         }
 
-        if self.ctrlc_reciever.try_recv() == Ok(()) {
+        if self.ctrlc_receiver.try_recv() == Ok(()) {
             frame.close();
         }
 
