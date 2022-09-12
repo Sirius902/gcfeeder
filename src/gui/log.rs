@@ -101,17 +101,16 @@ impl Message {
     pub fn draw(&self, ui: &mut egui::Ui) {
         let Message(timestamp, level, message) = self;
 
-        ui.horizontal(|ui| {
-            ui.label(timestamp);
+        ui.label(timestamp);
 
-            if let Some(color) = Self::level_color(*level) {
-                ui.colored_label(color, level.to_string());
-            } else {
-                ui.label(level.to_string());
-            }
+        if let Some(color) = Self::level_color(*level) {
+            ui.colored_label(color, level.to_string());
+        } else {
+            ui.label(level.to_string());
+        }
 
-            ui.label(message);
-        });
+        ui.label(message);
+        ui.end_row();
     }
 
     const fn level_color(level: log::Level) -> Option<Color32> {

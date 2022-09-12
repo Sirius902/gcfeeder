@@ -195,9 +195,12 @@ impl App {
             self.log_messages.push(message);
         }
 
-        for message in self.log_messages.iter() {
-            message.draw(ui);
-        }
+        let grid = egui::Grid::new("messages").num_columns(3);
+        grid.show(ui, |ui| {
+            for message in self.log_messages.iter() {
+                message.draw(ui);
+            }
+        });
     }
 
     fn calibration_ui(&mut self, ui: &mut Ui) {
