@@ -276,6 +276,11 @@ impl eframe::App for App {
                     if ui.button("Exit").clicked() {
                         frame.close();
                     }
+
+                    if ui.button("Reset Layout").clicked() {
+                        *ui.ctx().memory() = Default::default();
+                        ui.close_menu();
+                    }
                 });
 
                 if ui.button("Minimize").clicked() {
