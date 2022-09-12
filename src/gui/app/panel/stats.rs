@@ -18,8 +18,6 @@ impl<'a> StatsPanel<'a> {
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
         ui.set_min_width(200.0);
-        ui.heading("Stats");
-        ui.add_space(5.0);
 
         let poll_avg = self
             .poller
