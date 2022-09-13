@@ -245,7 +245,7 @@ impl App {
 
             match receiver.try_recv() {
                 Ok(record) => {
-                    self.records[i] = Some((*record).clone());
+                    self.records[i] = Some(record);
                 }
                 Err(TryRecvError::Disconnected) => {
                     warn!("Feeder receiver disconnected while in use");

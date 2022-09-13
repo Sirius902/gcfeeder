@@ -12,7 +12,7 @@ pub type RecvError = channel::RecvError;
 pub type RecvTimeoutError = channel::RecvTimeoutError;
 pub type TryRecvError = channel::TryRecvError;
 
-pub fn channel<T>() -> (Sender<T>, Receiver<T>) {
+pub fn channel<T: Copy>() -> (Sender<T>, Receiver<T>) {
     let msg = Arc::new(AtomicCell::new(None));
     let (sender, receiver) = channel::bounded(1);
 
@@ -25,24 +25,22 @@ pub fn channel<T>() -> (Sender<T>, Receiver<T>) {
     )
 }
 
-pub struct Sender<T> {
+pub struct Sender<T: Copy> {
     sender: channel::Sender<()>,
     msg: Arc<AtomicCell<Option<T>>>,
 }
 
-impl<T> Sender<T> {
+impl<T: Copy> Sender<T> {
     pub fn send(&self, msg: T) -> Result<(), SendError<T>> {
         self.msg.store(Some(msg));
-        self.sender
-            .send(())
-            .map_err(|_| channel::SendError(self.msg()))
+        self.sender.send(()).map_err(|_| channel::SendError(msg))
     }
 
     pub fn send_deadline(&self, msg: T, deadline: Instant) -> Result<(), SendTimeoutError<T>> {
         self.msg.store(Some(msg));
         match self.sender.send_deadline((), deadline) {
             Ok(msg) => Ok(msg),
-            Err(e) => self.map_timeout(e),
+            Err(e) => self.map_timeout(msg, e),
         }
     }
 
@@ -50,7 +48,7 @@ impl<T> Sender<T> {
         self.msg.store(Some(msg));
         match self.sender.send_timeout((), timeout) {
             Ok(msg) => Ok(msg),
-            Err(e) => self.map_timeout(e),
+            Err(e) => self.map_timeout(msg, e),
         }
     }
 
@@ -58,37 +56,35 @@ impl<T> Sender<T> {
         self.msg.store(Some(msg));
         match self.sender.try_send(()) {
             Ok(msg) => Ok(msg),
-            Err(e) => self.map_try(e),
+            Err(e) => self.map_try(msg, e),
         }
     }
 
-    fn msg(&self) -> T {
-        self.msg.swap(None).unwrap()
-    }
-
-    fn map_timeout(&self, e: channel::SendTimeoutError<()>) -> Result<(), SendTimeoutError<T>> {
+    fn map_timeout(
+        &self,
+        msg: T,
+        e: channel::SendTimeoutError<()>,
+    ) -> Result<(), SendTimeoutError<T>> {
         match e {
-            channel::SendTimeoutError::Disconnected(()) => {
-                Err(SendTimeoutError::Disconnected(self.msg()))
-            }
-            channel::SendTimeoutError::Timeout(()) => Err(SendTimeoutError::Timeout(self.msg())),
+            channel::SendTimeoutError::Disconnected(()) => Err(SendTimeoutError::Disconnected(msg)),
+            channel::SendTimeoutError::Timeout(()) => Err(SendTimeoutError::Timeout(msg)),
         }
     }
 
-    fn map_try(&self, e: channel::TrySendError<()>) -> Result<(), TrySendError<T>> {
+    fn map_try(&self, msg: T, e: channel::TrySendError<()>) -> Result<(), TrySendError<T>> {
         match e {
-            channel::TrySendError::Disconnected(()) => Err(TrySendError::Disconnected(self.msg())),
+            channel::TrySendError::Disconnected(()) => Err(TrySendError::Disconnected(msg)),
             channel::TrySendError::Full(()) => Ok(()),
         }
     }
 }
 
-pub struct Receiver<T> {
+pub struct Receiver<T: Copy> {
     receiver: channel::Receiver<()>,
     msg: Arc<AtomicCell<Option<T>>>,
 }
 
-impl<T> Receiver<T> {
+impl<T: Copy> Receiver<T> {
     pub fn recv(&self) -> Result<T, RecvError> {
         self.receiver.recv().map(|()| self.msg())
     }
@@ -105,8 +101,9 @@ impl<T> Receiver<T> {
         self.receiver.try_recv().map(|()| self.msg())
     }
 
+    #[inline(always)]
     fn msg(&self) -> T {
-        self.msg.swap(None).unwrap()
+        self.msg.load().unwrap()
     }
 }
 

@@ -250,7 +250,7 @@ pub struct AnalogRange {
     pub max: u8,
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Stick {
     pub x: u8,
     pub y: u8,
@@ -303,7 +303,7 @@ impl From<[u8; 2]> for Stick {
     }
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Input {
     pub button_a: bool,
     pub button_b: bool,

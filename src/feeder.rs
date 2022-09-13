@@ -36,8 +36,8 @@ type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = dyn bridge::Bridge + Send + Sync;
 
 pub type Callback = dyn FnMut(&Record) + Send;
-pub type Sender = recent::Sender<Arc<Record>>;
-pub type Receiver = recent::Receiver<Arc<Record>>;
+pub type Sender = recent::Sender<Record>;
+pub type Receiver = recent::Receiver<Record>;
 pub type CalibrationSender = recent::Sender<Option<Input>>;
 pub type CalibrationReceiver = recent::Receiver<Option<Input>>;
 pub type Layer = dyn mapping::Layer + Send;
@@ -109,7 +109,7 @@ impl<T: UsbContext> Drop for Feeder<T> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Record {
     pub raw_input: Option<Input>,
     pub layered_input: Option<Input>,
@@ -204,8 +204,6 @@ impl<T: UsbContext> Context<T> {
             match record {
                 Ok(record) => {
                     {
-                        let record = Arc::new(record);
-
                         self.thread_pool.join(
                             || {
                                 let mut callbacks = self.callbacks.lock().unwrap();
@@ -218,7 +216,7 @@ impl<T: UsbContext> Context<T> {
 
                                 senders.retain(|sender| {
                                     !matches!(
-                                        sender.try_send(record.clone()),
+                                        sender.try_send(record),
                                         Err(TrySendError::Disconnected(_))
                                     )
                                 });
