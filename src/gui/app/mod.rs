@@ -11,9 +11,9 @@ use trayicon::TrayIcon;
 
 use super::log::Message as LogMessage;
 use crate::{
-    adapter::{poller::Poller, Input, Port},
+    adapter::{poller::Poller, Port},
     config::{Config, Profile},
-    feeder::{self, Feeder},
+    feeder::{self, Feeder, Record},
     panic,
     util::recent_channel::{self as recent, TryRecvError},
 };
@@ -47,7 +47,7 @@ pub struct App {
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
-    inputs: [Option<Input>; Port::COUNT],
+    records: [Option<Record>; Port::COUNT],
 }
 
 impl App {
@@ -77,7 +77,7 @@ impl App {
             poller,
             feeders,
             receivers,
-            inputs: Default::default(),
+            records: Default::default(),
         }
     }
 
@@ -238,9 +238,14 @@ impl App {
             .zip(self.receivers.iter_mut())
             .enumerate()
         {
+            if !feeder.connected() {
+                self.records[i] = None;
+                continue;
+            }
+
             match receiver.try_recv() {
                 Ok(record) => {
-                    self.inputs[i] = record.raw_input;
+                    self.records[i] = Some((*record).clone());
                 }
                 Err(TryRecvError::Disconnected) => {
                     warn!("Feeder receiver disconnected while in use");
@@ -298,7 +303,7 @@ impl eframe::App for App {
         egui::SidePanel::left("calibration_panel").show(ctx, |ui| {
             let mut panel = CalibrationPanel::new(
                 &mut self.feeders,
-                &self.inputs,
+                &self.records,
                 self.calibration_state.take(),
             );
             panel.ui(ui);

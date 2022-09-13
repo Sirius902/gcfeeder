@@ -103,6 +103,7 @@ impl<T: UsbContext> Drop for Feeder<T> {
     }
 }
 
+#[derive(Clone)]
 pub struct Record {
     pub raw_input: Option<Input>,
     pub layered_input: Option<Input>,
