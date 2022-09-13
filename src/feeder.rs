@@ -38,6 +38,8 @@ type Bridge = dyn bridge::Bridge + Send + Sync;
 pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = recent::Sender<Arc<Record>>;
 pub type Receiver = recent::Receiver<Arc<Record>>;
+pub type CalibrationSender = recent::Sender<Option<Input>>;
+pub type CalibrationReceiver = recent::Receiver<Option<Input>>;
 pub type Layer = dyn mapping::Layer + Send;
 
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
@@ -91,6 +93,10 @@ impl<T: UsbContext + 'static> Feeder<T> {
     pub fn connected(&self) -> bool {
         self.context.connected.load(Ordering::Acquire)
     }
+
+    pub fn start_calibration(&self, sender: CalibrationSender) {
+        *self.context.calibration_sender.lock().unwrap() = Some(sender);
+    }
 }
 
 impl<T: UsbContext> Drop for Feeder<T> {
@@ -115,6 +121,7 @@ struct Context<T: UsbContext> {
     pub listener: poller::Listener<T>,
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
+    pub calibration_sender: Mutex<Option<CalibrationSender>>,
     pub callbacks: Mutex<Vec<Box<Callback>>>,
     pub senders: Mutex<Vec<Sender>>,
     pub average_feed_time: Mutex<Option<Duration>>,
@@ -129,6 +136,7 @@ impl<T: UsbContext> Context<T> {
             stop_flag: Default::default(),
             connected: Default::default(),
             callbacks: Default::default(),
+            calibration_sender: Default::default(),
             senders: Default::default(),
             average_feed_time: Default::default(),
             thread_pool: rayon::ThreadPoolBuilder::new()
@@ -167,6 +175,20 @@ impl<T: UsbContext> Context<T> {
 
                         let input = apply_layers(input, &mut internal_layers);
                         let layered = apply_layers(input, &mut layers);
+
+                        let (input, layered) = {
+                            let mut calibration_sender = self.calibration_sender.lock().unwrap();
+
+                            if let Some(sender) = calibration_sender.as_ref() {
+                                if let Err(TrySendError::Disconnected(_)) = sender.try_send(input) {
+                                    *calibration_sender = None;
+                                }
+
+                                (Some(Input::default()), Some(Input::default()))
+                            } else {
+                                (input, layered)
+                            }
+                        };
 
                         bridge.feed(&layered).map(|()| Record {
                             raw_input: input,

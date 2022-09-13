@@ -5,8 +5,9 @@ use egui::Color32;
 use crate::{
     adapter::{Input, Port},
     calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
-    feeder::{Feeder, Record},
+    feeder::{CalibrationReceiver, Feeder, Record},
     gui::app::{widget, Usb},
+    util::recent_channel as recent,
 };
 
 const NOTCH_NAMES: [&str; 8] = [
@@ -111,6 +112,18 @@ impl<'a> CalibrationPanel<'a> {
         next_action
     }
 
+    fn should_confirm(was_a_pressed: &mut bool, input: &Input) -> bool {
+        if input.button_a && !*was_a_pressed {
+            *was_a_pressed = true;
+            true
+        } else if !input.button_a {
+            *was_a_pressed = false;
+            false
+        } else {
+            false
+        }
+    }
+
     pub fn ui(&mut self, ui: &mut egui::Ui) {
         let State {
             port,
@@ -118,35 +131,31 @@ impl<'a> CalibrationPanel<'a> {
             was_a_pressed,
         } = &mut self.state;
 
-        let index = port.index();
-        let (raw, mapped) = self.records[index]
-            .as_ref()
-            .and_then(|r| r.raw_input.zip(r.layered_input))
-            .unwrap_or_default();
-
-        let confirm = if raw.button_a && !*was_a_pressed {
-            *was_a_pressed = true;
-            true
-        } else if !raw.button_a {
-            *was_a_pressed = false;
-            false
-        } else {
-            false
-        };
-
         ui.set_min_width(200.0);
         ui.heading("Calibration");
         ui.add_space(5.0);
 
         match action {
             Action::DisplayInputs => {
+                let index = port.index();
+                let feeder = &self.feeders[index];
+
+                let (raw, mapped) = self.records[index]
+                    .as_ref()
+                    .and_then(|r| r.raw_input.zip(r.layered_input))
+                    .unwrap_or_default();
+
                 ui.horizontal(|ui| {
                     if ui.button("Calibrate Sticks").clicked() {
-                        *action = Action::CalibrateSticks(Default::default());
+                        let (tx, rx) = recent::channel();
+                        feeder.start_calibration(tx);
+                        *action = Action::CalibrateSticks(Default::default(), rx);
                     }
 
                     if ui.button("Calibrate Triggers").clicked() {
-                        *action = Action::CalibrateTriggers(Default::default());
+                        let (tx, rx) = recent::channel();
+                        feeder.start_calibration(tx);
+                        *action = Action::CalibrateTriggers(Default::default(), rx);
                     }
                 });
 
@@ -158,7 +167,10 @@ impl<'a> CalibrationPanel<'a> {
                 ui.label("Mapped");
                 Self::controls_ui(ui, &mapped);
             }
-            Action::CalibrateSticks(progress) => {
+            Action::CalibrateSticks(progress, rx) => {
+                let raw = rx.try_recv().ok().flatten().unwrap_or_default();
+                let confirm = Self::should_confirm(was_a_pressed, &raw);
+
                 let next_action = Self::calibration_ui(
                     ui,
                     progress,
@@ -218,7 +230,10 @@ impl<'a> CalibrationPanel<'a> {
                     *action = next_action;
                 }
             }
-            Action::CalibrateTriggers(progress) => {
+            Action::CalibrateTriggers(progress, rx) => {
+                let raw = rx.try_recv().ok().flatten().unwrap_or_default();
+                let confirm = Self::should_confirm(was_a_pressed, &raw);
+
                 let next_action = Self::calibration_ui(
                     ui,
                     progress,
@@ -301,8 +316,8 @@ impl Default for State {
 
 enum Action {
     DisplayInputs,
-    CalibrateSticks(SticksProgress),
-    CalibrateTriggers(TriggersProgress),
+    CalibrateSticks(SticksProgress, CalibrationReceiver),
+    CalibrateTriggers(TriggersProgress, CalibrationReceiver),
 }
 
 impl Default for Action {
