@@ -1,6 +1,5 @@
 use crate::gui::log::Message;
 use crossbeam::channel;
-use egui::Align;
 
 pub struct LogPanel {
     receiver: channel::Receiver<Message>,
@@ -18,11 +17,8 @@ impl LogPanel {
     }
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
-        let mut received_message = false;
-
         while let Ok(message) = self.receiver.try_recv() {
             self.messages.push(message);
-            received_message = true
         }
 
         ui.set_height(125.0);
@@ -30,24 +26,28 @@ impl LogPanel {
         ui.horizontal(|ui| {
             ui.heading("Log");
             ui.separator();
-            ui.checkbox(&mut self.auto_scroll, "Auto Scroll");
+            ui.checkbox(&mut self.auto_scroll, "Auto Scroll")
+                .on_hover_text(
+                "Automatically scroll to view new messages when the scroll bar is at the bottom.",
+            );
         });
 
         ui.separator();
 
         let row_height = ui.text_style_height(&egui::TextStyle::Body);
 
-        egui::ScrollArea::both().show_rows(ui, row_height, self.messages.len(), |ui, rows| {
-            let grid = egui::Grid::new("messages").num_columns(3);
-            grid.show(ui, |ui| {
-                for message in rows.map(|i| &self.messages[i]) {
-                    message.draw(ui);
-                }
+        egui::ScrollArea::both()
+            .stick_to_bottom(self.auto_scroll)
+            .show_rows(ui, row_height, self.messages.len(), |ui, rows| {
+                ui.set_width(ui.available_width());
+                ui.set_height(ui.available_height());
 
-                if self.auto_scroll && received_message {
-                    ui.scroll_to_cursor(Some(Align::BOTTOM));
-                }
+                let grid = egui::Grid::new("messages").num_columns(3);
+                grid.show(ui, |ui| {
+                    for message in rows.map(|i| &self.messages[i]) {
+                        message.draw(ui);
+                    }
+                });
             });
-        });
     }
 }
