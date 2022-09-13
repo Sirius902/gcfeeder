@@ -1,7 +1,9 @@
 use eframe::epaint;
-use egui::{Color32, Rgba, Rounding, Sense, Stroke, Vec2};
+use egui::{Color32, Pos2, Rgba, Rounding, Sense, Stroke, Vec2};
 
 use crate::adapter;
+
+use super::shape::ngon_points;
 
 pub struct Stick {
     stick: adapter::Stick,
@@ -38,7 +40,6 @@ impl egui::Widget for Stick {
                 color.b(),
                 color.a() * 0.35,
             ));
-            let polygon_radius = Self::SIZE * 0.5 * 0.8;
             let border_color = polygon_color;
 
             // Add background rect.
@@ -49,10 +50,19 @@ impl egui::Widget for Stick {
                 stroke: Stroke::new(1.0, border_color),
             });
 
+            let polygon_radius = Self::SIZE * 0.5 * 0.8;
+            let polygon_points = ngon_points(8, polygon_radius)
+                .into_iter()
+                .map(|p| {
+                    let c = rect.center();
+                    Pos2::new(p.x + c.x, p.y + c.y)
+                })
+                .collect();
+
             // Add stick polygon.
-            painter.add(epaint::CircleShape {
-                center: rect.center(),
-                radius: polygon_radius,
+            painter.add(epaint::PathShape {
+                points: polygon_points,
+                closed: true,
                 fill: polygon_color,
                 stroke: Stroke::none(),
             });

@@ -1,3 +1,5 @@
+mod shape;
+
 pub mod stick;
 pub mod trigger;
 
