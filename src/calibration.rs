@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct StickCalibration {
     pub notch_points: [[u8; 2]; 8],
-    pub stick_center: [u8; 2],
+    pub center: [u8; 2],
 }
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]

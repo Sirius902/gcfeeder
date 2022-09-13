@@ -1,21 +1,5 @@
 use std::time::{Duration, Instant};
 
-macro_rules! packed_bools {
-    ( ($t:ty) $($b:expr,)* ) => { {
-        let mut result: $t = 0;
-        let mut _i = 0_u32;
-
-        $(
-            if $b { result |= <$t>::checked_shl(1, _i).unwrap(); }
-            _i += 1;
-        )*
-
-        result
-    } };
-}
-
-pub(crate) use packed_bools;
-
 pub struct AverageTimer {
     started: Instant,
     average: Option<Duration>,
@@ -23,7 +7,7 @@ pub struct AverageTimer {
 }
 
 impl AverageTimer {
-    pub fn start(alpha: f64) -> Result<Self, TimerError> {
+    pub fn start(alpha: f64) -> Result<Self, Error> {
         if alpha <= 1.0 {
             Ok(Self {
                 started: Instant::now(),
@@ -31,7 +15,7 @@ impl AverageTimer {
                 alpha,
             })
         } else {
-            Err(TimerError::AlphaRange)
+            Err(Error::AlphaRange)
         }
     }
 
@@ -65,7 +49,7 @@ impl AverageTimer {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum TimerError {
+pub enum Error {
     #[error("alpha should be in [0, 1]")]
     AlphaRange,
 }

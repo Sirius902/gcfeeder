@@ -1,27 +1,30 @@
 use std::{
-    array, fs,
+    fs,
     io::{Read, Write},
     net::UdpSocket,
     path::{Path, PathBuf},
 };
 
 use eframe::egui;
+use enum_iterator::all;
 use trayicon::TrayIcon;
-
-use self::panel::StatsPanel;
 
 use super::log::Message as LogMessage;
 use crate::{
-    adapter::{poller::Poller, Port},
+    adapter::{poller::Poller, Input, Port},
     config::{Config, Profile},
-    feeder::Feeder,
+    feeder::{self, Feeder},
     panic,
+    util::recent_channel::{self as recent, TryRecvError},
 };
 use crossbeam::channel;
 use log::{info, warn};
-use panel::{CalibrationPanel, ConfigEditor, LogPanel};
+use panel::{
+    calibration::State as CalibrationState, CalibrationPanel, ConfigEditor, LogPanel, StatsPanel,
+};
 
 mod panel;
+mod widget;
 
 type Usb = rusb::GlobalContext;
 
@@ -34,6 +37,7 @@ pub enum TrayMessage {
 
 pub struct App {
     log_panel: LogPanel,
+    calibration_state: Option<CalibrationState>,
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
@@ -42,6 +46,8 @@ pub struct App {
     tray_receiver: channel::Receiver<TrayMessage>,
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
+    receivers: [feeder::Receiver; Port::COUNT],
+    inputs: [Option<Input>; Port::COUNT],
 }
 
 impl App {
@@ -57,10 +63,11 @@ impl App {
 
         let config = Self::load_or_create_config(&config_path);
         let poller = Poller::new(Usb {});
-        let feeders = Self::feeders_from_config(&config, &poller);
+        let (feeders, receivers) = Self::feeders_from_config(&config, &poller);
 
         Self {
             log_panel: LogPanel::new(log_receiver),
+            calibration_state: None,
             stats_open: false,
             config,
             config_path,
@@ -69,6 +76,8 @@ impl App {
             tray_receiver,
             poller,
             feeders,
+            receivers,
+            inputs: Default::default(),
         }
     }
 
@@ -136,11 +145,28 @@ impl App {
         }
     }
 
-    fn feeders_from_config(config: &Config, poller: &Poller<Usb>) -> [Feeder<Usb>; Port::COUNT] {
-        array::from_fn(|i| Self::feeder_from_config(config, poller, i.try_into().unwrap()))
+    fn feeders_from_config(
+        config: &Config,
+        poller: &Poller<Usb>,
+    ) -> ([Feeder<Usb>; Port::COUNT], [feeder::Receiver; Port::COUNT]) {
+        let mut feeders: [Option<Feeder<Usb>>; Port::COUNT] = Default::default();
+        let mut receivers: [Option<feeder::Receiver>; Port::COUNT] = Default::default();
+
+        for port in all::<Port>() {
+            let index = port.index();
+            let (feeder, receiver) = Self::feeder_from_config(config, poller, port);
+            feeders[index] = Some(feeder);
+            receivers[index] = Some(receiver);
+        }
+
+        (feeders.map(Option::unwrap), receivers.map(Option::unwrap))
     }
 
-    fn feeder_from_config(config: &Config, poller: &Poller<Usb>, port: Port) -> Feeder<Usb> {
+    fn feeder_from_config(
+        config: &Config,
+        poller: &Poller<Usb>,
+        port: Port,
+    ) -> (Feeder<Usb>, feeder::Receiver) {
         let index = port.index();
         let profile = {
             let selected = &config.profile.selected[index];
@@ -188,17 +214,17 @@ impl App {
             });
         }
 
-        feeder
+        let (tx, rx) = recent::channel();
+        feeder.send_on_feed(tx);
+        (feeder, rx)
     }
-}
 
-impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        if panic::panicked() {
+    fn handle_messages(&mut self, frame: &mut eframe::Frame) {
+        if panic::panicked() || self.ctrlc_receiver.try_recv() == Ok(()) {
             frame.close();
         }
 
-        if let Ok(message) = self.tray_receiver.try_recv() {
+        while let Ok(message) = self.tray_receiver.try_recv() {
             match message {
                 TrayMessage::Minimize => frame.set_visible(false),
                 TrayMessage::Restore => frame.set_visible(true),
@@ -206,9 +232,31 @@ impl eframe::App for App {
             }
         }
 
-        if self.ctrlc_receiver.try_recv() == Ok(()) {
-            frame.close();
+        for (i, (feeder, receiver)) in self
+            .feeders
+            .iter()
+            .zip(self.receivers.iter_mut())
+            .enumerate()
+        {
+            match receiver.try_recv() {
+                Ok(record) => {
+                    self.inputs[i] = record.raw_input;
+                }
+                Err(TryRecvError::Disconnected) => {
+                    warn!("Feeder receiver disconnected while in use");
+                    let (tx, rx) = recent::channel();
+                    feeder.send_on_feed(tx);
+                    *receiver = rx;
+                }
+                _ => (),
+            }
         }
+    }
+}
+
+impl eframe::App for App {
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        self.handle_messages(frame);
 
         ctx.request_repaint();
 
@@ -248,7 +296,13 @@ impl eframe::App for App {
         });
 
         egui::SidePanel::left("calibration_panel").show(ctx, |ui| {
-            CalibrationPanel::new(&mut self.feeders).ui(ui);
+            let mut panel = CalibrationPanel::new(
+                &mut self.feeders,
+                &self.inputs,
+                self.calibration_state.take(),
+            );
+            panel.ui(ui);
+            self.calibration_state = Some(panel.into_state());
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
@@ -261,7 +315,9 @@ impl eframe::App for App {
             if state.reload() {
                 if let Some(config) = Self::load_config(&self.config_path) {
                     // TODO: Send config update to feeder instead of re-creating it.
-                    self.feeders = Self::feeders_from_config(&config, &self.poller);
+                    let (feeders, receivers) = Self::feeders_from_config(&config, &self.poller);
+                    self.feeders = feeders;
+                    self.receivers = receivers;
                     self.config = config;
                     info!("Reloaded config");
                 }

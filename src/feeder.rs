@@ -8,9 +8,9 @@ use std::{
     time::Duration,
 };
 
-use crossbeam::channel::RecvTimeoutError;
 use enclose::enclose;
 use log::warn;
+use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use rusb::UsbContext;
 use serde::{Deserialize, Serialize};
 
@@ -26,13 +26,18 @@ use crate::{
         self,
         layers::{AnalogScaling, CenterCalibration, EssInversion},
     },
-    util::AverageTimer,
+    util::{
+        recent_channel::{self as recent, RecvTimeoutError, TrySendError},
+        AverageTimer,
+    },
 };
 
 type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = dyn bridge::Bridge + Send + Sync;
 
 pub type Callback = dyn FnMut(&Record) + Send;
+pub type Sender = recent::Sender<Arc<Record>>;
+pub type Receiver = recent::Receiver<Arc<Record>>;
 pub type Layer = dyn mapping::Layer + Send;
 
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
@@ -77,6 +82,11 @@ impl<T: UsbContext + 'static> Feeder<T> {
         callbacks.push(Box::new(callback));
     }
 
+    pub fn send_on_feed(&self, sender: Sender) {
+        let mut senders = self.context.senders.lock().unwrap();
+        senders.push(sender);
+    }
+
     #[must_use]
     pub fn connected(&self) -> bool {
         self.context.connected.load(Ordering::Acquire)
@@ -105,7 +115,9 @@ struct Context<T: UsbContext> {
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
     pub callbacks: Mutex<Vec<Box<Callback>>>,
+    pub senders: Mutex<Vec<Sender>>,
     pub average_feed_time: Mutex<Option<Duration>>,
+    pub thread_pool: rayon::ThreadPool,
 }
 
 impl<T: UsbContext> Context<T> {
@@ -116,7 +128,12 @@ impl<T: UsbContext> Context<T> {
             stop_flag: Default::default(),
             connected: Default::default(),
             callbacks: Default::default(),
+            senders: Default::default(),
             average_feed_time: Default::default(),
+            thread_pool: rayon::ThreadPoolBuilder::new()
+                .num_threads(2)
+                .build()
+                .unwrap(),
         }
     }
 
@@ -164,11 +181,26 @@ impl<T: UsbContext> Context<T> {
             match record {
                 Ok(record) => {
                     {
-                        let mut callbacks = self.callbacks.lock().unwrap();
+                        let record = Arc::new(record);
 
-                        for callback in callbacks.iter_mut() {
-                            callback(&record);
-                        }
+                        self.thread_pool.join(
+                            || {
+                                let mut callbacks = self.callbacks.lock().unwrap();
+                                callbacks
+                                    .par_iter_mut()
+                                    .for_each(|callback| callback(&record));
+                            },
+                            || {
+                                let mut senders = self.senders.lock().unwrap();
+
+                                senders.retain(|sender| {
+                                    !matches!(
+                                        sender.try_send(record.clone()),
+                                        Err(TrySendError::Disconnected(_))
+                                    )
+                                });
+                            },
+                        );
                     }
 
                     *self.average_feed_time.lock().unwrap() = Some(timer.lap());

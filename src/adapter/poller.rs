@@ -8,21 +8,21 @@ use std::{
     time::{Duration, Instant},
 };
 
-use crossbeam::{
-    atomic::AtomicCell,
-    channel::{self, TrySendError},
-};
+use crossbeam::atomic::AtomicCell;
 use enclose::enclose;
 use log::warn;
 use rusb::UsbContext;
 
-use crate::util::AverageTimer;
+use crate::util::{
+    recent_channel::{self as recent, TrySendError},
+    AverageTimer,
+};
 
 use super::{Adapter, Input, Port, Rumble};
 
 pub type InputMessage = Option<Input>;
 
-type SenderData = (Arc<AtomicCell<InputMessage>>, channel::Sender<()>, Port);
+type SenderData = (recent::Sender<InputMessage>, Port);
 
 pub struct Poller<T: UsbContext + 'static> {
     context: Arc<Context<T>>,
@@ -51,16 +51,10 @@ impl<T: UsbContext + 'static> Poller<T> {
     }
 
     pub fn add_listener(&self, port: Port) -> Listener<T> {
-        let (tx, rx) = channel::bounded(1);
-        let input = Arc::new(AtomicCell::new(None));
-        self.context
-            .senders
-            .lock()
-            .unwrap()
-            .push((input.clone(), tx, port));
+        let (sender, receiver) = recent::channel();
+        self.context.senders.lock().unwrap().push((sender, port));
         Listener {
-            receiver: rx,
-            input,
+            receiver,
             context: self.context.clone(),
             port,
         }
@@ -145,11 +139,12 @@ impl<T: UsbContext> Context<T> {
         let inputs = adapter.read_inputs()?;
         let mut senders = self.senders.lock().unwrap();
 
-        senders.retain(|(input, sender, port)| {
+        senders.retain(|(sender, port)| {
             let index = port.index();
-            input.store(inputs[index]);
-
-            !matches!(sender.try_send(()), Err(TrySendError::Disconnected(_)))
+            !matches!(
+                sender.try_send(inputs[index]),
+                Err(TrySendError::Disconnected(_))
+            )
         });
 
         Ok(())
@@ -175,8 +170,7 @@ impl<T: UsbContext> Context<T> {
 }
 
 pub struct Listener<T: UsbContext> {
-    receiver: channel::Receiver<()>,
-    input: Arc<AtomicCell<InputMessage>>,
+    receiver: recent::Receiver<InputMessage>,
     context: Arc<Context<T>>,
     port: Port,
 }
@@ -186,30 +180,26 @@ impl<T: UsbContext> Listener<T> {
         self.port
     }
 
-    pub fn recv(&self) -> Result<InputMessage, channel::RecvError> {
-        self.receiver.recv().map(|()| self.input.load())
+    pub fn recv(&self) -> Result<InputMessage, recent::RecvError> {
+        self.receiver.recv()
     }
 
     pub fn recv_deadline(
         &self,
         deadline: Instant,
-    ) -> Result<InputMessage, channel::RecvTimeoutError> {
-        self.receiver
-            .recv_deadline(deadline)
-            .map(|()| self.input.load())
+    ) -> Result<InputMessage, recent::RecvTimeoutError> {
+        self.receiver.recv_deadline(deadline)
     }
 
     pub fn recv_timeout(
         &self,
         timeout: Duration,
-    ) -> Result<InputMessage, channel::RecvTimeoutError> {
-        self.receiver
-            .recv_timeout(timeout)
-            .map(|()| self.input.load())
+    ) -> Result<InputMessage, recent::RecvTimeoutError> {
+        self.receiver.recv_timeout(timeout)
     }
 
-    pub fn try_recv(&self) -> Result<InputMessage, channel::TryRecvError> {
-        self.receiver.try_recv().map(|()| self.input.load())
+    pub fn try_recv(&self) -> Result<InputMessage, recent::TryRecvError> {
+        self.receiver.try_recv()
     }
 
     pub fn set_rumble(&self, rumble: Rumble) {
