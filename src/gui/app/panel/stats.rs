@@ -26,9 +26,12 @@ impl<'a> StatsPanel<'a> {
             .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
             .unwrap_or_else(|| "-".to_owned());
 
-        ui.label(format!("Average poll time: {}ms", poll_avg));
+        ui.heading("Average poll time");
+        ui.label(format!("{}ms", poll_avg));
 
-        ui.spacing();
+        ui.add_space(5.0);
+
+        ui.heading("Average feed time");
 
         for port in all::<Port>() {
             let feeder = &self.feeders[port.index()];
@@ -39,8 +42,7 @@ impl<'a> StatsPanel<'a> {
                 .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
                 .unwrap_or_else(|| "-".to_owned());
 
-            ui.label(format!("Port {:?}", port));
-            ui.label(format!("Average feed time: {}ms", feed_avg));
+            ui.label(format!("Port {:?}: {}ms", port, feed_avg));
         }
     }
 }
