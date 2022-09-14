@@ -39,7 +39,7 @@ impl egui::Widget for Stick<'_> {
             let painter = ui.painter();
             let color = Rgba::from(self.color);
             let background_color =
-                Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.05);
+                Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.03);
             let polygon_color =
                 Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.35);
             let calibration_color = Rgba::from_rgba_unmultiplied(

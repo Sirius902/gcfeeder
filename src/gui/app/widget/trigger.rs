@@ -36,7 +36,7 @@ impl egui::Widget for Trigger<'_> {
             let painter = ui.painter();
             let color = Rgba::from(self.color);
             let background_color =
-                Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.05);
+                Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.03);
             let calibration_color = Rgba::from_rgba_unmultiplied(
                 1.0 - color.r(),
                 1.0 - color.g(),
