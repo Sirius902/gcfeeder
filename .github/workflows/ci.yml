@@ -15,12 +15,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Build
+      run: cargo build
     - name: Run Tests
       run: cargo test
     - name: Clippy Lints
       run: cargo clippy
-    - name: Build
-      run: cargo build
     - name: Upload gcfeeder
       uses: actions/upload-artifact@v3
       with:
