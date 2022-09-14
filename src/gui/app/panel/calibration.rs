@@ -1,13 +1,14 @@
-use std::convert::TryFrom;
+use std::{convert::TryFrom, iter};
 
 use egui::Color32;
 
 use crate::{
     adapter::{Input, Port},
     calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
+    config::Config,
     feeder::{CalibrationReceiver, Feeder, Record},
     gui::app::{widget, Usb},
-    util::recent_channel as recent,
+    util::{recent_channel as recent, EnumComboUi},
 };
 
 const NOTCH_NAMES: [&str; 8] = [
@@ -24,6 +25,7 @@ const NOTCH_NAMES: [&str; 8] = [
 pub struct CalibrationPanel<'a> {
     feeders: &'a mut [Feeder<Usb>; Port::COUNT],
     records: &'a [Option<Record>; Port::COUNT],
+    config: &'a Config,
     state: State,
 }
 
@@ -31,56 +33,48 @@ impl<'a> CalibrationPanel<'a> {
     pub fn new(
         feeders: &'a mut [Feeder<Usb>; Port::COUNT],
         records: &'a [Option<Record>; Port::COUNT],
+        config: &'a Config,
         state: Option<State>,
     ) -> Self {
         Self {
             feeders,
             records,
+            config,
             state: state.unwrap_or_default(),
         }
     }
 
-    pub fn into_state(self) -> State {
-        self.state
+    #[must_use]
+    pub fn into_state(mut self) -> (State, Option<ConfigUpdate>) {
+        let update = self.state.config_update.take();
+        (self.state, update)
     }
 
-    fn draw_main_stick(ui: &mut egui::Ui, input: &Input) {
-        ui.add(widget::Stick::new(input.main_stick, Color32::WHITE));
+    #[must_use]
+    fn main_stick<'b>(input: &Input) -> widget::Stick<'b> {
+        widget::Stick::new(input.main_stick, Color32::WHITE)
     }
 
-    fn draw_c_stick(ui: &mut egui::Ui, input: &Input) {
-        ui.add(widget::Stick::new(input.c_stick, Color32::YELLOW));
+    #[must_use]
+    fn c_stick<'b>(input: &Input) -> widget::Stick<'b> {
+        widget::Stick::new(input.c_stick, Color32::YELLOW)
     }
 
-    fn draw_left_trigger(ui: &mut egui::Ui, input: &Input) {
-        ui.add(widget::Trigger::new(
-            input.left_trigger,
-            "L",
-            Color32::WHITE,
-        ));
+    #[must_use]
+    fn left_trigger<'b>(input: &Input) -> widget::Trigger<'b> {
+        widget::Trigger::new(input.left_trigger, "L", Color32::WHITE)
     }
 
-    fn draw_right_trigger(ui: &mut egui::Ui, input: &Input) {
-        ui.add(widget::Trigger::new(
-            input.right_trigger,
-            "R",
-            Color32::WHITE,
-        ));
-    }
-
-    fn controls_ui(ui: &mut egui::Ui, input: &Input) {
-        ui.horizontal(|ui| {
-            Self::draw_main_stick(ui, input);
-            Self::draw_c_stick(ui, input);
-            Self::draw_left_trigger(ui, input);
-            Self::draw_right_trigger(ui, input);
-        });
+    #[must_use]
+    fn right_trigger<'b>(input: &Input) -> widget::Trigger<'b> {
+        widget::Trigger::new(input.right_trigger, "R", Color32::WHITE)
     }
 
     #[must_use]
     fn calibration_ui<R, P>(
         ui: &mut egui::Ui,
         progress: &mut P,
+        connected: bool,
         add_contents: impl FnOnce(&mut egui::Ui, &mut P) -> Option<R>,
         apply_calibration: impl FnOnce(R),
     ) -> Option<Action> {
@@ -91,10 +85,17 @@ impl<'a> CalibrationPanel<'a> {
         }
 
         ui.separator();
+
+        if !connected {
+            ui.label("Please reconnect the controller");
+            return next_action;
+        }
+
         let r = match add_contents(ui, progress) {
             Some(r) => r,
             None => return next_action,
         };
+
         ui.separator();
 
         ui.label("Calibration finished. Apply to config editor profile?");
@@ -128,6 +129,8 @@ impl<'a> CalibrationPanel<'a> {
         let State {
             port,
             action,
+            config_update,
+            view_calibration,
             was_a_pressed,
         } = &mut self.state;
 
@@ -135,15 +138,31 @@ impl<'a> CalibrationPanel<'a> {
         ui.heading("Calibration");
         ui.add_space(5.0);
 
-        match action {
-            Action::DisplayInputs => {
-                let index = port.index();
-                let feeder = &self.feeders[index];
+        let index = port.index();
+        let feeder = &self.feeders[index];
 
+        let connected = self.records[index]
+            .as_ref()
+            .map(|r| r.raw_input.is_some())
+            .unwrap_or(false);
+
+        ui.add_enabled_ui(matches!(action, Action::DisplayInputs), |ui| {
+            port.enum_combo_ui("Port", ui);
+        });
+
+        ui.separator();
+
+        let scroll_contents = |ui: &mut egui::Ui| match action {
+            Action::DisplayInputs => {
                 let (raw, mapped) = self.records[index]
                     .as_ref()
                     .and_then(|r| r.raw_input.zip(r.layered_input))
                     .unwrap_or_default();
+
+                if !connected {
+                    ui.label("Controller disconnected");
+                    return;
+                }
 
                 ui.horizontal(|ui| {
                     if ui.button("Calibrate Sticks").clicked() {
@@ -159,37 +178,94 @@ impl<'a> CalibrationPanel<'a> {
                     }
                 });
 
-                ui.separator();
+                ui.checkbox(view_calibration, "View Calibration");
+
+                let stick_to_points = |s: Option<StickCalibration>| -> Vec<[u8; 2]> {
+                    s.map(|s| iter::once(s.center).chain(s.notch_points).collect())
+                        .unwrap_or_default()
+                };
+
+                let trigger_to_points = |t: Option<TriggerCalibration>| -> Vec<u8> {
+                    t.map(|t| vec![t.min, t.max]).unwrap_or_default()
+                };
 
                 ui.label("Raw");
-                Self::controls_ui(ui, &raw);
+                ui.horizontal(|ui| {
+                    let (sticks, triggers) = self
+                        .config
+                        .profile
+                        .selected(*port)
+                        .filter(|_| *view_calibration)
+                        .map(|profile| {
+                            (
+                                profile.calibration.stick_data,
+                                profile.calibration.trigger_data,
+                            )
+                        })
+                        .unwrap_or_default();
+
+                    ui.add(
+                        Self::main_stick(&raw)
+                            .with_points(&stick_to_points(sticks.map(|s| s.main_stick))),
+                    );
+                    ui.add(
+                        Self::c_stick(&raw)
+                            .with_points(&stick_to_points(sticks.map(|s| s.c_stick))),
+                    );
+                    ui.add(
+                        Self::left_trigger(&raw)
+                            .with_markers(&trigger_to_points(triggers.map(|t| t.left_trigger))),
+                    );
+                    ui.add(
+                        Self::right_trigger(&raw)
+                            .with_markers(&trigger_to_points(triggers.map(|t| t.right_trigger))),
+                    );
+                });
 
                 ui.label("Mapped");
-                Self::controls_ui(ui, &mapped);
+                ui.horizontal(|ui| {
+                    let stick_points =
+                        stick_to_points(Some(Default::default()).filter(|_| *view_calibration));
+                    let trigger_points =
+                        trigger_to_points(Some(Default::default()).filter(|_| *view_calibration));
+
+                    ui.add(Self::main_stick(&mapped).with_points(&stick_points));
+                    ui.add(Self::c_stick(&mapped).with_points(&stick_points));
+                    ui.add(Self::left_trigger(&mapped).with_markers(&trigger_points));
+                    ui.add(Self::right_trigger(&mapped).with_markers(&trigger_points));
+                });
             }
             Action::CalibrateSticks(progress, rx) => {
-                let raw = rx.try_recv().ok().flatten().unwrap_or_default();
+                let record = rx.try_recv().ok().flatten();
+                let raw = record.unwrap_or_default();
                 let confirm = Self::should_confirm(was_a_pressed, &raw);
+                let connected = record.is_some();
 
                 let next_action = Self::calibration_ui(
                     ui,
                     progress,
+                    connected,
                     |ui, progress| {
                         ui.label("Calibrating sticks...");
 
                         let mut is_main_stick = true;
                         loop {
-                            if is_main_stick {
-                                Self::draw_main_stick(ui, &raw);
-                            } else {
-                                Self::draw_c_stick(ui, &raw);
-                            }
-
                             let (stick, pstick, name) = if is_main_stick {
                                 (&raw.main_stick, &mut progress.main_stick, "main ")
                             } else {
                                 (&raw.c_stick, &mut progress.c_stick, "C-")
                             };
+
+                            let points = iter::once(pstick.center)
+                                .chain(pstick.notch_points)
+                                .flatten()
+                                .collect::<Vec<_>>();
+
+                            if is_main_stick {
+                                ui.add(Self::main_stick(&raw).with_points(&points));
+                            } else {
+                                ui.add(Self::c_stick(&raw).with_points(&points));
+                            }
 
                             if pstick.center.is_none() {
                                 ui.label(format!("Center {}stick then press A", name));
@@ -222,7 +298,7 @@ impl<'a> CalibrationPanel<'a> {
                         Some(SticksCalibration::try_from(*progress).unwrap())
                     },
                     |calibration| {
-                        log::debug!("Stick calibration finished! {:?}", calibration);
+                        *config_update = Some(ConfigUpdate::SticksCalibration(calibration));
                     },
                 );
 
@@ -231,28 +307,36 @@ impl<'a> CalibrationPanel<'a> {
                 }
             }
             Action::CalibrateTriggers(progress, rx) => {
-                let raw = rx.try_recv().ok().flatten().unwrap_or_default();
+                let record = rx.try_recv().ok().flatten();
+                let raw = record.unwrap_or_default();
                 let confirm = Self::should_confirm(was_a_pressed, &raw);
+                let connected = record.is_some();
 
                 let next_action = Self::calibration_ui(
                     ui,
                     progress,
+                    connected,
                     |ui, progress| {
                         ui.label("Calibrating triggers...");
 
                         let mut is_left_trigger = true;
                         loop {
-                            if is_left_trigger {
-                                Self::draw_left_trigger(ui, &raw);
-                            } else {
-                                Self::draw_right_trigger(ui, &raw);
-                            }
-
                             let (trigger, ptrigger, name) = if is_left_trigger {
                                 (&raw.left_trigger, &mut progress.left_trigger, "left")
                             } else {
                                 (&raw.right_trigger, &mut progress.right_trigger, "right")
                             };
+
+                            let markers = iter::once(ptrigger.min)
+                                .chain(iter::once(ptrigger.max))
+                                .flatten()
+                                .collect::<Vec<_>>();
+
+                            if is_left_trigger {
+                                ui.add(Self::left_trigger(&raw).with_markers(&markers));
+                            } else {
+                                ui.add(Self::right_trigger(&raw).with_markers(&markers));
+                            }
 
                             if ptrigger.min.is_none() {
                                 ui.label(format!(
@@ -286,7 +370,7 @@ impl<'a> CalibrationPanel<'a> {
                         Some(TriggersCalibration::try_from(*progress).unwrap())
                     },
                     |calibration| {
-                        log::debug!("Trigger calibration finished! {:?}", calibration);
+                        *config_update = Some(ConfigUpdate::TriggersCalibration(calibration));
                     },
                 );
 
@@ -294,13 +378,17 @@ impl<'a> CalibrationPanel<'a> {
                     *action = next_action;
                 }
             }
-        }
+        };
+
+        egui::ScrollArea::vertical().show(ui, scroll_contents);
     }
 }
 
 pub struct State {
     port: Port,
     action: Action,
+    config_update: Option<ConfigUpdate>,
+    view_calibration: bool,
     was_a_pressed: bool,
 }
 
@@ -309,6 +397,8 @@ impl Default for State {
         Self {
             port: Port::One,
             action: Action::default(),
+            config_update: None,
+            view_calibration: false,
             was_a_pressed: false,
         }
     }
@@ -412,4 +502,10 @@ impl TryFrom<TriggersProgress> for TriggersCalibration {
             })
         })
     }
+}
+
+#[derive(Debug)]
+pub enum ConfigUpdate {
+    SticksCalibration(SticksCalibration),
+    TriggersCalibration(TriggersCalibration),
 }

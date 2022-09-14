@@ -192,7 +192,7 @@ impl From<bool> for Rumble {
     }
 }
 
-#[derive(Debug, Copy, Clone, Sequence)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Sequence)]
 pub enum Port {
     One,
     Two,

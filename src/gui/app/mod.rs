@@ -304,10 +304,17 @@ impl eframe::App for App {
             let mut panel = CalibrationPanel::new(
                 &mut self.feeders,
                 &self.records,
+                &self.config,
                 self.calibration_state.take(),
             );
             panel.ui(ui);
-            self.calibration_state = Some(panel.into_state());
+            let (state, update) = panel.into_state();
+            self.calibration_state = Some(state);
+
+            if let Some(update) = update {
+                // TODO: Update config editor profile.
+                log::debug!("{:?}", update);
+            }
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {

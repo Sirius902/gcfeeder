@@ -5,17 +5,25 @@ pub struct Trigger<'a> {
     value: u8,
     signifier: &'a str,
     color: Color32,
+    markers: Option<&'a [u8]>,
 }
 
 impl<'a> Trigger<'a> {
     const SIZE: Vec2 = Vec2::new(10.0, 45.0);
+    const MARKER_HEIGHT: f32 = 2.5;
 
     pub fn new(value: u8, signifier: &'a str, color: Color32) -> Self {
         Self {
             value,
             signifier,
             color,
+            markers: None,
         }
+    }
+
+    pub fn with_markers(mut self, markers: &'a [u8]) -> Self {
+        self.markers = Some(markers);
+        self
     }
 }
 
@@ -78,6 +86,27 @@ impl egui::Widget for Trigger<'_> {
                 underline: Stroke::none(),
                 angle: 0.0,
             });
+
+            let draw_market = |val: u8, color: Color32| {
+                let offset = Vec2::new(0.0, -scale_trigger(val));
+                let marker_rect = epaint::Rect::from_two_pos(
+                    rect.left_bottom() + offset + Vec2::new(0.0, 0.5 * Self::MARKER_HEIGHT),
+                    rect.right_bottom() + offset - Vec2::new(0.0, 0.5 * Self::MARKER_HEIGHT),
+                );
+
+                painter.add(epaint::RectShape {
+                    rect: marker_rect,
+                    rounding: Rounding::none(),
+                    fill: color,
+                    stroke: Stroke::none(),
+                });
+            };
+
+            if let Some(markers) = self.markers {
+                for marker in markers.iter() {
+                    draw_market(*marker, calibration_color.into());
+                }
+            }
         }
 
         response

@@ -7,9 +7,7 @@ pub fn ngon_points(sides: usize, radius: f32) -> Vec<Pos2> {
 
     (0..sides)
         .map(|i| i as f32 / sides as f32)
-        .map(|t| {
-            let angle = start_angle + (t * TAU);
-            Pos2::new(radius * angle.cos(), -radius * angle.sin())
-        })
+        .map(|t| start_angle + t * TAU)
+        .map(|angle| Pos2::new(radius * angle.cos(), -radius * angle.sin()))
         .collect()
 }
