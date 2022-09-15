@@ -1,4 +1,5 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
+use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -6,7 +7,7 @@ use crate::{
     mapping,
 };
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 pub enum EssInversion {
     #[serde(rename = "oot-vc")]
     OotVc,

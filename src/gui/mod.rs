@@ -6,6 +6,7 @@ use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
 pub mod log;
+mod util;
 
 pub fn run() {
     let (tx, rx) = channel::bounded(1);

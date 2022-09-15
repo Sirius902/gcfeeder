@@ -7,8 +7,11 @@ use crate::{
     calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
     config::Config,
     feeder::{CalibrationReceiver, Feeder, Record},
-    gui::app::{widget, Usb},
-    util::{recent_channel as recent, EnumComboUi},
+    gui::{
+        app::{widget, Usb},
+        util::enum_combo_ui,
+    },
+    util::recent_channel as recent,
 };
 
 const NOTCH_NAMES: [&str; 8] = [
@@ -98,7 +101,7 @@ impl<'a> CalibrationPanel<'a> {
 
         ui.separator();
 
-        ui.label("Calibration finished. Apply to config editor profile?");
+        ui.label("Calibration finished. Apply to profile editor?");
         ui.horizontal(|ui| {
             if ui.button("Apply").clicked() {
                 apply_calibration(r);
@@ -147,7 +150,7 @@ impl<'a> CalibrationPanel<'a> {
             .unwrap_or(false);
 
         ui.add_enabled_ui(matches!(action, Action::DisplayInputs), |ui| {
-            port.enum_combo_ui("Port", ui);
+            enum_combo_ui(port, "Port", ui);
         });
 
         ui.separator();

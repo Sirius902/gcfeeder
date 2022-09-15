@@ -6,6 +6,8 @@ use crate::{adapter::Port, feeder};
 
 pub type Profile = feeder::Config;
 
+pub const DEFAULT_PROFILE_NAME: &str = "default";
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Config {
     pub profile: ProfileConfig,
@@ -43,7 +45,7 @@ impl ProfileConfig {
 
 impl Default for ProfileConfig {
     fn default() -> Self {
-        let default = "default".to_owned();
+        let default = DEFAULT_PROFILE_NAME.to_owned();
         Self {
             selected: array::from_fn(|_| default.clone()),
             list: {

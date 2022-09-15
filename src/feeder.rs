@@ -9,6 +9,7 @@ use std::{
 };
 
 use enclose::enclose;
+use enum_iterator::Sequence;
 use log::warn;
 use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use rusb::UsbContext;
@@ -278,7 +279,7 @@ impl Default for Config {
     }
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 #[serde(rename_all = "lowercase")]
 pub enum Driver {
     ViGEm,
@@ -302,7 +303,7 @@ pub struct EssConfig {
     pub inversion_mapping: Option<EssInversion>,
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 #[serde(rename_all = "snake_case")]
 pub enum RumbleSetting {
     On,

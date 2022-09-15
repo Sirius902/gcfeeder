@@ -20,7 +20,8 @@ use crate::{
 use crossbeam::channel;
 use log::{info, warn};
 use panel::{
-    calibration::State as CalibrationState, CalibrationPanel, ConfigEditor, LogPanel, StatsPanel,
+    calibration::State as CalibrationState, config::State as ConfigState, CalibrationPanel,
+    ConfigEditor, LogPanel, StatsPanel,
 };
 
 mod panel;
@@ -38,6 +39,7 @@ pub enum TrayMessage {
 pub struct App {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
+    config_state: Option<ConfigState>,
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
@@ -68,6 +70,7 @@ impl App {
         Self {
             log_panel: LogPanel::new(log_receiver),
             calibration_state: None,
+            config_state: None,
             stats_open: false,
             config,
             config_path,
@@ -319,7 +322,8 @@ impl eframe::App for App {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             let state = {
-                let mut config_editor = ConfigEditor::new(&mut self.config);
+                let mut config_editor =
+                    ConfigEditor::new(&mut self.config, self.config_state.take());
                 config_editor.ui(ui);
                 config_editor.into_state()
             };
@@ -339,6 +343,8 @@ impl eframe::App for App {
                 Self::write_config(&self.config, &self.config_path);
                 info!("Saved config");
             }
+
+            self.config_state = Some(state);
         });
     }
 }
