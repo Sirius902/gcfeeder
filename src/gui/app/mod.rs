@@ -48,6 +48,7 @@ pub struct App {
     ctrlc_receiver: channel::Receiver<()>,
     _tray_icon: TrayIcon<TrayMessage>,
     tray_receiver: channel::Receiver<TrayMessage>,
+    minimized: bool,
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
@@ -79,6 +80,7 @@ impl App {
             ctrlc_receiver,
             _tray_icon: tray_icon,
             tray_receiver,
+            minimized: false,
             poller,
             feeders,
             receivers,
@@ -231,8 +233,14 @@ impl App {
 
         while let Ok(message) = self.tray_receiver.try_recv() {
             match message {
-                TrayMessage::Minimize => frame.set_visible(false),
-                TrayMessage::Restore => frame.set_visible(true),
+                TrayMessage::Minimize => {
+                    frame.set_visible(false);
+                    self.minimized = true;
+                }
+                TrayMessage::Restore => {
+                    frame.set_visible(true);
+                    self.minimized = false;
+                }
                 TrayMessage::Exit => frame.close(),
             }
         }
@@ -268,7 +276,9 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         self.handle_messages(frame);
 
-        ctx.request_repaint();
+        if !self.minimized {
+            ctx.request_repaint();
+        }
 
         egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
@@ -291,6 +301,7 @@ impl eframe::App for App {
 
                 if ui.button("Minimize").clicked() {
                     frame.set_visible(false);
+                    self.minimized = true;
                 }
             });
         });
