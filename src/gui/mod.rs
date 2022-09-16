@@ -2,11 +2,17 @@ use std::{env, mem};
 
 use app::{App, TrayMessage};
 use crossbeam::channel;
+use egui::Color32;
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
 pub mod log;
 mod util;
+
+const ERROR_COLOR: Color32 = Color32::from_rgb(197, 15, 31);
+const WARN_COLOR: Color32 = Color32::from_rgb(193, 156, 0);
+const INFO_COLOR: Color32 = Color32::from_rgb(58, 150, 221);
+const DEBUG_COLOR: Color32 = Color32::from_rgb(136, 23, 152);
 
 pub fn run() {
     let (tx, rx) = channel::bounded(1);

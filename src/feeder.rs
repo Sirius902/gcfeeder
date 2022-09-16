@@ -63,6 +63,7 @@ impl<T: UsbContext + 'static> Feeder<T> {
             layers.push(Box::new(map));
         }
 
+        // TODO: Implement.
         if config.calibration.enabled || !matches!(config.rumble, RumbleSetting::On) {
             todo!();
         }
@@ -291,14 +292,14 @@ impl Default for Driver {
     }
 }
 
-#[derive(Copy, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct CalibrationConfig {
     pub enabled: bool,
     pub stick_data: Option<SticksCalibration>,
     pub trigger_data: Option<TriggersCalibration>,
 }
 
-#[derive(Copy, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct EssConfig {
     pub inversion_mapping: Option<EssInversion>,
 }

@@ -2,6 +2,8 @@ use crossbeam::channel;
 use egui::Color32;
 use time::{format_description::FormatItem, OffsetDateTime};
 
+use crate::gui::{DEBUG_COLOR, ERROR_COLOR, INFO_COLOR, WARN_COLOR};
+
 pub struct Logger {
     sender: channel::Sender<Message>,
     level: log::LevelFilter,
@@ -116,10 +118,10 @@ impl Message {
     const fn level_color(level: log::Level) -> Option<Color32> {
         use log::Level;
         match level {
-            Level::Error => Some(Color32::from_rgb(197, 15, 31)),
-            Level::Warn => Some(Color32::from_rgb(193, 156, 0)),
-            Level::Info => Some(Color32::from_rgb(58, 150, 221)),
-            Level::Debug => Some(Color32::from_rgb(136, 23, 152)),
+            Level::Error => Some(ERROR_COLOR),
+            Level::Warn => Some(WARN_COLOR),
+            Level::Info => Some(INFO_COLOR),
+            Level::Debug => Some(DEBUG_COLOR),
             Level::Trace => None,
         }
     }

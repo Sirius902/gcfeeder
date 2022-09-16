@@ -14,15 +14,15 @@ pub static NOTCH_POINTS: Lazy<[[u8; 2]; NOTCHES]> = Lazy::new(|| {
     let start_angle = PI * 0.5;
     (0..NOTCHES)
         .map(|i| i as f64 / NOTCHES as f64)
-        .map(|t| start_angle + t * TAU)
+        .map(|t| start_angle - t * TAU)
         .map(|angle| [RADIUS * angle.cos() + CENTER, RADIUS * angle.sin() + CENTER])
-        .map(|pos| pos.map(|x| x as u8))
+        .map(|pos| pos.map(|x| x.round() as u8))
         .collect::<Vec<_>>()
         .try_into()
         .unwrap()
 });
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StickCalibration {
     pub notch_points: [[u8; 2]; NOTCHES],
     pub center: [u8; 2],
@@ -37,13 +37,13 @@ impl Default for StickCalibration {
     }
 }
 
-#[derive(Debug, Copy, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct SticksCalibration {
     pub main_stick: StickCalibration,
     pub c_stick: StickCalibration,
 }
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TriggerCalibration {
     pub min: u8,
     pub max: u8,
@@ -58,7 +58,7 @@ impl Default for TriggerCalibration {
     }
 }
 
-#[derive(Debug, Copy, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct TriggersCalibration {
     pub left_trigger: TriggerCalibration,
     pub right_trigger: TriggerCalibration,

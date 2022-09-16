@@ -9,6 +9,8 @@ use eframe::egui;
 use enum_iterator::all;
 use trayicon::TrayIcon;
 
+use self::panel::calibration::ConfigUpdate;
+
 use super::log::Message as LogMessage;
 use crate::{
     adapter::{poller::Poller, Port},
@@ -315,8 +317,20 @@ impl eframe::App for App {
             self.calibration_state = Some(state);
 
             if let Some(update) = update {
-                // TODO: Update config editor profile.
-                log::debug!("{:?}", update);
+                if let Some(config_state) = self.config_state.as_mut() {
+                    let profile = config_state
+                        .profile_mut()
+                        .expect("config state should exist");
+
+                    match update {
+                        ConfigUpdate::SticksCalibration(s) => {
+                            profile.calibration.stick_data = Some(s)
+                        }
+                        ConfigUpdate::TriggersCalibration(t) => {
+                            profile.calibration.trigger_data = Some(t)
+                        }
+                    }
+                }
             }
         });
 

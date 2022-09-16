@@ -4,6 +4,7 @@ use std::{
     thread,
 };
 
+use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use vigem_client as client;
 
@@ -212,7 +213,7 @@ impl Drop for Device {
     }
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Config {
     pub pad: Pad,
     pub trigger_mode: TriggerMode,
@@ -227,7 +228,7 @@ impl Default for Config {
     }
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 #[serde(rename_all = "lowercase")]
 pub enum Pad {
     Xbox360,
@@ -235,7 +236,7 @@ pub enum Pad {
     // DualShock4,
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 #[serde(rename_all = "snake_case")]
 pub enum TriggerMode {
     Analog,
