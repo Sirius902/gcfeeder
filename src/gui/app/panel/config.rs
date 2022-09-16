@@ -285,10 +285,9 @@ impl<'a> ConfigEditor<'a> {
                                     });
 
                                     ui.label("Center");
-                                    for i in 0..c.center.len() {
+                                    for val in c.center.iter_mut() {
                                         ui.scope(|ui| {
                                             ui.set_max_width(U8_TEXT_WIDTH);
-                                            let val = &mut c.center[i];
                                             let mut buf = format!("{}", *val);
                                             if ui.text_edit_singleline(&mut buf).clicked() {
                                                 if buf.is_empty() {
