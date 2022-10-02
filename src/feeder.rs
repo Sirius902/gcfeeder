@@ -16,7 +16,10 @@ use rusb::UsbContext;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    adapter::{poller, Input},
+    adapter::{
+        poller::{self, ERROR_TIMEOUT},
+        Input,
+    },
     bridge::{
         self,
         vigem::{Config as ViGEmConfig, ViGEmBridge},
@@ -43,6 +46,7 @@ pub type CalibrationSender = recent::Sender<Option<Input>>;
 pub type CalibrationReceiver = recent::Receiver<Option<Input>>;
 pub type Layer = dyn mapping::Layer + Send;
 
+// TODO: Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
 
 pub struct Feeder<T: UsbContext + 'static> {
@@ -158,6 +162,7 @@ impl<T: UsbContext> Context<T> {
                     Ok(b) => b,
                     Err(e) => {
                         warn!("Failed to connect to bridge: {}", e);
+                        thread::sleep(ERROR_TIMEOUT);
                         continue;
                     }
                 };

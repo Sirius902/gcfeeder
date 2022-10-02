@@ -24,6 +24,8 @@ pub type InputMessage = Option<Input>;
 
 type SenderData = (recent::Sender<InputMessage>, Port);
 
+pub const ERROR_TIMEOUT: Duration = Duration::from_millis(8);
+
 pub struct Poller<T: UsbContext + 'static> {
     context: Arc<Context<T>>,
     thread: Option<JoinHandle<()>>,
@@ -106,6 +108,7 @@ impl<T: UsbContext> Context<T> {
                     Ok(a) => a,
                     Err(e) => {
                         warn!("Failed to connect to adapter: {}", e);
+                        thread::sleep(ERROR_TIMEOUT);
                         continue;
                     }
                 };
