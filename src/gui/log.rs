@@ -39,11 +39,11 @@ impl log::Log for Logger {
                 record.module_path().unwrap_or_default()
             };
 
-            let _ = self.sender.send(Message(
+            let _ = self.sender.send(Message {
                 timestamp,
-                record.level(),
-                format!("[{}] {}", target, record.args()),
-            ));
+                level: record.level(),
+                message: format!("[{}] {}", target, record.args()),
+            });
         }
     }
 
@@ -96,12 +96,20 @@ pub enum BuildError {
     SenderMissing,
 }
 
-#[derive(Clone, Eq, PartialEq)]
-pub struct Message(String, log::Level, String);
+#[derive(Clone)]
+pub struct Message {
+    timestamp: String,
+    level: log::Level,
+    message: String,
+}
 
 impl Message {
     pub fn draw(&self, ui: &mut egui::Ui) {
-        let Message(timestamp, level, message) = self;
+        let Message {
+            timestamp,
+            level,
+            message,
+        } = self;
 
         ui.label(timestamp);
 
@@ -112,7 +120,6 @@ impl Message {
         }
 
         ui.label(message);
-        ui.end_row();
     }
 
     const fn level_color(level: log::Level) -> Option<Color32> {
@@ -126,3 +133,11 @@ impl Message {
         }
     }
 }
+
+impl PartialEq for Message {
+    fn eq(&self, other: &Self) -> bool {
+        self.level == other.level && self.message == other.message
+    }
+}
+
+impl Eq for Message {}

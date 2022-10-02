@@ -3,7 +3,7 @@ use crossbeam::channel;
 
 pub struct LogPanel {
     receiver: channel::Receiver<Message>,
-    messages: Vec<Message>,
+    messages: Vec<(Message, usize)>,
     auto_scroll: bool,
 }
 
@@ -18,7 +18,16 @@ impl LogPanel {
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
         while let Ok(message) = self.receiver.try_recv() {
-            self.messages.push(message);
+            if let Some((last_message, last_count)) = self.messages.last_mut() {
+                if message == *last_message {
+                    if let Some(count) = last_count.checked_add(1) {
+                        *last_count = count;
+                        continue;
+                    }
+                }
+            }
+
+            self.messages.push((message, 1));
         }
 
         ui.set_height(125.0);
@@ -44,8 +53,15 @@ impl LogPanel {
 
                 let grid = egui::Grid::new("messages").num_columns(3);
                 grid.show(ui, |ui| {
-                    for message in rows.map(|i| &self.messages[i]) {
-                        message.draw(ui);
+                    for (message, count) in rows.map(|i| &self.messages[i]) {
+                        ui.horizontal(|ui| {
+                            message.draw(ui);
+                            if *count != 1 {
+                                ui.label(format!("(x{})", *count));
+                            }
+                        });
+
+                        ui.end_row();
                     }
                 });
             });
