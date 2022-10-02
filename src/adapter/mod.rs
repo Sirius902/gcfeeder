@@ -29,7 +29,7 @@ pub const TRIGGER_RANGE: AnalogRange = AnalogRange {
 pub enum Error {
     #[error("usb error: {0}")]
     Usb(#[from] rusb::Error),
-    #[error("no suitable device found")]
+    #[error("no device")]
     NoDevice,
     #[error("invalid payload")]
     InvalidPayload,
