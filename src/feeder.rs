@@ -68,13 +68,13 @@ impl<T: UsbContext + 'static> Feeder<T> {
         }
 
         // TODO: Implement.
-        if config.calibration.enabled || !matches!(config.rumble, RumbleSetting::On) {
+        if config.calibration.enabled {
             todo!();
         }
 
         let context = Arc::new(Context::new(config, listener));
         let thread = Some(thread::spawn(
-            enclose!((context) move || context.feed_loop(internal_layers, layers)),
+            enclose!((context) move || context.feed_loop(config.rumble, internal_layers, layers)),
         ));
 
         Self { context, thread }
@@ -152,7 +152,12 @@ impl<T: UsbContext> Context<T> {
         }
     }
 
-    pub fn feed_loop(&self, mut internal_layers: Vec<Box<Layer>>, mut layers: Vec<Box<Layer>>) {
+    pub fn feed_loop(
+        &self,
+        rumble: RumbleSetting,
+        mut internal_layers: Vec<Box<Layer>>,
+        mut layers: Vec<Box<Layer>>,
+    ) {
         let mut bridge: Option<Box<Bridge>> = None;
         let mut timer = AverageTimer::start(0.9).unwrap();
 
@@ -169,7 +174,13 @@ impl<T: UsbContext> Context<T> {
 
                 timer.reset();
 
-                self.listener.set_rumble(bridge.rumble_state());
+                match rumble {
+                    RumbleSetting::On => {
+                        self.listener.set_rumble(bridge.rumble_state());
+                    }
+                    RumbleSetting::Off => {}
+                }
+
                 bridge.notify_rumble_consumed();
 
                 match self.listener.recv_timeout(INPUT_TIMEOUT) {
@@ -314,7 +325,6 @@ pub struct EssConfig {
 pub enum RumbleSetting {
     On,
     Off,
-    Emulator,
 }
 
 impl Default for RumbleSetting {
