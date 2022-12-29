@@ -76,7 +76,7 @@ impl egui::Widget for Trigger<'_> {
                 FontSelection::Default,
                 Align::Center,
             );
-            let text_galley = text_job.into_galley(&*ui.fonts());
+            let text_galley = text_job.into_galley(&ui.fonts());
 
             // Add signifier.
             painter.add(epaint::TextShape {

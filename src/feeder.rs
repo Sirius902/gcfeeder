@@ -56,7 +56,7 @@ pub struct Feeder<T: UsbContext + 'static> {
 
 impl<T: UsbContext + 'static> Feeder<T> {
     pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
-        let internal_layers: Vec<Box<Layer>> = vec![Box::new(CenterCalibration::default())];
+        let internal_layers: Vec<Box<Layer>> = vec![Box::<CenterCalibration>::default()];
         let mut layers: Vec<Box<Layer>> = Vec::new();
 
         if (config.analog_scale.abs() - 1.0).abs() >= 1e-10 {
