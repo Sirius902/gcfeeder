@@ -28,7 +28,7 @@ use crate::{
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
         self,
-        layers::{AnalogScaling, CenterCalibration, EssInversion},
+        layers::{self, AnalogScaling, CenterCalibration, EssInversion},
     },
     util::{
         recent_channel::{self as recent, RecvTimeoutError, TrySendError},
@@ -67,9 +67,11 @@ impl<T: UsbContext + 'static> Feeder<T> {
             layers.push(Box::new(map));
         }
 
-        // TODO: Implement.
         if config.calibration.enabled {
-            todo!();
+            layers.push(Box::new(layers::Calibration::new(
+                config.calibration.stick_data,
+                config.calibration.trigger_data,
+            )));
         }
 
         let context = Arc::new(Context::new(config, listener));
