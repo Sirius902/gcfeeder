@@ -72,7 +72,7 @@ impl egui::Widget for Stick<'_> {
                 points: polygon_points,
                 closed: true,
                 fill: polygon_color.into(),
-                stroke: Stroke::none(),
+                stroke: Stroke::NONE,
             });
 
             let draw_point = |p: [u8; 2], color: Color32| {
@@ -91,7 +91,7 @@ impl egui::Widget for Stick<'_> {
                     rect: point_rect,
                     rounding: Rounding::same(5.0),
                     fill: color,
-                    stroke: Stroke::none(),
+                    stroke: Stroke::NONE,
                 });
             };
 

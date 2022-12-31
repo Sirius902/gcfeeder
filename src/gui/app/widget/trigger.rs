@@ -68,7 +68,7 @@ impl egui::Widget for Trigger<'_> {
                 rect: epaint::Rect::from_two_pos(rect.left_bottom(), fill_top_right),
                 rounding: Rounding::none(),
                 fill: self.color,
-                stroke: Stroke::none(),
+                stroke: Stroke::NONE,
             });
 
             let text_job = WidgetText::from(self.signifier).into_text_job(
@@ -83,7 +83,7 @@ impl egui::Widget for Trigger<'_> {
                 pos: rect.center() - text_galley.size() * 0.5,
                 galley: text_galley.galley,
                 override_text_color: Some(signifier_color.into()),
-                underline: Stroke::none(),
+                underline: Stroke::NONE,
                 angle: 0.0,
             });
 
@@ -98,7 +98,7 @@ impl egui::Widget for Trigger<'_> {
                     rect: marker_rect,
                     rounding: Rounding::none(),
                     fill: color,
-                    stroke: Stroke::none(),
+                    stroke: Stroke::NONE,
                 });
             };
 
