@@ -1,4 +1,4 @@
-use std::{env, mem};
+use std::env;
 
 use app::{App, TrayMessage};
 use crossbeam::channel;
@@ -15,12 +15,6 @@ const INFO_COLOR: Color32 = Color32::from_rgb(58, 150, 221);
 const DEBUG_COLOR: Color32 = Color32::from_rgb(136, 23, 152);
 
 pub fn run() {
-    let (tx, rx) = channel::bounded(1);
-
-    mem::drop(ctrlc::set_handler(move || {
-        let _ = tx.try_send(());
-    }));
-
     let (log_tx, log_rx) = channel::unbounded();
     log::LoggerBuilder::new()
         .sender(log_tx)
@@ -54,6 +48,6 @@ pub fn run() {
     eframe::run_native(
         format!("gcfeeder | {}", env!("VERSION")).as_str(),
         options,
-        Box::new(move |_cc| Box::new(App::new(rx, tray_icon, tray_rx, log_rx))),
+        Box::new(move |_cc| Box::new(App::new(tray_icon, tray_rx, log_rx))),
     );
 }

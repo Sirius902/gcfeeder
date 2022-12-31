@@ -45,7 +45,6 @@ pub struct App {
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
-    ctrlc_receiver: channel::Receiver<()>,
     _tray_icon: TrayIcon<TrayMessage>,
     tray_receiver: channel::Receiver<TrayMessage>,
     minimized: bool,
@@ -59,7 +58,6 @@ impl App {
     const CONFIG_PATH: &'static str = "gcfeeder.toml";
 
     pub fn new(
-        ctrlc_receiver: channel::Receiver<()>,
         tray_icon: TrayIcon<TrayMessage>,
         tray_receiver: channel::Receiver<TrayMessage>,
         log_receiver: channel::Receiver<LogMessage>,
@@ -77,7 +75,6 @@ impl App {
             stats_open: false,
             config,
             config_path,
-            ctrlc_receiver,
             _tray_icon: tray_icon,
             tray_receiver,
             minimized: false,
@@ -227,7 +224,7 @@ impl App {
     }
 
     fn handle_messages(&mut self, frame: &mut eframe::Frame) {
-        if panic::panicked() || self.ctrlc_receiver.try_recv() == Ok(()) {
+        if panic::panicked() {
             frame.close();
         }
 
