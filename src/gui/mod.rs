@@ -38,8 +38,8 @@ pub fn run() {
         .tooltip("gcfeeder")
         .menu(
             MenuBuilder::new()
-                .item("Minimize", TrayMessage::Minimize)
-                .item("Restore", TrayMessage::Restore)
+                .item("Show", TrayMessage::Show)
+                .item("Hide", TrayMessage::Hide)
                 .item("Exit", TrayMessage::Exit),
         )
         .build()

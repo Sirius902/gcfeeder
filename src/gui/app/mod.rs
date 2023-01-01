@@ -22,8 +22,10 @@ use crate::{
 use crossbeam::channel;
 use log::{info, warn};
 use panel::{
-    calibration::State as CalibrationState, config::State as ConfigState, CalibrationPanel,
-    ConfigEditor, LogPanel, StatsPanel,
+    calibration::State as CalibrationState, config::Message as ConfigMessage,
+    config::State as ConfigState, profile::Message as ProfileMessage,
+    profile::State as ProfileState, CalibrationPanel, ConfigEditor, LogPanel, ProfilePanel,
+    StatsPanel,
 };
 
 mod panel;
@@ -33,8 +35,8 @@ type Usb = rusb::GlobalContext;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TrayMessage {
-    Minimize,
-    Restore,
+    Show,
+    Hide,
     Exit,
 }
 
@@ -42,12 +44,14 @@ pub struct App {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
     config_state: Option<ConfigState>,
+    profile_state: Option<ProfileState>,
+    editor_profile: Option<String>,
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
     _tray_icon: TrayIcon<TrayMessage>,
     tray_receiver: channel::Receiver<TrayMessage>,
-    minimized: bool,
+    hidden: bool,
     poller: Poller<Usb>,
     feeders: [Feeder<Usb>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
@@ -72,12 +76,14 @@ impl App {
             log_panel: LogPanel::new(log_receiver),
             calibration_state: None,
             config_state: None,
+            profile_state: None,
+            editor_profile: None,
             stats_open: false,
             config,
             config_path,
             _tray_icon: tray_icon,
             tray_receiver,
-            minimized: false,
+            hidden: false,
             poller,
             feeders,
             receivers,
@@ -230,13 +236,13 @@ impl App {
 
         while let Ok(message) = self.tray_receiver.try_recv() {
             match message {
-                TrayMessage::Minimize => {
-                    frame.set_visible(false);
-                    self.minimized = true;
-                }
-                TrayMessage::Restore => {
+                TrayMessage::Show => {
                     frame.set_visible(true);
-                    self.minimized = false;
+                    self.hidden = false;
+                }
+                TrayMessage::Hide => {
+                    frame.set_visible(false);
+                    self.hidden = true;
                 }
                 TrayMessage::Exit => frame.close(),
             }
@@ -267,14 +273,63 @@ impl App {
             }
         }
     }
+
+    pub fn save_config(&mut self) {
+        Self::write_config(&self.config, &self.config_path);
+        info!("Saved config");
+    }
+
+    pub fn reload_config(&mut self) {
+        if let Some(config) = Self::load_config(&self.config_path) {
+            // TODO: Send config update to feeder instead of re-creating it.
+            let (feeders, receivers) = Self::feeders_from_config(&config, &self.poller);
+            self.feeders = feeders;
+            self.receivers = receivers;
+            self.config = config;
+            info!("Reloaded config");
+        }
+    }
 }
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         self.handle_messages(frame);
 
-        if !self.minimized {
+        if !self.hidden {
             ctx.request_repaint();
+        }
+
+        if let Some(editor_profile) = self.editor_profile.as_mut() {
+            let mut message: Option<ProfileMessage> = None;
+
+            egui::CentralPanel::default().show(ctx, |ui| {
+                let mut panel = ProfilePanel::new(
+                    &mut self.config,
+                    editor_profile.as_str(),
+                    self.profile_state.take(),
+                );
+                panel.ui(ui);
+
+                let (state, m) = panel.into_state();
+                message = m;
+                self.profile_state = Some(state);
+            });
+
+            match message {
+                Some(ProfileMessage::SaveReload) => {
+                    self.profile_state = None;
+                    self.editor_profile = None;
+                    self.save_config();
+                    self.reload_config();
+                }
+                Some(ProfileMessage::Cancel) => {
+                    self.profile_state = None;
+                    self.editor_profile = None;
+                }
+                None => {}
+            }
+
+            return;
         }
 
         egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
@@ -296,9 +351,9 @@ impl eframe::App for App {
                     }
                 });
 
-                if ui.button("Minimize").clicked() {
+                if ui.button("Hide").clicked() {
                     frame.set_visible(false);
-                    self.minimized = true;
+                    self.hidden = true;
                 }
             });
         });
@@ -325,45 +380,44 @@ impl eframe::App for App {
             self.calibration_state = Some(state);
 
             if let Some(update) = update {
-                if let Some(config_state) = self.config_state.as_mut() {
-                    let profile = config_state
-                        .profile_mut()
-                        .expect("config state should exist");
+                let profile = self
+                    .config
+                    .profile
+                    .selected_mut(update.port())
+                    .expect("active profile should exist");
 
-                    match update {
-                        ConfigUpdate::SticksCalibration(s) => {
-                            profile.calibration.stick_data = Some(s)
-                        }
-                        ConfigUpdate::TriggersCalibration(t) => {
-                            profile.calibration.trigger_data = Some(t)
-                        }
+                match update {
+                    ConfigUpdate::SticksCalibration { calibration: s, .. } => {
+                        profile.calibration.stick_data = Some(s)
+                    }
+                    ConfigUpdate::TriggersCalibration { calibration: t, .. } => {
+                        profile.calibration.trigger_data = Some(t)
                     }
                 }
+
+                self.save_config();
+                self.reload_config();
             }
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            let state = {
+            let mut state = {
                 let mut config_editor =
                     ConfigEditor::new(&mut self.config, self.config_state.take());
                 config_editor.ui(ui);
                 config_editor.into_state()
             };
 
-            if state.reload() {
-                if let Some(config) = Self::load_config(&self.config_path) {
-                    // TODO: Send config update to feeder instead of re-creating it.
-                    let (feeders, receivers) = Self::feeders_from_config(&config, &self.poller);
-                    self.feeders = feeders;
-                    self.receivers = receivers;
-                    self.config = config;
-                    info!("Reloaded config");
+            match state.message() {
+                Some(ConfigMessage::Reload) => self.reload_config(),
+                Some(ConfigMessage::Save) => {
+                    self.save_config();
+                    self.reload_config();
                 }
-            }
-
-            if state.save() {
-                Self::write_config(&self.config, &self.config_path);
-                info!("Saved config");
+                Some(ConfigMessage::EditProfile { name }) => {
+                    self.editor_profile = Some(name);
+                }
+                None => {}
             }
 
             self.config_state = Some(state);

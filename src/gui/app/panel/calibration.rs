@@ -78,6 +78,7 @@ impl<'a> CalibrationPanel<'a> {
         ui: &mut egui::Ui,
         progress: &mut P,
         connected: bool,
+        port: Port,
         add_contents: impl FnOnce(&mut egui::Ui, &mut P) -> Option<R>,
         apply_calibration: impl FnOnce(R),
     ) -> Option<Action> {
@@ -101,7 +102,10 @@ impl<'a> CalibrationPanel<'a> {
 
         ui.separator();
 
-        ui.label("Calibration finished. Apply to profile editor?");
+        ui.label(format!(
+            "Calibration finished. Apply to Port {:?} active profile?",
+            port
+        ));
         ui.horizontal(|ui| {
             if ui.button("Apply").clicked() {
                 apply_calibration(r);
@@ -248,6 +252,7 @@ impl<'a> CalibrationPanel<'a> {
                     ui,
                     progress,
                     connected,
+                    *port,
                     |ui, progress| {
                         ui.label("Calibrating sticks...");
 
@@ -301,7 +306,10 @@ impl<'a> CalibrationPanel<'a> {
                         Some(SticksCalibration::try_from(*progress).unwrap())
                     },
                     |calibration| {
-                        *config_update = Some(ConfigUpdate::SticksCalibration(calibration));
+                        *config_update = Some(ConfigUpdate::SticksCalibration {
+                            port: *port,
+                            calibration,
+                        });
                     },
                 );
 
@@ -319,6 +327,7 @@ impl<'a> CalibrationPanel<'a> {
                     ui,
                     progress,
                     connected,
+                    *port,
                     |ui, progress| {
                         ui.label("Calibrating triggers...");
 
@@ -373,7 +382,10 @@ impl<'a> CalibrationPanel<'a> {
                         Some(TriggersCalibration::try_from(*progress).unwrap())
                     },
                     |calibration| {
-                        *config_update = Some(ConfigUpdate::TriggersCalibration(calibration));
+                        *config_update = Some(ConfigUpdate::TriggersCalibration {
+                            port: *port,
+                            calibration,
+                        });
                     },
                 );
 
@@ -509,6 +521,21 @@ impl TryFrom<TriggersProgress> for TriggersCalibration {
 
 #[derive(Debug)]
 pub enum ConfigUpdate {
-    SticksCalibration(SticksCalibration),
-    TriggersCalibration(TriggersCalibration),
+    SticksCalibration {
+        port: Port,
+        calibration: SticksCalibration,
+    },
+    TriggersCalibration {
+        port: Port,
+        calibration: TriggersCalibration,
+    },
+}
+
+impl ConfigUpdate {
+    pub fn port(&self) -> Port {
+        match *self {
+            Self::SticksCalibration { port, .. } => port,
+            Self::TriggersCalibration { port, .. } => port,
+        }
+    }
 }
