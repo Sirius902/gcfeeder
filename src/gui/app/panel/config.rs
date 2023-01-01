@@ -95,7 +95,7 @@ impl<'a> ConfigEditor<'a> {
                         profile_action = remove_popup.update(ui);
                     });
 
-                    egui::ComboBox::from_id_source(format!("Port {:?}", p))
+                    egui::ComboBox::from_label(format!("Port {:?}", p))
                         .selected_text(&self.config.profile.selected[p.index()])
                         .show_ui(ui, |ui| {
                             for (name, _) in self.config.profile.list.iter() {

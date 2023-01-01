@@ -125,7 +125,7 @@ impl<'a> ProfilePanel<'a> {
                                                         let mut buf = format!("{}", *val);
                                                         if ui
                                                             .text_edit_singleline(&mut buf)
-                                                            .clicked()
+                                                            .changed()
                                                         {
                                                             if buf.is_empty() {
                                                                 *val = 0;
@@ -149,7 +149,7 @@ impl<'a> ProfilePanel<'a> {
                                 ui.scope(|ui| {
                                     ui.set_max_width(U8_TEXT_WIDTH);
                                     let mut buf = format!("{}", *val);
-                                    if ui.text_edit_singleline(&mut buf).clicked() {
+                                    if ui.text_edit_singleline(&mut buf).changed() {
                                         if buf.is_empty() {
                                             *val = 0;
                                         } else if let Ok(n) = buf.parse::<u8>() {
