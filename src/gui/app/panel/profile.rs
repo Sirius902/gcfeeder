@@ -115,6 +115,8 @@ impl<'a> ProfilePanel<'a> {
                     profile.calibration = profile_to_copy.calibration;
                 }
 
+                ui.separator();
+
                 ui.checkbox(&mut profile.calibration.enabled, "Enabled");
 
                 let stick_calibration_ui =
