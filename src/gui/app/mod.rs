@@ -388,10 +388,12 @@ impl eframe::App for App {
 
                 match update {
                     ConfigUpdate::SticksCalibration { calibration: s, .. } => {
-                        profile.calibration.stick_data = Some(s)
+                        profile.calibration.stick_data = Some(s);
+                        profile.calibration.enabled = true;
                     }
                     ConfigUpdate::TriggersCalibration { calibration: t, .. } => {
-                        profile.calibration.trigger_data = Some(t)
+                        profile.calibration.trigger_data = Some(t);
+                        profile.calibration.enabled = true;
                     }
                 }
 
