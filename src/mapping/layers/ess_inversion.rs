@@ -200,9 +200,9 @@ mod tests {
         } = STICK_RANGE;
 
         let tests = [
-            ([c + 0x30, c + 0x00], [0x30, 0x00], Quadrant::One),
+            ([c + 0x30, c], [0x30, 0x00], Quadrant::One),
             ([c - 0x20, c + 0x05], [0x20, 0x05], Quadrant::Two),
-            ([c + 0x00, c - 0x01], [0x00, 0x01], Quadrant::Four),
+            ([c, c - 0x01], [0x00, 0x01], Quadrant::Four),
             ([c - 0x01, c + 0x01], [0x01, 0x01], Quadrant::Two),
             ([c - r, c + r], [r, r], Quadrant::Two),
         ];

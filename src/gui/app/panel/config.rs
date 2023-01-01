@@ -231,7 +231,7 @@ impl<'a> AddPopup<'a> {
     }
 
     fn ui(&mut self, ui: &mut egui::Ui) {
-        let AddPopup {
+        let Self {
             state: AddState { name, action },
             profile_action,
             config,
