@@ -41,12 +41,10 @@ impl<'a> ConfigEditor<'a> {
 
             if ui.button("Save").clicked() {
                 *message = Some(Message::Save);
-                *dirty = false;
             }
 
             if ui.button("Reload").clicked() {
                 *message = Some(Message::Reload);
-                *dirty = false;
             }
         });
 
@@ -191,6 +189,10 @@ pub struct State {
 impl State {
     pub fn message(&mut self) -> Option<Message> {
         self.message.take()
+    }
+
+    pub fn notify_clean(&mut self) {
+        self.dirty = false;
     }
 
     fn reset(mut self) -> Self {

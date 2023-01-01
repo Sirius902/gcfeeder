@@ -99,6 +99,22 @@ impl<'a> ProfilePanel<'a> {
             ui.group(|ui| {
                 ui.label("Calibration");
 
+                let mut profile_to_copy = None;
+                egui::ComboBox::from_label("Copy from Profile")
+                    .selected_text("Select a profile...")
+                    .show_ui(ui, |ui| {
+                        for (key, val) in self.config.profile.list.iter() {
+                            let mut name = None;
+                            if ui.selectable_value(&mut name, Some(key), key).changed() {
+                                profile_to_copy = Some(val);
+                            }
+                        }
+                    });
+
+                if let Some(profile_to_copy) = profile_to_copy {
+                    profile.calibration = profile_to_copy.calibration;
+                }
+
                 ui.checkbox(&mut profile.calibration.enabled, "Enabled");
 
                 let stick_calibration_ui =

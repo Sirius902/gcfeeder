@@ -277,6 +277,10 @@ impl App {
     pub fn save_config(&mut self) {
         Self::write_config(&self.config, &self.config_path);
         info!("Saved config");
+
+        if let Some(state) = self.config_state.as_mut() {
+            state.notify_clean();
+        }
     }
 
     pub fn reload_config(&mut self) {
@@ -287,6 +291,10 @@ impl App {
             self.receivers = receivers;
             self.config = config;
             info!("Reloaded config");
+
+            if let Some(state) = self.config_state.as_mut() {
+                state.notify_clean();
+            }
         }
     }
 }
@@ -403,12 +411,12 @@ impl eframe::App for App {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            let mut state = {
-                let mut config_editor =
-                    ConfigEditor::new(&mut self.config, self.config_state.take());
+            let prev_state = self.config_state.take();
+            let state = self.config_state.insert({
+                let mut config_editor = ConfigEditor::new(&mut self.config, prev_state);
                 config_editor.ui(ui);
                 config_editor.into_state()
-            };
+            });
 
             match state.message() {
                 Some(ConfigMessage::Reload) => self.reload_config(),
@@ -421,8 +429,6 @@ impl eframe::App for App {
                 }
                 None => {}
             }
-
-            self.config_state = Some(state);
         });
     }
 }
