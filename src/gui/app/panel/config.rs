@@ -1,10 +1,10 @@
 use enum_iterator::all;
 
 use crate::{
-    adapter::Port,
     config::Config,
     gui::{util::no_close_popup_below_widget, ERROR_COLOR},
 };
+use gcfeeder_core::adapter::Port;
 
 pub struct ConfigEditor<'a> {
     config: &'a mut Config,

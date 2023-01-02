@@ -18,6 +18,7 @@ pub fn run() {
     let (log_tx, log_rx) = channel::unbounded();
     log::LoggerBuilder::new()
         .sender(log_tx)
+        .with_level(::log::LevelFilter::Trace)
         .build()
         .unwrap()
         .init()

@@ -1,9 +1,8 @@
+use crate::gui::app::Usb;
 use enum_iterator::all;
-
-use crate::{
+use gcfeeder_core::{
     adapter::{poller::Poller, Port},
     feeder::Feeder,
-    gui::app::Usb,
 };
 
 pub struct StatsPanel<'a> {

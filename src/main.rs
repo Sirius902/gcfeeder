@@ -3,7 +3,9 @@
 
 use std::env;
 
-use gcfeeder::{gui, panic};
+mod config;
+mod gui;
+mod panic;
 
 pub fn main() {
     std::panic::set_hook(Box::new(panic::hook));

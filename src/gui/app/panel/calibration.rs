@@ -3,14 +3,16 @@ use std::{convert::TryFrom, iter};
 use egui::Color32;
 
 use crate::{
-    adapter::{Input, Port},
-    calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
     config::Config,
-    feeder::{CalibrationReceiver, Feeder, Record},
     gui::{
         app::{widget, Usb},
         util::enum_combo_ui,
     },
+};
+use gcfeeder_core::{
+    adapter::{Input, Port},
+    calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
+    feeder::{CalibrationReceiver, Feeder, Record},
     util::recent_channel as recent,
 };
 

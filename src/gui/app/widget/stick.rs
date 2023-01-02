@@ -1,7 +1,7 @@
 use eframe::epaint;
 use egui::{Color32, Pos2, Rgba, Rounding, Sense, Stroke, Vec2};
 
-use crate::{adapter, calibration::NOTCHES};
+use gcfeeder_core::{adapter, calibration::NOTCHES};
 
 use super::shape::ngon_points;
 

@@ -2,7 +2,7 @@ use std::{array, collections::HashMap};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{adapter::Port, feeder};
+use gcfeeder_core::{adapter::Port, feeder};
 
 pub type Profile = feeder::Config;
 

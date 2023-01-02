@@ -13,13 +13,15 @@ use self::panel::calibration::ConfigUpdate;
 
 use super::log::Message as LogMessage;
 use crate::{
-    adapter::{poller::Poller, Port},
     config::{Config, Profile},
-    feeder::{self, Feeder, Record},
     panic,
-    util::recent_channel::{self as recent, TryRecvError},
 };
 use crossbeam::channel;
+use gcfeeder_core::{
+    adapter::{poller::Poller, Port},
+    feeder::{self, Feeder, Record},
+    util::recent_channel::{self as recent, TryRecvError},
+};
 use log::{info, warn};
 use panel::{
     calibration::State as CalibrationState, config::Message as ConfigMessage,
