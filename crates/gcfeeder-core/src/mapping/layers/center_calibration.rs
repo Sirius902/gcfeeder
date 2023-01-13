@@ -1,10 +1,8 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
+use gcinput::{STICK_RANGE, TRIGGER_RANGE};
 use nalgebra::Vector2;
 
-use crate::{
-    adapter::{self, STICK_RANGE, TRIGGER_RANGE},
-    mapping,
-};
+use crate::mapping;
 
 #[derive(Default)]
 pub struct CenterCalibration {
@@ -20,7 +18,7 @@ struct DriftData {
 }
 
 impl DriftData {
-    pub fn new(input: adapter::Input) -> Self {
+    pub fn new(input: gcinput::Input) -> Self {
         Self {
             main_stick: input
                 .main_stick
@@ -42,13 +40,13 @@ impl mapping::Layer for CenterCalibration {
         "Centered"
     }
 
-    fn apply(&mut self, mut input: Option<adapter::Input>) -> Option<adapter::Input> {
+    fn apply(&mut self, mut input: Option<gcinput::Input>) -> Option<gcinput::Input> {
         if let Some(input) = input.as_mut() {
             let data = self
                 .center_data
                 .get_or_insert_with(|| DriftData::new(*input));
 
-            let apply_stick = |stick: &mut adapter::Stick, drift: &Vector2<i16>| {
+            let apply_stick = |stick: &mut gcinput::Stick, drift: &Vector2<i16>| {
                 let corrected = {
                     let mut c = stick.to_vector().map(i16::from);
                     c.zip_apply(drift, |axis, drift| *axis += drift);

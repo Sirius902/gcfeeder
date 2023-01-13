@@ -1,12 +1,12 @@
 use eframe::epaint;
 use egui::{Color32, Pos2, Rgba, Rounding, Sense, Stroke, Vec2};
 
-use gcfeeder_core::{adapter, calibration::NOTCHES};
+use gcfeeder_core::calibration::NOTCHES;
 
 use super::shape::ngon_points;
 
 pub struct Stick<'a> {
-    stick: adapter::Stick,
+    stick: gcinput::Stick,
     color: Color32,
     points: Option<&'a [[u8; 2]]>,
 }
@@ -14,7 +14,7 @@ pub struct Stick<'a> {
 impl<'a> Stick<'a> {
     const SIZE: f32 = 45.0;
 
-    pub fn new(stick: adapter::Stick, color: Color32) -> Self {
+    pub fn new(stick: gcinput::Stick, color: Color32) -> Self {
         Self {
             stick,
             color,

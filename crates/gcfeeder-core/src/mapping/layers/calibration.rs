@@ -1,7 +1,6 @@
 use log::warn;
 
 use crate::{
-    adapter,
     calibration::{SticksCalibration, TriggersCalibration},
     mapping,
 };
@@ -32,7 +31,7 @@ impl mapping::Layer for Calibration {
         "Calibrated"
     }
 
-    fn apply(&mut self, mut input: Option<adapter::Input>) -> Option<adapter::Input> {
+    fn apply(&mut self, mut input: Option<gcinput::Input>) -> Option<gcinput::Input> {
         if let Some(input) = input.as_mut() {
             if !self.stick_bad {
                 if let Some(calibration) = self.stick_data.as_ref() {

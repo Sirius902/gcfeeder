@@ -1,7 +1,6 @@
-use crate::{
-    adapter::{Input, Stick, STICK_RANGE},
-    mapping,
-};
+use gcinput::{Input, Stick, STICK_RANGE};
+
+use crate::mapping;
 
 pub struct AnalogScaling {
     scale: f64,

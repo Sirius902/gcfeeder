@@ -5,14 +5,12 @@ use std::{
 };
 
 use enum_iterator::Sequence;
+use gcinput::{Input, Rumble, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 use vigem_client as client;
 
 use super::{rumble::PatternRumbler, Bridge};
-use crate::{
-    adapter::{Input, Rumble, STICK_RANGE},
-    util::packed_bools,
-};
+use crate::util::packed_bools;
 
 pub struct ViGEmBridge {
     config: Config,

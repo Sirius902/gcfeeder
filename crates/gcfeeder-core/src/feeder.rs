@@ -10,16 +10,14 @@ use std::{
 
 use enclose::enclose;
 use enum_iterator::Sequence;
+use gcinput::Input;
 use log::warn;
 use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use rusb::UsbContext;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    adapter::{
-        poller::{self, ERROR_TIMEOUT},
-        Input,
-    },
+    adapter::poller::{self, ERROR_TIMEOUT},
     bridge::{
         self,
         vigem::{Config as ViGEmConfig, ViGEmBridge},

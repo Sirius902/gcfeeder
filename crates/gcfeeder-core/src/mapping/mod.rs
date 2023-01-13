@@ -1,4 +1,4 @@
-use crate::adapter::Input;
+use gcinput::Input;
 
 pub mod layers;
 

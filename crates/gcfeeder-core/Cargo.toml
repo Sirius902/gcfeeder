@@ -1,6 +1,6 @@
 [package]
 name = "gcfeeder-core"
-version = "3.0.0"
+version = "0.0.0"
 repository = "https://github.com/Sirius902/gcfeeder/"
 edition = "2021"
 
@@ -14,6 +14,9 @@ once_cell = "1.14.0"
 rayon = "1.5.3"
 rusb = "0.9.1"
 thiserror = "1.0.34"
+
+[dependencies.gcinput]
+path = "../../lib/gcinput"
 
 [dependencies.log]
 version = "0.4.17"

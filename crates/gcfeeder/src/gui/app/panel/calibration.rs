@@ -1,6 +1,7 @@
 use std::{convert::TryFrom, iter};
 
 use egui::Color32;
+use gcinput::Input;
 
 use crate::{
     config::Config,
@@ -10,7 +11,7 @@ use crate::{
     },
 };
 use gcfeeder_core::{
-    adapter::{Input, Port},
+    adapter::Port,
     calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
     feeder::{CalibrationReceiver, Feeder, Record},
     util::recent_channel as recent,

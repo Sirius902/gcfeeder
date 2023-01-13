@@ -5,7 +5,7 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::adapter::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
+use gcinput::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
 
 pub const NOTCHES: usize = 8;
 

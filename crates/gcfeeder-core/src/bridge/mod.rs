@@ -1,4 +1,4 @@
-use crate::adapter::{Input, Rumble};
+use gcinput::{Input, Rumble};
 
 pub mod rumble;
 pub mod vigem;

@@ -1,11 +1,9 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
 use enum_iterator::Sequence;
+use gcinput::{Input, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    adapter::{Input, STICK_RANGE},
-    mapping,
-};
+use crate::mapping;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 pub enum EssInversion {
@@ -188,7 +186,7 @@ fn gc_to_n64(coords: [u8; 2]) -> [u8; 2] {
 
 #[cfg(test)]
 mod tests {
-    use crate::adapter::{StickRange, STICK_RANGE};
+    use gcinput::{StickRange, STICK_RANGE};
 
     use super::{gc_to_n64, Quadrant};
 
