@@ -17,6 +17,7 @@ thiserror = "1.0.34"
 
 [dependencies.gcinput]
 path = "../../lib/gcinput"
+features = ["nalgebra"]
 
 [dependencies.log]
 version = "0.4.17"

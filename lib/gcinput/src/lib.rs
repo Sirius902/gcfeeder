@@ -70,6 +70,7 @@ impl Stick {
         Self::new(f(self.x), f(self.y))
     }
 
+    #[cfg(feature = "nalgebra")]
     pub fn to_vector(self) -> nalgebra::Vector2<u8> {
         nalgebra::Vector2::<u8>::from(self)
     }
@@ -81,12 +82,14 @@ impl Default for Stick {
     }
 }
 
+#[cfg(feature = "nalgebra")]
 impl From<Stick> for nalgebra::Vector2<u8> {
     fn from(stick: Stick) -> Self {
         Self::new(stick.x, stick.y)
     }
 }
 
+#[cfg(feature = "nalgebra")]
 impl From<nalgebra::Vector2<u8>> for Stick {
     fn from(v: nalgebra::Vector2<u8>) -> Self {
         Self::new(v.x, v.y)

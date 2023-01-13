@@ -4,9 +4,13 @@ version = "0.1.0"
 repository = "https://github.com/Sirius902/gcfeeder/"
 edition = "2021"
 
-[dependencies]
-nalgebra = "0.31.1"
+[dependencies.nalgebra]
+version = "0.31.1"
+optional = true
 
 [dependencies.serde]
 version = "1.0.144"
 features = ["derive"]
+
+[features]
+nalgebra = ["dep:nalgebra"]
