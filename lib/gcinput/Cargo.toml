@@ -5,7 +5,7 @@ repository = "https://github.com/Sirius902/gcfeeder/"
 edition = "2021"
 
 [dependencies.nalgebra]
-version = "0.31.1"
+version = "0.32.1"
 optional = true
 
 [dependencies.serde]
