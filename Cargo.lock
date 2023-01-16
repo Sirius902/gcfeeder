@@ -919,7 +919,6 @@ dependencies = [
 name = "gcfeeder"
 version = "3.0.0"
 dependencies = [
- "backtrace",
  "bincode",
  "crossbeam",
  "eframe",
@@ -930,6 +929,7 @@ dependencies = [
  "log",
  "nalgebra",
  "once_cell",
+ "panic-log",
  "rayon",
  "rusb",
  "serde",
@@ -1568,6 +1568,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a5f3c7ca08b6879e7965fb25e24d1f5eeb32ea73f9ad99b3854778a38c57e93"
 dependencies = [
  "ttf-parser",
+]
+
+[[package]]
+name = "panic-log"
+version = "0.1.0"
+dependencies = [
+ "backtrace",
 ]
 
 [[package]]

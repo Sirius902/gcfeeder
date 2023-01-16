@@ -12,10 +12,7 @@ use trayicon::TrayIcon;
 use self::panel::calibration::ConfigUpdate;
 
 use super::log::Message as LogMessage;
-use crate::{
-    config::{Config, Profile},
-    panic,
-};
+use crate::config::{Config, Profile};
 use crossbeam::channel;
 use gcfeeder_core::{
     adapter::{poller::Poller, Port},
@@ -232,7 +229,7 @@ impl App {
     }
 
     fn handle_messages(&mut self, frame: &mut eframe::Frame) {
-        if panic::panicked() {
+        if panic_log::panicked() {
             frame.close();
         }
 

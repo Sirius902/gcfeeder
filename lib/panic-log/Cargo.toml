@@ -1,0 +1,8 @@
+[package]
+name = "panic-log"
+version = "0.1.0"
+repository = "https://github.com/Sirius902/gcfeeder/"
+edition = "2021"
+
+[dependencies]
+backtrace = "0.3.66"

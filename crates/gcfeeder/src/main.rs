@@ -3,10 +3,10 @@
 
 use std::env;
 
-use gcfeeder::{gui, panic};
+use gcfeeder::gui;
 
 pub fn main() {
-    std::panic::set_hook(Box::new(panic::hook));
+    std::panic::set_hook(Box::new(panic_log::hook));
 
     let exe_path = env::current_exe().expect("Failed to get current exe path");
     env::set_current_dir(
