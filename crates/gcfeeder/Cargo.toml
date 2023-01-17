@@ -29,7 +29,7 @@ path = "../gcfeeder-core"
 [dependencies.image]
 version = "0.24.5"
 default-features = false
-features = ["png", "ico"]
+features = ["png"]
 
 [dependencies.log]
 version = "0.4.17"
@@ -46,3 +46,11 @@ features = ["macros", "formatting", "local-offset"]
 [dependencies.trayicon]
 version = "0.1.3"
 features = ["crossbeam-channel"]
+
+[target.'cfg(windows)'.build-dependencies]
+embed-resource = "1.8.0"
+
+[target.'cfg(windows)'.build-dependencies.image]
+version = "0.24.5"
+default-features = false
+features = ["png", "ico"]

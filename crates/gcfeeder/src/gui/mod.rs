@@ -1,4 +1,4 @@
-use std::{env, io::Cursor};
+use std::env;
 
 use app::{App, TrayMessage};
 use crossbeam::channel;
@@ -26,20 +26,9 @@ pub fn run() {
         .expect("Failed to set logger");
 
     const ICON_FILE: &[u8] = include_bytes!("../../resource/icon.png");
+    const ICON_ICO: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/icon.ico"));
 
     let icon = image::load_from_memory(ICON_FILE).unwrap();
-
-    let mut ico_bytes = Vec::new();
-    {
-        let small_icon = icon.resize(256, 256, image::imageops::FilterType::CatmullRom);
-        small_icon
-            .write_to(
-                &mut Cursor::new(&mut ico_bytes),
-                image::ImageOutputFormat::Ico,
-            )
-            .unwrap();
-    }
-
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
 
@@ -58,7 +47,7 @@ pub fn run() {
 
     let tray_icon = TrayIconBuilder::new()
         .sender_crossbeam(tray_tx)
-        .icon_from_buffer(ico_bytes.leak())
+        .icon_from_buffer(ICON_ICO)
         .tooltip("gcfeeder")
         .menu(
             MenuBuilder::new()

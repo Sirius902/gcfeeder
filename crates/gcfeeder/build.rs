@@ -1,6 +1,9 @@
 #![deny(clippy::all)]
 use std::{
-    env, io,
+    env,
+    fs::File,
+    io::{self, Write},
+    path::Path,
     process::{Command, Stdio},
 };
 
@@ -22,6 +25,33 @@ pub fn main() {
     };
 
     println!("cargo:rustc-env={}={}", VERSION_VAR, version);
+
+    const ICON_PATH: &str = "resource/icon.png";
+    println!("cargo:rerun-if-changed={}", ICON_PATH);
+
+    let icon = image::load(
+        io::BufReader::new(File::open(ICON_PATH).unwrap()),
+        image::ImageFormat::Png,
+    )
+    .unwrap();
+
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let ico_path = Path::new(&out_dir).join("icon.ico");
+
+    icon.resize(256, 256, image::imageops::CatmullRom)
+        .save_with_format(ico_path, image::ImageFormat::Ico)
+        .unwrap();
+
+    #[cfg(windows)]
+    {
+        let rc_path = Path::new(&out_dir).join("app.rc");
+
+        File::create(&rc_path)
+            .and_then(|mut f| f.write_all("IDI_ICON1 ICON DISCARDABLE \"icon.ico\"".as_bytes()))
+            .unwrap();
+
+        embed_resource::compile(&rc_path);
+    }
 }
 
 struct BuildInfo {
