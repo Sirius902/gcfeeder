@@ -1,8 +1,9 @@
-use std::env;
+use std::{env, io::Cursor};
 
 use app::{App, TrayMessage};
 use crossbeam::channel;
 use egui::Color32;
+use image::{EncodableLayout, GenericImageView};
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
@@ -24,18 +25,40 @@ pub fn run() {
         .init()
         .expect("Failed to set logger");
 
+    const ICON_FILE: &[u8] = include_bytes!("../../resource/icon.png");
+
+    let icon = image::load_from_memory(ICON_FILE).unwrap();
+    let icon_data = icon.to_rgba8();
+    let icon_dim = icon.dimensions();
+
+    let mut ico_bytes = Vec::new();
+
+    {
+        let small_icon = icon.resize(256, 256, image::imageops::FilterType::CatmullRom);
+        small_icon
+            .write_to(
+                &mut Cursor::new(&mut ico_bytes),
+                image::ImageOutputFormat::Ico,
+            )
+            .unwrap();
+    }
+
     let options = eframe::NativeOptions {
         initial_window_size: Some([600.0, 420.0].into()),
+        icon_data: Some(eframe::IconData {
+            rgba: icon_data.as_bytes().to_vec(),
+            width: icon_dim.0,
+            height: icon_dim.1,
+        }),
 
         ..Default::default()
     };
 
-    const ICON: &[u8] = include_bytes!("../../resource/icon.ico");
     let (tray_tx, tray_rx) = channel::unbounded();
 
     let tray_icon = TrayIconBuilder::new()
         .sender_crossbeam(tray_tx)
-        .icon_from_buffer(ICON)
+        .icon_from_buffer(ico_bytes.leak())
         .tooltip("gcfeeder")
         .menu(
             MenuBuilder::new()
