@@ -22,7 +22,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 * [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases) must be installed.
 
 ## Config
-The configuration is stored in `gcfeeder.json`.
+The configuration is stored in `gcfeeder.toml`.
 
 ### ViGEm Options
 Options found under the `vigem_config` key.
