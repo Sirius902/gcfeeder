@@ -1,8 +1,10 @@
 use std::{
+    collections::HashMap,
     fs,
-    io::{Read, Write},
+    io::{self, Read, Write},
     net::UdpSocket,
     path::{Path, PathBuf},
+    time::{Duration, Instant},
 };
 
 use eframe::egui;
@@ -198,12 +200,12 @@ impl App {
         let socket = {
             let server_config = &config.input_server[index];
             if server_config.enabled {
-                UdpSocket::bind("0.0.0.0:0")
-                    .and_then(|s| s.connect(("127.0.0.1", server_config.port)).map(|()| s))
+                UdpSocket::bind(("127.0.0.1", server_config.port))
+                    .and_then(|s| s.set_nonblocking(true).map(|()| s))
                     .map(Option::Some)
                     .unwrap_or_else(|e| {
                         warn!(
-                            "Failed to connect to input server on localhost:{} set for port {:?}: {}",
+                            "Failed to create input server on localhost:{} set for port {:?}: {}",
                             server_config.port, port, e
                         );
                         None
@@ -214,11 +216,37 @@ impl App {
         };
 
         if let Some(socket) = socket {
+            let mut clients = HashMap::new();
+
             feeder.on_feed(move |record| {
+                loop {
+                    match socket.recv_from(&mut []) {
+                        Ok((received, src_addr)) => {
+                            if received == 0 {
+                                clients.insert(src_addr, Instant::now());
+                            }
+                        }
+                        Err(e) if e.kind() == io::ErrorKind::WouldBlock => break,
+                        Err(_) => {}
+                    }
+                }
+
                 if let Some(input) = record.raw_input.as_ref() {
                     let bytes =
                         bincode::serialize(input).expect("Failed to serialize Input to bytes");
                     let _ = socket.send(&bytes);
+
+                    clients.retain(|&sock_addr, last_msg| {
+                        if last_msg.elapsed() > Duration::from_secs(60) {
+                            return false;
+                        }
+
+                        match socket.send_to(&bytes, sock_addr) {
+                            Ok(_) => true,
+                            Err(e) if e.kind() == io::ErrorKind::WouldBlock => true,
+                            Err(_) => false,
+                        }
+                    });
                 }
             });
         }
