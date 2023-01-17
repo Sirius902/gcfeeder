@@ -2,7 +2,7 @@
 use std::{
     env,
     fs::File,
-    io::{self, Write},
+    io::{self, prelude::*},
     path::Path,
     process::{Command, Stdio},
 };
