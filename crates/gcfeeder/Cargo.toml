@@ -47,6 +47,11 @@ features = ["macros", "formatting", "local-offset"]
 version = "0.1.3"
 features = ["crossbeam-channel"]
 
+[build-dependencies.vergen]
+version = "7.5.0"
+default-features = false
+features = ["git"]
+
 [target.'cfg(windows)'.build-dependencies]
 embed-resource = "1.8.0"
 

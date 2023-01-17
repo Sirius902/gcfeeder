@@ -58,8 +58,14 @@ pub fn run() {
         .build()
         .unwrap();
 
+    let version_string = if !env!("VERSION").is_empty() {
+        env!("VERSION")
+    } else {
+        concat!("g", env!("VERGEN_GIT_SHA_SHORT"))
+    };
+
     eframe::run_native(
-        format!("gcfeeder | {}", env!("VERSION")).as_str(),
+        format!("gcfeeder | {}", version_string).as_str(),
         options,
         Box::new(move |_cc| Box::new(App::new(tray_icon, tray_rx, log_rx))),
     );
