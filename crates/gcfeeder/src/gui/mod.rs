@@ -28,11 +28,8 @@ pub fn run() {
     const ICON_FILE: &[u8] = include_bytes!("../../resource/icon.png");
 
     let icon = image::load_from_memory(ICON_FILE).unwrap();
-    let icon_data = icon.to_rgba8();
-    let icon_dim = icon.dimensions();
 
     let mut ico_bytes = Vec::new();
-
     {
         let small_icon = icon.resize(256, 256, image::imageops::FilterType::CatmullRom);
         small_icon
@@ -42,6 +39,9 @@ pub fn run() {
             )
             .unwrap();
     }
+
+    let icon_dim = icon.dimensions();
+    let icon_data = icon.into_rgba8();
 
     let options = eframe::NativeOptions {
         initial_window_size: Some([600.0, 420.0].into()),
