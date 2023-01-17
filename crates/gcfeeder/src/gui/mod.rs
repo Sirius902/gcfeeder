@@ -3,7 +3,7 @@ use std::{env, io::Cursor};
 use app::{App, TrayMessage};
 use crossbeam::channel;
 use egui::Color32;
-use image::{EncodableLayout, GenericImageView};
+use image::EncodableLayout;
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
@@ -40,8 +40,8 @@ pub fn run() {
             .unwrap();
     }
 
-    let icon_dim = icon.dimensions();
     let icon_data = icon.into_rgba8();
+    let icon_dim = icon_data.dimensions();
 
     let options = eframe::NativeOptions {
         initial_window_size: Some([600.0, 420.0].into()),
