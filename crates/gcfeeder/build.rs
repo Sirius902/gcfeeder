@@ -27,6 +27,7 @@ pub fn main() {
     println!("cargo:rustc-env={}={}", VERSION_VAR, version);
 
     const ICON_PATH: &str = "resource/icon.png";
+    println!("cargo:rerun-if-changed={}", ICON_PATH);
 
     let icon = image::load(
         io::BufReader::new(File::open(ICON_PATH).unwrap()),
