@@ -1,6 +1,6 @@
 [package]
 name = "gcfeeder"
-version = "3.0.0"
+version = "3.0.1"
 repository = "https://github.com/Sirius902/gcfeeder/"
 edition = "2021"
 
