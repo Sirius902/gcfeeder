@@ -39,6 +39,11 @@ impl log::Log for Logger {
                 record.module_path().unwrap_or_default()
             };
 
+            #[cfg(feature = "no-log-spam")]
+            if target.starts_with("wgpu") || target.starts_with("naga") {
+                return;
+            }
+
             let _ = self.sender.send(Message {
                 timestamp,
                 level: record.level(),
