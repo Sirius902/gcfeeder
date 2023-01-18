@@ -7,13 +7,6 @@ use std::{
 };
 
 pub fn main() {
-    {
-        let mut config = vergen::Config::default();
-        *config.git_mut().sha_kind_mut() = vergen::ShaKind::Short;
-
-        vergen::vergen(config).unwrap();
-    }
-
     const VERSION_VAR: &str = "VERSION";
     println!("cargo:rerun-if-env-changed={}", VERSION_VAR);
 
@@ -32,6 +25,16 @@ pub fn main() {
     };
 
     println!("cargo:rustc-env={}={}", VERSION_VAR, version);
+
+    {
+        let mut config = vergen::Config::default();
+        *config.git_mut().sha_kind_mut() = vergen::ShaKind::Short;
+
+        if matches!(vergen::vergen(config), Err(_)) {
+            println!("cargo:rustc-env={}=unknown", VERSION_VAR);
+            println!("cargo:rustc-env=VERGEN_GIT_SHA_SHORT=");
+        }
+    }
 
     #[cfg(windows)]
     {
