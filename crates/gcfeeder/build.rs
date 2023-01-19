@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
+use std::env;
+#[cfg(windows)]
 use std::{
-    env,
     fs::File,
     io::{self, prelude::*},
     path::Path,

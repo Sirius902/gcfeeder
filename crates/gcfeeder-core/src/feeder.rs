@@ -18,11 +18,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     adapter::poller::{self, ERROR_TIMEOUT},
-    bridge::{
-        self,
-        vigem::{Config as ViGEmConfig, ViGEmBridge},
-        Error as BridgeError,
-    },
+    bridge::{self, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
         self,
@@ -33,6 +29,9 @@ use crate::{
         AverageTimer,
     },
 };
+
+#[cfg(windows)]
+use vigem::Config as ViGEmConfig;
 
 type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = dyn bridge::Bridge + Send + Sync;
@@ -260,12 +259,7 @@ impl<T: UsbContext> Context<T> {
             Ok(bridge.as_mut())
         } else {
             self.connected.store(false, Ordering::Release);
-            let b = match self.config.driver {
-                Driver::ViGEm => Box::new(ViGEmBridge::new(
-                    self.config.vigem_config,
-                    vigem_client::Client::connect()?,
-                )?),
-            };
+            let b = Box::new(self.config.driver.create_bridge(&self.config)?);
             self.connected.store(true, Ordering::Release);
 
             Ok(bridge.insert(b).as_mut())
@@ -278,6 +272,7 @@ pub struct Config {
     pub driver: Driver,
     pub rumble: RumbleSetting,
     pub analog_scale: f64,
+    #[cfg(windows)]
     pub vigem_config: ViGEmConfig,
     pub calibration: CalibrationConfig,
     pub ess: EssConfig,
@@ -289,22 +284,11 @@ impl Default for Config {
             driver: Default::default(),
             rumble: Default::default(),
             analog_scale: 1.0,
+            #[cfg(windows)]
             vigem_config: Default::default(),
             calibration: Default::default(),
             ess: Default::default(),
         }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
-#[serde(rename_all = "lowercase")]
-pub enum Driver {
-    ViGEm,
-}
-
-impl Default for Driver {
-    fn default() -> Self {
-        Self::ViGEm
     }
 }
 

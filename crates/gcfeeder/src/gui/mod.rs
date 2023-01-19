@@ -1,9 +1,13 @@
 use std::env;
 
-use app::{App, TrayMessage};
+use app::App;
+#[cfg(windows)]
+use app::TrayMessage;
 use crossbeam::channel;
 use egui::Color32;
 use image::EncodableLayout;
+
+#[cfg(windows)]
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
@@ -26,7 +30,6 @@ pub fn run() {
         .expect("Failed to set logger");
 
     const ICON_FILE: &[u8] = include_bytes!("../../resource/icon.png");
-    const ICON_ICO: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/icon.ico"));
 
     let icon = image::load_from_memory(ICON_FILE).unwrap();
     let icon_data = icon.into_rgba8();
@@ -43,20 +46,25 @@ pub fn run() {
         ..Default::default()
     };
 
-    let (tray_tx, tray_rx) = channel::unbounded();
+    #[cfg(windows)]
+    let tray_rx = {
+        const ICON_ICO: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/icon.ico"));
 
-    let tray_icon = TrayIconBuilder::new()
-        .sender_crossbeam(tray_tx)
-        .icon_from_buffer(ICON_ICO)
-        .tooltip("gcfeeder")
-        .menu(
-            MenuBuilder::new()
-                .item("Show", TrayMessage::Show)
-                .item("Hide", TrayMessage::Hide)
-                .item("Exit", TrayMessage::Exit),
-        )
-        .build()
-        .unwrap();
+        let (tray_tx, tray_rx) = channel::unbounded();
+
+        let tray_icon = TrayIconBuilder::new()
+            .sender_crossbeam(tray_tx)
+            .icon_from_buffer(ICON_ICO)
+            .tooltip("gcfeeder")
+            .menu(
+                MenuBuilder::new()
+                    .item("Show", TrayMessage::Show)
+                    .item("Hide", TrayMessage::Hide)
+                    .item("Exit", TrayMessage::Exit),
+            )
+            .build()
+            .unwrap();
+    };
 
     let version_string = if !env!("VERSION").is_empty() {
         env!("VERSION")
@@ -67,6 +75,9 @@ pub fn run() {
     eframe::run_native(
         format!("gcfeeder | {}", version_string).as_str(),
         options,
-        Box::new(move |_cc| Box::new(App::new(tray_icon, tray_rx, log_rx))),
+        #[cfg(windows)]
+        Box::new(move |_cc| Box::new(App::new(tray_rx, log_rx))),
+        #[cfg(not(windows))]
+        Box::new(move |_cc| Box::new(App::new(log_rx))),
     );
 }

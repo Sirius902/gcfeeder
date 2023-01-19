@@ -29,7 +29,7 @@ impl log::Log for Logger {
 
         if self.enabled(record.metadata()) {
             let timestamp = OffsetDateTime::now_local()
-                .expect("Failed to get local timestamp")
+                .unwrap_or_else(|_| OffsetDateTime::now_utc())
                 .format(&TIMESTAMP_FORMAT)
                 .unwrap();
 

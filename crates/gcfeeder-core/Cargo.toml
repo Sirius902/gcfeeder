@@ -27,6 +27,9 @@ features = ["std"]
 version = "1.0.144"
 features = ["derive"]
 
-[dependencies.vigem-client]
+[target.'cfg(windows)'.dependencies.vigem-client]
 version = "0.1.4"
 features = ["unstable_xtarget_notification"]
+
+[target.'cfg(target_os = "linux")'.dependencies]
+input-linux = "0.5.0"

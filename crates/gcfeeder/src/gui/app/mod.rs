@@ -9,6 +9,7 @@ use std::{
 
 use eframe::egui;
 use enum_iterator::all;
+#[cfg(windows)]
 use trayicon::TrayIcon;
 
 use self::panel::calibration::ConfigUpdate;
@@ -34,6 +35,7 @@ mod widget;
 
 type Usb = rusb::GlobalContext;
 
+#[cfg(windows)]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TrayMessage {
     Show,
@@ -50,7 +52,7 @@ pub struct App {
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
-    _tray_icon: TrayIcon<TrayMessage>,
+    #[cfg(windows)]
     tray_receiver: channel::Receiver<TrayMessage>,
     hidden: bool,
     poller: Poller<Usb>,
@@ -63,8 +65,7 @@ impl App {
     const CONFIG_PATH: &'static str = "gcfeeder.toml";
 
     pub fn new(
-        tray_icon: TrayIcon<TrayMessage>,
-        tray_receiver: channel::Receiver<TrayMessage>,
+        #[cfg(windows)] tray_receiver: channel::Receiver<TrayMessage>,
         log_receiver: channel::Receiver<LogMessage>,
     ) -> Self {
         let config_path = Path::new(Self::CONFIG_PATH).to_path_buf();
@@ -82,7 +83,7 @@ impl App {
             stats_open: false,
             config,
             config_path,
-            _tray_icon: tray_icon,
+            #[cfg(windows)]
             tray_receiver,
             hidden: false,
             poller,
@@ -261,6 +262,7 @@ impl App {
             frame.close();
         }
 
+        #[cfg(windows)]
         while let Ok(message) = self.tray_receiver.try_recv() {
             match message {
                 TrayMessage::Show => {
