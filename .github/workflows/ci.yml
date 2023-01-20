@@ -9,9 +9,24 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            target-os: linux
+            build-target: x86_64-unknown-linux-gnu
+            artifacts: |
+              target/x86_64-unknown-linux-gnu/debug/gcfeeder
+          - os: windows-latest
+            target-os: windows
+            build-target: x86_64-pc-windows-msvc
+            artifacts: |
+              target/x86_64-pc-windows-msvc/debug/gcfeeder.exe
+              target/x86_64-pc-windows-msvc/debug/gcfeeder.pdb
     env:
-      CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
+      CARGO_BUILD_TARGET: ${{ matrix.build-target }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -24,7 +39,5 @@ jobs:
     - name: Upload gcfeeder
       uses: actions/upload-artifact@v3
       with:
-        name: gcfeeder
-        path: |
-          target/${{ env.CARGO_BUILD_TARGET }}/debug/gcfeeder.exe
-          target/${{ env.CARGO_BUILD_TARGET }}/debug/gcfeeder.pdb
+        name: gcfeeder-${{ matrix.target-os }}
+        path: ${{ matrix.artifacts }}

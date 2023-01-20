@@ -19,7 +19,9 @@ impl Logger {
 
 impl log::Log for Logger {
     fn enabled(&self, metadata: &log::Metadata) -> bool {
-        metadata.level().to_level_filter() <= self.level
+        let level_filter = metadata.level().to_level_filter();
+        (level_filter <= self.level && metadata.target().starts_with(env!("CARGO_PKG_NAME")))
+            || level_filter <= log::LevelFilter::Error
     }
 
     fn log(&self, record: &log::Record) {
@@ -38,11 +40,6 @@ impl log::Log for Logger {
             } else {
                 record.module_path().unwrap_or_default()
             };
-
-            #[cfg(feature = "no-log-spam")]
-            if target.starts_with("wgpu") || target.starts_with("naga") {
-                return;
-            }
 
             let _ = self.sender.send(Message {
                 timestamp,

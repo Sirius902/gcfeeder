@@ -29,6 +29,9 @@ pub fn run() {
         .init()
         .expect("Failed to set logger");
 
+    #[cfg(target_os = "linux")]
+    ::log::warn!("Hiding the window is not supported on Wayland");
+
     const ICON_FILE: &[u8] = include_bytes!("../../resource/icon.png");
 
     let icon = image::load_from_memory(ICON_FILE).unwrap();
@@ -47,7 +50,7 @@ pub fn run() {
     };
 
     #[cfg(windows)]
-    let tray_rx = {
+    let (_tray_icon, tray_rx) = {
         const ICON_ICO: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/icon.ico"));
 
         let (tray_tx, tray_rx) = channel::unbounded();
@@ -64,6 +67,8 @@ pub fn run() {
             )
             .build()
             .unwrap();
+
+        (tray_icon, tray_rx)
     };
 
     let version_string = if !env!("VERSION").is_empty() {

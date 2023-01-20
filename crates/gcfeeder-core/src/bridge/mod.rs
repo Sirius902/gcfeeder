@@ -41,6 +41,7 @@ impl Driver {
             #[cfg(windows)]
             Self::ViGEm => {
                 vigem::ViGEmBridge::new(config.vigem_config, vigem_client::Client::connect()?)
+                    .map_err(Into::into)
             }
             #[cfg(target_os = "linux")]
             Self::UInput => Ok(uinput::UInputBridge),

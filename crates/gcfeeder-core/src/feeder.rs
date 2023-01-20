@@ -31,7 +31,7 @@ use crate::{
 };
 
 #[cfg(windows)]
-use vigem::Config as ViGEmConfig;
+use crate::bridge::vigem::Config as ViGEmConfig;
 
 type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = dyn bridge::Bridge + Send + Sync;

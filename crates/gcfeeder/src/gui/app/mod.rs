@@ -9,8 +9,6 @@ use std::{
 
 use eframe::egui;
 use enum_iterator::all;
-#[cfg(windows)]
-use trayicon::TrayIcon;
 
 use self::panel::calibration::ConfigUpdate;
 
