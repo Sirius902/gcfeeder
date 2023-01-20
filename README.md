@@ -16,15 +16,22 @@ A built-in ESS adapter for use in Dolphin with mappings for the following games 
 * OoT and MM on GameCube
 
 ## Usage Requirements
+### Windows
 * WinUSB (libusb) driver must be installed for the adapter (WUP-028) with [Zadig](https://zadig.akeo.ie).
 For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
-### **ViGEm**
 * [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases) must be installed.
+
+### Linux
+* Follow Dolphin's Linux GameCube Adapter setup guide
+[here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
+    * **Note**: You may want to use the udev rules file from the
+    [Dolphin repository](https://github.com/dolphin-emu/dolphin/blob/master/Data/51-usb-device.rules)
+    as it has been updated compared to the guide.
 
 ## Config
 The configuration is stored in `gcfeeder.toml`.
 
-### ViGEm Options
+### ViGEm Options (Windows)
 Options found under the `vigem_config` key.
 * `pad` can be `x360` to emulate an Xbox 360 controller, and `ds4` to emulate a DualShock 4 controller.
 * `trigger_mode` can be:
