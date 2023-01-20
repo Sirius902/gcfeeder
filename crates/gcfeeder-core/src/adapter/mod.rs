@@ -41,6 +41,10 @@ impl<T: UsbContext> Adapter<T> {
     pub fn open(context: &T) -> Result<Self> {
         let mut handle = Self::find_and_open_device(context)?;
 
+        if handle.kernel_driver_active(0)? {
+            handle.detach_kernel_driver(0)?;
+        }
+
         handle.claim_interface(0)?;
 
         let endpoints = Self::find_endpoints(&handle)?;
