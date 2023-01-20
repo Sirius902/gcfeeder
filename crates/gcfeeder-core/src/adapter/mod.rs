@@ -41,9 +41,16 @@ impl<T: UsbContext> Adapter<T> {
     pub fn open(context: &T) -> Result<Self> {
         let mut handle = Self::find_and_open_device(context)?;
 
-        if handle.kernel_driver_active(0)? {
-            handle.detach_kernel_driver(0)?;
-        }
+        match handle.kernel_driver_active(0) {
+            Ok(b) => {
+                if b {
+                    handle.detach_kernel_driver(0)?;
+                }
+                Ok(())
+            }
+            Err(rusb::Error::NotSupported) => Ok(()),
+            Err(e) => Err(e),
+        }?;
 
         handle.claim_interface(0)?;
 
