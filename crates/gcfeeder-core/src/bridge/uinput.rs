@@ -1,10 +1,7 @@
 use std::{fs, io};
 
 use gcinput::{Input, Rumble};
-use input_linux::{
-    sys::{self, INPUT_PROP_DIRECT},
-    InputId, UInputHandle,
-};
+use input_linux::{sys, InputId, UInputHandle};
 
 use super::Bridge;
 
@@ -53,12 +50,18 @@ impl Bridge for UInputBridge {
     }
 
     fn feed(&self, input: &Option<Input>) -> super::Result<()> {
+        let state = if input.map(|i| i.button_a).unwrap_or(false) {
+            input_linux::KeyState::PRESSED
+        } else {
+            input_linux::KeyState::RELEASED
+        };
+
         let _ = self
             .device
             .write(&[*input_linux::KeyEvent::new(
                 input_linux::EventTime::new(0, 0),
                 input_linux::Key::Button0,
-                input_linux::KeyState::PRESSED,
+                state,
             )
             .as_ref()])
             .map_err(Error::Io)?;

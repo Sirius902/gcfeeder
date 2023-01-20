@@ -3,6 +3,7 @@ pub use average_timer::AverageTimer;
 pub mod average_timer;
 pub mod recent_channel;
 
+#[cfg(windows)]
 macro_rules! packed_bools {
     ( ($t:ty) $($b:expr,)* ) => { {
         let mut result: $t = 0;
@@ -17,4 +18,5 @@ macro_rules! packed_bools {
     } };
 }
 
+#[cfg(windows)]
 pub(crate) use packed_bools;
