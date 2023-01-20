@@ -34,5 +34,4 @@ Options found under the `vigem_config` key.
     * `stick_click` - Digital trigger inputs will be treated as a stick click. Trigger output uses analog trigger input.
 
 ## Notes
-* Only supports port one on the adapter.
 * libusb does not allow more than one process to interface with a device at a time, so, the feeder may not be active when using Dolphin's passthrough.
