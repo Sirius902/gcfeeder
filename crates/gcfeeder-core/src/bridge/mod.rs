@@ -24,6 +24,9 @@ pub enum Error {
     #[cfg(windows)]
     #[error("vigem: {0}")]
     ViGEm(#[from] vigem_client::Error),
+    #[cfg(target_os = "linux")]
+    #[error("uinput: {0}")]
+    UInput(#[from] uinput::Error),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
@@ -44,7 +47,7 @@ impl Driver {
                     .map_err(Into::into)
             }
             #[cfg(target_os = "linux")]
-            Self::UInput => Ok(uinput::UInputBridge),
+            Self::UInput => Ok(uinput::UInputBridge::new()?),
         }
     }
 }
