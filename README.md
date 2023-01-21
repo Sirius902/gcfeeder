@@ -49,7 +49,14 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     ```
 
 ## Config
-The configuration is stored in `gcfeeder.toml`.
+
+### Location
+* Windows
+    * `%appdata%\gcfeeder\gcfeeder.toml`
+* Linux
+    * Stored at one of the following locations:
+        * `$XDG_CONFIG_HOME/gcfeeder/gcfeeder.toml`
+        * `$HOME/.config/gcfeeder/gcfeeder.toml`
 
 ### ViGEm Options (Windows)
 Options found under the `vigem_config` key.

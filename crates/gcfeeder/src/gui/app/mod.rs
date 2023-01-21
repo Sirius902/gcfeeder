@@ -60,13 +60,14 @@ pub struct App {
 }
 
 impl App {
-    const CONFIG_PATH: &'static str = "gcfeeder.toml";
-
     pub fn new(
         #[cfg(windows)] tray_receiver: channel::Receiver<TrayMessage>,
         log_receiver: channel::Receiver<LogMessage>,
     ) -> Self {
-        let config_path = Path::new(Self::CONFIG_PATH).to_path_buf();
+        let config_path = dirs::config_dir()
+            .expect("Failed to get config directory")
+            .join("gcfeeder")
+            .join("gcfeeder.toml");
 
         let config = Self::load_or_create_config(&config_path);
         let poller = Poller::new(Usb {});
@@ -104,7 +105,7 @@ impl App {
     }
 
     fn load_config(config_path: impl AsRef<Path>) -> Option<Config> {
-        let mut f = match fs::File::open(config_path) {
+        let mut f = match fs::File::open(&config_path) {
             Ok(f) => f,
             Err(e) => {
                 warn!("Failed to open config file: {}", e);
@@ -131,7 +132,17 @@ impl App {
     }
 
     fn write_config(config: &Config, config_path: impl AsRef<Path>) {
-        let mut f = match fs::File::create(config_path) {
+        if let Err(e) = fs::create_dir_all(
+            config_path
+                .as_ref()
+                .parent()
+                .expect("Config path has no parent path"),
+        ) {
+            warn!("Failed to create config directory: {}", e);
+            return;
+        }
+
+        let mut f = match fs::File::create(&config_path) {
             Ok(f) => f,
             Err(e) => {
                 warn!("Failed to create config file: {}", e);
