@@ -52,7 +52,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 
 ### Location
 * Windows
-    * `%appdata%\gcfeeder\gcfeeder.toml`
+    * `%AppData%\gcfeeder\gcfeeder.toml`
 * Linux
     * Stored at one of the following locations:
         * `$XDG_CONFIG_HOME/gcfeeder/gcfeeder.toml`
