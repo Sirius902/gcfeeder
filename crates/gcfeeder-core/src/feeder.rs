@@ -18,11 +18,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     adapter::poller::{self, ERROR_TIMEOUT},
-    bridge::{self, Driver, Error as BridgeError},
+    bridge::{self, Bridge as BridgeTrait, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
         self,
         layers::{self, AnalogScaling, CenterCalibration, EssInversion},
+        Layer as LayerTrait,
     },
     util::{
         recent_channel::{self as recent, RecvTimeoutError, TrySendError},
@@ -34,14 +35,14 @@ use crate::{
 use crate::bridge::vigem::Config as ViGEmConfig;
 
 type Result<T> = std::result::Result<T, BridgeError>;
-type Bridge = dyn bridge::Bridge + Send + Sync;
+type Bridge = bridge::BridgeImpl;
 
 pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = recent::Sender<Record>;
 pub type Receiver = recent::Receiver<Record>;
 pub type CalibrationSender = recent::Sender<Option<Input>>;
 pub type CalibrationReceiver = recent::Receiver<Option<Input>>;
-pub type Layer = dyn mapping::Layer + Send;
+pub type Layer = mapping::LayerImpl;
 
 // TODO: Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
@@ -53,22 +54,25 @@ pub struct Feeder<T: UsbContext + 'static> {
 
 impl<T: UsbContext + 'static> Feeder<T> {
     pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
-        let internal_layers: Vec<Box<Layer>> = vec![Box::<CenterCalibration>::default()];
-        let mut layers: Vec<Box<Layer>> = Vec::new();
+        let internal_layers: Vec<Layer> = vec![CenterCalibration::default().into()];
+        let mut layers: Vec<Layer> = Vec::new();
 
         if (config.analog_scale.abs() - 1.0).abs() >= 1e-10 {
-            layers.push(Box::new(AnalogScaling::new(config.analog_scale)));
+            layers.push(AnalogScaling::new(config.analog_scale).into());
         }
 
         if let Some(map) = config.ess.inversion_mapping {
-            layers.push(Box::new(map));
+            layers.push(map.into());
         }
 
         if config.calibration.enabled {
-            layers.push(Box::new(layers::Calibration::new(
-                config.calibration.stick_data,
-                config.calibration.trigger_data,
-            )));
+            layers.push(
+                layers::Calibration::new(
+                    config.calibration.stick_data,
+                    config.calibration.trigger_data,
+                )
+                .into(),
+            );
         }
 
         let context = Arc::new(Context::new(config, listener));
@@ -154,10 +158,10 @@ impl<T: UsbContext> Context<T> {
     pub fn feed_loop(
         &self,
         rumble: RumbleSetting,
-        mut internal_layers: Vec<Box<Layer>>,
-        mut layers: Vec<Box<Layer>>,
+        mut internal_layers: Vec<Layer>,
+        mut layers: Vec<Layer>,
     ) {
-        let mut bridge: Option<Box<Bridge>> = None;
+        let mut bridge: Option<Bridge> = None;
         let mut timer = AverageTimer::start(0.9).unwrap();
 
         while !self.stop_flag.load(Ordering::Acquire) {
@@ -184,7 +188,7 @@ impl<T: UsbContext> Context<T> {
 
                 match self.listener.recv_timeout(INPUT_TIMEOUT) {
                     Ok(input) => {
-                        let apply_layers = |input: Option<Input>, layers: &mut [Box<Layer>]| {
+                        let apply_layers = |input: Option<Input>, layers: &mut [Layer]| {
                             layers
                                 .iter_mut()
                                 .fold(input, |input, layer| layer.apply(input))
@@ -254,15 +258,15 @@ impl<T: UsbContext> Context<T> {
         self.connected.store(false, Ordering::Release);
     }
 
-    fn bridge_or_reload<'a>(&self, bridge: &'a mut Option<Box<Bridge>>) -> Result<&'a mut Bridge> {
+    fn bridge_or_reload<'a>(&self, bridge: &'a mut Option<Bridge>) -> Result<&'a mut Bridge> {
         if let Some(bridge) = bridge {
-            Ok(bridge.as_mut())
+            Ok(bridge)
         } else {
             self.connected.store(false, Ordering::Release);
-            let b = Box::new(self.config.driver.create_bridge(&self.config)?);
+            let b = self.config.driver.create_bridge(&self.config)?;
             self.connected.store(true, Ordering::Release);
 
-            Ok(bridge.insert(b).as_mut())
+            Ok(bridge.insert(b))
         }
     }
 }
