@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{fs, io, time};
 
 use gcinput::{Input, Rumble};
 use input_linux::{sys, InputId, UInputHandle};
@@ -22,11 +22,10 @@ impl UInputBridge {
     pub fn new() -> Result<Self> {
         let device = UInputHandle::new(fs::File::create("/dev/uinput")?);
 
-        // Use Xbox360 controller vid and pid for now
         let input_id = InputId {
             bustype: sys::BUS_VIRTUAL,
-            vendor: 0x045E,
-            product: 0x028E,
+            vendor: 0x7331,
+            product: 0x0069,
             version: 1,
         };
 
@@ -56,10 +55,15 @@ impl Bridge for UInputBridge {
             input_linux::KeyState::RELEASED
         };
 
+        let now = time::SystemTime::now();
+        let unix_now = now.duration_since(time::SystemTime::UNIX_EPOCH).unwrap();
+        let secs = i64::try_from(unix_now.as_secs()).unwrap();
+        let usecs = i64::from(unix_now.subsec_micros());
+
         let _ = self
             .device
             .write(&[*input_linux::KeyEvent::new(
-                input_linux::EventTime::new(0, 0),
+                input_linux::EventTime::new(secs, usecs),
                 input_linux::Key::Button0,
                 state,
             )
