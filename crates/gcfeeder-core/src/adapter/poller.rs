@@ -18,7 +18,7 @@ use crate::util::{
     AverageTimer,
 };
 
-use super::{Adapter, Input, Port, Rumble};
+use super::{source::InputSource, Adapter, Input, Port, Rumble};
 
 pub type InputMessage = Option<Input>;
 
@@ -178,38 +178,32 @@ pub struct Listener<T: UsbContext> {
     port: Port,
 }
 
-impl<T: UsbContext> Listener<T> {
-    pub const fn port(&self) -> Port {
+impl<T: UsbContext> InputSource for Listener<T> {
+    fn port(&self) -> Port {
         self.port
     }
 
-    pub fn recv(&self) -> Result<InputMessage, recent::RecvError> {
+    fn recv(&self) -> Result<InputMessage, recent::RecvError> {
         self.receiver.recv()
     }
 
-    pub fn recv_deadline(
-        &self,
-        deadline: Instant,
-    ) -> Result<InputMessage, recent::RecvTimeoutError> {
+    fn recv_deadline(&self, deadline: Instant) -> Result<InputMessage, recent::RecvTimeoutError> {
         self.receiver.recv_deadline(deadline)
     }
 
-    pub fn recv_timeout(
-        &self,
-        timeout: Duration,
-    ) -> Result<InputMessage, recent::RecvTimeoutError> {
+    fn recv_timeout(&self, timeout: Duration) -> Result<InputMessage, recent::RecvTimeoutError> {
         self.receiver.recv_timeout(timeout)
     }
 
-    pub fn try_recv(&self) -> Result<InputMessage, recent::TryRecvError> {
+    fn try_recv(&self) -> Result<InputMessage, recent::TryRecvError> {
         self.receiver.try_recv()
     }
 
-    pub fn set_rumble(&self, rumble: Rumble) {
+    fn set_rumble(&self, rumble: Rumble) {
         self.context.rumble_states[self.port.index()].store(rumble);
     }
 
-    pub fn reset_rumble(&self) {
+    fn reset_rumble(&self) {
         self.set_rumble(Rumble::Off)
     }
 }

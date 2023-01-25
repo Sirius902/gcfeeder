@@ -6,7 +6,7 @@ use gcinput::Input;
 use crate::{
     config::Config,
     gui::{
-        app::{widget, Usb},
+        app::{widget, Source},
         util::enum_combo_ui,
     },
 };
@@ -29,7 +29,7 @@ const NOTCH_NAMES: [&str; 8] = [
 ];
 
 pub struct CalibrationPanel<'a> {
-    feeders: &'a mut [Feeder<Usb>; Port::COUNT],
+    feeders: &'a mut [Feeder<Source>; Port::COUNT],
     records: &'a [Option<Record>; Port::COUNT],
     config: &'a Config,
     state: State,
@@ -37,7 +37,7 @@ pub struct CalibrationPanel<'a> {
 
 impl<'a> CalibrationPanel<'a> {
     pub fn new(
-        feeders: &'a mut [Feeder<Usb>; Port::COUNT],
+        feeders: &'a mut [Feeder<Source>; Port::COUNT],
         records: &'a [Option<Record>; Port::COUNT],
         config: &'a Config,
         state: Option<State>,

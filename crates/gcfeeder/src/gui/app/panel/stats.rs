@@ -1,4 +1,4 @@
-use crate::gui::app::Usb;
+use crate::gui::app::{Source, Usb};
 use enum_iterator::all;
 use gcfeeder_core::{
     adapter::{poller::Poller, Port},
@@ -7,11 +7,14 @@ use gcfeeder_core::{
 
 pub struct StatsPanel<'a> {
     poller: &'a mut Poller<Usb>,
-    feeders: &'a mut [Feeder<Usb>; Port::COUNT],
+    feeders: &'a mut [Feeder<Source>; Port::COUNT],
 }
 
 impl<'a> StatsPanel<'a> {
-    pub fn new(poller: &'a mut Poller<Usb>, feeders: &'a mut [Feeder<Usb>; Port::COUNT]) -> Self {
+    pub fn new(
+        poller: &'a mut Poller<Usb>,
+        feeders: &'a mut [Feeder<Source>; Port::COUNT],
+    ) -> Self {
         Self { poller, feeders }
     }
 

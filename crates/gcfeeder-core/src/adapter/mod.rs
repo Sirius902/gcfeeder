@@ -7,6 +7,7 @@ use rusb::{DeviceHandle, UsbContext};
 use thiserror::Error;
 
 pub mod poller;
+pub mod source;
 
 const VID: u16 = 0x057E;
 const PID: u16 = 0x0337;

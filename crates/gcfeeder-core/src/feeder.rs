@@ -13,11 +13,10 @@ use enum_iterator::Sequence;
 use gcinput::Input;
 use log::warn;
 use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
-use rusb::UsbContext;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    adapter::poller::{self, ERROR_TIMEOUT},
+    adapter::{poller::ERROR_TIMEOUT, source::InputSource},
     bridge::{self, Bridge as BridgeTrait, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
@@ -47,13 +46,13 @@ pub type Layer = mapping::LayerImpl;
 // TODO: Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
 
-pub struct Feeder<T: UsbContext + 'static> {
-    context: Arc<Context<T>>,
+pub struct Feeder<S: InputSource + 'static> {
+    context: Arc<Context<S>>,
     thread: Option<thread::JoinHandle<()>>,
 }
 
-impl<T: UsbContext + 'static> Feeder<T> {
-    pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
+impl<S: InputSource + 'static> Feeder<S> {
+    pub fn new(config: Config, input_source: S) -> Self {
         let internal_layers: Vec<Layer> = vec![CenterCalibration::default().into()];
         let mut layers: Vec<Layer> = Vec::new();
 
@@ -75,7 +74,7 @@ impl<T: UsbContext + 'static> Feeder<T> {
             );
         }
 
-        let context = Arc::new(Context::new(config, listener));
+        let context = Arc::new(Context::new(config, input_source));
         let thread = Some(thread::spawn(
             enclose!((context) move || context.feed_loop(config.rumble, internal_layers, layers)),
         ));
@@ -108,7 +107,7 @@ impl<T: UsbContext + 'static> Feeder<T> {
     }
 }
 
-impl<T: UsbContext> Drop for Feeder<T> {
+impl<S: InputSource> Drop for Feeder<S> {
     fn drop(&mut self) {
         self.context.stop_flag.store(true, Ordering::Release);
 
@@ -125,9 +124,9 @@ pub struct Record {
     pub feed_time: Duration,
 }
 
-struct Context<T: UsbContext> {
+struct Context<S: InputSource> {
     pub config: Config,
-    pub listener: poller::Listener<T>,
+    pub input_source: S,
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
     pub calibration_sender: Mutex<Option<CalibrationSender>>,
@@ -137,11 +136,11 @@ struct Context<T: UsbContext> {
     pub thread_pool: rayon::ThreadPool,
 }
 
-impl<T: UsbContext> Context<T> {
-    pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
+impl<S: InputSource> Context<S> {
+    pub fn new(config: Config, input_source: S) -> Self {
         Self {
             config,
-            listener,
+            input_source,
             stop_flag: Default::default(),
             connected: Default::default(),
             callbacks: Default::default(),
@@ -179,14 +178,14 @@ impl<T: UsbContext> Context<T> {
 
                 match rumble {
                     RumbleSetting::On => {
-                        self.listener.set_rumble(bridge.rumble_state());
+                        self.input_source.set_rumble(bridge.rumble_state());
                     }
                     RumbleSetting::Off => {}
                 }
 
                 bridge.notify_rumble_consumed();
 
-                match self.listener.recv_timeout(INPUT_TIMEOUT) {
+                match self.input_source.recv_timeout(INPUT_TIMEOUT) {
                     Ok(input) => {
                         let apply_layers = |input: Option<Input>, layers: &mut [Layer]| {
                             layers

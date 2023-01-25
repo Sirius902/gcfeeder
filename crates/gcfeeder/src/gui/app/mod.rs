@@ -16,7 +16,10 @@ use super::log::Message as LogMessage;
 use crate::config::{Config, Profile};
 use crossbeam::channel;
 use gcfeeder_core::{
-    adapter::{poller::Poller, Port},
+    adapter::{
+        poller::{self, Poller},
+        Port,
+    },
     feeder::{self, Feeder, Record},
     util::recent_channel::{self as recent, TryRecvError},
 };
@@ -32,6 +35,7 @@ mod panel;
 mod widget;
 
 type Usb = rusb::GlobalContext;
+type Source = poller::Listener<Usb>;
 
 #[cfg(windows)]
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -54,7 +58,7 @@ pub struct App {
     tray_receiver: channel::Receiver<TrayMessage>,
     hidden: bool,
     poller: Poller<Usb>,
-    feeders: [Feeder<Usb>; Port::COUNT],
+    feeders: [Feeder<Source>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
     records: [Option<Record>; Port::COUNT],
 }
@@ -169,8 +173,11 @@ impl App {
     fn feeders_from_config(
         config: &Config,
         poller: &Poller<Usb>,
-    ) -> ([Feeder<Usb>; Port::COUNT], [feeder::Receiver; Port::COUNT]) {
-        let mut feeders: [Option<Feeder<Usb>>; Port::COUNT] = Default::default();
+    ) -> (
+        [Feeder<Source>; Port::COUNT],
+        [feeder::Receiver; Port::COUNT],
+    ) {
+        let mut feeders: [Option<Feeder<Source>>; Port::COUNT] = Default::default();
         let mut receivers: [Option<feeder::Receiver>; Port::COUNT] = Default::default();
 
         for port in all::<Port>() {
@@ -187,7 +194,7 @@ impl App {
         config: &Config,
         poller: &Poller<Usb>,
         port: Port,
-    ) -> (Feeder<Usb>, feeder::Receiver) {
+    ) -> (Feeder<Source>, feeder::Receiver) {
         let index = port.index();
         let profile = {
             let selected = &config.profile.selected[index];
