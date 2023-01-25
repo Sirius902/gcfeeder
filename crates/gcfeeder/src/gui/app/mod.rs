@@ -4,6 +4,7 @@ use std::{
     io::{self, Read, Write},
     net::UdpSocket,
     path::{Path, PathBuf},
+    thread,
     time::{Duration, Instant},
 };
 
@@ -41,6 +42,11 @@ pub enum TrayMessage {
     Exit,
 }
 
+enum ServerMessage {
+    StartServing(Port, u16),
+    StopServing(Port),
+}
+
 pub struct App {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
@@ -57,6 +63,9 @@ pub struct App {
     feeders: [Feeder<Usb>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
     records: [Option<Record>; Port::COUNT],
+    server_senders: [feeder::Sender; Port::COUNT],
+    server_config_tx: channel::Sender<[Option<u16>; Port::COUNT]>,
+    server_thread: Option<thread::JoinHandle<()>>,
 }
 
 impl App {
@@ -69,9 +78,12 @@ impl App {
             .join("gcfeeder")
             .join("gcfeeder.toml");
 
+        let (server_config_tx, server_config_rx) = channel::unbounded();
+        let (server_thread, server_senders) = Self::setup_server_thread(server_config_rx);
+
         let config = Self::load_or_create_config(&config_path);
         let poller = Poller::new(Usb {});
-        let (feeders, receivers) = Self::feeders_from_config(&config, &poller);
+        let (feeders, receivers) = Self::feeders_from_config(&config, &poller, &server_senders);
 
         Self {
             log_panel: LogPanel::new(log_receiver),
@@ -89,6 +101,9 @@ impl App {
             feeders,
             receivers,
             records: Default::default(),
+            server_senders,
+            server_config_tx,
+            server_thread: Some(server_thread),
         }
     }
 
@@ -169,13 +184,15 @@ impl App {
     fn feeders_from_config(
         config: &Config,
         poller: &Poller<Usb>,
+        server_senders: &[feeder::Sender; Port::COUNT],
     ) -> ([Feeder<Usb>; Port::COUNT], [feeder::Receiver; Port::COUNT]) {
         let mut feeders: [Option<Feeder<Usb>>; Port::COUNT] = Default::default();
         let mut receivers: [Option<feeder::Receiver>; Port::COUNT] = Default::default();
 
-        for port in all::<Port>() {
+        for (port, server_tx) in all::<Port>().zip(server_senders) {
             let index = port.index();
-            let (feeder, receiver) = Self::feeder_from_config(config, poller, port);
+            let (feeder, receiver) =
+                Self::feeder_from_config(config, poller, port, server_tx.clone());
             feeders[index] = Some(feeder);
             receivers[index] = Some(receiver);
         }
@@ -187,6 +204,7 @@ impl App {
         config: &Config,
         poller: &Poller<Usb>,
         port: Port,
+        server_tx: feeder::Sender,
     ) -> (Feeder<Usb>, feeder::Receiver) {
         let index = port.index();
         let profile = {
@@ -205,8 +223,35 @@ impl App {
                 })
         };
 
-        let feeder = Feeder::new(profile, poller.add_listener(port));
+        let feeder = Feeder::new(profile, poller, port);
+        feeder.send_on_feed(server_tx);
 
+        let (tx, rx) = recent::channel();
+        feeder.send_on_feed(tx);
+        (feeder, rx)
+    }
+
+    fn setup_server_thread(
+        config_rx: channel::Receiver<[Option<u16>; Port::COUNT]>,
+    ) -> (thread::JoinHandle<()>, [feeder::Sender; Port::COUNT]) {
+        let mut server_senders = <[Option<feeder::Sender>; Port::COUNT]>::default();
+        let mut server_receivers = <[Option<feeder::Receiver>; Port::COUNT]>::default();
+
+        for (stx, srx) in server_senders.iter_mut().zip(&mut server_receivers) {
+            let (tx, rx) = recent::channel();
+            *stx = Some(tx);
+            *srx = Some(rx);
+        }
+
+        let server_senders = server_senders.map(Option::unwrap);
+        let server_receivers = server_receivers.map(Option::unwrap);
+
+        let server_thread = thread::spawn(move || {});
+
+        (server_thread, server_senders)
+    }
+
+    fn server_loop() {
         let socket = {
             let server_config = &config.input_server[index];
             if server_config.enabled {
@@ -226,9 +271,12 @@ impl App {
         };
 
         if let Some(socket) = socket {
+            let (tx, rx) = recent::channel();
             let mut clients = HashMap::new();
 
-            feeder.on_feed(move |record| {
+            feeder.send_on_feed(tx);
+
+            thread::spawn(move || loop {
                 loop {
                     match socket.recv_from(&mut []) {
                         Ok((received, src_addr)) => {
@@ -241,29 +289,30 @@ impl App {
                     }
                 }
 
-                if let Some(input) = record.raw_input.as_ref() {
-                    let bytes =
-                        bincode::serialize(input).expect("Failed to serialize Input to bytes");
-                    let _ = socket.send(&bytes);
+                match rx.recv() {
+                    Ok(record) => {
+                        if let Some(input) = record.raw_input.as_ref() {
+                            let bytes = bincode::serialize(input)
+                                .expect("Failed to serialize Input to bytes");
+                            let _ = socket.send(&bytes);
 
-                    clients.retain(|&sock_addr, last_msg| {
-                        if last_msg.elapsed() > Duration::from_secs(60) {
-                            return false;
-                        }
+                            clients.retain(|&sock_addr, last_msg| {
+                                if last_msg.elapsed() > Duration::from_secs(60) {
+                                    return false;
+                                }
 
-                        match socket.send_to(&bytes, sock_addr) {
-                            Ok(_) => true,
-                            Err(e) if e.kind() == io::ErrorKind::WouldBlock => true,
-                            Err(_) => false,
+                                match socket.send_to(&bytes, sock_addr) {
+                                    Ok(_) => true,
+                                    Err(e) if e.kind() == io::ErrorKind::WouldBlock => true,
+                                    Err(_) => false,
+                                }
+                            });
                         }
-                    });
+                    }
+                    Err(_) => break,
                 }
             });
         }
-
-        let (tx, rx) = recent::channel();
-        feeder.send_on_feed(tx);
-        (feeder, rx)
     }
 
     fn handle_messages(&mut self, frame: &mut eframe::Frame) {
@@ -324,7 +373,8 @@ impl App {
     pub fn reload_config(&mut self) {
         if let Some(config) = Self::load_config(&self.config_path) {
             // TODO: Send config update to feeder instead of re-creating it.
-            let (feeders, receivers) = Self::feeders_from_config(&config, &self.poller);
+            let (feeders, receivers) =
+                Self::feeders_from_config(&config, &self.poller, &self.server_senders);
             self.feeders = feeders;
             self.receivers = receivers;
             self.config = config;

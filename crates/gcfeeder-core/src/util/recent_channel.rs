@@ -79,6 +79,15 @@ impl<T: Copy> Sender<T> {
     }
 }
 
+impl<T: Copy> Clone for Sender<T> {
+    fn clone(&self) -> Self {
+        Self {
+            sender: self.sender.clone(),
+            msg: self.msg.clone(),
+        }
+    }
+}
+
 pub struct Receiver<T: Copy> {
     receiver: channel::Receiver<()>,
     msg: Arc<AtomicCell<Option<T>>>,
@@ -104,6 +113,15 @@ impl<T: Copy> Receiver<T> {
     #[inline(always)]
     fn msg(&self) -> T {
         self.msg.load().unwrap()
+    }
+}
+
+impl<T: Copy> Clone for Receiver<T> {
+    fn clone(&self) -> Self {
+        Self {
+            receiver: self.receiver.clone(),
+            msg: self.msg.clone(),
+        }
     }
 }
 

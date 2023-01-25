@@ -12,12 +12,14 @@ use enclose::enclose;
 use enum_iterator::Sequence;
 use gcinput::Input;
 use log::warn;
-use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use rusb::UsbContext;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    adapter::poller::{self, ERROR_TIMEOUT},
+    adapter::{
+        self,
+        poller::{self, ERROR_TIMEOUT},
+    },
     bridge::{self, Bridge as BridgeTrait, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
@@ -37,7 +39,6 @@ use crate::bridge::vigem::Config as ViGEmConfig;
 type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = bridge::BridgeImpl;
 
-pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = recent::Sender<Record>;
 pub type Receiver = recent::Receiver<Record>;
 pub type CalibrationSender = recent::Sender<Option<Input>>;
@@ -53,7 +54,7 @@ pub struct Feeder<T: UsbContext + 'static> {
 }
 
 impl<T: UsbContext + 'static> Feeder<T> {
-    pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
+    pub fn new(config: Config, poller: &poller::Poller<T>, port: adapter::Port) -> Self {
         let internal_layers: Vec<Layer> = vec![CenterCalibration::default().into()];
         let mut layers: Vec<Layer> = Vec::new();
 
@@ -75,7 +76,7 @@ impl<T: UsbContext + 'static> Feeder<T> {
             );
         }
 
-        let context = Arc::new(Context::new(config, listener));
+        let context = Arc::new(Context::new(config, poller, port));
         let thread = Some(thread::spawn(
             enclose!((context) move || context.feed_loop(config.rumble, internal_layers, layers)),
         ));
@@ -86,11 +87,6 @@ impl<T: UsbContext + 'static> Feeder<T> {
     #[must_use]
     pub fn average_feed_time(&self) -> Option<Duration> {
         *self.context.average_feed_time.lock().unwrap()
-    }
-
-    pub fn on_feed(&self, callback: impl FnMut(&Record) + Send + 'static) {
-        let mut callbacks = self.context.callbacks.lock().unwrap();
-        callbacks.push(Box::new(callback));
     }
 
     pub fn send_on_feed(&self, sender: Sender) {
@@ -120,6 +116,7 @@ impl<T: UsbContext> Drop for Feeder<T> {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Record {
+    pub port: adapter::Port,
     pub raw_input: Option<Input>,
     pub layered_input: Option<Input>,
     pub feed_time: Duration,
@@ -131,27 +128,22 @@ struct Context<T: UsbContext> {
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
     pub calibration_sender: Mutex<Option<CalibrationSender>>,
-    pub callbacks: Mutex<Vec<Box<Callback>>>,
     pub senders: Mutex<Vec<Sender>>,
     pub average_feed_time: Mutex<Option<Duration>>,
-    pub thread_pool: rayon::ThreadPool,
+    pub port: adapter::Port,
 }
 
 impl<T: UsbContext> Context<T> {
-    pub fn new(config: Config, listener: poller::Listener<T>) -> Self {
+    pub fn new(config: Config, poller: &poller::Poller<T>, port: adapter::Port) -> Self {
         Self {
             config,
-            listener,
+            listener: poller.add_listener(port),
             stop_flag: Default::default(),
             connected: Default::default(),
-            callbacks: Default::default(),
             calibration_sender: Default::default(),
             senders: Default::default(),
             average_feed_time: Default::default(),
-            thread_pool: rayon::ThreadPoolBuilder::new()
-                .num_threads(2)
-                .build()
-                .unwrap(),
+            port,
         }
     }
 
@@ -212,6 +204,7 @@ impl<T: UsbContext> Context<T> {
                         };
 
                         bridge.feed(&layered).map(|()| Record {
+                            port: self.port,
                             raw_input: input,
                             layered_input: layered,
                             feed_time: timer.read(),
@@ -224,26 +217,9 @@ impl<T: UsbContext> Context<T> {
 
             match record {
                 Ok(record) => {
-                    {
-                        self.thread_pool.join(
-                            || {
-                                let mut callbacks = self.callbacks.lock().unwrap();
-                                callbacks
-                                    .par_iter_mut()
-                                    .for_each(|callback| callback(&record));
-                            },
-                            || {
-                                let mut senders = self.senders.lock().unwrap();
-
-                                senders.retain(|sender| {
-                                    !matches!(
-                                        sender.try_send(record),
-                                        Err(TrySendError::Disconnected(_))
-                                    )
-                                });
-                            },
-                        );
-                    }
+                    self.senders.lock().unwrap().retain(|sender| {
+                        !matches!(sender.try_send(record), Err(TrySendError::Disconnected(_)))
+                    });
 
                     *self.average_feed_time.lock().unwrap() = Some(timer.lap());
                 }
