@@ -2,20 +2,18 @@ use std::time::{Duration, Instant};
 
 pub struct AverageTimer {
     started: Instant,
+    frames: Vec<(Instant, Duration)>,
     average: Option<Duration>,
-    alpha: f64,
+    window: Duration,
 }
 
 impl AverageTimer {
-    pub fn start(alpha: f64) -> Result<Self, Error> {
-        if alpha <= 1.0 {
-            Ok(Self {
-                started: Instant::now(),
-                average: None,
-                alpha,
-            })
-        } else {
-            Err(Error::AlphaRange)
+    pub fn start(window: Duration) -> Self {
+        Self {
+            started: Instant::now(),
+            frames: Vec::new(),
+            average: None,
+            window,
         }
     }
 
@@ -23,16 +21,16 @@ impl AverageTimer {
         let now = Instant::now();
         let elapsed = now - self.started;
 
-        if let Some(average) = self.average.as_mut() {
-            *average = Duration::from_secs_f64(self.alpha.mul_add(
-                average.as_secs_f64(),
-                (1.0 - self.alpha) * elapsed.as_secs_f64(),
-            ));
+        self.frames.retain(|&(t, _)| t > now - self.window);
+        self.frames.push((now, elapsed));
 
-            *average
-        } else {
-            *self.average.insert(elapsed)
-        }
+        let average = self
+            .frames
+            .iter()
+            .fold(Duration::ZERO, |acc, &(_, d)| acc + d)
+            / u32::try_from(self.frames.len()).unwrap();
+
+        *self.average.insert(average)
     }
 
     pub fn read(&self) -> Duration {
@@ -46,10 +44,4 @@ impl AverageTimer {
     pub fn reset(&mut self) {
         self.started = Instant::now();
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum Error {
-    #[error("alpha should be in [0, 1]")]
-    AlphaRange,
 }

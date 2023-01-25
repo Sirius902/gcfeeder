@@ -100,7 +100,7 @@ impl<T: UsbContext> Context<T> {
             .build()
             .unwrap();
         let mut adapter: Option<Adapter<T>> = None;
-        let mut timer = AverageTimer::start(0.9).unwrap();
+        let mut timer = AverageTimer::start(Duration::from_secs(1));
 
         while !self.stop_flag.load(Ordering::Acquire) {
             let result = {
