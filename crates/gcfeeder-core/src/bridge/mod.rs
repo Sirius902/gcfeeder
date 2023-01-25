@@ -49,7 +49,7 @@ pub enum Driver {
 }
 
 impl Driver {
-    pub fn create_bridge(self, config: &feeder::Config) -> Result<BridgeImpl> {
+    pub fn create_bridge(self, #[allow(unused)] config: &feeder::Config) -> Result<BridgeImpl> {
         match self {
             #[cfg(windows)]
             Self::ViGEm => {
