@@ -58,9 +58,7 @@ impl Driver {
                     .map_err(Into::into)
             }
             #[cfg(target_os = "linux")]
-            Self::UInput => uinput::UInputBridge::new()
-                .map(Into::into)
-                .map_err(Into::into),
+            Self::UInput => Ok(uinput::UInputBridge::new().into()),
         }
     }
 }
