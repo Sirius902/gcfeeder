@@ -18,7 +18,7 @@ use crate::util::{
     AverageTimer,
 };
 
-use super::{source::InputSource, Adapter, Input, Port, Rumble};
+use super::{source::InputListener, Adapter, Input, Port, Rumble};
 
 pub type InputMessage = Option<Input>;
 
@@ -178,7 +178,7 @@ pub struct Listener<T: UsbContext> {
     port: Port,
 }
 
-impl<T: UsbContext> InputSource for Listener<T> {
+impl<T: UsbContext> InputListener for Listener<T> {
     fn port(&self) -> Port {
         self.port
     }

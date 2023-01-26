@@ -16,7 +16,7 @@ use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    adapter::{poller::ERROR_TIMEOUT, source::InputSource},
+    adapter::{poller::ERROR_TIMEOUT, source::InputListener},
     bridge::{self, Bridge as BridgeTrait, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
@@ -46,13 +46,13 @@ pub type Layer = mapping::LayerImpl;
 // TODO: Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
 
-pub struct Feeder<S: InputSource + 'static> {
-    context: Arc<Context<S>>,
+pub struct Feeder<L: InputListener + 'static> {
+    context: Arc<Context<L>>,
     thread: Option<thread::JoinHandle<()>>,
 }
 
-impl<S: InputSource + 'static> Feeder<S> {
-    pub fn new(config: Config, input_source: S) -> Self {
+impl<L: InputListener + 'static> Feeder<L> {
+    pub fn new(config: Config, input_source: L) -> Self {
         let internal_layers: Vec<Layer> = vec![CenterCalibration::default().into()];
         let mut layers: Vec<Layer> = Vec::new();
 
@@ -107,7 +107,7 @@ impl<S: InputSource + 'static> Feeder<S> {
     }
 }
 
-impl<S: InputSource> Drop for Feeder<S> {
+impl<L: InputListener> Drop for Feeder<L> {
     fn drop(&mut self) {
         self.context.stop_flag.store(true, Ordering::Release);
 
@@ -124,9 +124,9 @@ pub struct Record {
     pub feed_time: Duration,
 }
 
-struct Context<S: InputSource> {
+struct Context<L: InputListener> {
     pub config: Config,
-    pub input_source: S,
+    pub input_source: L,
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
     pub calibration_sender: Mutex<Option<CalibrationSender>>,
@@ -136,8 +136,8 @@ struct Context<S: InputSource> {
     pub thread_pool: rayon::ThreadPool,
 }
 
-impl<S: InputSource> Context<S> {
-    pub fn new(config: Config, input_source: S) -> Self {
+impl<L: InputListener> Context<L> {
+    pub fn new(config: Config, input_source: L) -> Self {
         Self {
             config,
             input_source,

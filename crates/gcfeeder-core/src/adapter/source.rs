@@ -5,7 +5,7 @@ use gcinput::Rumble;
 use super::{poller::InputMessage, Port};
 use crate::util::recent_channel as recent;
 
-pub trait InputSource: Sync + Send {
+pub trait InputListener: Sync + Send {
     fn port(&self) -> Port;
 
     fn recv(&self) -> Result<InputMessage, recent::RecvError>;
