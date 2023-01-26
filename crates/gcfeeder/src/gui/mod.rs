@@ -5,8 +5,10 @@ use app::App;
 use app::TrayMessage;
 use crossbeam::channel;
 use egui::Color32;
+use gcfeeder_core::adapter::poller::Poller;
 use image::EncodableLayout;
 
+use rusb::GlobalContext;
 #[cfg(windows)]
 use trayicon::{MenuBuilder, TrayIconBuilder};
 
@@ -77,12 +79,14 @@ pub fn run() {
         concat!("g", env!("VERGEN_GIT_SHA_SHORT"))
     };
 
+    let input_source = Poller::new(GlobalContext {});
+
     eframe::run_native(
         format!("gcfeeder | {}", version_string).as_str(),
         options,
         #[cfg(windows)]
-        Box::new(move |_cc| Box::new(App::new(tray_rx, log_rx))),
+        Box::new(move |_cc| Box::new(App::new(input_source, tray_rx, log_rx))),
         #[cfg(not(windows))]
-        Box::new(move |_cc| Box::new(App::new(log_rx))),
+        Box::new(move |_cc| Box::new(App::new(input_source, log_rx))),
     );
 }

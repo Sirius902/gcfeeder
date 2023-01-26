@@ -5,13 +5,10 @@ use gcinput::Input;
 
 use crate::{
     config::Config,
-    gui::{
-        app::{widget, Source},
-        util::enum_combo_ui,
-    },
+    gui::{app::widget, util::enum_combo_ui},
 };
 use gcfeeder_core::{
-    adapter::Port,
+    adapter::{source::InputListener, Port},
     calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
     feeder::{CalibrationReceiver, Feeder, Record},
     util::recent_channel as recent,
@@ -28,16 +25,16 @@ const NOTCH_NAMES: [&str; 8] = [
     "top-left",
 ];
 
-pub struct CalibrationPanel<'a> {
-    feeders: &'a mut [Feeder<Source>; Port::COUNT],
+pub struct CalibrationPanel<'a, L: InputListener + 'static> {
+    feeders: &'a mut [Feeder<L>; Port::COUNT],
     records: &'a [Option<Record>; Port::COUNT],
     config: &'a Config,
     state: State,
 }
 
-impl<'a> CalibrationPanel<'a> {
+impl<'a, L: InputListener> CalibrationPanel<'a, L> {
     pub fn new(
-        feeders: &'a mut [Feeder<Source>; Port::COUNT],
+        feeders: &'a mut [Feeder<L>; Port::COUNT],
         records: &'a [Option<Record>; Port::COUNT],
         config: &'a Config,
         state: Option<State>,

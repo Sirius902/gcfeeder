@@ -16,10 +16,7 @@ use super::log::Message as LogMessage;
 use crate::config::{Config, Profile};
 use crossbeam::channel;
 use gcfeeder_core::{
-    adapter::{
-        poller::{self, Poller},
-        Port,
-    },
+    adapter::{source::InputSource, Port},
     feeder::{self, Feeder, Record},
     util::recent_channel::{self as recent, TryRecvError},
 };
@@ -34,9 +31,6 @@ use panel::{
 mod panel;
 mod widget;
 
-type Usb = rusb::GlobalContext;
-type Source = poller::Listener<Usb>;
-
 #[cfg(windows)]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TrayMessage {
@@ -45,7 +39,7 @@ pub enum TrayMessage {
     Exit,
 }
 
-pub struct App {
+pub struct App<S: InputSource + 'static> {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
     config_state: Option<ConfigState>,
@@ -57,14 +51,15 @@ pub struct App {
     #[cfg(windows)]
     tray_receiver: channel::Receiver<TrayMessage>,
     hidden: bool,
-    poller: Poller<Usb>,
-    feeders: [Feeder<Source>; Port::COUNT],
+    input_source: S,
+    feeders: [Feeder<S::Listener>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
     records: [Option<Record>; Port::COUNT],
 }
 
-impl App {
+impl<S: InputSource + 'static> App<S> {
     pub fn new(
+        input_source: S,
         #[cfg(windows)] tray_receiver: channel::Receiver<TrayMessage>,
         log_receiver: channel::Receiver<LogMessage>,
     ) -> Self {
@@ -74,8 +69,7 @@ impl App {
             .join("gcfeeder.toml");
 
         let config = Self::load_or_create_config(&config_path);
-        let poller = Poller::new(Usb {});
-        let (feeders, receivers) = Self::feeders_from_config(&config, &poller);
+        let (feeders, receivers) = Self::feeders_from_config(&config, &input_source);
 
         Self {
             log_panel: LogPanel::new(log_receiver),
@@ -89,7 +83,7 @@ impl App {
             #[cfg(windows)]
             tray_receiver,
             hidden: false,
-            poller,
+            input_source,
             feeders,
             receivers,
             records: Default::default(),
@@ -172,17 +166,17 @@ impl App {
 
     fn feeders_from_config(
         config: &Config,
-        poller: &Poller<Usb>,
+        input_source: &S,
     ) -> (
-        [Feeder<Source>; Port::COUNT],
+        [Feeder<S::Listener>; Port::COUNT],
         [feeder::Receiver; Port::COUNT],
     ) {
-        let mut feeders: [Option<Feeder<Source>>; Port::COUNT] = Default::default();
+        let mut feeders: [Option<Feeder<S::Listener>>; Port::COUNT] = Default::default();
         let mut receivers: [Option<feeder::Receiver>; Port::COUNT] = Default::default();
 
         for port in all::<Port>() {
             let index = port.index();
-            let (feeder, receiver) = Self::feeder_from_config(config, poller, port);
+            let (feeder, receiver) = Self::feeder_from_config(config, input_source, port);
             feeders[index] = Some(feeder);
             receivers[index] = Some(receiver);
         }
@@ -192,9 +186,9 @@ impl App {
 
     fn feeder_from_config(
         config: &Config,
-        poller: &Poller<Usb>,
+        input_source: &S,
         port: Port,
-    ) -> (Feeder<Source>, feeder::Receiver) {
+    ) -> (Feeder<S::Listener>, feeder::Receiver) {
         let index = port.index();
         let profile = {
             let selected = &config.profile.selected[index];
@@ -212,7 +206,7 @@ impl App {
                 })
         };
 
-        let feeder = Feeder::new(profile, poller.add_listener(port));
+        let feeder = Feeder::new(profile, input_source.add_listener(port));
 
         let socket = {
             let server_config = &config.input_server[index];
@@ -331,7 +325,7 @@ impl App {
     pub fn reload_config(&mut self) {
         if let Some(config) = Self::load_config(&self.config_path) {
             // TODO: Send config update to feeder instead of re-creating it.
-            let (feeders, receivers) = Self::feeders_from_config(&config, &self.poller);
+            let (feeders, receivers) = Self::feeders_from_config(&config, &self.input_source);
             self.feeders = feeders;
             self.receivers = receivers;
             self.config = config;
@@ -344,7 +338,7 @@ impl App {
     }
 }
 
-impl eframe::App for App {
+impl<S: InputSource> eframe::App for App<S> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         self.handle_messages(frame);
 
@@ -414,7 +408,7 @@ impl eframe::App for App {
         egui::Window::new("Stats")
             .open(&mut self.stats_open)
             .show(ctx, |ui| {
-                StatsPanel::new(&mut self.poller, &mut self.feeders).ui(ui);
+                StatsPanel::new(&mut self.input_source, &mut self.feeders).ui(ui);
             });
 
         egui::TopBottomPanel::bottom("log_panel").show(ctx, |ui| {

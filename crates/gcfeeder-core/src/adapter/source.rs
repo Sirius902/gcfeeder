@@ -5,6 +5,18 @@ use gcinput::Rumble;
 use super::{poller::InputMessage, Port};
 use crate::util::recent_channel as recent;
 
+pub trait InputSource {
+    type Listener: InputListener;
+
+    #[must_use]
+    fn average_poll_time(&self) -> Option<Duration>;
+
+    #[must_use]
+    fn connected(&self) -> bool;
+
+    fn add_listener(&self, port: Port) -> Self::Listener;
+}
+
 pub trait InputListener: Sync + Send {
     fn port(&self) -> Port;
 

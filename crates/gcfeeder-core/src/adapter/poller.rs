@@ -18,7 +18,10 @@ use crate::util::{
     AverageTimer,
 };
 
-use super::{source::InputListener, Adapter, Input, Port, Rumble};
+use super::{
+    source::{InputListener, InputSource},
+    Adapter, Input, Port, Rumble,
+};
 
 pub type InputMessage = Option<Input>;
 
@@ -31,7 +34,7 @@ pub struct Poller<T: UsbContext + 'static> {
     thread: Option<JoinHandle<()>>,
 }
 
-impl<T: UsbContext + 'static> Poller<T> {
+impl<T: UsbContext> Poller<T> {
     pub fn new(usb_context: T) -> Self {
         let context = Arc::new(Context::new(usb_context));
         let thread = thread::spawn(enclose!((context) move || context.poll_loop()));
@@ -41,18 +44,20 @@ impl<T: UsbContext + 'static> Poller<T> {
             thread: Some(thread),
         }
     }
+}
 
-    #[must_use]
-    pub fn average_poll_time(&self) -> Option<Duration> {
+impl<T: UsbContext> InputSource for Poller<T> {
+    type Listener = Listener<T>;
+
+    fn average_poll_time(&self) -> Option<Duration> {
         *self.context.average_poll_time.lock().unwrap()
     }
 
-    #[must_use]
-    pub fn connected(&self) -> bool {
+    fn connected(&self) -> bool {
         self.context.connected.load(Ordering::Acquire)
     }
 
-    pub fn add_listener(&self, port: Port) -> Listener<T> {
+    fn add_listener(&self, port: Port) -> Self::Listener {
         let (sender, receiver) = recent::channel();
         self.context.senders.lock().unwrap().push((sender, port));
         Listener {
