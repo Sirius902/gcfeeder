@@ -1,5 +1,14 @@
-use std::{fs, io, sync::Mutex, time};
+use std::{
+    fs, io, mem,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
+    thread,
+    time::{self, Duration},
+};
 
+use enclose::enclose;
 use gcinput::{Input, Rumble, STICK_RANGE, TRIGGER_RANGE};
 use input_linux::{sys, InputId, UInputHandle};
 
@@ -15,15 +24,29 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 type Device = UInputHandle<fs::File>;
 
-#[derive(Default)]
 pub struct UInputBridge {
-    device: Mutex<Option<Device>>,
-    rumbler: Mutex<PatternRumbler>,
+    device: Arc<Mutex<Option<Device>>>,
+    rumbler: Arc<Mutex<PatternRumbler>>,
+    stop_flag: Arc<AtomicBool>,
+    rumble_thread: Option<thread::JoinHandle<()>>,
 }
 
 impl UInputBridge {
     pub fn new() -> Self {
-        Self::default()
+        let device = Arc::new(Mutex::new(None));
+        let rumbler = Arc::new(Mutex::new(Default::default()));
+        let stop_flag = Arc::new(AtomicBool::new(false));
+
+        let rumble_thread = Some(thread::spawn(
+            enclose!((device, rumbler, stop_flag) move || Self::rumble_loop(device, rumbler, stop_flag)),
+        ));
+
+        Self {
+            device,
+            rumbler,
+            stop_flag,
+            rumble_thread,
+        }
     }
 
     fn create_device() -> Result<Device> {
@@ -120,6 +143,49 @@ impl UInputBridge {
 
         Ok(device)
     }
+
+    fn rumble_loop(
+        device: Arc<Mutex<Option<Device>>>,
+        rumbler: Arc<Mutex<PatternRumbler>>,
+        stop_flag: Arc<AtomicBool>,
+    ) {
+        // let mut event_buf = [unsafe { mem::zeroed() }; 10];
+
+        // while !stop_flag.load(Ordering::Acquire) {
+        //     let device = device.lock().unwrap();
+        //     let Some(device) = &*device else {
+        //         thread::sleep(Duration::from_millis(8));
+        //         continue;
+        //     };
+
+        //     let n = match device.read(&mut event_buf) {
+        //         Ok(n) => n,
+        //         Err(e) => {
+        //             log::debug!("OH NO: {}", e);
+        //             return;
+        //         }
+        //     };
+
+        //     let events = &event_buf[..n];
+        //     log::debug!("lolcat events: {:?}", events);
+        // }
+    }
+}
+
+impl Default for UInputBridge {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Drop for UInputBridge {
+    fn drop(&mut self) {
+        self.stop_flag.store(true, Ordering::Release);
+
+        if let Some(t) = self.rumble_thread.take() {
+            mem::drop(t.join());
+        }
+    }
 }
 
 impl Bridge for UInputBridge {
@@ -130,6 +196,7 @@ impl Bridge for UInputBridge {
     fn feed(&self, input: &Option<Input>) -> super::Result<()> {
         let Some(input) = input else {
             *self.device.lock().unwrap() = None;
+            *self.rumbler.lock().unwrap() = Default::default();
             return Ok(());
         };
 
@@ -147,6 +214,12 @@ impl Bridge for UInputBridge {
             }
         };
 
+        let hat_state = |pos: bool, neg: bool| match (pos, neg) {
+            (true, false) => 1,
+            (false, true) => -1,
+            _ => 0,
+        };
+
         let now = time::SystemTime::now();
         let unix_now = now.duration_since(time::SystemTime::UNIX_EPOCH).unwrap();
         let secs = i64::try_from(unix_now.as_secs()).unwrap();
@@ -161,10 +234,94 @@ impl Bridge for UInputBridge {
                     btn_state(input.button_a),
                 )
                 .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button1,
+                    btn_state(input.button_b),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button2,
+                    btn_state(input.button_x),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button3,
+                    btn_state(input.button_y),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button4,
+                    btn_state(input.button_start),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button5,
+                    btn_state(input.button_z),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button6,
+                    btn_state(input.button_l),
+                )
+                .as_ref(),
+                *input_linux::KeyEvent::new(
+                    event_time,
+                    input_linux::Key::Button7,
+                    btn_state(input.button_r),
+                )
+                .as_ref(),
                 *input_linux::AbsoluteEvent::new(
                     event_time,
                     input_linux::AbsoluteAxis::X,
                     input.main_stick.x.into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::Y,
+                    (!input.main_stick.y).into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::RX,
+                    input.c_stick.x.into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::RY,
+                    (!input.c_stick.y).into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::Z,
+                    input.left_trigger.into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::RZ,
+                    input.right_trigger.into(),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::Hat0X,
+                    hat_state(input.button_right, input.button_left),
+                )
+                .as_ref(),
+                *input_linux::AbsoluteEvent::new(
+                    event_time,
+                    input_linux::AbsoluteAxis::Hat0Y,
+                    hat_state(input.button_up, input.button_down),
                 )
                 .as_ref(),
                 *input_linux::SynchronizeEvent::report(event_time).as_ref(),
