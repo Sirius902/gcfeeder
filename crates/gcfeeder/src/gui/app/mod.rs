@@ -2,8 +2,11 @@ use std::{
     collections::HashMap,
     fs,
     io::{self, Read, Write},
-    net::UdpSocket,
+    mem,
+    net::{SocketAddr, UdpSocket},
     path::{Path, PathBuf},
+    sync::{Arc, Mutex},
+    thread,
     time::{Duration, Instant},
 };
 
@@ -14,11 +17,11 @@ use self::panel::calibration::ConfigUpdate;
 
 use super::log::Message as LogMessage;
 use crate::config::{Config, Profile};
-use crossbeam::channel;
+use crossbeam::channel::{self, TryRecvError};
 use gcfeeder_core::{
     adapter::{source::InputSource, Port},
     feeder::{self, Feeder, Record},
-    util::recent_channel::{self as recent, TryRecvError},
+    util::recent_channel as recent,
 };
 use log::{info, warn};
 use panel::{
@@ -39,6 +42,11 @@ pub enum TrayMessage {
     Exit,
 }
 
+enum ServerMessage {
+    ReceiverUpdate(Port, feeder::Receiver),
+    Exit,
+}
+
 pub struct App<S: InputSource + 'static> {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
@@ -55,6 +63,9 @@ pub struct App<S: InputSource + 'static> {
     feeders: [Feeder<S::Listener>; Port::COUNT],
     receivers: [feeder::Receiver; Port::COUNT],
     records: [Option<Record>; Port::COUNT],
+    sockets: Arc<Mutex<[Option<UdpSocket>; Port::COUNT]>>,
+    server_tx: channel::Sender<ServerMessage>,
+    server_thread: Option<thread::JoinHandle<()>>,
 }
 
 impl<S: InputSource + 'static> App<S> {
@@ -68,8 +79,13 @@ impl<S: InputSource + 'static> App<S> {
             .join("gcfeeder")
             .join("gcfeeder.toml");
 
+        let sockets = Arc::new(Mutex::new(Default::default()));
+        let (server_tx, server_rx) = channel::unbounded();
+        let server_thread = Self::start_input_server(server_rx, sockets.clone());
+
         let config = Self::load_or_create_config(&config_path);
-        let (feeders, receivers) = Self::feeders_from_config(&config, &input_source);
+        let (feeders, receivers) =
+            Self::feeders_from_config(&config, &input_source, &sockets, &server_tx);
 
         Self {
             log_panel: LogPanel::new(log_receiver),
@@ -87,6 +103,9 @@ impl<S: InputSource + 'static> App<S> {
             feeders,
             receivers,
             records: Default::default(),
+            sockets,
+            server_tx,
+            server_thread: Some(server_thread),
         }
     }
 
@@ -167,6 +186,8 @@ impl<S: InputSource + 'static> App<S> {
     fn feeders_from_config(
         config: &Config,
         input_source: &S,
+        sockets: &Mutex<[Option<UdpSocket>; Port::COUNT]>,
+        server_tx: &channel::Sender<ServerMessage>,
     ) -> (
         [Feeder<S::Listener>; Port::COUNT],
         [feeder::Receiver; Port::COUNT],
@@ -174,9 +195,12 @@ impl<S: InputSource + 'static> App<S> {
         let mut feeders: [Option<Feeder<S::Listener>>; Port::COUNT] = Default::default();
         let mut receivers: [Option<feeder::Receiver>; Port::COUNT] = Default::default();
 
+        *sockets.lock().unwrap() = Default::default();
+
         for port in all::<Port>() {
             let index = port.index();
-            let (feeder, receiver) = Self::feeder_from_config(config, input_source, port);
+            let (feeder, receiver) =
+                Self::feeder_from_config(config, input_source, sockets, server_tx, port);
             feeders[index] = Some(feeder);
             receivers[index] = Some(receiver);
         }
@@ -187,6 +211,8 @@ impl<S: InputSource + 'static> App<S> {
     fn feeder_from_config(
         config: &Config,
         input_source: &S,
+        sockets: &Mutex<[Option<UdpSocket>; Port::COUNT]>,
+        server_tx: &channel::Sender<ServerMessage>,
         port: Port,
     ) -> (Feeder<S::Listener>, feeder::Receiver) {
         let index = port.index();
@@ -227,44 +253,96 @@ impl<S: InputSource + 'static> App<S> {
         };
 
         if let Some(socket) = socket {
-            let mut clients = HashMap::new();
-
-            feeder.on_feed(move |record| {
-                loop {
-                    match socket.recv_from(&mut []) {
-                        Ok((received, src_addr)) => {
-                            if received == 0 {
-                                clients.insert(src_addr, Instant::now());
-                            }
-                        }
-                        Err(e) if e.kind() == io::ErrorKind::WouldBlock => break,
-                        Err(_) => {}
-                    }
-                }
-
-                if let Some(input) = record.raw_input.as_ref() {
-                    let bytes =
-                        bincode::serialize(input).expect("Failed to serialize Input to bytes");
-                    let _ = socket.send(&bytes);
-
-                    clients.retain(|&sock_addr, last_msg| {
-                        if last_msg.elapsed() > Duration::from_secs(60) {
-                            return false;
-                        }
-
-                        match socket.send_to(&bytes, sock_addr) {
-                            Ok(_) => true,
-                            Err(e) if e.kind() == io::ErrorKind::WouldBlock => true,
-                            Err(_) => false,
-                        }
-                    });
-                }
-            });
+            (*sockets.lock().unwrap())[port.index()] = Some(socket);
         }
+
+        let (input_server_tx, input_server_rx) = recent::channel();
+        feeder.send_on_feed(input_server_tx);
+        server_tx
+            .send(ServerMessage::ReceiverUpdate(port, input_server_rx))
+            .unwrap();
 
         let (tx, rx) = recent::channel();
         feeder.send_on_feed(tx);
         (feeder, rx)
+    }
+
+    fn start_input_server(
+        server_rx: channel::Receiver<ServerMessage>,
+        sockets: Arc<Mutex<[Option<UdpSocket>; Port::COUNT]>>,
+    ) -> thread::JoinHandle<()> {
+        thread::spawn(move || Self::input_server_loop(server_rx, sockets))
+    }
+
+    fn input_server_loop(
+        server_rx: channel::Receiver<ServerMessage>,
+        sockets: Arc<Mutex<[Option<UdpSocket>; Port::COUNT]>>,
+    ) {
+        let mut socket_clients = <[HashMap<SocketAddr, Instant>; Port::COUNT]>::default();
+        let mut receivers = <[Option<feeder::Receiver>; Port::COUNT]>::default();
+
+        'outer: loop {
+            loop {
+                match server_rx.try_recv() {
+                    Ok(ServerMessage::ReceiverUpdate(port, feeder_rx)) => {
+                        receivers[port.index()] = Some(feeder_rx);
+                    }
+                    Err(TryRecvError::Empty) => break,
+                    Ok(ServerMessage::Exit) | Err(TryRecvError::Disconnected) => break 'outer,
+                }
+            }
+
+            let sockets = sockets.lock().unwrap();
+            for ((socket, clients), rx_opt) in
+                sockets.iter().zip(&mut socket_clients).zip(&mut receivers)
+            {
+                match socket {
+                    Some(socket) => {
+                        let Some(rx) = rx_opt else { continue };
+
+                        let record = match rx.try_recv() {
+                            Ok(record) => record,
+                            Err(TryRecvError::Empty) => continue,
+                            Err(TryRecvError::Disconnected) => {
+                                *rx_opt = None;
+                                continue;
+                            }
+                        };
+
+                        if let Some(input) = record.raw_input.as_ref() {
+                            let bytes = bincode::serialize(input)
+                                .expect("Failed to serialize Input to bytes");
+                            let _ = socket.send(&bytes);
+
+                            clients.retain(|&sock_addr, last_msg| {
+                                if last_msg.elapsed() > Duration::from_secs(60) {
+                                    return false;
+                                }
+
+                                match socket.send_to(&bytes, sock_addr) {
+                                    Ok(_) => true,
+                                    Err(e) if e.kind() == io::ErrorKind::WouldBlock => true,
+                                    Err(_) => false,
+                                }
+                            });
+                        }
+
+                        loop {
+                            match socket.recv_from(&mut []) {
+                                Ok((received, src_addr)) => {
+                                    if received == 0 {
+                                        clients.insert(src_addr, Instant::now());
+                                    }
+                                }
+                                Err(e) if e.kind() == io::ErrorKind::WouldBlock => break,
+                                Err(_) => {}
+                            }
+                        }
+                    }
+                    None => clients.clear(),
+                }
+            }
+        }
     }
 
     fn handle_messages(&mut self, frame: &mut eframe::Frame) {
@@ -302,7 +380,7 @@ impl<S: InputSource + 'static> App<S> {
                 Ok(record) => {
                     self.records[i] = Some(record);
                 }
-                Err(TryRecvError::Disconnected) => {
+                Err(recent::TryRecvError::Disconnected) => {
                     warn!("Feeder receiver disconnected while in use");
                     let (tx, rx) = recent::channel();
                     feeder.send_on_feed(tx);
@@ -325,7 +403,12 @@ impl<S: InputSource + 'static> App<S> {
     pub fn reload_config(&mut self) {
         if let Some(config) = Self::load_config(&self.config_path) {
             // TODO: Send config update to feeder instead of re-creating it.
-            let (feeders, receivers) = Self::feeders_from_config(&config, &self.input_source);
+            let (feeders, receivers) = Self::feeders_from_config(
+                &config,
+                &self.input_source,
+                &self.sockets,
+                &self.server_tx,
+            );
             self.feeders = feeders;
             self.receivers = receivers;
             self.config = config;
@@ -333,6 +416,16 @@ impl<S: InputSource + 'static> App<S> {
 
             if let Some(state) = self.config_state.as_mut() {
                 state.notify_clean();
+            }
+        }
+    }
+}
+
+impl<S: InputSource> Drop for App<S> {
+    fn drop(&mut self) {
+        if let Ok(()) = self.server_tx.send(ServerMessage::Exit) {
+            if let Some(t) = self.server_thread.take() {
+                mem::drop(t.join());
             }
         }
     }
