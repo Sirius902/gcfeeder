@@ -92,7 +92,7 @@ impl<L: InputListener + 'static> Feeder<L> {
         callbacks.push(Box::new(callback));
     }
 
-    pub fn clear_callbacks(&self) {
+    pub fn remove_callbacks(&self) {
         let mut callbacks = self.context.callbacks.lock().unwrap();
         callbacks.clear();
     }

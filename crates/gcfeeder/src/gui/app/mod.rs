@@ -326,7 +326,7 @@ impl<S: InputSource + 'static> App<S> {
         if let Some(config) = Self::load_config(&self.config_path) {
             // TODO: Send config update to feeder instead of re-creating it.
             for feeder in &self.feeders {
-                feeder.clear_callbacks();
+                feeder.remove_callbacks();
             }
 
             let (feeders, receivers) = Self::feeders_from_config(&config, &self.input_source);
