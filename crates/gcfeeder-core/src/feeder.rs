@@ -12,6 +12,7 @@ use enclose::enclose;
 use enum_iterator::Sequence;
 use gcinput::Input;
 use log::warn;
+use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -35,6 +36,7 @@ use crate::bridge::vigem::Config as ViGEmConfig;
 type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = bridge::BridgeImpl;
 
+pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = recent::Sender<Record>;
 pub type Receiver = recent::Receiver<Record>;
 pub type CalibrationSender = recent::Sender<Option<Input>>;
@@ -85,6 +87,11 @@ impl<L: InputListener + 'static> Feeder<L> {
         *self.context.average_feed_time.lock().unwrap()
     }
 
+    pub fn on_feed(&self, callback: impl FnMut(&Record) + Send + 'static) {
+        let mut callbacks = self.context.callbacks.lock().unwrap();
+        callbacks.push(Box::new(callback));
+    }
+
     pub fn send_on_feed(&self, sender: Sender) {
         let mut senders = self.context.senders.lock().unwrap();
         senders.push(sender);
@@ -123,8 +130,10 @@ struct Context<L: InputListener> {
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
     pub calibration_sender: Mutex<Option<CalibrationSender>>,
+    pub callbacks: Mutex<Vec<Box<Callback>>>,
     pub senders: Mutex<Vec<Sender>>,
     pub average_feed_time: Mutex<Option<Duration>>,
+    pub thread_pool: rayon::ThreadPool,
 }
 
 impl<L: InputListener> Context<L> {
@@ -134,9 +143,14 @@ impl<L: InputListener> Context<L> {
             input_source,
             stop_flag: Default::default(),
             connected: Default::default(),
+            callbacks: Default::default(),
             calibration_sender: Default::default(),
             senders: Default::default(),
             average_feed_time: Default::default(),
+            thread_pool: rayon::ThreadPoolBuilder::new()
+                .num_threads(2)
+                .build()
+                .unwrap(),
         }
     }
 
@@ -209,9 +223,26 @@ impl<L: InputListener> Context<L> {
 
             match record {
                 Ok(record) => {
-                    self.senders.lock().unwrap().retain(|sender| {
-                        !matches!(sender.try_send(record), Err(TrySendError::Disconnected(_)))
-                    });
+                    {
+                        self.thread_pool.join(
+                            || {
+                                let mut callbacks = self.callbacks.lock().unwrap();
+                                callbacks
+                                    .par_iter_mut()
+                                    .for_each(|callback| callback(&record));
+                            },
+                            || {
+                                let mut senders = self.senders.lock().unwrap();
+
+                                senders.retain(|sender| {
+                                    !matches!(
+                                        sender.try_send(record),
+                                        Err(TrySendError::Disconnected(_))
+                                    )
+                                });
+                            },
+                        );
+                    }
 
                     *self.average_feed_time.lock().unwrap() = Some(timer.lap());
                 }
