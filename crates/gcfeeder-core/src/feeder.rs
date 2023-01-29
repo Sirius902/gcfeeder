@@ -92,11 +92,6 @@ impl<L: InputListener + 'static> Feeder<L> {
         callbacks.push(Box::new(callback));
     }
 
-    pub fn remove_callbacks(&self) {
-        let mut callbacks = self.context.callbacks.lock().unwrap();
-        callbacks.clear();
-    }
-
     pub fn send_on_feed(&self, sender: Sender) {
         let mut senders = self.context.senders.lock().unwrap();
         senders.push(sender);

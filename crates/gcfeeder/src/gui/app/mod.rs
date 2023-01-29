@@ -52,7 +52,7 @@ pub struct App<S: InputSource + 'static> {
     tray_receiver: channel::Receiver<TrayMessage>,
     hidden: bool,
     input_source: S,
-    feeders: [Feeder<S::Listener>; Port::COUNT],
+    feeders: Option<[Feeder<S::Listener>; Port::COUNT]>,
     receivers: [feeder::Receiver; Port::COUNT],
     records: [Option<Record>; Port::COUNT],
 }
@@ -84,7 +84,7 @@ impl<S: InputSource + 'static> App<S> {
             tray_receiver,
             hidden: false,
             input_source,
-            feeders,
+            feeders: Some(feeders),
             receivers,
             records: Default::default(),
         }
@@ -289,6 +289,8 @@ impl<S: InputSource + 'static> App<S> {
 
         for (i, (feeder, receiver)) in self
             .feeders
+            .as_ref()
+            .unwrap()
             .iter()
             .zip(self.receivers.iter_mut())
             .enumerate()
@@ -325,12 +327,9 @@ impl<S: InputSource + 'static> App<S> {
     pub fn reload_config(&mut self) {
         if let Some(config) = Self::load_config(&self.config_path) {
             // TODO: Send config update to feeder instead of re-creating it.
-            for feeder in &self.feeders {
-                feeder.remove_callbacks();
-            }
-
+            self.feeders = None;
             let (feeders, receivers) = Self::feeders_from_config(&config, &self.input_source);
-            self.feeders = feeders;
+            self.feeders = Some(feeders);
             self.receivers = receivers;
             self.config = config;
             info!("Reloaded config");
@@ -412,7 +411,7 @@ impl<S: InputSource> eframe::App for App<S> {
         egui::Window::new("Stats")
             .open(&mut self.stats_open)
             .show(ctx, |ui| {
-                StatsPanel::new(&mut self.input_source, &mut self.feeders).ui(ui);
+                StatsPanel::new(&mut self.input_source, self.feeders.as_mut().unwrap()).ui(ui);
             });
 
         egui::TopBottomPanel::bottom("log_panel").show(ctx, |ui| {
@@ -421,7 +420,7 @@ impl<S: InputSource> eframe::App for App<S> {
 
         egui::SidePanel::left("calibration_panel").show(ctx, |ui| {
             let mut panel = CalibrationPanel::new(
-                &mut self.feeders,
+                self.feeders.as_mut().unwrap(),
                 &self.records,
                 &self.config,
                 self.calibration_state.take(),

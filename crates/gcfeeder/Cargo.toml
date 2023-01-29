@@ -15,7 +15,7 @@ once_cell = "1.14.0"
 rayon = "1.5.3"
 rusb = "0.9.1"
 thiserror = "1.0.34"
-toml = "0.6.0"
+toml = "0.7.0"
 
 [dependencies.gcinput]
 path = "../../lib/gcinput"
