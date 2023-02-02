@@ -23,7 +23,8 @@ impl AverageTimer {
     pub fn lap(&mut self) -> Duration {
         let now = Instant::now();
 
-        self.frames.retain(|&(t, _)| t > now.checked_sub(self.window).unwrap());
+        self.frames
+            .retain(|&(t, _)| t > now.checked_sub(self.window).unwrap());
         self.frames.push((now, now - self.last_lap));
 
         let average = self

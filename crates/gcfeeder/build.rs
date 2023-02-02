@@ -15,9 +15,7 @@ pub fn main() {
         Ok(v) => {
             let package_version = format!("v{}", env!("CARGO_PKG_VERSION"));
             if v != package_version {
-                panic!(
-                    "Expected {VERSION_VAR} to be {package_version}, was {v}"
-                )
+                panic!("Expected {VERSION_VAR} to be {package_version}, was {v}")
             }
             v
         }

@@ -350,9 +350,7 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
                             }
 
                             if ptrigger.min.is_none() {
-                                ui.label(format!(
-                                    "Completely release {name} trigger then press A"
-                                ));
+                                ui.label(format!("Completely release {name} trigger then press A"));
                                 if confirm {
                                     ptrigger.min = Some(*trigger);
                                 }
