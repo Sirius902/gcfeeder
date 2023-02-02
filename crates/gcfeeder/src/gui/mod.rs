@@ -82,7 +82,7 @@ pub fn run() {
     let input_source = Poller::new(GlobalContext {});
 
     eframe::run_native(
-        format!("gcfeeder | {}", version_string).as_str(),
+        format!("gcfeeder | {version_string}").as_str(),
         options,
         #[cfg(windows)]
         Box::new(move |_cc| Box::new(App::new(input_source, tray_rx, log_rx))),

@@ -9,15 +9,14 @@ use std::{
 
 pub fn main() {
     const VERSION_VAR: &str = "VERSION";
-    println!("cargo:rerun-if-env-changed={}", VERSION_VAR);
+    println!("cargo:rerun-if-env-changed={VERSION_VAR}");
 
     let version = match env::var(VERSION_VAR) {
         Ok(v) => {
             let package_version = format!("v{}", env!("CARGO_PKG_VERSION"));
             if v != package_version {
                 panic!(
-                    "Expected {} to be {}, was {}",
-                    VERSION_VAR, package_version, v
+                    "Expected {VERSION_VAR} to be {package_version}, was {v}"
                 )
             }
             v
@@ -25,14 +24,14 @@ pub fn main() {
         Err(_) => "".to_string(),
     };
 
-    println!("cargo:rustc-env={}={}", VERSION_VAR, version);
+    println!("cargo:rustc-env={VERSION_VAR}={version}");
 
     {
         let mut config = vergen::Config::default();
         *config.git_mut().sha_kind_mut() = vergen::ShaKind::Short;
 
         if matches!(vergen::vergen(config), Err(_)) {
-            println!("cargo:rustc-env={}=unknown", VERSION_VAR);
+            println!("cargo:rustc-env={VERSION_VAR}=unknown");
             println!("cargo:rustc-env=VERGEN_GIT_SHA_SHORT=");
         }
     }
@@ -40,7 +39,7 @@ pub fn main() {
     #[cfg(windows)]
     {
         const ICON_PATH: &str = "resource/icon.png";
-        println!("cargo:rerun-if-changed={}", ICON_PATH);
+        println!("cargo:rerun-if-changed={ICON_PATH}");
 
         let icon = image::load(
             io::BufReader::new(File::open(ICON_PATH).unwrap()),

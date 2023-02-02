@@ -31,7 +31,7 @@ impl<'a, S: InputSource> StatsPanel<'a, S> {
             .unwrap_or_else(|| "-".to_owned());
 
         ui.heading("Average poll time");
-        ui.label(format!("{}ms", poll_avg));
+        ui.label(format!("{poll_avg}ms"));
 
         ui.add_space(5.0);
 
@@ -46,7 +46,7 @@ impl<'a, S: InputSource> StatsPanel<'a, S> {
                 .map(|d| format!("{:.2}", d.as_secs_f64() * 1000.0))
                 .unwrap_or_else(|| "-".to_owned());
 
-            ui.label(format!("Port {:?}: {}ms", port, feed_avg));
+            ui.label(format!("Port {port:?}: {feed_avg}ms"));
         }
     }
 }

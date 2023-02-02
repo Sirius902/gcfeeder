@@ -103,8 +103,7 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
         ui.separator();
 
         ui.label(format!(
-            "Calibration finished. Apply to Port {:?} active profile?",
-            port
+            "Calibration finished. Apply to Port {port:?} active profile?"
         ));
         ui.horizontal(|ui| {
             if ui.button("Apply").clicked() {
@@ -276,7 +275,7 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
                             }
 
                             if pstick.center.is_none() {
-                                ui.label(format!("Center {}stick then press A", name));
+                                ui.label(format!("Center {name}stick then press A"));
                                 if confirm {
                                     pstick.center = Some((*stick).into());
                                 }
@@ -352,8 +351,7 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
 
                             if ptrigger.min.is_none() {
                                 ui.label(format!(
-                                    "Completely release {} trigger then press A",
-                                    name
+                                    "Completely release {name} trigger then press A"
                                 ));
                                 if confirm {
                                     ptrigger.min = Some(*trigger);
@@ -363,8 +361,7 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
 
                             if ptrigger.max.is_none() {
                                 ui.label(format!(
-                                    "Press {} trigger all the way in then press A",
-                                    name
+                                    "Press {name} trigger all the way in then press A"
                                 ));
                                 if confirm {
                                     ptrigger.max = Some(*trigger);

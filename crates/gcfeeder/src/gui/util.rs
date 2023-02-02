@@ -11,7 +11,7 @@ where
         .selected_text(format!("{:?}", *e))
         .show_ui(ui, |ui| {
             for val in all::<T>() {
-                ui.selectable_value(e, val, format!("{:?}", val));
+                ui.selectable_value(e, val, format!("{val:?}"));
             }
         });
 }
@@ -23,7 +23,7 @@ where
     const NONE_STR: &str = "None";
 
     let selected = e
-        .map(|s| format!("{:?}", s))
+        .map(|s| format!("{s:?}"))
         .unwrap_or_else(|| NONE_STR.to_owned());
 
     egui::ComboBox::from_label(label)
@@ -32,7 +32,7 @@ where
             ui.selectable_value(e, None, NONE_STR);
 
             for val in all::<T>() {
-                ui.selectable_value(e, Some(val), format!("{:?}", val));
+                ui.selectable_value(e, Some(val), format!("{val:?}"));
             }
         });
 }

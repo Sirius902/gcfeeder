@@ -209,19 +209,16 @@ mod tests {
             let (q, coords) = Quadrant::normalize(original);
             assert_eq!(
                 q, expected_q,
-                "expected quadrant {:?} of {:?} to be {:?}",
-                q, original, expected_q
+                "expected quadrant {q:?} of {original:?} to be {expected_q:?}"
             );
             assert_eq!(
                 coords, expected,
-                "expected normalized coords {:?} to be {:?}",
-                coords, expected
+                "expected normalized coords {coords:?} to be {expected:?}"
             );
             let coords = q.denormalize(coords);
             assert_eq!(
                 coords, original,
-                "expected denormalized coords {:?} to match original {:?}",
-                coords, original
+                "expected denormalized coords {coords:?} to match original {original:?}"
             );
         }
     }
@@ -241,8 +238,7 @@ mod tests {
             let mapped = gc_to_n64(coord);
             assert_eq!(
                 mapped, expected,
-                "expected f({:?}) = {:?}, was {:?}",
-                coord, expected, mapped,
+                "expected f({coord:?}) = {expected:?}, was {mapped:?}",
             );
         }
     }

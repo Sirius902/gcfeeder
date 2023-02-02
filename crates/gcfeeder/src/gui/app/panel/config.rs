@@ -65,8 +65,8 @@ impl<'a> ConfigEditor<'a> {
                     let action_profile_name = self.config.profile.selected[p.index()].clone();
                     let mut profile_action: Option<ProfileAction> = None;
 
-                    let add_popup_id = ui.make_persistent_id(format!("add {:?}", p));
-                    let remove_popup_id = ui.make_persistent_id(format!("remove {:?}", p));
+                    let add_popup_id = ui.make_persistent_id(format!("add {p:?}"));
+                    let remove_popup_id = ui.make_persistent_id(format!("remove {p:?}"));
 
                     let add_response = ui.button("New");
                     if add_response.clicked() {
@@ -93,7 +93,7 @@ impl<'a> ConfigEditor<'a> {
                         profile_action = remove_popup.update(ui);
                     });
 
-                    egui::ComboBox::from_label(format!("Port {:?}", p))
+                    egui::ComboBox::from_label(format!("Port {p:?}"))
                         .selected_text(&self.config.profile.selected[p.index()])
                         .show_ui(ui, |ui| {
                             for (name, _) in self.config.profile.list.iter() {
@@ -156,7 +156,7 @@ impl<'a> ConfigEditor<'a> {
                 .show(ui, |ui| {
                     for p in all::<Port>() {
                         let input_server = &mut self.config.input_server[p.index()];
-                        ui.label(format!("Port {:?}", p));
+                        ui.label(format!("Port {p:?}"));
                         if ui.checkbox(&mut input_server.enabled, "Enabled").changed() {
                             *dirty = true;
                         }
@@ -279,7 +279,7 @@ impl<'a> AddPopup<'a> {
                 });
             }
             AddAction::AlreadyExists => {
-                ui.label(format!("Profile '{}' already exists", name));
+                ui.label(format!("Profile '{name}' already exists"));
 
                 if ui.button("Ok").clicked() {
                     name.clear();

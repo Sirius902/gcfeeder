@@ -34,7 +34,7 @@ pub fn hook(info: &PanicInfo<'_>) {
 
             let backtrace = Backtrace::new();
             let _ = writeln!(err, "stack backtrace:");
-            let _ = err.write_all(format!("{:#?}", backtrace).as_bytes());
+            let _ = err.write_all(format!("{backtrace:#?}").as_bytes());
         };
 
         write(&mut log);
