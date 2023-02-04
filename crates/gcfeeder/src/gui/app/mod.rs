@@ -345,7 +345,8 @@ impl<S: InputSource> eframe::App for App<S> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         self.handle_messages(frame);
 
-        if !self.hidden {
+        let size = frame.info().window_info.size;
+        if !self.hidden && size.x > 0.0 && size.y > 0.0 {
             ctx.request_repaint();
         }
 
