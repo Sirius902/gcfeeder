@@ -21,7 +21,7 @@ const WARN_COLOR: Color32 = Color32::from_rgb(193, 156, 0);
 const INFO_COLOR: Color32 = Color32::from_rgb(58, 150, 221);
 const DEBUG_COLOR: Color32 = Color32::from_rgb(136, 23, 152);
 
-pub fn run() {
+pub fn run() -> eframe::Result<()> {
     let (log_tx, log_rx) = channel::unbounded();
     log::LoggerBuilder::new()
         .sender(log_tx)
@@ -88,5 +88,5 @@ pub fn run() {
         Box::new(move |_cc| Box::new(App::new(input_source, tray_rx, log_rx))),
         #[cfg(not(windows))]
         Box::new(move |_cc| Box::new(App::new(input_source, log_rx))),
-    );
+    )
 }

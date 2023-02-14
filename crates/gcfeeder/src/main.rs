@@ -1,11 +1,11 @@
 #![deny(clippy::all)]
 #![windows_subsystem = "windows"]
 
-use std::env;
+use std::{env, error::Error};
 
 use gcfeeder::gui;
 
-pub fn main() {
+pub fn main() -> Result<(), Box<dyn Error>> {
     std::panic::set_hook(Box::new(panic_log::hook));
 
     let exe_path = env::current_exe().expect("Failed to get current exe path");
@@ -16,5 +16,6 @@ pub fn main() {
     )
     .expect("Failed to set current working directory");
 
-    gui::run();
+    gui::run()?;
+    Ok(())
 }

@@ -44,32 +44,34 @@ pub fn no_close_popup_below_widget<R>(
     widget_response: &egui::Response,
     add_contents: impl FnOnce(&mut egui::Ui) -> R,
 ) -> Option<R> {
-    if ui.memory().is_popup_open(popup_id) {
-        let response = egui::Area::new(popup_id)
-            .order(Order::Foreground)
-            .fixed_pos(widget_response.rect.left_bottom())
-            .show(ui.ctx(), |ui| {
-                // Note: we use a separate clip-rect for this area, so the popup can be outside the parent.
-                // See https://github.com/emilk/egui/issues/825
-                let frame = egui::Frame::popup(ui.style());
-                let frame_margin = frame.inner_margin + frame.outer_margin;
-                frame
-                    .show(ui, |ui| {
-                        ui.with_layout(Layout::top_down_justified(Align::LEFT), |ui| {
-                            ui.set_width(widget_response.rect.width() - frame_margin.sum().x);
-                            add_contents(ui)
+    ui.memory(|m| {
+        if m.is_popup_open(popup_id) {
+            let response = egui::Area::new(popup_id)
+                .order(Order::Foreground)
+                .fixed_pos(widget_response.rect.left_bottom())
+                .show(ui.ctx(), |ui| {
+                    // Note: we use a separate clip-rect for this area, so the popup can be outside the parent.
+                    // See https://github.com/emilk/egui/issues/825
+                    let frame = egui::Frame::popup(ui.style());
+                    let frame_margin = frame.inner_margin + frame.outer_margin;
+                    frame
+                        .show(ui, |ui| {
+                            ui.with_layout(Layout::top_down_justified(Align::LEFT), |ui| {
+                                ui.set_width(widget_response.rect.width() - frame_margin.sum().x);
+                                add_contents(ui)
+                            })
+                            .inner
                         })
                         .inner
-                    })
-                    .inner
-            });
+                });
 
-        if response.response.clicked_elsewhere() && !widget_response.clicked() {
-            ui.memory().close_popup();
+            if response.response.clicked_elsewhere() && !widget_response.clicked() {
+                ui.memory_mut(|m| m.close_popup());
+            }
+
+            Some(response.inner)
+        } else {
+            None
         }
-
-        Some(response.inner)
-    } else {
-        None
-    }
+    })
 }

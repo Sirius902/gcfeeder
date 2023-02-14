@@ -387,7 +387,7 @@ impl<S: InputSource> eframe::App for App<S> {
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("File", |ui| {
                     if ui.button("Reset Layout").clicked() {
-                        *ui.ctx().memory() = Default::default();
+                        ui.ctx().memory_mut(|m| *m = Default::default());
                         ui.close_menu();
                     }
 

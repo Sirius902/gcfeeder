@@ -70,7 +70,7 @@ impl<'a> ConfigEditor<'a> {
 
                     let add_response = ui.button("New");
                     if add_response.clicked() {
-                        ui.memory().toggle_popup(add_popup_id);
+                        ui.memory_mut(|m| m.toggle_popup(add_popup_id));
                     }
 
                     no_close_popup_below_widget(ui, add_popup_id, &add_response, |ui| {
@@ -82,7 +82,7 @@ impl<'a> ConfigEditor<'a> {
 
                     let remove_response = ui.button("Delete");
                     if remove_response.clicked() {
-                        ui.memory().toggle_popup(remove_popup_id);
+                        ui.memory_mut(|m| m.toggle_popup(remove_popup_id));
                     }
 
                     no_close_popup_below_widget(ui, remove_popup_id, &remove_response, |ui| {
@@ -274,7 +274,7 @@ impl<'a> AddPopup<'a> {
 
                     if (profile_action.is_some() && add.clicked()) || cancel.clicked() {
                         name.clear();
-                        ui.memory().close_popup();
+                        ui.memory_mut(|m| m.close_popup());
                     }
                 });
             }
@@ -283,7 +283,7 @@ impl<'a> AddPopup<'a> {
 
                 if ui.button("Ok").clicked() {
                     name.clear();
-                    ui.memory().close_popup();
+                    ui.memory_mut(|m| m.close_popup());
                 }
             }
         }
@@ -340,7 +340,7 @@ impl<'a> RemovePopup<'a> {
 
             ui.horizontal(|ui| {
                 if ui.button("Ok").clicked() {
-                    ui.memory().close_popup();
+                    ui.memory_mut(|m| m.close_popup());
                 }
             });
         } else {
@@ -350,11 +350,11 @@ impl<'a> RemovePopup<'a> {
             ui.horizontal(|ui| {
                 if ui.button("Yes").clicked() {
                     self.profile_action = Some(ProfileAction::Remove(self.name.to_owned()));
-                    ui.memory().close_popup();
+                    ui.memory_mut(|m| m.close_popup());
                 }
 
                 if ui.button("No").clicked() {
-                    ui.memory().close_popup();
+                    ui.memory_mut(|m| m.close_popup());
                 }
             });
         }
