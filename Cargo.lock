@@ -227,13 +227,12 @@ dependencies = [
 
 [[package]]
 name = "async-broadcast"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b19760fa2b7301cf235360ffd6d3558b1ed4249edd16d6cca8d690cee265b95"
+checksum = "7c48ccdbf6ca6b121e0f586cbc0e73ae440e56c67c30fa0873b4e110d9c26d2b"
 dependencies = [
  "event-listener",
  "futures-core",
- "parking_lot",
 ]
 
 [[package]]
