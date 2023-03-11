@@ -52,6 +52,10 @@ impl UInputBridge {
     fn create_device() -> Result<Device> {
         let device = UInputHandle::new(fs::File::create("/dev/uinput")?);
 
+        // Xbox-One Wireless
+        // vendor: 0x045E,
+        // product: 0x0B12,
+
         let input_id = InputId {
             bustype: sys::BUS_VIRTUAL,
             vendor: 0x7331,
@@ -62,14 +66,19 @@ impl UInputBridge {
         device.set_evbit(input_linux::EventKind::Absolute)?;
         device.set_evbit(input_linux::EventKind::Key)?;
 
-        device.set_keybit(input_linux::Key::Button0)?; // A
-        device.set_keybit(input_linux::Key::Button1)?; // B
-        device.set_keybit(input_linux::Key::Button2)?; // X
-        device.set_keybit(input_linux::Key::Button3)?; // Y
-        device.set_keybit(input_linux::Key::Button4)?; // Start
-        device.set_keybit(input_linux::Key::Button5)?; // Z
-        device.set_keybit(input_linux::Key::Button6)?; // L
-        device.set_keybit(input_linux::Key::Button7)?; // R
+        device.set_keybit(input_linux::Key::ButtonSouth)?; // A
+        device.set_keybit(input_linux::Key::ButtonEast)?; // B
+        device.set_keybit(input_linux::Key::ButtonWest)?; // X
+        device.set_keybit(input_linux::Key::ButtonNorth)?; // Y
+        device.set_keybit(input_linux::Key::ButtonStart)?; // Start
+        device.set_keybit(input_linux::Key::ButtonTR)?; // Z
+        device.set_keybit(input_linux::Key::ButtonThumbl)?; // L
+        device.set_keybit(input_linux::Key::ButtonThumbr)?; // R
+
+        device.set_keybit(input_linux::Key::Record)?;
+        device.set_keybit(input_linux::Key::ButtonTL)?;
+        device.set_keybit(input_linux::Key::Select)?;
+        device.set_keybit(input_linux::Key::Mode)?;
 
         let stick_info = input_linux::AbsoluteInfo {
             value: STICK_RANGE.center.into(),
@@ -230,49 +239,49 @@ impl Bridge for UInputBridge {
             .write(&[
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button0,
+                    input_linux::Key::ButtonSouth,
                     btn_state(input.button_a),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button1,
+                    input_linux::Key::ButtonEast,
                     btn_state(input.button_b),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button2,
+                    input_linux::Key::ButtonWest,
                     btn_state(input.button_x),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button3,
+                    input_linux::Key::ButtonNorth,
                     btn_state(input.button_y),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button4,
+                    input_linux::Key::ButtonStart,
                     btn_state(input.button_start),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button5,
+                    input_linux::Key::ButtonTR,
                     btn_state(input.button_z),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button6,
+                    input_linux::Key::ButtonThumbl,
                     btn_state(input.button_l),
                 )
                 .as_ref(),
                 *input_linux::KeyEvent::new(
                     event_time,
-                    input_linux::Key::Button7,
+                    input_linux::Key::ButtonThumbr,
                     btn_state(input.button_r),
                 )
                 .as_ref(),
@@ -321,7 +330,7 @@ impl Bridge for UInputBridge {
                 *input_linux::AbsoluteEvent::new(
                     event_time,
                     input_linux::AbsoluteAxis::Hat0Y,
-                    hat_state(input.button_up, input.button_down),
+                    hat_state(input.button_down, input.button_up),
                 )
                 .as_ref(),
                 *input_linux::SynchronizeEvent::report(event_time).as_ref(),
