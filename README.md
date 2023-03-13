@@ -42,10 +42,11 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
     sudo chmod g+s gcfeeder
     ```
     * You may choose to make `gcfeeder` owned by root and place it in `/usr/local/bin` to prevent malicious
-    programs from using it to obtain access to `uinput`. To do that you would instead run this command to
-    change its owner and group.
+    programs from using it to obtain access to `uinput`. To do that you would instead run these commands to
+    change its owner and group plus allow `gcfeeder` to set its group ID.
     ```sh
     sudo chown root:input gcfeeder
+    sudo chmod g+s gcfeeder
     ```
 
 ## Config
