@@ -25,12 +25,12 @@ pub fn main() {
     println!("cargo:rustc-env={VERSION_VAR}={version}");
 
     {
-        let mut config = vergen::Config::default();
-        *config.git_mut().sha_kind_mut() = vergen::ShaKind::Short;
+        let mut emitter = vergen::EmitBuilder::builder();
+        emitter.git_sha(true);
 
-        if matches!(vergen::vergen(config), Err(_)) {
+        if matches!(emitter.emit(), Err(_)) {
             println!("cargo:rustc-env={VERSION_VAR}=unknown");
-            println!("cargo:rustc-env=VERGEN_GIT_SHA_SHORT=");
+            println!("cargo:rustc-env=VERGEN_GIT_SHA=");
         }
     }
 
@@ -58,6 +58,6 @@ pub fn main() {
             .and_then(|mut f| f.write_all("IDI_ICON1 ICON DISCARDABLE \"icon.ico\"".as_bytes()))
             .unwrap();
 
-        embed_resource::compile(&rc_path);
+        embed_resource::compile(&rc_path, embed_resource::NONE);
     }
 }

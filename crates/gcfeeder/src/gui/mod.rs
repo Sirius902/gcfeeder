@@ -76,7 +76,7 @@ pub fn run() -> eframe::Result<()> {
     let version_string = if !env!("VERSION").is_empty() {
         env!("VERSION")
     } else {
-        concat!("g", env!("VERGEN_GIT_SHA_SHORT"))
+        concat!("g", env!("VERGEN_GIT_SHA"))
     };
 
     let input_source = Poller::new(GlobalContext {});
