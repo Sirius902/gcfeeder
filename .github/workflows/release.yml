@@ -12,21 +12,21 @@ jobs:
       CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
       VERSION: "${{ github.ref_name }}"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --release
-    - name: Run Tests
-      run: cargo test
-    - name: Clippy Lints
-      run: cargo clippy
-    - name: Compress Artifacts
-      run: 7z a gcfeeder.zip "./target/${{ env.CARGO_BUILD_TARGET }}/release/gcfeeder.exe"
-    - name: Automatic Release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        draft: true
-        files: |
-          gcfeeder.zip
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --release
+      - name: Run Tests
+        run: cargo test
+      - name: Clippy Lints
+        run: cargo clippy
+      - name: Compress Artifacts
+        run: 7z a gcfeeder.zip "./target/${{ env.CARGO_BUILD_TARGET }}/release/gcfeeder.exe"
+      - name: Automatic Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          draft: true
+          files: |
+            gcfeeder.zip
