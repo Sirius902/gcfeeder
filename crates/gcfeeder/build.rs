@@ -28,7 +28,7 @@ pub fn main() {
         let mut emitter = vergen::EmitBuilder::builder();
         emitter.git_sha(true);
 
-        if matches!(emitter.emit(), Err(_)) {
+        if emitter.emit().is_err() {
             println!("cargo:rustc-env={VERSION_VAR}=unknown");
             println!("cargo:rustc-env=VERGEN_GIT_SHA=");
         }

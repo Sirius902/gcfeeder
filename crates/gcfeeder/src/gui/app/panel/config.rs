@@ -120,7 +120,7 @@ impl<'a> ConfigEditor<'a> {
                                 .expect("Active profile exists");
 
                             *dirty = true;
-                            self.config.profile.selected[p.index()] = name.clone();
+                            self.config.profile.selected[p.index()].clone_from(&name);
                             self.config.profile.list.insert(name, action_profile);
                         }
                         Some(ProfileAction::Remove(name)) => {
@@ -137,7 +137,7 @@ impl<'a> ConfigEditor<'a> {
 
                             for selected in self.config.profile.selected.iter_mut() {
                                 if *selected == name {
-                                    *selected = other_name.clone();
+                                    selected.clone_from(other_name);
                                 }
                             }
                         }

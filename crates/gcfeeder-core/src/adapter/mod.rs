@@ -40,7 +40,7 @@ pub struct Adapter<T: UsbContext> {
 
 impl<T: UsbContext> Adapter<T> {
     pub fn open(context: &T) -> Result<Self> {
-        let mut handle = Self::find_and_open_device(context)?;
+        let handle = Self::find_and_open_device(context)?;
 
         match handle.kernel_driver_active(0) {
             Ok(b) => {

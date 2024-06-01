@@ -5,7 +5,7 @@ use std::{
         Arc, Mutex,
     },
     thread,
-    time::{self, Duration},
+    time::{self},
 };
 
 use enclose::enclose;
