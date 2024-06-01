@@ -33,7 +33,10 @@ pub fn run() -> eframe::Result<()> {
 
     #[cfg(target_os = "linux")]
     {
-        if env::var("XDG_SESSION_TYPE").map(|ty| ty == "wayland").unwrap_or(false) {
+        if env::var("XDG_SESSION_TYPE")
+            .map(|ty| ty == "wayland")
+            .unwrap_or(false)
+        {
             ::log::warn!("Hiding the window is not supported on Wayland");
         }
     }
