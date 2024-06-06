@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::feeder;
 
+#[cfg(target_os = "linux")]
+pub mod evdev;
 pub mod rumble;
 #[cfg(target_os = "linux")]
 pub mod uinput;
@@ -29,12 +31,17 @@ pub enum Error {
     #[cfg(target_os = "linux")]
     #[error("uinput: {0}")]
     UInput(#[from] uinput::Error),
+    #[cfg(target_os = "linux")]
+    #[error("evdev: {0}")]
+    Evdev(#[from] evdev::Error),
 }
 
 #[enum_dispatch(Bridge)]
 pub enum BridgeImpl {
     #[cfg(windows)]
     ViGEm(vigem::ViGEmBridge),
+    #[cfg(target_os = "linux")]
+    Evdev(evdev::EvdevBridge),
     #[cfg(target_os = "linux")]
     UInput(uinput::UInputBridge),
 }
@@ -44,6 +51,8 @@ pub enum BridgeImpl {
 pub enum Driver {
     #[cfg(windows)]
     ViGEm,
+    #[cfg(target_os = "linux")]
+    Evdev,
     #[cfg(target_os = "linux")]
     UInput,
 }
@@ -57,6 +66,8 @@ impl Driver {
                     .map(Into::into)
                     .map_err(Into::into)
             }
+            #[cfg(target_os = "linux")]
+            Self::Evdev => Ok(evdev::EvdevBridge::new().into()),
             #[cfg(target_os = "linux")]
             Self::UInput => Ok(uinput::UInputBridge::new().into()),
         }
