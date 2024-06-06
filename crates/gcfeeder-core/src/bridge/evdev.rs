@@ -141,6 +141,7 @@ impl EvdevBridge {
 
         let event = epoll::EpollEvent::new(epoll::EpollFlags::EPOLLIN, 0);
         let epoll_handle = epoll::Epoll::new(epoll::EpollCreateFlags::EPOLL_CLOEXEC)?;
+        // Safety: Epoll must be dropped before VirtualDevice is dropped.
         epoll_handle.add(unsafe { BorrowedFd::borrow_raw(raw_fd) }, event)?;
         Ok(epoll_handle)
     }
