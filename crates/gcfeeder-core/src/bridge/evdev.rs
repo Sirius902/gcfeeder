@@ -1,6 +1,6 @@
 use std::{
     io, mem,
-    os::fd::{AsRawFd, BorrowedFd, FromRawFd, OwnedFd},
+    os::fd::{AsRawFd, BorrowedFd},
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
@@ -134,14 +134,13 @@ impl EvdevBridge {
             .build()?)
     }
 
+    // TODO: Use tokio instead of epoll?
     fn create_epoll(device: &VirtualDevice) -> Result<epoll::Epoll> {
         let raw_fd = device.as_raw_fd();
-        // Set nonblocking
         nix::fcntl::fcntl(raw_fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK))?;
 
         let event = epoll::EpollEvent::new(epoll::EpollFlags::EPOLLIN, 0);
         let epoll_handle = epoll::Epoll::new(epoll::EpollCreateFlags::EPOLL_CLOEXEC)?;
-        // TODO: This might not be safe, might need to open a second handle to file
         epoll_handle.add(unsafe { BorrowedFd::borrow_raw(raw_fd) }, event)?;
         Ok(epoll_handle)
     }
@@ -296,7 +295,7 @@ impl Bridge for EvdevBridge {
             Some(d) => d,
             None => {
                 let device = device_opt.insert(Self::create_device()?);
-                *self.epoll_handle.lock().unwrap() = Some(Self::create_epoll(&device)?);
+                *self.epoll_handle.lock().unwrap() = Some(Self::create_epoll(device)?);
                 device
             }
         };
@@ -316,7 +315,7 @@ impl Bridge for EvdevBridge {
         };
 
         // TODO: Create a report based on the diff from the last input.
-        let _ = device
+        device
             .emit(&[
                 InputEvent::new(EventType::KEY, Key::BTN_SOUTH.0, btn_state(input.button_a)),
                 InputEvent::new(EventType::KEY, Key::BTN_EAST.0, btn_state(input.button_b)),

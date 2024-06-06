@@ -1380,7 +1380,6 @@ dependencies = [
  "enum_dispatch",
  "evdev",
  "gcinput",
- "input-linux",
  "log",
  "nalgebra",
  "nix 0.29.0",
@@ -1600,26 +1599,6 @@ checksum = "168fb715dda47215e360912c096649d23d58bf392ac62f73919e831745e40f26"
 dependencies = [
  "equivalent",
  "hashbrown 0.14.5",
-]
-
-[[package]]
-name = "input-linux"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f403224ea808abe6182696e3a36d9875c0e942ba7c99239f9ef545b96e35606"
-dependencies = [
- "input-linux-sys",
- "nix 0.26.4",
-]
-
-[[package]]
-name = "input-linux-sys"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a687a25a4973027df9153753a5589f97fe1e958f694a34eea5606ae65299ab8"
-dependencies = [
- "libc",
- "nix 0.26.4",
 ]
 
 [[package]]
@@ -2016,7 +1995,6 @@ dependencies = [
  "cfg-if",
  "libc",
  "memoffset 0.7.1",
- "pin-utils",
 ]
 
 [[package]]

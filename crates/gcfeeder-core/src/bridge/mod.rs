@@ -8,8 +8,6 @@ use crate::feeder;
 #[cfg(target_os = "linux")]
 pub mod evdev;
 pub mod rumble;
-#[cfg(target_os = "linux")]
-pub mod uinput;
 #[cfg(windows)]
 pub mod vigem;
 
@@ -29,9 +27,6 @@ pub enum Error {
     #[error("vigem: {0}")]
     ViGEm(#[from] vigem_client::Error),
     #[cfg(target_os = "linux")]
-    #[error("uinput: {0}")]
-    UInput(#[from] uinput::Error),
-    #[cfg(target_os = "linux")]
     #[error("evdev: {0}")]
     Evdev(#[from] evdev::Error),
 }
@@ -42,8 +37,6 @@ pub enum BridgeImpl {
     ViGEm(vigem::ViGEmBridge),
     #[cfg(target_os = "linux")]
     Evdev(evdev::EvdevBridge),
-    #[cfg(target_os = "linux")]
-    UInput(uinput::UInputBridge),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
@@ -53,8 +46,6 @@ pub enum Driver {
     ViGEm,
     #[cfg(target_os = "linux")]
     Evdev,
-    #[cfg(target_os = "linux")]
-    UInput,
 }
 
 impl Driver {
@@ -68,8 +59,6 @@ impl Driver {
             }
             #[cfg(target_os = "linux")]
             Self::Evdev => Ok(evdev::EvdevBridge::new().into()),
-            #[cfg(target_os = "linux")]
-            Self::UInput => Ok(uinput::UInputBridge::new().into()),
         }
     }
 }
