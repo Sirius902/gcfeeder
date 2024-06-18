@@ -22,32 +22,11 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 * [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases) must be installed.
 
 ### Linux
-* Follow Dolphin's Linux GameCube Adapter setup guide
-[here](https://dolphin-emu.org/docs/guides/how-use-official-gc-controller-adapter-wii-u).
-    * **Note**: You may want to use the `udev` rules file from the
-    [Dolphin repository](https://github.com/dolphin-emu/dolphin/blob/master/Data/51-usb-device.rules)
-    as it has been updated compared to the guide.
-* You must also add a `udev` rule to allow the `input` group (or a group of your choosing) to access
-`uinput`. Doing this will allow the `input` group to create a virtual controller.
-    * A sample rules file for this can be found [here](rules/51-input-udev.rules).
-    * Make sure to place the rules file in `/etc/udev/rules.d` and reload the `udev` rules with the
-    following command.
-    ```sh
-    sudo udevadm control --reload-rules
-    ```
-* Change the permissions of `gcfeeder` make it part of the `input` group and allow it to set its group ID.
-    * This can be done by running the following commands.
-    ```sh
-    sudo chown :input gcfeeder
-    sudo chmod g+s gcfeeder
-    ```
-    * You may choose to make `gcfeeder` owned by root and place it in `/usr/local/bin` to prevent malicious
-    programs from using it to obtain access to `uinput`. To do that you would instead run these commands to
-    change its owner and group plus allow `gcfeeder` to set its group ID.
-    ```sh
-    sudo chown root:input gcfeeder
-    sudo chmod g+s gcfeeder
-    ```
+* Install the `udev` rules file [here](rules/51-gcfeeder.rules) by placing it at `/etc/udev/rules.d`.
+* Reload the `udev` rules by using the following command.
+```sh
+udevadm control --reload-rules && udevadm trigger
+```
 
 ## Config
 
