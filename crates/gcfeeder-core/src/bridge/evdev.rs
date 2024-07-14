@@ -201,8 +201,8 @@ impl EvdevBridge {
                                     } => {
                                         let strength = ((strong_magnitude.max(weak_magnitude)
                                             as f32)
-                                            / (std::u16::MAX as f32)
-                                            * (std::u8::MAX as f32))
+                                            / (u16::MAX as f32)
+                                            * (u8::MAX as f32))
                                             .round()
                                             as u8;
 
