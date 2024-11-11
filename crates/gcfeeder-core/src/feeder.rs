@@ -299,9 +299,11 @@ impl CalibrationSender {
         &self,
         input: Option<Input>,
     ) -> std::result::Result<(), CalibrationDisconnected> {
-        match self.state.swap(CalibrationState::Connected(input)) {
-            CalibrationState::Disconnected => Err(CalibrationDisconnected),
-            _ => Ok(()),
+        if matches!(self.state.load(), CalibrationState::Disconnected) {
+            Err(CalibrationDisconnected)
+        } else {
+            self.state.store(CalibrationState::Connected(input));
+            Ok(())
         }
     }
 }
@@ -322,6 +324,12 @@ impl CalibrationReceiver {
             CalibrationState::Connected(input) => Ok(input),
             CalibrationState::Disconnected => Err(CalibrationDisconnected),
         }
+    }
+}
+
+impl Drop for CalibrationReceiver {
+    fn drop(&mut self) {
+        self.state.store(CalibrationState::Disconnected);
     }
 }
 
