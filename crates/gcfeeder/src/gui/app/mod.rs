@@ -18,7 +18,7 @@ use crossbeam::channel;
 use gcfeeder_core::{
     adapter::{source::InputSource, Port},
     feeder::{self, Feeder, Record},
-    util::recent_channel::{self as recent, TryRecvError},
+    util::cell_channel::{self, TryRecvError},
 };
 use log::{info, warn};
 use panel::{
@@ -262,7 +262,7 @@ impl<S: InputSource + 'static> App<S> {
             });
         }
 
-        let (tx, rx) = recent::channel();
+        let (tx, rx) = cell_channel::channel();
         feeder.send_on_feed(tx);
         (feeder, rx)
     }
@@ -306,7 +306,7 @@ impl<S: InputSource + 'static> App<S> {
                 }
                 Err(TryRecvError::Disconnected) => {
                     warn!("Feeder receiver disconnected while in use");
-                    let (tx, rx) = recent::channel();
+                    let (tx, rx) = cell_channel::channel();
                     feeder.send_on_feed(tx);
                     *receiver = rx;
                 }

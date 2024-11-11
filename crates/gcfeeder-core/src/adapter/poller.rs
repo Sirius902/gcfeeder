@@ -14,7 +14,7 @@ use log::warn;
 use rusb::UsbContext;
 
 use crate::util::{
-    recent_channel::{self as recent, TrySendError},
+    cell_channel::{self, TrySendError},
     AverageTimer,
 };
 
@@ -25,7 +25,7 @@ use super::{
 
 pub type InputMessage = Option<Input>;
 
-type SenderData = (recent::Sender<InputMessage>, Port);
+type SenderData = (cell_channel::Sender<InputMessage>, Port);
 
 pub const ERROR_TIMEOUT: Duration = Duration::from_millis(8);
 
@@ -58,7 +58,7 @@ impl<T: UsbContext> InputSource for Poller<T> {
     }
 
     fn add_listener(&self, port: Port) -> Self::Listener {
-        let (sender, receiver) = recent::channel();
+        let (sender, receiver) = cell_channel::channel();
         self.context.senders.lock().unwrap().push((sender, port));
         Listener {
             receiver,
@@ -178,7 +178,7 @@ impl<T: UsbContext> Context<T> {
 }
 
 pub struct Listener<T: UsbContext> {
-    receiver: recent::Receiver<InputMessage>,
+    receiver: cell_channel::Receiver<InputMessage>,
     context: Arc<Context<T>>,
     port: Port,
 }
@@ -188,19 +188,25 @@ impl<T: UsbContext> InputListener for Listener<T> {
         self.port
     }
 
-    fn recv(&self) -> Result<InputMessage, recent::RecvError> {
+    fn recv(&self) -> Result<InputMessage, cell_channel::RecvError> {
         self.receiver.recv()
     }
 
-    fn recv_deadline(&self, deadline: Instant) -> Result<InputMessage, recent::RecvTimeoutError> {
+    fn recv_deadline(
+        &self,
+        deadline: Instant,
+    ) -> Result<InputMessage, cell_channel::RecvTimeoutError> {
         self.receiver.recv_deadline(deadline)
     }
 
-    fn recv_timeout(&self, timeout: Duration) -> Result<InputMessage, recent::RecvTimeoutError> {
+    fn recv_timeout(
+        &self,
+        timeout: Duration,
+    ) -> Result<InputMessage, cell_channel::RecvTimeoutError> {
         self.receiver.recv_timeout(timeout)
     }
 
-    fn try_recv(&self) -> Result<InputMessage, recent::TryRecvError> {
+    fn try_recv(&self) -> Result<InputMessage, cell_channel::TryRecvError> {
         self.receiver.try_recv()
     }
 

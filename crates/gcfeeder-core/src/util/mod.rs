@@ -1,7 +1,7 @@
 pub use average_timer::AverageTimer;
 
 pub mod average_timer;
-pub mod recent_channel;
+pub mod cell_channel;
 
 #[cfg(windows)]
 macro_rules! packed_bools {

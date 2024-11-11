@@ -8,6 +8,7 @@ use std::{
     time::Duration,
 };
 
+use crossbeam::atomic::AtomicCell;
 use enclose::enclose;
 use enum_iterator::Sequence;
 use gcinput::Input;
@@ -25,7 +26,7 @@ use crate::{
         Layer as LayerTrait,
     },
     util::{
-        recent_channel::{self as recent, RecvTimeoutError, TrySendError},
+        cell_channel::{self, RecvTimeoutError, TrySendError},
         AverageTimer,
     },
 };
@@ -37,10 +38,8 @@ type Result<T> = std::result::Result<T, BridgeError>;
 type Bridge = bridge::BridgeImpl;
 
 pub type Callback = dyn FnMut(&Record) + Send;
-pub type Sender = recent::Sender<Record>;
-pub type Receiver = recent::Receiver<Record>;
-pub type CalibrationSender = recent::Sender<Option<Input>>;
-pub type CalibrationReceiver = recent::Receiver<Option<Input>>;
+pub type Sender = cell_channel::Sender<Record>;
+pub type Receiver = cell_channel::Receiver<Record>;
 pub type Layer = mapping::LayerImpl;
 
 // TODO: Make this come from the poll rate on the adapter.
@@ -200,7 +199,7 @@ impl<L: InputListener> Context<L> {
                             let mut calibration_sender = self.calibration_sender.lock().unwrap();
 
                             if let Some(sender) = calibration_sender.as_ref() {
-                                if let Err(TrySendError::Disconnected(_)) = sender.try_send(input) {
+                                if let Err(CalibrationDisconnected) = sender.try_send(input) {
                                     *calibration_sender = None;
                                 }
 
@@ -266,6 +265,62 @@ impl<L: InputListener> Context<L> {
             self.connected.store(true, Ordering::Release);
 
             Ok(bridge.insert(b))
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+enum CalibrationState {
+    Connected(Option<Input>),
+    Disconnected,
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("calibration disconnected")]
+pub struct CalibrationDisconnected;
+
+/// Creates an `Input` channel where the receiver will always yield the most recently received message.
+pub fn calibration_channel() -> (CalibrationSender, CalibrationReceiver) {
+    let state = Arc::new(AtomicCell::new(CalibrationState::Connected(None)));
+    (
+        CalibrationSender {
+            state: state.clone(),
+        },
+        CalibrationReceiver { state },
+    )
+}
+
+pub struct CalibrationSender {
+    state: Arc<AtomicCell<CalibrationState>>,
+}
+
+impl CalibrationSender {
+    pub fn try_send(
+        &self,
+        input: Option<Input>,
+    ) -> std::result::Result<(), CalibrationDisconnected> {
+        match self.state.swap(CalibrationState::Connected(input)) {
+            CalibrationState::Disconnected => Err(CalibrationDisconnected),
+            _ => Ok(()),
+        }
+    }
+}
+
+impl Drop for CalibrationSender {
+    fn drop(&mut self) {
+        self.state.store(CalibrationState::Disconnected);
+    }
+}
+
+pub struct CalibrationReceiver {
+    state: Arc<AtomicCell<CalibrationState>>,
+}
+
+impl CalibrationReceiver {
+    pub fn try_recv(&self) -> std::result::Result<Option<Input>, CalibrationDisconnected> {
+        match self.state.load() {
+            CalibrationState::Connected(input) => Ok(input),
+            CalibrationState::Disconnected => Err(CalibrationDisconnected),
         }
     }
 }

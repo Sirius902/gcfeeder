@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use gcinput::Rumble;
 
 use super::{poller::InputMessage, Port};
-use crate::util::recent_channel as recent;
+use crate::util::cell_channel;
 
 pub trait InputSource {
     type Listener: InputListener;
@@ -20,10 +20,16 @@ pub trait InputSource {
 pub trait InputListener: Sync + Send {
     fn port(&self) -> Port;
 
-    fn recv(&self) -> Result<InputMessage, recent::RecvError>;
-    fn recv_deadline(&self, deadline: Instant) -> Result<InputMessage, recent::RecvTimeoutError>;
-    fn recv_timeout(&self, timeout: Duration) -> Result<InputMessage, recent::RecvTimeoutError>;
-    fn try_recv(&self) -> Result<InputMessage, recent::TryRecvError>;
+    fn recv(&self) -> Result<InputMessage, cell_channel::RecvError>;
+    fn recv_deadline(
+        &self,
+        deadline: Instant,
+    ) -> Result<InputMessage, cell_channel::RecvTimeoutError>;
+    fn recv_timeout(
+        &self,
+        timeout: Duration,
+    ) -> Result<InputMessage, cell_channel::RecvTimeoutError>;
+    fn try_recv(&self) -> Result<InputMessage, cell_channel::TryRecvError>;
 
     fn set_rumble(&self, rumble: Rumble);
     fn reset_rumble(&self);
