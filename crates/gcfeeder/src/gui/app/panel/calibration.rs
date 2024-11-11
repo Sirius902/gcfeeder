@@ -241,6 +241,9 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
                     ui.add(Self::right_trigger(&mapped).with_markers(&trigger_points));
                 });
             }
+            // TODO: Inputs may be consumed faster than they are generated. Use a different method
+            // to maintain last known value and check if controller is connected directly versus by
+            // checking if there was an input.
             Action::CalibrateSticks(progress, rx) => {
                 let record = rx.try_recv().ok().flatten();
                 let raw = record.unwrap_or_default();
@@ -316,6 +319,9 @@ impl<'a, L: InputListener> CalibrationPanel<'a, L> {
                     *action = next_action;
                 }
             }
+            // TODO: Inputs may be consumed faster than they are generated. Use a different method
+            // to maintain last known value and check if controller is connected directly versus by
+            // checking if there was an input.
             Action::CalibrateTriggers(progress, rx) => {
                 let record = rx.try_recv().ok().flatten();
                 let raw = record.unwrap_or_default();
