@@ -59,6 +59,7 @@
 
           # nice tools
           gdb
+          lldb
           rr
           evcxr
           valgrind
