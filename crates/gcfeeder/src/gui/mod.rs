@@ -82,7 +82,7 @@ pub fn run() -> eframe::Result<()> {
         format!("gcfeeder | {version_string}").as_str(),
         options,
         #[cfg(windows)]
-        Box::new(move |_cc| Box::new(App::new(input_source, tray_rx, log_rx))),
+        Box::new(move |_cc| Ok(Box::new(App::new(input_source, tray_rx, log_rx)))),
         #[cfg(not(windows))]
         Box::new(move |_cc| Ok(Box::new(App::new(input_source, log_rx)))),
     )

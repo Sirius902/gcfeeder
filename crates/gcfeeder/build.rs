@@ -58,6 +58,8 @@ pub fn main() {
             .and_then(|mut f| f.write_all("IDI_ICON1 ICON DISCARDABLE \"icon.ico\"".as_bytes()))
             .unwrap();
 
-        embed_resource::compile(&rc_path, embed_resource::NONE);
+        embed_resource::compile(&rc_path, embed_resource::NONE)
+            .manifest_optional()
+            .unwrap();
     }
 }
