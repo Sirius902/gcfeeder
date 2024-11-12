@@ -1,5 +1,5 @@
 use eframe::epaint;
-use egui::{Color32, Pos2, Rgba, Rounding, Sense, Stroke, Vec2};
+use egui::{epaint::PathStroke, Color32, Pos2, Rgba, Rounding, Sense, Stroke, Vec2};
 
 use gcfeeder_core::calibration::NOTCHES;
 
@@ -51,12 +51,8 @@ impl egui::Widget for Stick<'_> {
             let border_color = polygon_color;
 
             // Add background rect.
-            painter.add(epaint::RectShape {
-                rect,
-                rounding: Rounding::none(),
-                fill: background_color.into(),
-                stroke: Stroke::new(1.0, border_color),
-            });
+            painter.rect_filled(rect, Rounding::ZERO, background_color);
+            painter.rect_stroke(rect, Rounding::ZERO, Stroke::new(1.0, border_color));
 
             let polygon_radius = Self::SIZE * 0.5 * 0.8;
             let polygon_points = ngon_points(NOTCHES, polygon_radius)
@@ -68,12 +64,12 @@ impl egui::Widget for Stick<'_> {
                 .collect();
 
             // Add stick polygon.
-            painter.add(epaint::PathShape {
+            painter.add(egui::Shape::Path(epaint::PathShape {
                 points: polygon_points,
                 closed: true,
                 fill: polygon_color.into(),
-                stroke: Stroke::NONE,
-            });
+                stroke: PathStroke::NONE,
+            }));
 
             let draw_point = |p: [u8; 2], color: Color32| {
                 let scale_stick_coord =
@@ -87,12 +83,7 @@ impl egui::Widget for Stick<'_> {
                 );
 
                 // Add stick position.
-                painter.add(epaint::RectShape {
-                    rect: point_rect,
-                    rounding: Rounding::same(5.0),
-                    fill: color,
-                    stroke: Stroke::NONE,
-                });
+                painter.rect_filled(point_rect, Rounding::same(5.0), color);
             };
 
             if let Some(points) = self.points {

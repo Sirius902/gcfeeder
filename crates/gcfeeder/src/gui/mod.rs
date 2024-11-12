@@ -38,13 +38,13 @@ pub fn run() -> eframe::Result<()> {
     let icon_dim = icon_data.dimensions();
 
     let options = eframe::NativeOptions {
-        initial_window_size: Some([600.0, 420.0].into()),
-        icon_data: Some(eframe::IconData {
-            rgba: icon_data.as_bytes().to_vec(),
-            width: icon_dim.0,
-            height: icon_dim.1,
-        }),
-
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size(egui::vec2(600.0, 420.0))
+            .with_icon(egui::IconData {
+                rgba: icon_data.as_bytes().to_vec(),
+                width: icon_dim.0,
+                height: icon_dim.1,
+            }),
         ..Default::default()
     };
 
@@ -84,6 +84,6 @@ pub fn run() -> eframe::Result<()> {
         #[cfg(windows)]
         Box::new(move |_cc| Box::new(App::new(input_source, tray_rx, log_rx))),
         #[cfg(not(windows))]
-        Box::new(move |_cc| Box::new(App::new(input_source, log_rx))),
+        Box::new(move |_cc| Ok(Box::new(App::new(input_source, log_rx)))),
     )
 }

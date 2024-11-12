@@ -267,23 +267,23 @@ impl<S: InputSource + 'static> App<S> {
         (feeder, rx)
     }
 
-    fn handle_messages(&mut self, frame: &mut eframe::Frame) {
+    fn handle_messages(&mut self, ctx: &egui::Context) {
         if panic_log::panicked() {
-            frame.close();
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
         }
 
         #[cfg(windows)]
         while let Ok(message) = self.tray_receiver.try_recv() {
             match message {
                 TrayMessage::Show => {
-                    frame.set_visible(true);
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Visible(true));
                     self.hidden = false;
                 }
                 TrayMessage::Hide => {
-                    frame.set_visible(false);
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Visible(false));
                     self.hidden = true;
                 }
-                TrayMessage::Exit => frame.close(),
+                TrayMessage::Exit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
             }
         }
 
@@ -342,10 +342,10 @@ impl<S: InputSource + 'static> App<S> {
 }
 
 impl<S: InputSource> eframe::App for App<S> {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        self.handle_messages(frame);
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.handle_messages(ctx);
 
-        let size = frame.info().window_info.size;
+        let size = ctx.screen_rect().size();
         if !self.hidden && size.x > 0.0 && size.y > 0.0 {
             ctx.request_repaint();
         }
@@ -392,7 +392,7 @@ impl<S: InputSource> eframe::App for App<S> {
                     }
 
                     if ui.button("Exit").clicked() {
-                        frame.close();
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                     }
                 });
 
@@ -403,7 +403,7 @@ impl<S: InputSource> eframe::App for App<S> {
                 });
 
                 if ui.button("Hide").clicked() {
-                    frame.set_visible(false);
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Visible(false));
                     self.hidden = true;
                 }
             });

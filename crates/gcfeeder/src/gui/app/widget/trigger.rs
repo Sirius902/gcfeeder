@@ -1,5 +1,7 @@
+use core::f32;
+
 use eframe::epaint;
-use egui::{Align, Color32, FontSelection, Rgba, Rounding, Sense, Stroke, Vec2, WidgetText};
+use egui::{Color32, FontSelection, Rgba, Rounding, Sense, Stroke, Vec2, WidgetText};
 
 pub struct Trigger<'a> {
     value: u8,
@@ -53,39 +55,36 @@ impl egui::Widget for Trigger<'_> {
                 Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.35);
 
             // Add background rect.
-            painter.add(epaint::RectShape {
-                rect,
-                rounding: Rounding::none(),
-                fill: background_color.into(),
-                stroke: Stroke::new(1.0, border_color),
-            });
+            painter.rect_filled(rect, Rounding::ZERO, background_color);
+            painter.rect_stroke(rect, Rounding::ZERO, Stroke::new(1.0, border_color));
 
             let scale_trigger = |n: u8| n as f32 / f32::from(u8::MAX) * Self::SIZE.y;
             let fill_top_right = rect.right_bottom() + Vec2::new(0.0, -scale_trigger(self.value));
 
             // Add fill value.
-            painter.add(epaint::RectShape {
-                rect: epaint::Rect::from_two_pos(rect.left_bottom(), fill_top_right),
-                rounding: Rounding::none(),
-                fill: self.color,
-                stroke: Stroke::NONE,
-            });
-
-            let text_job = WidgetText::from(self.signifier).into_text_job(
-                ui.style(),
-                FontSelection::Default,
-                Align::Center,
+            painter.rect_filled(
+                epaint::Rect::from_two_pos(rect.left_bottom(), fill_top_right),
+                Rounding::ZERO,
+                self.color,
             );
-            let text_galley = ui.fonts(|fonts| text_job.into_galley(fonts));
+
+            let text_galley = WidgetText::from(self.signifier).into_galley(
+                ui,
+                None,
+                f32::INFINITY,
+                FontSelection::Default,
+            );
 
             // Add signifier.
-            painter.add(epaint::TextShape {
+            painter.add(egui::Shape::Text(epaint::TextShape {
                 pos: rect.center() - text_galley.size() * 0.5,
-                galley: text_galley.galley,
+                galley: text_galley,
                 override_text_color: Some(signifier_color.into()),
                 underline: Stroke::NONE,
                 angle: 0.0,
-            });
+                fallback_color: Color32::PLACEHOLDER,
+                opacity_factor: 1.0,
+            }));
 
             let draw_market = |val: u8, color: Color32| {
                 let offset = Vec2::new(0.0, -scale_trigger(val));
@@ -94,12 +93,7 @@ impl egui::Widget for Trigger<'_> {
                     rect.right_bottom() + offset - Vec2::new(0.0, 0.5 * Self::MARKER_HEIGHT),
                 );
 
-                painter.add(epaint::RectShape {
-                    rect: marker_rect,
-                    rounding: Rounding::none(),
-                    fill: color,
-                    stroke: Stroke::NONE,
-                });
+                painter.rect_filled(marker_rect, Rounding::ZERO, color);
             };
 
             if let Some(markers) = self.markers {
