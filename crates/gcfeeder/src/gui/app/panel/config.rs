@@ -1,9 +1,6 @@
 use enum_iterator::all;
 
-use crate::{
-    config::Config,
-    gui::{util::no_close_popup_below_widget, ERROR_COLOR},
-};
+use crate::{config::Config, gui::ERROR_COLOR};
 use gcfeeder_core::adapter::Port;
 
 pub struct ConfigEditor<'a> {
@@ -73,25 +70,39 @@ impl<'a> ConfigEditor<'a> {
                         ui.memory_mut(|m| m.toggle_popup(add_popup_id));
                     }
 
-                    no_close_popup_below_widget(ui, add_popup_id, &add_response, |ui| {
-                        let mut add_popup =
-                            AddPopup::new(add_state.take().unwrap_or_default(), self.config);
-                        profile_action = add_popup.update(ui);
-                        *add_state = Some(add_popup.into_state());
-                    });
+                    egui::popup::popup_above_or_below_widget(
+                        ui,
+                        add_popup_id,
+                        &add_response,
+                        egui::AboveOrBelow::Below,
+                        egui::PopupCloseBehavior::IgnoreClicks,
+                        |ui| {
+                            let mut add_popup =
+                                AddPopup::new(add_state.take().unwrap_or_default(), self.config);
+                            profile_action = add_popup.update(ui);
+                            *add_state = Some(add_popup.into_state());
+                        },
+                    );
 
                     let remove_response = ui.button("Delete");
                     if remove_response.clicked() {
                         ui.memory_mut(|m| m.toggle_popup(remove_popup_id));
                     }
 
-                    no_close_popup_below_widget(ui, remove_popup_id, &remove_response, |ui| {
-                        let mut remove_popup = RemovePopup::new(
-                            &action_profile_name,
-                            self.config.profile.list.len() <= 1,
-                        );
-                        profile_action = remove_popup.update(ui);
-                    });
+                    egui::popup::popup_above_or_below_widget(
+                        ui,
+                        remove_popup_id,
+                        &remove_response,
+                        egui::AboveOrBelow::Below,
+                        egui::PopupCloseBehavior::IgnoreClicks,
+                        |ui| {
+                            let mut remove_popup = RemovePopup::new(
+                                &action_profile_name,
+                                self.config.profile.list.len() <= 1,
+                            );
+                            profile_action = remove_popup.update(ui);
+                        },
+                    );
 
                     egui::ComboBox::from_label(format!("Port {p:?}"))
                         .selected_text(&self.config.profile.selected[p.index()])
