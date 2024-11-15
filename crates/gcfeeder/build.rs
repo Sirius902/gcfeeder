@@ -25,12 +25,19 @@ pub fn main() {
     println!("cargo:rustc-env={VERSION_VAR}={version}");
 
     {
-        let mut emitter = vergen::EmitBuilder::builder();
-        emitter.git_sha(true);
+        let mut emitter = vergen_git2::Emitter::default();
+        emitter
+            .add_instructions(
+                &vergen_git2::Git2Builder::default()
+                    .describe(true, true, None)
+                    .build()
+                    .expect("build git2 instruction"),
+            )
+            .expect("add git2 instruction");
 
         if emitter.emit().is_err() {
             println!("cargo:rustc-env={VERSION_VAR}=unknown");
-            println!("cargo:rustc-env=VERGEN_GIT_SHA=");
+            println!("cargo:rustc-env=VERGEN_GIT_DESCRIBE=");
         }
     }
 

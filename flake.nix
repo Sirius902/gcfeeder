@@ -2,71 +2,136 @@
   description = "flake for gcfeeder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=24.05";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    crane.url = "github:ipetkov/crane";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , ...
-    }:
-    flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = import nixpkgs { inherit system; };
-    in
-    with pkgs; rec {
-      formatter = pkgs.nixpkgs-fmt;
+  outputs = { self, nixpkgs, crane, fenix, flake-parts, ... }@inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
-      devShell = mkShell rec {
-        buildInputs = [
-          # necessary for building wgpu in 3rd party packages (in most cases)
-          libxkbcommon
-          wayland
-          xorg.libX11
-          xorg.libXcursor
-          xorg.libXrandr
-          xorg.libXi
-          alsa-lib
-          fontconfig
-          freetype
-          shaderc
-          directx-shader-compiler
-          pkg-config
-          cmake
-          mold # could use any linker, needed for rustix (but mold is fast)
+      perSystem = { system, ... }:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
 
-          libGL
-          vulkan-headers
-          vulkan-loader
-          vulkan-tools
-          vulkan-tools-lunarg
-          vulkan-extension-layer
-          vulkan-validation-layers # don't need them *strictly* but immensely helpful
+            overlays = [ fenix.overlays.default ];
+          };
 
-          # necessary for developing (all of) wgpu itself
-          cargo-nextest
-          cargo-fuzz
+          inherit (pkgs) lib;
 
-          # nice for developing wgpu itself
-          typos
+          toolchain = fenix.packages.${system}.fromToolchainFile {
+            file = ./rust-toolchain.toml;
+            sha256 = "sha256-1uC3iVKIjZAtQ57qtpGIfvCPl1MTdTfWibjB37VWFPg=";
+          };
 
-          # if you don't already have rust installed through other means,
-          # this shell.nix can do that for you with this below
-          yq # for tomlq below
-          rustup
+          craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
+          src = craneLib.cleanCargoSource ./.;
 
-          # nice tools
-          gdb
-          lldb
-          rr
-          evcxr
-          valgrind
-          renderdoc
-        ];
+          commonArgs = {
+            inherit src;
+            strictDeps = true;
 
-        LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
-      };
-    });
+            buildInputs = with pkgs; [
+              libGL
+              libxkbcommon
+              vulkan-loader
+              wayland
+              xorg.libX11
+              xorg.libXcursor
+              xorg.libxcb
+              xorg.libXi
+            ];
+          };
+
+          cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+
+          inherit (craneLib.crateNameFromCargoToml { inherit src; }) version;
+
+          individualCrateArgs = commonArgs // {
+            inherit cargoArtifacts;
+            inherit version;
+          };
+
+          fileSetForCrate = crate: lib.fileset.toSource {
+            root = ./.;
+            fileset = lib.fileset.unions [
+              ./Cargo.toml
+              ./Cargo.lock
+              (craneLib.fileset.commonCargoSources ./lib/gcinput)
+              (craneLib.fileset.commonCargoSources ./lib/panic-log)
+              (craneLib.fileset.commonCargoSources ./crates/gcfeeder-core)
+              (lib.fileset.maybeMissing ./crates/gcfeeder-core/resource)
+              (craneLib.fileset.commonCargoSources crate)
+              (lib.fileset.maybeMissing /${crate}/resource)
+            ];
+          };
+
+          gcfeeder = craneLib.buildPackage (individualCrateArgs // rec {
+            pname = "gcfeeder";
+            cargoExtraArgs = "-p gcfeeder";
+            src = fileSetForCrate ./crates/gcfeeder;
+
+            nativeBuildInputs = with pkgs; [ makeWrapper ];
+
+            postInstall = ''
+              wrapProgram $out/bin/gcfeeder \
+                --suffix LD_LIBRARY_PATH : ${lib.makeLibraryPath commonArgs.buildInputs}
+            '';
+
+            env.VERSION = "v${version}";
+
+            desktopItems = with pkgs; [
+              (makeDesktopItem {
+                name = "gcfeeder";
+                exec = "gcfeeder";
+                comment = meta.description;
+                desktopName = "gcfeeder";
+                categories = [ "Utility" ];
+              })
+            ];
+
+            # TODO: Derive from Cargo.toml?
+            meta = with lib; {
+              description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter.";
+              mainProgram = "gcfeeder";
+              homepage = "https://github.com/Sirius902/gcfeeder";
+              platforms = platforms.linux;
+            };
+          });
+        in
+        with pkgs; {
+          formatter = nixpkgs-fmt;
+
+          checks = {
+            inherit gcfeeder;
+
+            gcfeeder-clippy = craneLib.cargoClippy (commonArgs // {
+              inherit cargoArtifacts;
+            });
+
+            gcfeeder-fmt = craneLib.cargoFmt {
+              inherit src;
+            };
+          };
+
+          packages.default = gcfeeder;
+
+          devShells.default = craneLib.devShell {
+            checks = self.checks.${system};
+
+            packages = [ ];
+
+            env.LD_LIBRARY_PATH = lib.makeLibraryPath commonArgs.buildInputs;
+          };
+        };
+    };
 }
