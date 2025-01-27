@@ -93,7 +93,7 @@
               install -Dm644 crates/gcfeeder/resource/icon.png $out/share/pixmaps/gcfeeder.png
             '';
 
-            env.VERSION = "v${version}";
+            VERSION = "v${version}";
 
             desktopItems = with pkgs; [
               (makeDesktopItem {
@@ -136,9 +136,12 @@
           devShells.default = craneLib.devShell {
             checks = self.checks.${system};
 
-            packages = [ pkgs.taplo-cli ];
+            packages = [
+              pkgs.taplo-cli
+              pkgs.rust-analyzer-nightly
+            ];
 
-            env.LD_LIBRARY_PATH = lib.makeLibraryPath commonArgs.buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath commonArgs.buildInputs;
           };
         };
     };
