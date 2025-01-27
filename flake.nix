@@ -80,7 +80,10 @@
             cargoExtraArgs = "-p gcfeeder";
             src = fileSetForCrate ./crates/gcfeeder;
 
-            nativeBuildInputs = with pkgs; [ makeWrapper ];
+            nativeBuildInputs = with pkgs; [
+              copyDesktopItems
+              makeWrapper
+            ];
 
             postInstall = ''
               wrapProgram $out/bin/gcfeeder \
@@ -102,9 +105,9 @@
             # TODO: Derive from Cargo.toml?
             meta = with lib; {
               description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter.";
-              mainProgram = "gcfeeder";
               homepage = "https://github.com/Sirius902/gcfeeder";
               platforms = platforms.linux;
+              mainProgram = "gcfeeder";
             };
           });
         in
