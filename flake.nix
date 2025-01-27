@@ -16,6 +16,8 @@
       systems = [
         "x86_64-linux"
         "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
       ];
 
       perSystem = { system, ... }:
@@ -106,11 +108,11 @@
               })
             ];
 
-            # TODO: Derive from Cargo.toml?
             meta = with lib; {
               description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter.";
               homepage = "https://github.com/Sirius902/gcfeeder";
-              platforms = platforms.linux;
+              # NOTE(Sirius902) No bridges are implemented for darwin. Putting this here mostly so it can be built for local dev.
+              platforms = platforms.linux ++ platforms.darwin;
               mainProgram = "gcfeeder";
             };
           });

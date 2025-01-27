@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::feeder;
 
+#[cfg(not(any(windows, target_os = "linux")))]
+pub mod dummy;
 #[cfg(target_os = "linux")]
 pub mod evdev;
 pub mod rumble;
@@ -37,6 +39,8 @@ pub enum BridgeImpl {
     ViGEm(vigem::ViGEmBridge),
     #[cfg(target_os = "linux")]
     Evdev(evdev::EvdevBridge),
+    #[cfg(not(any(windows, target_os = "linux")))]
+    Dummy(dummy::DummyBridge),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
@@ -46,11 +50,15 @@ pub enum Driver {
     ViGEm,
     #[cfg(target_os = "linux")]
     Evdev,
+    #[cfg(not(any(windows, target_os = "linux")))]
+    Dummy,
 }
 
 impl Driver {
     pub fn create_bridge(self, #[allow(unused)] config: &feeder::Config) -> Result<BridgeImpl> {
         match self {
+            #[cfg(not(any(windows, target_os = "linux")))]
+            Self::Dummy => Ok(dummy::DummyBridge.into()),
             #[cfg(windows)]
             Self::ViGEm => {
                 vigem::ViGEmBridge::new(config.vigem_config, vigem_client::Client::connect()?)
