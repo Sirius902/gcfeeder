@@ -1,8 +1,8 @@
 {
-  description = "flake for gcfeeder";
+  description = "gcfeeder flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     crane.url = "github:ipetkov/crane";
     fenix = {
@@ -30,7 +30,7 @@
 
           toolchain = fenix.packages.${system}.fromToolchainFile {
             file = ./rust-toolchain.toml;
-            sha256 = "sha256-1uC3iVKIjZAtQ57qtpGIfvCPl1MTdTfWibjB37VWFPg=";
+            sha256 = "sha256-jtv1gCHstvA7Y4oQ++uy0uYHak4SsxgrfP2/5YxE+GQ=";
           };
 
           craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
@@ -92,7 +92,7 @@
             desktopItems = with pkgs; [
               (makeDesktopItem {
                 name = "gcfeeder";
-                exec = "gcfeeder";
+                exec = "gcfeeder %U";
                 comment = meta.description;
                 desktopName = "gcfeeder";
                 categories = [ "Utility" ];

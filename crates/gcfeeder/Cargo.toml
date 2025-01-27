@@ -8,8 +8,8 @@ edition.workspace = true
 [dependencies]
 bincode = "1"
 crossbeam = "0.8"
-dirs = "5"
-egui = "0.29"
+dirs = "6"
+egui = "0.30"
 enum-iterator = "2"
 nalgebra = "0.33"
 once_cell = "1"
@@ -29,7 +29,7 @@ path = "../../lib/panic-log"
 path = "../gcfeeder-core"
 
 [dependencies.eframe]
-version = "0.29"
+version = "0.30"
 default-features = false
 features = ["accesskit", "default_fonts", "wgpu"]
 
