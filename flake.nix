@@ -69,6 +69,7 @@
               (craneLib.fileset.commonCargoSources ./crates/gcinput)
               (craneLib.fileset.commonCargoSources ./crates/panic-log)
               (craneLib.fileset.commonCargoSources ./crates/gcfeeder-core)
+              (lib.fileset.maybeMissing ./crates/gcfeeder/resource)
               (lib.fileset.maybeMissing ./crates/gcfeeder-core/resource)
               (craneLib.fileset.commonCargoSources crate)
               (lib.fileset.maybeMissing /${crate}/resource)
@@ -88,6 +89,8 @@
             postInstall = ''
               wrapProgram $out/bin/gcfeeder \
                 --suffix LD_LIBRARY_PATH : ${lib.makeLibraryPath commonArgs.buildInputs}
+
+              install -Dm644 crates/gcfeeder/resource/icon.png $out/share/pixmaps/gcfeeder.png
             '';
 
             env.VERSION = "v${version}";
@@ -95,6 +98,7 @@
             desktopItems = with pkgs; [
               (makeDesktopItem {
                 name = "gcfeeder";
+                icon = "gcfeeder";
                 exec = "gcfeeder %U";
                 comment = meta.description;
                 desktopName = "gcfeeder";
