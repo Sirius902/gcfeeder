@@ -1,12 +1,14 @@
 [workspace]
-members = ["lib/*", "crates/*"]
+members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
 description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter."
 version = "3.0.1"
-repository = "https://github.com/Sirius902/gcfeeder/"
+repository = "https://github.com/Sirius902/gcfeeder"
 edition = "2021"
+readme = "README.md"
+authors = ["Sirius902"]
 
 [workspace.metadata.crane]
-name = "gcfeeder"
+name = "workspace"

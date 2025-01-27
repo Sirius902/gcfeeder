@@ -66,8 +66,8 @@
             fileset = lib.fileset.unions [
               ./Cargo.toml
               ./Cargo.lock
-              (craneLib.fileset.commonCargoSources ./lib/gcinput)
-              (craneLib.fileset.commonCargoSources ./lib/panic-log)
+              (craneLib.fileset.commonCargoSources ./crates/gcinput)
+              (craneLib.fileset.commonCargoSources ./crates/panic-log)
               (craneLib.fileset.commonCargoSources ./crates/gcfeeder-core)
               (lib.fileset.maybeMissing ./crates/gcfeeder-core/resource)
               (craneLib.fileset.commonCargoSources crate)
@@ -124,11 +124,12 @@
           };
 
           packages.default = gcfeeder;
+          packages.gcfeeder = gcfeeder;
 
           devShells.default = craneLib.devShell {
             checks = self.checks.${system};
 
-            packages = [ ];
+            packages = [ pkgs.taplo-cli ];
 
             env.LD_LIBRARY_PATH = lib.makeLibraryPath commonArgs.buildInputs;
           };

@@ -1,9 +1,9 @@
 [package]
-name = "gcfeeder"
 description.workspace = true
-version.workspace = true
-repository.workspace = true
 edition.workspace = true
+name = "gcfeeder"
+repository.workspace = true
+version.workspace = true
 
 [dependencies]
 bincode = "1"
@@ -20,49 +20,49 @@ toml = "0.8"
 winit = "0.30"
 
 [dependencies.gcinput]
-path = "../../lib/gcinput"
+path = "../gcinput"
 
 [dependencies.panic-log]
-path = "../../lib/panic-log"
+path = "../panic-log"
 
 [dependencies.gcfeeder-core]
 path = "../gcfeeder-core"
 
 [dependencies.eframe]
-version = "0.30"
 default-features = false
 features = ["accesskit", "default_fonts", "wgpu"]
+version = "0.30"
 
 [dependencies.image]
-version = "0.25"
 default-features = false
 features = ["png"]
+version = "0.25"
 
 [dependencies.log]
-version = "0.4"
 features = ["std"]
+version = "0.4"
 
 [dependencies.serde]
-version = "1"
 features = ["derive"]
+version = "1"
 
 [dependencies.time]
-version = "0.3"
 features = ["macros", "formatting", "local-offset"]
+version = "0.3"
 
 [target.'cfg(windows)'.dependencies.trayicon]
-version = "0.1"
 features = ["crossbeam-channel"]
+version = "0.1"
 
 [build-dependencies.vergen-git2]
-version = "1"
 default-features = false
 features = []
+version = "1"
 
 [target.'cfg(windows)'.build-dependencies]
 embed-resource = "3"
 
 [target.'cfg(windows)'.build-dependencies.image]
-version = "0.25"
 default-features = false
 features = ["png", "ico"]
+version = "0.25"

@@ -1,9 +1,9 @@
 [package]
-name = "gcfeeder-core"
 description.workspace = true
-version.workspace = true
-repository.workspace = true
 edition.workspace = true
+name = "gcfeeder-core"
+repository.workspace = true
+version.workspace = true
 
 [dependencies]
 conv = "0.3"
@@ -18,20 +18,20 @@ rusb = "0.9"
 thiserror = "2"
 
 [dependencies.gcinput]
-path = "../../lib/gcinput"
 features = ["nalgebra"]
+path = "../gcinput"
 
 [dependencies.log]
-version = "0.4"
 features = ["std"]
+version = "0.4"
 
 [dependencies.serde]
-version = "1"
 features = ["derive"]
+version = "1"
 
 [target.'cfg(windows)'.dependencies.vigem-client]
-version = "0.1"
 features = ["unstable_xtarget_notification"]
+version = "0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 evdev = "0.12"
