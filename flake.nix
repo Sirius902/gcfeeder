@@ -95,8 +95,7 @@
               install -Dm644 crates/gcfeeder/resource/icon.png $out/share/pixmaps/gcfeeder.png
             '';
 
-            VERSION = "${self.shortRev}";
-            # VERSION = "${self.dirtyShortRev}";
+            VERSION = "v${version}-${self.shortRev or self.dirtyShortRev}";
 
             desktopItems = with pkgs; [
               (makeDesktopItem {
