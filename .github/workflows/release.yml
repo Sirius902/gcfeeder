@@ -11,7 +11,7 @@ jobs:
     env:
       CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
       VERSION: "${{ github.ref_name }}"
-      CI: 1
+      CI_RELEASE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3

@@ -13,7 +13,7 @@ pub fn main() {
 
     let version = match env::var(VERSION_VAR) {
         Ok(v) => {
-            if env::var("CI").is_ok() {
+            if env::var("CI_RELEASE").is_ok() {
                 let package_version = format!("v{}", env!("CARGO_PKG_VERSION"));
                 if v != package_version {
                     panic!("Expected {VERSION_VAR} to be {package_version}, was {v}")
