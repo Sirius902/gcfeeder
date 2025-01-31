@@ -70,16 +70,10 @@ pub fn run() -> eframe::Result<()> {
         (tray_icon, tray_rx)
     };
 
-    let version_string = if !env!("VERSION").is_empty() {
-        env!("VERSION")
-    } else {
-        env!("VERGEN_GIT_DESCRIBE")
-    };
-
     let input_source = Poller::new(GlobalContext {});
 
     eframe::run_native(
-        format!("gcfeeder | {version_string}").as_str(),
+        format!("gcfeeder | {}", env!("GCFEEDER_VERSION")).as_str(),
         options,
         #[cfg(windows)]
         Box::new(move |_cc| Ok(Box::new(App::new(input_source, tray_rx, log_rx)))),

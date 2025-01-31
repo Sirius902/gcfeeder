@@ -93,8 +93,8 @@
 
           gcfeeder = craneLib.buildPackage (individualCrateArgs // rec {
             pname = "gcfeeder";
-            cargoExtraArgs = "-p gcfeeder";
             src = fileSetForCrate ./crates/gcfeeder;
+            cargoExtraArgs = "-p gcfeeder --no-default-features";
 
             nativeBuildInputs = with pkgs; [
               copyDesktopItems
@@ -108,7 +108,7 @@
               install -Dm644 crates/gcfeeder/resource/icon.png $out/share/pixmaps/gcfeeder.png
             '';
 
-            VERSION = "v${version}-${self.shortRev or self.dirtyShortRev}";
+            GCFEEDER_VERSION = "v${version}-${self.shortRev or self.dirtyShortRev}";
 
             desktopItems = with pkgs; [
               (makeDesktopItem {

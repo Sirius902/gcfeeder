@@ -54,10 +54,11 @@ version = "0.3"
 features = ["crossbeam-channel"]
 version = "0.1"
 
-[build-dependencies.vergen-git2]
+[build-dependencies.git2]
 default-features = false
 features = []
-version = "1"
+optional = true
+version = "0.20"
 
 [target.'cfg(windows)'.build-dependencies]
 embed-resource = "3"
@@ -66,3 +67,7 @@ embed-resource = "3"
 default-features = false
 features = ["png", "ico"]
 version = "0.25"
+
+[features]
+default = ["git-version"]
+git-version = ["dep:git2"]

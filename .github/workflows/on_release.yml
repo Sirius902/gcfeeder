@@ -5,22 +5,22 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
 
+# TODO(Sirius902) Make sure version matches cargo package version in job.
 jobs:
   release:
     runs-on: windows-latest
     env:
       CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
-      VERSION: "${{ github.ref_name }}"
-      CI_RELEASE: 1
+      GCFEEDER_VERSION: "${{ github.ref_name }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
-        run: cargo build --release
+        run: cargo build --no-default-features --release
       - name: Run Tests
-        run: cargo test
+        run: cargo test --no-default-features
       - name: Clippy Lints
-        run: cargo clippy
+        run: cargo clippy --no-default-features
       - name: Compress Artifacts
         run: 7z a gcfeeder.zip "./target/${{ env.CARGO_BUILD_TARGET }}/release/gcfeeder.exe"
       - name: Automatic Release
