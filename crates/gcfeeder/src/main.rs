@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 #![windows_subsystem = "windows"]
 
 use std::{env, error::Error};

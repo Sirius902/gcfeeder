@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 use std::env;
 #[cfg(windows)]
 use std::{

@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 pub mod adapter;
 pub mod bridge;
 pub mod calibration;

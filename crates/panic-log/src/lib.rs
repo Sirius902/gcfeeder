@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 use std::{
     fs, io,
     panic::PanicHookInfo,

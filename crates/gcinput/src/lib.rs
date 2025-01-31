@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 use serde::{Deserialize, Serialize};
 
 pub const STICK_RANGE: StickRange = StickRange {
