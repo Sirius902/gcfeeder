@@ -59,7 +59,7 @@ fn emit_git_version() -> Result<String, git2::Error> {
 }
 
 #[cfg(windows)]
-fn embed_version() {
+fn embed_icon() {
     use std::{
         fs::File,
         io::{self, prelude::*},
