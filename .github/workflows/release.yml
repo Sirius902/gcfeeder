@@ -14,7 +14,7 @@ jobs:
       CI_RELEASE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
         run: cargo build --release
       - name: Run Tests
