@@ -7,7 +7,7 @@ use std::{
     path::Path,
 };
 
-pub fn main() {
+fn main() {
     const VERSION_VAR: &str = "VERSION";
     println!("cargo:rerun-if-env-changed={VERSION_VAR}");
 

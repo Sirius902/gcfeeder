@@ -5,7 +5,7 @@ use std::{env, error::Error};
 
 use gcfeeder::gui;
 
-pub fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     std::panic::set_hook(Box::new(panic_log::hook));
 
     let exe_path = env::current_exe().expect("Failed to get current exe path");
