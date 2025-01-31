@@ -5,18 +5,33 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
 
-# TODO(Sirius902) Make sure version matches cargo package version in job.
+env:
+  GCFEEDER_VERSION: "${{ github.ref_name }}"
+
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check tag matches manifest version
+        run: |
+          MANIFEST_VERSION=$(cargo metadata --format-version=1 --no-deps | jq '.packages[] | select(.name == "gcfeeder") | .version')
+
+          if [ "$GCFEEDER_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "Expected gcfeeder version and Cargo manifest version to match"
+            exit 1
+          fi
+
   release:
     runs-on: windows-latest
     env:
       CARGO_BUILD_TARGET: "x86_64-pc-windows-msvc"
-      GCFEEDER_VERSION: "${{ github.ref_name }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
-        run: cargo build --no-default-features --release
+        run: cargo build --release --no-default-features
       - name: Run Tests
         run: cargo test --no-default-features
       - name: Clippy Lints
