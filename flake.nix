@@ -81,6 +81,7 @@
             fileset = lib.fileset.unions [
               ./Cargo.toml
               ./Cargo.lock
+              ./rules
               (craneLib.fileset.commonCargoSources ./crates/gcinput)
               (craneLib.fileset.commonCargoSources ./crates/panic-log)
               (craneLib.fileset.commonCargoSources ./crates/gcfeeder-core)
@@ -104,6 +105,9 @@
             postInstall = ''
               wrapProgram $out/bin/gcfeeder \
                 --suffix LD_LIBRARY_PATH : ${lib.makeLibraryPath commonArgs.buildInputs}
+
+              mkdir -p $out/lib/udev/rules.d
+              cp rules/50-gcfeeder.rules $out/lib/udev/rules.d/
 
               install -Dm644 crates/gcfeeder/resource/icon.png $out/share/pixmaps/gcfeeder.png
             '';
