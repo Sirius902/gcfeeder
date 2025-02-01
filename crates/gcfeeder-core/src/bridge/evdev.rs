@@ -11,9 +11,8 @@ use std::{
 
 use enclose::enclose;
 use evdev::{
-    uinput::{UInputEvent, VirtualDevice, VirtualDeviceBuilder},
-    AbsInfo, AbsoluteAxisType, AttributeSet, EvdevEnum, EventType, FFEffectType, InputEvent, Key,
-    UinputAbsSetup,
+    uinput::VirtualDevice, AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode,
+    InputEvent, KeyCode, UinputAbsSetup,
 };
 use gcinput::{Input, Rumble, STICK_RANGE, TRIGGER_RANGE};
 use nix::{
@@ -62,15 +61,15 @@ impl EvdevBridge {
     }
 
     fn create_device() -> Result<VirtualDevice> {
-        let mut keys = AttributeSet::<Key>::new();
-        keys.insert(Key::BTN_SOUTH); // A
-        keys.insert(Key::BTN_EAST); // B
-        keys.insert(Key::BTN_WEST); // X
-        keys.insert(Key::BTN_NORTH); // Y
-        keys.insert(Key::BTN_START); // Start
-        keys.insert(Key::BTN_TR); // Z
-        keys.insert(Key::BTN_THUMBL); // L
-        keys.insert(Key::BTN_THUMBR); // R
+        let mut keys = AttributeSet::<KeyCode>::new();
+        keys.insert(KeyCode::BTN_SOUTH); // A
+        keys.insert(KeyCode::BTN_EAST); // B
+        keys.insert(KeyCode::BTN_WEST); // X
+        keys.insert(KeyCode::BTN_NORTH); // Y
+        keys.insert(KeyCode::BTN_START); // Start
+        keys.insert(KeyCode::BTN_TR); // Z
+        keys.insert(KeyCode::BTN_THUMBL); // L
+        keys.insert(KeyCode::BTN_THUMBR); // R
 
         let stick_axis_info = AbsInfo::new(
             STICK_RANGE.center.into(),
@@ -94,41 +93,41 @@ impl EvdevBridge {
 
         let hat_axis_info = AbsInfo::new(0, -1, 1, 0, 0, 50);
 
-        Ok(VirtualDeviceBuilder::new()?
+        Ok(VirtualDevice::builder()?
             .name("gcfeeder | GameCube Controller")
-            .with_ff(&AttributeSet::from_iter([FFEffectType::FF_RUMBLE]))?
+            .with_ff(&AttributeSet::from_iter([FFEffectCode::FF_RUMBLE]))?
             .with_ff_effects_max(1)
             .with_keys(&keys)?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_X,
+                AbsoluteAxisCode::ABS_X,
                 stick_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_Y,
+                AbsoluteAxisCode::ABS_Y,
                 stick_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_RX,
+                AbsoluteAxisCode::ABS_RX,
                 stick_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_RY,
+                AbsoluteAxisCode::ABS_RY,
                 stick_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_Z,
+                AbsoluteAxisCode::ABS_Z,
                 trigger_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_RZ,
+                AbsoluteAxisCode::ABS_RZ,
                 trigger_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_HAT0X,
+                AbsoluteAxisCode::ABS_HAT0X,
                 hat_axis_info,
             ))?
             .with_absolute_axis(&UinputAbsSetup::new(
-                AbsoluteAxisType::ABS_HAT0Y,
+                AbsoluteAxisCode::ABS_HAT0Y,
                 hat_axis_info,
             ))?
             .build()?)
@@ -165,7 +164,7 @@ impl EvdevBridge {
                 .unwrap()
                 .as_mut()
                 .map(VirtualDevice::fetch_events)
-                .map(|opt| opt.map(|it| it.collect::<Vec<UInputEvent>>()));
+                .map(|opt| opt.map(|it| it.collect::<Vec<InputEvent>>()));
 
             let Some(events) = events else {
                 std::mem::drop(epoll_handle_opt);
@@ -184,10 +183,9 @@ impl EvdevBridge {
                     };
 
                     for event in events.into_iter() {
-                        match event.kind() {
-                            evdev::InputEventKind::UInput(c)
-                                if usize::from(c)
-                                    == evdev::UInputEventType::UI_FF_UPLOAD.to_index() =>
+                        match event.destructure() {
+                            evdev::EventSummary::UInput(event, code, _value)
+                                if code == evdev::UInputCode::UI_FF_UPLOAD =>
                             {
                                 let Ok(mut event) = device.process_ff_upload(event) else {
                                     thread::sleep(Duration::from_millis(8));
@@ -219,9 +217,8 @@ impl EvdevBridge {
                                 event.set_effect_id(0);
                                 event.set_retval(0);
                             }
-                            evdev::InputEventKind::UInput(c)
-                                if usize::from(c)
-                                    == evdev::UInputEventType::UI_FF_ERASE.to_index() =>
+                            evdev::EventSummary::UInput(event, code, _value)
+                                if code == evdev::UInputCode::UI_FF_ERASE =>
                             {
                                 let Ok(event) = device.process_ff_erase(event) else {
                                     thread::sleep(Duration::from_millis(8));
@@ -233,12 +230,7 @@ impl EvdevBridge {
                                     rumbler.update_strength(0);
                                 }
                             }
-                            evdev::InputEventKind::ForceFeedback(c)
-                                if usize::from(c)
-                                    == evdev::FFStatus::FF_STATUS_PLAYING.to_index() => {}
-                            evdev::InputEventKind::ForceFeedback(c)
-                                if usize::from(c)
-                                    == evdev::FFStatus::FF_STATUS_STOPPED.to_index() => {}
+                            evdev::EventSummary::ForceFeedback(_ev, _code, _value) => {}
                             _ => {
                                 log::debug!("Unknown evdev event = {:?}", event);
                             }
@@ -318,56 +310,84 @@ impl Bridge for EvdevBridge {
         // TODO: Create a report based on the diff from the last input.
         device
             .emit(&[
-                InputEvent::new(EventType::KEY, Key::BTN_SOUTH.0, btn_state(input.button_a)),
-                InputEvent::new(EventType::KEY, Key::BTN_EAST.0, btn_state(input.button_b)),
-                InputEvent::new(EventType::KEY, Key::BTN_WEST.0, btn_state(input.button_x)),
-                InputEvent::new(EventType::KEY, Key::BTN_NORTH.0, btn_state(input.button_y)),
                 InputEvent::new(
-                    EventType::KEY,
-                    Key::BTN_START.0,
+                    EventType::KEY.0,
+                    KeyCode::BTN_SOUTH.0,
+                    btn_state(input.button_a),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_EAST.0,
+                    btn_state(input.button_b),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_WEST.0,
+                    btn_state(input.button_x),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_NORTH.0,
+                    btn_state(input.button_y),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_START.0,
                     btn_state(input.button_start),
                 ),
-                InputEvent::new(EventType::KEY, Key::BTN_TR.0, btn_state(input.button_z)),
-                InputEvent::new(EventType::KEY, Key::BTN_THUMBL.0, btn_state(input.button_l)),
-                InputEvent::new(EventType::KEY, Key::BTN_THUMBR.0, btn_state(input.button_r)),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_X.0,
+                    EventType::KEY.0,
+                    KeyCode::BTN_TR.0,
+                    btn_state(input.button_z),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_THUMBL.0,
+                    btn_state(input.button_l),
+                ),
+                InputEvent::new(
+                    EventType::KEY.0,
+                    KeyCode::BTN_THUMBR.0,
+                    btn_state(input.button_r),
+                ),
+                InputEvent::new(
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_X.0,
                     input.main_stick.x.into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_Y.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_Y.0,
                     (!input.main_stick.y).into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_RX.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_RX.0,
                     input.c_stick.x.into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_RY.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_RY.0,
                     (!input.c_stick.y).into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_Z.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_Z.0,
                     input.left_trigger.into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_RZ.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_RZ.0,
                     input.right_trigger.into(),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_HAT0X.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_HAT0X.0,
                     hat_state(input.button_right, input.button_left),
                 ),
                 InputEvent::new(
-                    EventType::ABSOLUTE,
-                    AbsoluteAxisType::ABS_HAT0Y.0,
+                    EventType::ABSOLUTE.0,
+                    AbsoluteAxisCode::ABS_HAT0Y.0,
                     hat_state(input.button_down, input.button_up),
                 ),
             ])
