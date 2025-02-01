@@ -127,6 +127,13 @@
 
             meta = with lib; {
               description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter.";
+              longDescription = ''
+                A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter.
+
+                Udev rules can be added as:
+
+                  services.udev.packages = [ pkgs.gcfeeder ]
+              '';
               homepage = "https://github.com/Sirius902/gcfeeder";
               # NOTE(Sirius902) No bridges are implemented for darwin. Putting this here mostly so it can be built for local dev.
               platforms = platforms.linux ++ platforms.darwin;
