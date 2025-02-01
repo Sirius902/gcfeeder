@@ -63,8 +63,9 @@ impl<S: InputSource + 'static> App<S> {
         #[cfg(windows)] tray_receiver: channel::Receiver<TrayMessage>,
         log_receiver: channel::Receiver<LogMessage>,
     ) -> Self {
-        let config_path = dirs::config_dir()
+        let config_path = directories::BaseDirs::new()
             .expect("Failed to get config directory")
+            .config_dir()
             .join("gcfeeder")
             .join("gcfeeder.toml");
 
