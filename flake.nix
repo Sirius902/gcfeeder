@@ -55,7 +55,7 @@
             inherit src cargoVendorDir;
             strictDeps = true;
 
-            buildInputs = with pkgs; [
+            buildInputs = with pkgs; (lib.optionals stdenv.isLinux [
               libGL
               libxkbcommon
               vulkan-loader
@@ -64,7 +64,15 @@
               xorg.libXcursor
               xorg.libxcb
               xorg.libXi
-            ];
+
+              # Required for tray-icon.
+              gdk-pixbuf
+              glib
+              gtk3
+              libappindicator-gtk3
+              xdotool
+              zlib
+            ]);
           };
 
           cargoArtifacts = craneLib.buildDepsOnly commonArgs;
@@ -97,10 +105,13 @@
             src = fileSetForCrate ./crates/gcfeeder;
             cargoExtraArgs = "-p gcfeeder --no-default-features";
 
-            nativeBuildInputs = with pkgs; [
+            nativeBuildInputs = with pkgs; ([
               copyDesktopItems
               makeWrapper
-            ];
+            ] ++ lib.optionals stdenv.isLinux [
+              # Required for tray-icon.
+              pkg-config
+            ]);
 
             postInstall = ''
               wrapProgram $out/bin/gcfeeder \

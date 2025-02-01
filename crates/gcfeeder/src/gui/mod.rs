@@ -1,16 +1,11 @@
 use std::env;
 
 use app::App;
-#[cfg(windows)]
-use app::TrayMessage;
 use crossbeam::channel;
 use egui::Color32;
 use gcfeeder_core::adapter::poller::Poller;
-use image::EncodableLayout;
 
 use rusb::GlobalContext;
-#[cfg(windows)]
-use trayicon::{MenuBuilder, TrayIconBuilder};
 
 mod app;
 pub mod log;
@@ -41,33 +36,73 @@ pub fn run() -> eframe::Result<()> {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size(egui::vec2(600.0, 420.0))
             .with_icon(egui::IconData {
-                rgba: icon_data.as_bytes().to_vec(),
+                rgba: icon_data.to_vec(),
                 width: icon_dim.0,
                 height: icon_dim.1,
             }),
         ..Default::default()
     };
 
-    #[cfg(windows)]
-    let (_tray_icon, tray_rx) = {
-        const ICON_ICO: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/icon.ico"));
+    let _tray_icon = {
+        #[allow(unused_variables)]
+        let build = move || {
+            let tray_menu = tray_icon::menu::Menu::new();
+            let _ = tray_menu.append_items(&[
+                &tray_icon::menu::MenuItem::with_id("show", "Show", true, None),
+                &tray_icon::menu::MenuItem::with_id("hide", "Hide", true, None),
+                &tray_icon::menu::PredefinedMenuItem::separator(),
+                &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
+            ]);
 
-        let (tray_tx, tray_rx) = channel::unbounded();
+            tray_icon::TrayIconBuilder::new()
+                .with_menu(Box::new(tray_menu))
+                .with_tooltip("gcfeeder")
+                .with_icon(
+                    tray_icon::Icon::from_rgba(icon_data.to_vec(), icon_dim.0, icon_dim.1)
+                        .expect("icon to be valid"),
+                )
+                .build()
+        };
 
-        let tray_icon = TrayIconBuilder::new()
-            .sender_crossbeam(tray_tx)
-            .icon_from_buffer(ICON_ICO)
-            .tooltip("gcfeeder")
-            .menu(
-                MenuBuilder::new()
-                    .item("Show", TrayMessage::Show)
-                    .item("Hide", TrayMessage::Hide)
-                    .item("Exit", TrayMessage::Exit),
-            )
-            .build()
-            .unwrap();
+        #[cfg(windows)]
+        {
+            use windows::Win32::UI::WindowsAndMessaging::{
+                DispatchMessageW, GetMessageW, TranslateMessage, MSG,
+            };
 
-        (tray_icon, tray_rx)
+            std::thread::spawn(move || {
+                let icon = build().ok();
+                if icon.is_some() {
+                    let mut msg = MSG::default();
+                    while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
+                        unsafe {
+                            let _ = TranslateMessage(&msg);
+                            DispatchMessageW(&msg);
+                        }
+                    }
+                }
+            });
+
+            None::<tray_icon::TrayIcon>
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            std::thread::spawn(move || {
+                let icon = gtk::init().ok().and_then(|()| build().ok());
+                if icon.is_some() {
+                    gtk::main();
+                }
+            });
+
+            None::<tray_icon::TrayIcon>
+        }
+
+        #[cfg(not(any(windows, target_os = "linux")))]
+        {
+            ::log::warn!("System tray not implemented on this platform");
+            None::<tray_icon::TrayIcon>
+        }
     };
 
     let input_source = Poller::new(GlobalContext {});
@@ -75,9 +110,6 @@ pub fn run() -> eframe::Result<()> {
     eframe::run_native(
         format!("gcfeeder | {}", env!("GCFEEDER_VERSION")).as_str(),
         options,
-        #[cfg(windows)]
-        Box::new(move |_cc| Ok(Box::new(App::new(input_source, tray_rx, log_rx)))),
-        #[cfg(not(windows))]
         Box::new(move |_cc| Ok(Box::new(App::new(input_source, log_rx)))),
     )
 }

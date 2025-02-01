@@ -31,14 +31,6 @@ use panel::{
 mod panel;
 mod widget;
 
-#[cfg(windows)]
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TrayMessage {
-    Show,
-    Hide,
-    Exit,
-}
-
 pub struct App<S: InputSource + 'static> {
     log_panel: LogPanel,
     calibration_state: Option<CalibrationState>,
@@ -48,8 +40,6 @@ pub struct App<S: InputSource + 'static> {
     stats_open: bool,
     config: Config,
     config_path: PathBuf,
-    #[cfg(windows)]
-    tray_receiver: channel::Receiver<TrayMessage>,
     hidden: bool,
     input_source: S,
     feeders: Option<[Feeder<S::Listener>; Port::COUNT]>,
@@ -58,11 +48,7 @@ pub struct App<S: InputSource + 'static> {
 }
 
 impl<S: InputSource + 'static> App<S> {
-    pub fn new(
-        input_source: S,
-        #[cfg(windows)] tray_receiver: channel::Receiver<TrayMessage>,
-        log_receiver: channel::Receiver<LogMessage>,
-    ) -> Self {
+    pub fn new(input_source: S, log_receiver: channel::Receiver<LogMessage>) -> Self {
         let config_path = directories::BaseDirs::new()
             .expect("Failed to get config directory")
             .config_dir()
@@ -81,8 +67,6 @@ impl<S: InputSource + 'static> App<S> {
             stats_open: false,
             config,
             config_path,
-            #[cfg(windows)]
-            tray_receiver,
             hidden: false,
             input_source,
             feeders: Some(feeders),
@@ -273,18 +257,20 @@ impl<S: InputSource + 'static> App<S> {
             ctx.send_viewport_cmd(egui::ViewportCommand::Close);
         }
 
-        #[cfg(windows)]
-        while let Ok(message) = self.tray_receiver.try_recv() {
-            match message {
-                TrayMessage::Show => {
+        while let Ok(event) = tray_icon::menu::MenuEvent::receiver().try_recv() {
+            match event.id.as_ref() {
+                // FUTURE(Sirius902) There is a bug in egui not allowing the window to be shown again on Windows.
+                // https://github.com/emilk/egui/issues/5229
+                "show" => {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Visible(true));
                     self.hidden = false;
                 }
-                TrayMessage::Hide => {
+                "hide" => {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Visible(false));
                     self.hidden = true;
                 }
-                TrayMessage::Exit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                "quit" => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                _ => {}
             }
         }
 
