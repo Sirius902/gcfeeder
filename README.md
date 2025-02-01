@@ -22,7 +22,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 * [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases) must be installed.
 
 ### Linux
-* Install the `udev` rules file [here](rules/51-gcfeeder.rules) by placing it at `/etc/udev/rules.d`.
+* Install the `udev` rules file [here](rules/50-gcfeeder.rules) by placing it at `/etc/udev/rules.d`.
 * Reload the `udev` rules by using the following command.
 ```sh
 udevadm control --reload-rules && udevadm trigger
