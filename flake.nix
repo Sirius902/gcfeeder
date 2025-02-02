@@ -55,6 +55,11 @@
             inherit src cargoVendorDir;
             strictDeps = true;
 
+            nativeBuildInputs = with pkgs; (lib.optionals stdenv.isLinux [
+              # Required for tray-icon.
+              pkg-config
+            ]);
+
             buildInputs = with pkgs; (lib.optionals stdenv.isLinux [
               libGL
               libxkbcommon
@@ -105,12 +110,9 @@
             src = fileSetForCrate ./crates/gcfeeder;
             cargoExtraArgs = "-p gcfeeder --no-default-features";
 
-            nativeBuildInputs = with pkgs; ([
+            nativeBuildInputs = commonArgs.nativeBuildInputs ++ (with pkgs; [
               copyDesktopItems
               makeWrapper
-            ] ++ lib.optionals stdenv.isLinux [
-              # Required for tray-icon.
-              pkg-config
             ]);
 
             postInstall = ''
