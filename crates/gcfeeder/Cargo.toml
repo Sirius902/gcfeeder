@@ -9,7 +9,7 @@ version.workspace = true
 bincode = "1"
 crossbeam = "0.8"
 directories = "6"
-egui = "0.30"
+egui = "0.31"
 enum-iterator = "2"
 nalgebra = "0.33"
 once_cell = "1"
@@ -32,7 +32,7 @@ path = "../gcfeeder-core"
 [dependencies.eframe]
 default-features = false
 features = ["accesskit", "default_fonts", "wgpu"]
-version = "0.30"
+version = "0.31"
 
 [dependencies.image]
 default-features = false

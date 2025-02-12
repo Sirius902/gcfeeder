@@ -1,7 +1,9 @@
 use core::f32;
 
 use eframe::epaint;
-use egui::{Color32, FontSelection, Rgba, Rounding, Sense, Stroke, Vec2, WidgetText};
+use egui::{
+    Color32, CornerRadius, FontSelection, Rgba, Sense, Stroke, StrokeKind, Vec2, WidgetText,
+};
 
 pub struct Trigger<'a> {
     value: u8,
@@ -55,8 +57,13 @@ impl egui::Widget for Trigger<'_> {
                 Rgba::from_rgba_unmultiplied(color.r(), color.g(), color.b(), color.a() * 0.35);
 
             // Add background rect.
-            painter.rect_filled(rect, Rounding::ZERO, background_color);
-            painter.rect_stroke(rect, Rounding::ZERO, Stroke::new(1.0, border_color));
+            painter.rect_filled(rect, CornerRadius::ZERO, background_color);
+            painter.rect_stroke(
+                rect,
+                CornerRadius::ZERO,
+                Stroke::new(1.0, border_color),
+                StrokeKind::Inside,
+            );
 
             let scale_trigger = |n: u8| n as f32 / f32::from(u8::MAX) * Self::SIZE.y;
             let fill_top_right = rect.right_bottom() + Vec2::new(0.0, -scale_trigger(self.value));
@@ -64,7 +71,7 @@ impl egui::Widget for Trigger<'_> {
             // Add fill value.
             painter.rect_filled(
                 epaint::Rect::from_two_pos(rect.left_bottom(), fill_top_right),
-                Rounding::ZERO,
+                CornerRadius::ZERO,
                 self.color,
             );
 
@@ -93,7 +100,7 @@ impl egui::Widget for Trigger<'_> {
                     rect.right_bottom() + offset - Vec2::new(0.0, 0.5 * Self::MARKER_HEIGHT),
                 );
 
-                painter.rect_filled(marker_rect, Rounding::ZERO, color);
+                painter.rect_filled(marker_rect, CornerRadius::ZERO, color);
             };
 
             if let Some(markers) = self.markers {
