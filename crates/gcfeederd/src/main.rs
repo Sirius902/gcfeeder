@@ -19,12 +19,23 @@ async fn main() -> adapter::Result<()> {
     loop {
         let then = std::time::Instant::now();
 
-        let inputs = adapter.read_inputs();
-        let rumble = adapter.write_rumble([Rumble::Off; Port::COUNT]);
+        let adapter_task = async {
+            let inputs = adapter.read_inputs();
+            let rumble = adapter.write_rumble([Rumble::On; Port::COUNT]);
+            tokio::join!(inputs, rumble)
+        };
 
-        let (_inputs, _) = tokio::join!(inputs, rumble);
-
-        let now = std::time::Instant::now();
-        tracing::debug!("Poll time: {}ms", now.duration_since(then).subsec_millis());
+        tokio::select! {
+            _ = tokio::signal::ctrl_c() => {
+                adapter.reset_rumble().await?;
+                break;
+            },
+            _ = adapter_task => {
+                let now = std::time::Instant::now();
+                tracing::debug!("Poll time: {}ms", now.duration_since(then).subsec_millis());
+            }
+        }
     }
+
+    Ok(())
 }
