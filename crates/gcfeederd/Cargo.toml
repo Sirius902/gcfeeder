@@ -1,0 +1,16 @@
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+name = "gcfeederd"
+readme.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+gcinput = { path = "../gcinput" }
+nusb = "0.1"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
