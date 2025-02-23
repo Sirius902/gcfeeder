@@ -1,10 +1,6 @@
-use std::{ops::ControlFlow, result, time::Duration};
-
-use enum_iterator::{all, cardinality, Sequence};
 use gcinput::{Input, Rumble, Stick};
-use log::info;
-use rusb::{DeviceHandle, UsbContext};
-use thiserror::Error;
+use nusb::transfer::{ControlOut, ControlType, Recipient, RequestBuffer};
+use tracing::{debug, trace};
 
 pub mod poller;
 pub mod source;
@@ -12,158 +8,141 @@ pub mod source;
 const VID: u16 = 0x057E;
 const PID: u16 = 0x0337;
 
-const PAYLOAD_LEN: usize = 37;
+const INPUT_PAYLOAD_LEN: usize = 37;
 
-const ALLOWED_TIMEOUT: Duration = Duration::from_millis(16);
+pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("usb error: {0}")]
-    Usb(#[from] rusb::Error),
     #[error("no device")]
     NoDevice,
-    #[error("invalid payload")]
-    InvalidPayload,
+    #[error("device is missing endpoints")]
+    MissingEndpoints,
+    #[error("io error: {0}")]
+    Io(#[from] std::io::Error),
+    #[error("nusb transfer error: {0}")]
+    NusbTransfer(#[from] nusb::transfer::TransferError),
 }
-
-pub type Result<T> = result::Result<T, Error>;
 
 struct Endpoints {
     pub in_: u8,
     pub out: u8,
 }
 
-pub struct Adapter<T: UsbContext> {
-    handle: rusb::DeviceHandle<T>,
+pub struct Adapter {
+    interface: nusb::Interface,
     endpoints: Endpoints,
 }
 
-impl<T: UsbContext> Adapter<T> {
-    pub fn open(context: &T) -> Result<Self> {
-        let handle = Self::find_and_open_device(context)?;
+impl Adapter {
+    pub async fn open() -> Result<Self> {
+        trace!("Opening adapter...");
 
-        match handle.kernel_driver_active(0) {
-            Ok(b) => {
-                if b {
-                    handle.detach_kernel_driver(0)?;
-                }
-                Ok(())
+        // FUTURE(Sirius902) Use `watch_devices`.
+        let mut device: Option<nusb::Device> = None;
+        for device_info in nusb::list_devices()? {
+            if device_info.vendor_id() == VID && device_info.product_id() == PID {
+                debug!("Adapter candidate found");
+
+                // FUTURE(Sirius902) Don't fail the function if the adapter fails to open, try
+                // others.
+                device = Some(device_info.open()?);
+                break;
             }
-            Err(rusb::Error::NotSupported) => Ok(()),
-            Err(e) => Err(e),
-        }?;
+        }
 
-        handle.claim_interface(0)?;
+        let device = device.ok_or(Error::NoDevice)?;
+        let interface = device.detach_and_claim_interface(0)?;
 
-        let endpoints = Self::find_endpoints(&handle)?;
+        let endpoints = Self::find_endpoints(&interface)?;
 
         // From Dolphin:
         // This call makes Nyko-brand (and perhaps other) adapters work.
         // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
-        let _ = handle.write_control(0x21, 11, 0x0001, 0, &[], Duration::from_secs(1))?;
+        interface
+            .control_out(ControlOut {
+                control_type: ControlType::Class,
+                recipient: Recipient::Interface,
+                request: 11,
+                value: 0x0001,
+                index: 0x0,
+                data: &[],
+            })
+            .await
+            .into_result()?;
 
-        // Not sure what this does but Dolphin does it
-        let _ = handle.write_interrupt(endpoints.out, &[0x13], ALLOWED_TIMEOUT)?;
+        // Initialize writing controller rumble.
+        interface
+            .interrupt_out(endpoints.out, vec![0x13])
+            .await
+            .into_result()?;
 
-        info!("Connected to adapter");
+        let adapter = Self {
+            interface,
+            endpoints,
+        };
 
-        Ok(Self { handle, endpoints })
+        // Reset rumble just in case the adapter was rumbling previously.
+        adapter.reset_rumble().await?;
+
+        debug!("Connected to adapter");
+
+        Ok(adapter)
     }
 
-    pub fn read_inputs(&self) -> Result<[Option<Input>; Port::COUNT]> {
-        let mut payload = [0_u8; PAYLOAD_LEN];
-        let bytes_read =
-            self.handle
-                .read_interrupt(self.endpoints.in_, &mut payload, ALLOWED_TIMEOUT)?;
+    pub async fn read_inputs(&self) -> Result<[Option<Input>; Port::COUNT]> {
+        let payload = self
+            .interface
+            .interrupt_in(self.endpoints.in_, RequestBuffer::new(INPUT_PAYLOAD_LEN))
+            .await
+            .into_result()?;
 
-        if bytes_read == PAYLOAD_LEN && payload[0] == rusb::constants::LIBUSB_DT_HID {
-            Ok(inputs_from_payload(&payload))
-        } else {
-            Err(Error::InvalidPayload)
-        }
+        Ok(inputs_from_payload(&payload))
     }
 
-    pub fn write_rumble(&self, states: [Rumble; Port::COUNT]) -> Result<()> {
-        let payload = [
-            0x11,
-            states[0].into(),
-            states[1].into(),
-            states[2].into(),
-            states[3].into(),
-        ];
-
-        _ = self
-            .handle
-            .write_interrupt(self.endpoints.out, &payload, ALLOWED_TIMEOUT)?;
+    pub async fn write_rumble(&self, states: [Rumble; Port::COUNT]) -> Result<()> {
+        self.interface
+            .interrupt_out(
+                self.endpoints.out,
+                vec![
+                    0x11,
+                    states[0].into(),
+                    states[1].into(),
+                    states[2].into(),
+                    states[3].into(),
+                ],
+            )
+            .await
+            .into_result()?;
 
         Ok(())
     }
 
-    pub fn reset_rumble(&self) -> Result<()> {
-        self.write_rumble([Rumble::Off; Port::COUNT])
+    pub async fn reset_rumble(&self) -> Result<()> {
+        self.write_rumble([Rumble::Off; Port::COUNT]).await
     }
 
-    fn find_and_open_device(context: &T) -> Result<DeviceHandle<T>> {
-        let handle = context
-            .devices()?
-            .iter()
-            .filter(|device| {
-                device
-                    .device_descriptor()
-                    .map(|descriptor| {
-                        descriptor.vendor_id() == VID && descriptor.product_id() == PID
-                    })
-                    .unwrap_or(false)
-            })
-            .try_fold(Err(Error::NoDevice), |acc, device| {
-                if acc.is_err() {
-                    ControlFlow::Continue(device.open().map_err(Error::Usb))
-                } else {
-                    ControlFlow::Break(acc)
-                }
-            });
+    fn find_endpoints(interface: &nusb::Interface) -> Result<Endpoints> {
+        let mut in_: Option<u8> = None;
+        let mut out: Option<u8> = None;
 
-        match handle {
-            ControlFlow::Continue(c) => c,
-            ControlFlow::Break(b) => b,
-        }
-    }
-
-    /// Returns (`in_endpoint`, `out_endpoint`) if found, and if not, an error.
-    fn find_endpoints(handle: &rusb::DeviceHandle<T>) -> rusb::Result<Endpoints> {
-        let device = handle.device();
-        let config = device.config_descriptor(0)?;
-
-        let mut in_ = 0_u8;
-        let mut out = 0_u8;
-
-        for iface in config.interfaces() {
-            for descriptor in iface.descriptors() {
-                for endpoint in descriptor.endpoint_descriptors() {
-                    match endpoint.direction() {
-                        rusb::Direction::In => {
-                            in_ = endpoint.address();
-                        }
-                        rusb::Direction::Out => {
-                            out = endpoint.address();
-                        }
-                    }
+        for descriptor in interface.descriptors() {
+            for endpoint in descriptor.endpoints() {
+                match endpoint.direction() {
+                    nusb::transfer::Direction::In => in_ = Some(endpoint.address()),
+                    nusb::transfer::Direction::Out => out = Some(endpoint.address()),
                 }
             }
         }
 
-        Ok(Endpoints { in_, out })
+        Ok(Endpoints {
+            in_: in_.ok_or(Error::MissingEndpoints)?,
+            out: out.ok_or(Error::MissingEndpoints)?,
+        })
     }
 }
 
-impl<T: UsbContext> Drop for Adapter<T> {
-    fn drop(&mut self) {
-        let _ = self.reset_rumble();
-        info!("Disconnected from adapter");
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Sequence)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Port {
     One,
     Two,
@@ -172,7 +151,7 @@ pub enum Port {
 }
 
 impl Port {
-    pub const COUNT: usize = cardinality::<Self>();
+    pub const COUNT: usize = Self::all().len();
 
     #[must_use]
     pub const fn index(self) -> usize {
@@ -182,6 +161,11 @@ impl Port {
             Self::Three => 2,
             Self::Four => 3,
         }
+    }
+
+    #[must_use]
+    pub const fn all() -> &'static [Self] {
+        &[Self::One, Self::Two, Self::Three, Self::Four]
     }
 }
 
@@ -194,7 +178,7 @@ impl From<Port> for usize {
 impl TryFrom<usize> for Port {
     type Error = FromPortError;
 
-    fn try_from(src: usize) -> result::Result<Self, Self::Error> {
+    fn try_from(src: usize) -> std::result::Result<Self, Self::Error> {
         match src {
             0 => Ok(Self::One),
             1 => Ok(Self::Two),
@@ -211,10 +195,12 @@ pub enum FromPortError {
     OutOfRange,
 }
 
-fn inputs_from_payload(payload: &[u8; PAYLOAD_LEN]) -> [Option<Input>; Port::COUNT] {
+fn inputs_from_payload(payload: &[u8]) -> [Option<Input>; Port::COUNT] {
+    assert!(payload.len() == INPUT_PAYLOAD_LEN);
+
     let mut inputs = [None; Port::COUNT];
 
-    for port in all::<Port>() {
+    for port in Port::all() {
         let index = port.index();
         // type is 0 if no controller is plugged, 1 if wired, and 2 if wireless
         let controller_type = payload[1 + (9 * index)] >> 4;

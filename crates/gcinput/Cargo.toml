@@ -1,16 +1,15 @@
 [package]
+authors.workspace = true
+description.workspace = true
 edition.workspace = true
 name = "gcinput"
+readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
-[dependencies.nalgebra]
-optional = true
-version = "0.33"
-
-[dependencies.serde]
-features = ["derive"]
-version = "1"
+[dependencies]
+nalgebra = { version = "0.33", optional = true }
+serde = { version = "1", features = ["derive"] }
 
 [features]
 nalgebra = ["dep:nalgebra"]
