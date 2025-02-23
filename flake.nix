@@ -44,21 +44,8 @@
         craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
         src = craneLib.cleanCargoSource ./.;
 
-        cargoVendorDir = craneLib.vendorCargoDeps {
-          inherit src;
-
-          overrideVendorCargoPackage = p: drv:
-            if p.name == "libusb1-sys" && p.version == "0.7.0"
-            then
-              drv.overrideAttrs
-              (_old: {
-                patches = [./nix/patches/libusb1-sys.patch];
-              })
-            else drv;
-        };
-
         commonArgs = {
-          inherit src cargoVendorDir;
+          inherit src;
           strictDeps = true;
 
           nativeBuildInputs = with pkgs; (lib.optionals stdenv.isLinux [

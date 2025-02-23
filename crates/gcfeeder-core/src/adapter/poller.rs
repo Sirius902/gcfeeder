@@ -1,5 +1,5 @@
 use std::{
-    array, mem,
+    array, io, mem,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
@@ -9,9 +9,7 @@ use std::{
 };
 
 use crossbeam::atomic::AtomicCell;
-use enclose::enclose;
-use log::warn;
-use rusb::UsbContext;
+use tracing::warn;
 
 use crate::util::{
     cell_channel::{self, TrySendError},
@@ -29,25 +27,28 @@ type SenderData = (cell_channel::Sender<InputMessage>, Port);
 
 pub const ERROR_TIMEOUT: Duration = Duration::from_millis(8);
 
-pub struct Poller<T: UsbContext + 'static> {
-    context: Arc<Context<T>>,
+pub struct Poller {
+    context: Arc<Context>,
     thread: Option<JoinHandle<()>>,
 }
 
-impl<T: UsbContext> Poller<T> {
-    pub fn new(usb_context: T) -> Self {
-        let context = Arc::new(Context::new(usb_context));
-        let thread = thread::spawn(enclose!((context) move || context.poll_loop()));
+impl Poller {
+    pub fn new() -> Self {
+        // TODO(Sirius902) Implement.
+        todo!()
 
-        Self {
-            context,
-            thread: Some(thread),
-        }
+        // let context = Arc::new(Context::new());
+        // let thread = thread::spawn(enclose!((context) move || context.poll_loop()));
+        //
+        // Self {
+        //     context,
+        //     thread: Some(thread),
+        // }
     }
 }
 
-impl<T: UsbContext> InputSource for Poller<T> {
-    type Listener = Listener<T>;
+impl InputSource for Poller {
+    type Listener = Listener;
 
     fn average_poll_time(&self) -> Option<Duration> {
         *self.context.average_poll_time.lock().unwrap()
@@ -68,7 +69,7 @@ impl<T: UsbContext> InputSource for Poller<T> {
     }
 }
 
-impl<T: UsbContext> Drop for Poller<T> {
+impl Drop for Poller {
     fn drop(&mut self) {
         self.context.stop_flag.store(true, Ordering::Release);
 
@@ -78,64 +79,59 @@ impl<T: UsbContext> Drop for Poller<T> {
     }
 }
 
-struct Context<T: UsbContext> {
+struct Context {
     pub stop_flag: AtomicBool,
     pub connected: AtomicBool,
-    pub usb_context: T,
     pub rumble_states: [AtomicCell<Rumble>; Port::COUNT],
     pub senders: Mutex<Vec<SenderData>>,
     pub average_poll_time: Mutex<Option<Duration>>,
 }
 
-impl<T: UsbContext> Context<T> {
-    pub fn new(usb_context: T) -> Self {
+impl Context {
+    pub fn new() -> Self {
         Self {
             stop_flag: Default::default(),
             connected: Default::default(),
-            usb_context,
             rumble_states: Default::default(),
             senders: Default::default(),
             average_poll_time: Default::default(),
         }
     }
 
-    pub fn poll_loop(&self) {
-        let thread_pool = rayon::ThreadPoolBuilder::new()
-            .num_threads(2)
-            .build()
-            .unwrap();
-        let mut adapter: Option<Adapter<T>> = None;
+    pub async fn poll_loop(&self) {
+        let mut adapter: Option<Adapter> = None;
         let mut timer = AverageTimer::start(Duration::from_secs(1));
 
         while !self.stop_flag.load(Ordering::Acquire) {
-            let result = {
-                let adapter = match self.adapter_or_reload(&mut adapter) {
-                    Ok(a) => a,
-                    Err(e) => {
-                        warn!("Failed to connect to adapter: {}", e);
-                        thread::sleep(ERROR_TIMEOUT);
-                        continue;
-                    }
-                };
-
-                timer.reset();
-                let (input, rumble) = thread_pool.join(
-                    || self.process_input(adapter),
-                    || self.process_rumble(adapter),
-                );
-
-                input.and(rumble)
-            };
-
-            match result {
-                Err(super::Error::Usb(rusb::Error::Timeout)) => continue,
-                Err(e) => {
-                    adapter = None;
-                    warn!("Adapter error: {}", e);
-                    continue;
-                }
-                _ => (),
-            }
+            // TODO(Sirius902) Implement with aysnc.
+            // let result = {
+            //     let adapter = match self.adapter_or_reload(&mut adapter).await {
+            //         Ok(a) => a,
+            //         Err(e) => {
+            //             warn!("Failed to connect to adapter: {}", e);
+            //             thread::sleep(ERROR_TIMEOUT);
+            //             continue;
+            //         }
+            //     };
+            //
+            //     timer.reset();
+            //     let (input, rumble) = thread_pool.join(
+            //         || self.process_input(adapter),
+            //         || self.process_rumble(adapter),
+            //     );
+            //
+            //     input.and(rumble)
+            // };
+            //
+            // match result {
+            //     Err(super::Error::Io(e)) if e.kind() == io::ErrorKind::TimedOut => continue,
+            //     Err(e) => {
+            //         adapter = None;
+            //         warn!("Adapter error: {}", e);
+            //         continue;
+            //     }
+            //     _ => (),
+            // }
 
             *self.average_poll_time.lock().unwrap() = Some(timer.lap());
         }
@@ -143,8 +139,8 @@ impl<T: UsbContext> Context<T> {
         self.connected.store(false, Ordering::Release);
     }
 
-    fn process_input(&self, adapter: &Adapter<T>) -> super::Result<()> {
-        let inputs = adapter.read_inputs()?;
+    async fn process_input(&self, adapter: &Adapter) -> super::Result<()> {
+        let inputs = adapter.read_inputs().await?;
         let mut senders = self.senders.lock().unwrap();
 
         senders.retain(|(sender, port)| {
@@ -158,32 +154,34 @@ impl<T: UsbContext> Context<T> {
         Ok(())
     }
 
-    fn process_rumble(&self, adapter: &Adapter<T>) -> super::Result<()> {
-        adapter.write_rumble(array::from_fn(|i| self.rumble_states[i].load()))
+    async fn process_rumble(&self, adapter: &Adapter) -> super::Result<()> {
+        adapter
+            .write_rumble(array::from_fn(|i| self.rumble_states[i].load()))
+            .await
     }
 
-    fn adapter_or_reload<'a>(
+    async fn adapter_or_reload<'a>(
         &self,
-        adapter: &'a mut Option<Adapter<T>>,
-    ) -> super::Result<&'a mut Adapter<T>> {
+        adapter: &'a mut Option<Adapter>,
+    ) -> super::Result<&'a mut Adapter> {
         if let Some(adapter) = adapter {
             Ok(adapter)
         } else {
             self.connected.store(false, Ordering::Release);
-            let adapter = Ok(adapter.insert(Adapter::open(&self.usb_context)?));
+            let adapter = Ok(adapter.insert(Adapter::open().await?));
             self.connected.store(true, Ordering::Release);
             adapter
         }
     }
 }
 
-pub struct Listener<T: UsbContext> {
+pub struct Listener {
     receiver: cell_channel::Receiver<InputMessage>,
-    context: Arc<Context<T>>,
+    context: Arc<Context>,
     port: Port,
 }
 
-impl<T: UsbContext> InputListener for Listener<T> {
+impl InputListener for Listener {
     fn port(&self) -> Port {
         self.port
     }

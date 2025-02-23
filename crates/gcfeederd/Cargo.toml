@@ -8,6 +8,7 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
+gcfeeder-core = { path = "../gcfeeder-core" }
 gcinput = { path = "../gcinput" }
 nusb = "0.1"
 thiserror = "2"

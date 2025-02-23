@@ -7,11 +7,8 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
-[build-dependencies.git2]
-default-features = false
-features = []
-optional = true
-version = "0.20"
+[build-dependencies]
+git2 = { version = "0.20", default-features = false, optional = true }
 
 [target.'cfg(target_os = "windows")'.build-dependencies]
 embed-resource = "3"

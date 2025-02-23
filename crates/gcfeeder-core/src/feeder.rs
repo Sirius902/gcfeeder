@@ -8,22 +8,20 @@ use std::{
     time::Duration,
 };
 
+use bridge::Bridge;
 use crossbeam::atomic::AtomicCell;
-use enclose::enclose;
-use enum_iterator::Sequence;
 use gcinput::Input;
-use log::warn;
-use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
+use mapping::Layer;
 use serde::{Deserialize, Serialize};
+use tracing::warn;
 
 use crate::{
     adapter::{poller::ERROR_TIMEOUT, source::InputListener},
-    bridge::{self, Bridge as BridgeTrait, Driver, Error as BridgeError},
+    bridge::{self, Driver, Error as BridgeError},
     calibration::{SticksCalibration, TriggersCalibration},
     mapping::{
         self,
         layers::{self, AnalogScaling, CenterCalibration, EssInversion},
-        Layer as LayerTrait,
     },
     util::{
         cell_channel::{self, RecvTimeoutError, TrySendError},
@@ -35,12 +33,10 @@ use crate::{
 use crate::bridge::vigem::Config as ViGEmConfig;
 
 type Result<T> = std::result::Result<T, BridgeError>;
-type Bridge = bridge::BridgeImpl;
 
 pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = cell_channel::Sender<Record>;
 pub type Receiver = cell_channel::Receiver<Record>;
-pub type Layer = mapping::LayerImpl;
 
 // TODO: Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
@@ -52,31 +48,29 @@ pub struct Feeder<L: InputListener + 'static> {
 
 impl<L: InputListener + 'static> Feeder<L> {
     pub fn new(config: Config, input_source: L) -> Self {
-        let internal_layers: Vec<Layer> = vec![CenterCalibration::default().into()];
-        let mut layers: Vec<Layer> = Vec::new();
+        let internal_layers: Vec<Box<dyn Layer>> = vec![Box::new(CenterCalibration::default())];
+        let mut layers: Vec<Box<dyn Layer>> = Vec::new();
 
         if (config.analog_scale.abs() - 1.0).abs() >= 1e-10 {
-            layers.push(AnalogScaling::new(config.analog_scale).into());
+            layers.push(Box::new(AnalogScaling::new(config.analog_scale)));
         }
 
         if let Some(map) = config.ess.inversion_mapping {
-            layers.push(map.into());
+            layers.push(Box::new(map));
         }
 
         if config.calibration.enabled {
-            layers.push(
-                layers::Calibration::new(
-                    config.calibration.stick_data,
-                    config.calibration.trigger_data,
-                )
-                .into(),
-            );
+            layers.push(Box::new(layers::Calibration::new(
+                config.calibration.stick_data,
+                config.calibration.trigger_data,
+            )));
         }
 
         let context = Arc::new(Context::new(config, input_source));
-        let thread = Some(thread::spawn(
-            enclose!((context) move || context.feed_loop(config.rumble, internal_layers, layers)),
-        ));
+        let thread = Some(thread::spawn({
+            let context = context.clone();
+            move || context.feed_loop(config.rumble, internal_layers, layers)
+        }));
 
         Self { context, thread }
     }
@@ -132,7 +126,6 @@ struct Context<L: InputListener> {
     pub callbacks: Mutex<Vec<Box<Callback>>>,
     pub senders: Mutex<Vec<Sender>>,
     pub average_feed_time: Mutex<Option<Duration>>,
-    pub thread_pool: rayon::ThreadPool,
 }
 
 impl<L: InputListener> Context<L> {
@@ -146,20 +139,16 @@ impl<L: InputListener> Context<L> {
             calibration_sender: Default::default(),
             senders: Default::default(),
             average_feed_time: Default::default(),
-            thread_pool: rayon::ThreadPoolBuilder::new()
-                .num_threads(2)
-                .build()
-                .unwrap(),
         }
     }
 
     pub fn feed_loop(
         &self,
         rumble: RumbleSetting,
-        mut internal_layers: Vec<Layer>,
-        mut layers: Vec<Layer>,
+        mut internal_layers: Vec<Box<dyn Layer>>,
+        mut layers: Vec<Box<dyn Layer>>,
     ) {
-        let mut bridge: Option<Bridge> = None;
+        let mut bridge: Option<Box<dyn Bridge>> = None;
         let mut timer = AverageTimer::start(Duration::from_secs(1));
 
         while !self.stop_flag.load(Ordering::Acquire) {
@@ -186,7 +175,7 @@ impl<L: InputListener> Context<L> {
 
                 match self.input_source.recv_timeout(INPUT_TIMEOUT) {
                     Ok(input) => {
-                        let apply_layers = |input: Option<Input>, layers: &mut [Layer]| {
+                        let apply_layers = |input: Option<Input>, layers: &mut [Box<dyn Layer>]| {
                             layers
                                 .iter_mut()
                                 .fold(input, |input, layer| layer.apply(input))
@@ -223,24 +212,15 @@ impl<L: InputListener> Context<L> {
             match record {
                 Ok(record) => {
                     {
-                        self.thread_pool.join(
-                            || {
-                                let mut callbacks = self.callbacks.lock().unwrap();
-                                callbacks
-                                    .par_iter_mut()
-                                    .for_each(|callback| callback(&record));
-                            },
-                            || {
-                                let mut senders = self.senders.lock().unwrap();
+                        let mut callbacks = self.callbacks.lock().unwrap();
+                        callbacks.iter_mut().for_each(|callback| callback(&record));
+                    }
 
-                                senders.retain(|sender| {
-                                    !matches!(
-                                        sender.try_send(record),
-                                        Err(TrySendError::Disconnected(_))
-                                    )
-                                });
-                            },
-                        );
+                    {
+                        let mut senders = self.senders.lock().unwrap();
+                        senders.retain(|sender| {
+                            !matches!(sender.try_send(record), Err(TrySendError::Disconnected(_)))
+                        });
                     }
 
                     *self.average_feed_time.lock().unwrap() = Some(timer.lap());
@@ -256,7 +236,10 @@ impl<L: InputListener> Context<L> {
         self.connected.store(false, Ordering::Release);
     }
 
-    fn bridge_or_reload<'a>(&self, bridge: &'a mut Option<Bridge>) -> Result<&'a mut Bridge> {
+    fn bridge_or_reload<'a>(
+        &self,
+        bridge: &'a mut Option<Box<dyn Bridge>>,
+    ) -> Result<&'a mut Box<dyn Bridge>> {
         if let Some(bridge) = bridge {
             Ok(bridge)
         } else {
@@ -370,11 +353,18 @@ pub struct EssConfig {
     pub inversion_mapping: Option<EssInversion>,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RumbleSetting {
     On,
     Off,
+}
+
+impl RumbleSetting {
+    #[must_use]
+    pub const fn all() -> &'static [Self] {
+        &[Self::On, Self::Off]
+    }
 }
 
 impl Default for RumbleSetting {

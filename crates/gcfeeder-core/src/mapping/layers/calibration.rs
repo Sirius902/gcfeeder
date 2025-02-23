@@ -1,4 +1,4 @@
-use log::warn;
+use tracing::warn;
 
 use crate::{
     calibration::{SticksCalibration, TriggersCalibration},

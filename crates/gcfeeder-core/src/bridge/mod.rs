@@ -1,5 +1,3 @@
-use enum_dispatch::enum_dispatch;
-use enum_iterator::Sequence;
 use gcinput::{Input, Rumble};
 use serde::{Deserialize, Serialize};
 
@@ -15,7 +13,6 @@ pub mod vigem;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[enum_dispatch]
 pub trait Bridge {
     fn driver_name(&self) -> &'static str;
     fn feed(&self, input: &Option<Input>) -> Result<()>;
@@ -33,17 +30,7 @@ pub enum Error {
     Evdev(#[from] evdev::Error),
 }
 
-#[enum_dispatch(Bridge)]
-pub enum BridgeImpl {
-    #[cfg(target_os = "windows")]
-    ViGEm(vigem::ViGEmBridge),
-    #[cfg(target_os = "linux")]
-    Evdev(evdev::EvdevBridge),
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-    Dummy(dummy::DummyBridge),
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Driver {
     #[cfg(target_os = "windows")]
@@ -55,10 +42,13 @@ pub enum Driver {
 }
 
 impl Driver {
-    pub fn create_bridge(self, #[allow(unused)] config: &feeder::Config) -> Result<BridgeImpl> {
+    pub fn create_bridge(
+        self,
+        #[allow(unused)] config: &feeder::Config,
+    ) -> Result<Box<dyn Bridge>> {
         match self {
             #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-            Self::Dummy => Ok(dummy::DummyBridge.into()),
+            Self::Dummy => Ok(Box::new(dummy::DummyBridge)),
             #[cfg(target_os = "windows")]
             Self::ViGEm => {
                 vigem::ViGEmBridge::new(config.vigem_config, vigem_client::Client::connect()?)
@@ -66,13 +56,24 @@ impl Driver {
                     .map_err(Into::into)
             }
             #[cfg(target_os = "linux")]
-            Self::Evdev => Ok(evdev::EvdevBridge::new().into()),
+            Self::Evdev => Ok(Box::new(evdev::EvdevBridge::new())),
         }
     }
 }
 
 impl Default for Driver {
     fn default() -> Self {
-        Self::first().expect("No input drivers available")
+        #[cfg(target_os = "windows")]
+        {
+            Self::ViGEm
+        }
+        #[cfg(target_os = "linux")]
+        {
+            Self::Evdev
+        }
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        {
+            Self::Dummy
+        }
     }
 }

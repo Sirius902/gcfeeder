@@ -1131,12 +1131,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "enclose"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bef4f6f904480430009ad8f22edc9573e26e4f137365f014d7ea998d5341639a"
-
-[[package]]
 name = "endi"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1467,15 +1461,12 @@ version = "3.0.1"
 dependencies = [
  "conv",
  "crossbeam",
- "enclose",
  "evdev",
  "gcinput",
  "nalgebra",
  "nix",
  "nusb",
  "once_cell",
- "rayon",
- "rusb",
  "serde",
  "thiserror 2.0.11",
  "tokio",
@@ -1487,6 +1478,7 @@ dependencies = [
 name = "gcfeederd"
 version = "3.0.1"
 dependencies = [
+ "gcfeeder-core",
  "gcinput",
  "nusb",
  "thiserror 2.0.11",

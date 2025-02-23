@@ -9,7 +9,6 @@ use std::{
     time::Duration,
 };
 
-use enclose::enclose;
 use evdev::{
     uinput::VirtualDevice, AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode,
     InputEvent, KeyCode, UinputAbsSetup,
@@ -47,9 +46,13 @@ impl EvdevBridge {
         let rumbler = Arc::new(Mutex::new(Default::default()));
         let stop_flag = Arc::new(AtomicBool::new(false));
 
-        let rumble_thread = Some(thread::spawn(
-            enclose!((device, epoll_handle, rumbler, stop_flag) move || Self::rumble_loop(device, epoll_handle, rumbler, stop_flag)),
-        ));
+        let rumble_thread = Some(thread::spawn({
+            let device = device.clone();
+            let epoll_handle = epoll_handle.clone();
+            let rumbler = rumbler.clone();
+            let stop_flag = stop_flag.clone();
+            move || Self::rumble_loop(device, epoll_handle, rumbler, stop_flag)
+        }));
 
         Self {
             device,
@@ -207,7 +210,7 @@ impl EvdevBridge {
                                         rumbler.lock().unwrap().update_strength(strength);
                                     }
                                     _ => {
-                                        log::warn!(
+                                        tracing::warn!(
                                             "unsupported ff effect: {:?}",
                                             event.effect().kind
                                         );
@@ -232,7 +235,7 @@ impl EvdevBridge {
                             }
                             evdev::EventSummary::ForceFeedback(_ev, _code, _value) => {}
                             _ => {
-                                log::debug!("Unknown evdev event = {:?}", event);
+                                tracing::debug!("Unknown evdev event = {:?}", event);
                             }
                         }
                     }

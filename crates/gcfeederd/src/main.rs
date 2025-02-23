@@ -1,7 +1,6 @@
+use gcfeeder_core::adapter;
 use gcinput::Rumble;
 use tracing_subscriber::{prelude::*, EnvFilter};
-
-use gcfeederd::adapter::{self, Port};
 
 #[tokio::main]
 async fn main() -> adapter::Result<()> {
@@ -21,7 +20,7 @@ async fn main() -> adapter::Result<()> {
 
         let adapter_task = async {
             let inputs = adapter.read_inputs();
-            let rumble = adapter.write_rumble([Rumble::On; Port::COUNT]);
+            let rumble = adapter.write_rumble([Rumble::On; adapter::Port::COUNT]);
             tokio::join!(inputs, rumble)
         };
 

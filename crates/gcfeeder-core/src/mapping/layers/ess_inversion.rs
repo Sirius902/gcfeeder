@@ -1,11 +1,10 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
-use enum_iterator::Sequence;
 use gcinput::{Input, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 
 use crate::mapping;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EssInversion {
     #[serde(rename = "oot-vc")]
     OotVc,
@@ -38,6 +37,11 @@ impl EssInversion {
 
     pub fn apply_scaling(coords: [u8; 2]) -> [u8; 2] {
         gc_to_n64(coords)
+    }
+
+    #[must_use]
+    pub const fn all() -> &'static [Self] {
+        &[Self::OotVc, Self::MmVc, Self::Z64Gc]
     }
 }
 
