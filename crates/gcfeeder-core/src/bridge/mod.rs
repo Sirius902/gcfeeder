@@ -11,6 +11,8 @@ pub mod rumble;
 #[cfg(target_os = "windows")]
 pub mod vigem;
 
+// FUTURE(Sirius902) Rework bridges to be async?
+
 pub type Result<T> = std::result::Result<T, Error>;
 
 pub trait Bridge {

@@ -38,7 +38,7 @@ pub type Callback = dyn FnMut(&Record) + Send;
 pub type Sender = cell_channel::Sender<Record>;
 pub type Receiver = cell_channel::Receiver<Record>;
 
-// TODO: Make this come from the poll rate on the adapter.
+// FUTURE(Sirius902) Make this come from the poll rate on the adapter.
 pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
 
 pub struct Feeder<L: InputListener + 'static> {

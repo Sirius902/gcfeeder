@@ -1,4 +1,7 @@
-use std::time::{Duration, Instant};
+use std::{
+    future::Future,
+    time::{Duration, Instant},
+};
 
 use gcinput::Rumble;
 
@@ -9,12 +12,12 @@ pub trait InputSource {
     type Listener: InputListener;
 
     #[must_use]
-    fn average_poll_time(&self) -> Option<Duration>;
+    fn average_poll_time(&self) -> impl Future<Output = Option<Duration>>;
 
     #[must_use]
     fn connected(&self) -> bool;
 
-    fn add_listener(&self, port: Port) -> Self::Listener;
+    fn add_listener(&self, port: Port) -> impl Future<Output = Self::Listener>;
 }
 
 pub trait InputListener: Sync + Send {

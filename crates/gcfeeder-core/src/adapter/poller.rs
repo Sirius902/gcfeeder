@@ -2,13 +2,13 @@ use std::{
     array, io, mem,
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
+        Arc,
     },
-    thread::{self, JoinHandle},
     time::{Duration, Instant},
 };
 
 use crossbeam::atomic::AtomicCell;
+use tokio::{sync::Mutex, task::JoinHandle};
 use tracing::warn;
 
 use crate::util::{
@@ -29,38 +29,46 @@ pub const ERROR_TIMEOUT: Duration = Duration::from_millis(8);
 
 pub struct Poller {
     context: Arc<Context>,
-    thread: Option<JoinHandle<()>>,
+    task: Option<JoinHandle<()>>,
 }
 
 impl Poller {
     pub fn new() -> Self {
-        // TODO(Sirius902) Implement.
-        todo!()
+        let context = Arc::new(Context::new());
+        let task = tokio::task::spawn({
+            let context = context.clone();
+            async move {
+                context.poll_loop().await;
+            }
+        });
 
-        // let context = Arc::new(Context::new());
-        // let thread = thread::spawn(enclose!((context) move || context.poll_loop()));
-        //
-        // Self {
-        //     context,
-        //     thread: Some(thread),
-        // }
+        Self {
+            context,
+            task: Some(task),
+        }
+    }
+}
+
+impl Default for Poller {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
 impl InputSource for Poller {
     type Listener = Listener;
 
-    fn average_poll_time(&self) -> Option<Duration> {
-        *self.context.average_poll_time.lock().unwrap()
+    async fn average_poll_time(&self) -> Option<Duration> {
+        *self.context.average_poll_time.lock().await
     }
 
     fn connected(&self) -> bool {
         self.context.connected.load(Ordering::Acquire)
     }
 
-    fn add_listener(&self, port: Port) -> Self::Listener {
+    async fn add_listener(&self, port: Port) -> Self::Listener {
         let (sender, receiver) = cell_channel::channel();
-        self.context.senders.lock().unwrap().push((sender, port));
+        self.context.senders.lock().await.push((sender, port));
         Listener {
             receiver,
             context: self.context.clone(),
@@ -73,8 +81,9 @@ impl Drop for Poller {
     fn drop(&mut self) {
         self.context.stop_flag.store(true, Ordering::Release);
 
-        if let Some(thread) = self.thread.take() {
-            mem::drop(thread.join());
+        // TODO(Sirius902) Figure out what to do here. Can't await it if we're not async.
+        if let Some(task) = self.task.take() {
+            mem::drop(task);
         }
     }
 }
@@ -103,45 +112,43 @@ impl Context {
         let mut timer = AverageTimer::start(Duration::from_secs(1));
 
         while !self.stop_flag.load(Ordering::Acquire) {
-            // TODO(Sirius902) Implement with aysnc.
-            // let result = {
-            //     let adapter = match self.adapter_or_reload(&mut adapter).await {
-            //         Ok(a) => a,
-            //         Err(e) => {
-            //             warn!("Failed to connect to adapter: {}", e);
-            //             thread::sleep(ERROR_TIMEOUT);
-            //             continue;
-            //         }
-            //     };
-            //
-            //     timer.reset();
-            //     let (input, rumble) = thread_pool.join(
-            //         || self.process_input(adapter),
-            //         || self.process_rumble(adapter),
-            //     );
-            //
-            //     input.and(rumble)
-            // };
-            //
-            // match result {
-            //     Err(super::Error::Io(e)) if e.kind() == io::ErrorKind::TimedOut => continue,
-            //     Err(e) => {
-            //         adapter = None;
-            //         warn!("Adapter error: {}", e);
-            //         continue;
-            //     }
-            //     _ => (),
-            // }
+            let result = {
+                let adapter = match self.adapter_or_reload(&mut adapter).await {
+                    Ok(a) => a,
+                    Err(e) => {
+                        warn!("Failed to connect to adapter: {}", e);
+                        tokio::time::sleep(ERROR_TIMEOUT).await;
+                        continue;
+                    }
+                };
 
-            *self.average_poll_time.lock().unwrap() = Some(timer.lap());
+                timer.reset();
+
+                let inputs = self.process_inputs(adapter);
+                let rumble = self.process_rumble(adapter);
+                let (inputs, rumble) = tokio::join!(inputs, rumble);
+                inputs.and(rumble)
+            };
+
+            match result {
+                Err(super::Error::Io(e)) if e.kind() == io::ErrorKind::TimedOut => continue,
+                Err(e) => {
+                    adapter = None;
+                    warn!("Adapter error: {}", e);
+                    continue;
+                }
+                _ => (),
+            }
+
+            *self.average_poll_time.lock().await = Some(timer.lap());
         }
 
         self.connected.store(false, Ordering::Release);
     }
 
-    async fn process_input(&self, adapter: &Adapter) -> super::Result<()> {
+    async fn process_inputs(&self, adapter: &Adapter) -> super::Result<()> {
         let inputs = adapter.read_inputs().await?;
-        let mut senders = self.senders.lock().unwrap();
+        let mut senders = self.senders.lock().await;
 
         senders.retain(|(sender, port)| {
             let index = port.index();
