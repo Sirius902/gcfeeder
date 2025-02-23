@@ -32,7 +32,7 @@ For a tutorial follow Dolphin's guide [here](https://dolphin-emu.org/docs/guides
 
 ### Linux
 
-* Install the `udev` rules file [here](rules/50-gcfeeder.rules) by placing it at
+* Install the `udev` rules file [here](rules/50-gcfeederd.rules) by placing it at
 `/etc/udev/rules.d`.
 * Reload the `udev` rules by using the following command.
 
