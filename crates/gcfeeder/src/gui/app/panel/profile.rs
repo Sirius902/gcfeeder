@@ -89,7 +89,7 @@ impl<'a> ProfilePanel<'a> {
                 ui.label("Analog Scale");
             });
 
-            #[cfg(windows)]
+            #[cfg(target_os = "windows")]
             ui.group(|ui| {
                 ui.label("ViGEm");
 

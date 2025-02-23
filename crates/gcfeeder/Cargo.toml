@@ -13,7 +13,7 @@ features = []
 optional = true
 version = "0.20"
 
-[target.'cfg(windows)'.build-dependencies]
+[target.'cfg(target_os = "windows")'.build-dependencies]
 embed-resource = "3"
 image = { version = "0.25", features = [
   "png",
@@ -47,7 +47,7 @@ toml = "0.8"
 tray-icon = "0.19"
 winit = "0.30"
 
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.60", features = ["Win32_UI_WindowsAndMessaging"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]

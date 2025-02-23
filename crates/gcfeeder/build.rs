@@ -3,7 +3,7 @@ use std::env;
 fn main() {
     emit_version("GCFEEDER_VERSION");
 
-    #[cfg(windows)]
+    #[cfg(target_os = "windows")]
     embed_icon();
 }
 
@@ -58,7 +58,7 @@ fn emit_git_version() -> Result<String, git2::Error> {
     ))
 }
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 fn embed_icon() {
     use std::{
         fs::File,

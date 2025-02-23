@@ -5,12 +5,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::feeder;
 
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(not(any(target_os = "windows", target_os = "linux")))]
 pub mod dummy;
 #[cfg(target_os = "linux")]
 pub mod evdev;
 pub mod rumble;
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 pub mod vigem;
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -25,7 +25,7 @@ pub trait Bridge {
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[cfg(windows)]
+    #[cfg(target_os = "windows")]
     #[error("vigem: {0}")]
     ViGEm(#[from] vigem_client::Error),
     #[cfg(target_os = "linux")]
@@ -35,31 +35,31 @@ pub enum Error {
 
 #[enum_dispatch(Bridge)]
 pub enum BridgeImpl {
-    #[cfg(windows)]
+    #[cfg(target_os = "windows")]
     ViGEm(vigem::ViGEmBridge),
     #[cfg(target_os = "linux")]
     Evdev(evdev::EvdevBridge),
-    #[cfg(not(any(windows, target_os = "linux")))]
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     Dummy(dummy::DummyBridge),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
 #[serde(rename_all = "lowercase")]
 pub enum Driver {
-    #[cfg(windows)]
+    #[cfg(target_os = "windows")]
     ViGEm,
     #[cfg(target_os = "linux")]
     Evdev,
-    #[cfg(not(any(windows, target_os = "linux")))]
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     Dummy,
 }
 
 impl Driver {
     pub fn create_bridge(self, #[allow(unused)] config: &feeder::Config) -> Result<BridgeImpl> {
         match self {
-            #[cfg(not(any(windows, target_os = "linux")))]
+            #[cfg(not(any(target_os = "windows", target_os = "linux")))]
             Self::Dummy => Ok(dummy::DummyBridge.into()),
-            #[cfg(windows)]
+            #[cfg(target_os = "windows")]
             Self::ViGEm => {
                 vigem::ViGEmBridge::new(config.vigem_config, vigem_client::Client::connect()?)
                     .map(Into::into)

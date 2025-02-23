@@ -64,7 +64,7 @@ pub fn run() -> eframe::Result<()> {
                 .build()
         };
 
-        #[cfg(windows)]
+        #[cfg(target_os = "windows")]
         {
             use windows::Win32::UI::WindowsAndMessaging::{
                 DispatchMessageW, GetMessageW, TranslateMessage, MSG,
@@ -98,7 +98,7 @@ pub fn run() -> eframe::Result<()> {
             None::<tray_icon::TrayIcon>
         }
 
-        #[cfg(not(any(windows, target_os = "linux")))]
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
         {
             ::log::warn!("System tray not implemented on this platform");
             None::<tray_icon::TrayIcon>

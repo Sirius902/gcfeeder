@@ -31,7 +31,7 @@ use crate::{
     },
 };
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 use crate::bridge::vigem::Config as ViGEmConfig;
 
 type Result<T> = std::result::Result<T, BridgeError>;
@@ -338,7 +338,7 @@ pub struct Config {
     pub driver: Driver,
     pub rumble: RumbleSetting,
     pub analog_scale: f64,
-    #[cfg(windows)]
+    #[cfg(target_os = "windows")]
     pub vigem_config: ViGEmConfig,
     pub calibration: CalibrationConfig,
     pub ess: EssConfig,
@@ -350,7 +350,7 @@ impl Default for Config {
             driver: Default::default(),
             rumble: Default::default(),
             analog_scale: 1.0,
-            #[cfg(windows)]
+            #[cfg(target_os = "windows")]
             vigem_config: Default::default(),
             calibration: Default::default(),
             ess: Default::default(),
