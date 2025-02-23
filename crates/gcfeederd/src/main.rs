@@ -35,8 +35,8 @@ async fn main() -> adapter::Result<()> {
     loop {
         tokio::select! {
             _ = tokio::signal::ctrl_c() => {
-                // TODO(Sirius902) `feeder.close()`? Stop rumbling.
-                drop(feeder);
+                feeder.close().await;
+                poller.close().await;
                 break;
             }
             _ = stats_interval.tick() => {

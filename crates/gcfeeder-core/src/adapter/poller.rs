@@ -1,5 +1,5 @@
 use std::{
-    array, io, mem,
+    array, io,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc,
@@ -47,6 +47,14 @@ impl Poller {
             task: Some(task),
         }
     }
+
+    pub async fn close(mut self) {
+        self.context.stop_flag.store(true, Ordering::Release);
+
+        if let Some(task) = self.task.take() {
+            let _ = task.await;
+        }
+    }
 }
 
 impl Default for Poller {
@@ -73,18 +81,6 @@ impl InputSource for Poller {
             receiver,
             context: self.context.clone(),
             port,
-        }
-    }
-}
-
-impl Drop for Poller {
-    fn drop(&mut self) {
-        self.context.stop_flag.store(true, Ordering::Release);
-
-        // TODO(Sirius902) Figure out what to do here. Can't await it if we're not async.
-        if let Some(task) = self.task.take() {
-            task.abort();
-            mem::drop(task);
         }
     }
 }

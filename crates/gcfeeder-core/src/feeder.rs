@@ -1,5 +1,4 @@
 use std::{
-    mem,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc,
@@ -79,6 +78,14 @@ impl<L: InputListener + 'static> Feeder<L> {
         Self { context, task }
     }
 
+    pub async fn close(mut self) {
+        self.context.stop_flag.store(true, Ordering::Release);
+
+        if let Some(task) = self.task.take() {
+            let _ = task.await;
+        }
+    }
+
     #[must_use]
     pub async fn average_feed_time(&self) -> Option<Duration> {
         *self.context.average_feed_time.lock().await
@@ -101,18 +108,6 @@ impl<L: InputListener + 'static> Feeder<L> {
 
     pub async fn start_calibration(&self, sender: CalibrationSender) {
         *self.context.calibration_sender.lock().await = Some(sender);
-    }
-}
-
-impl<L: InputListener> Drop for Feeder<L> {
-    fn drop(&mut self) {
-        self.context.stop_flag.store(true, Ordering::Release);
-
-        // TODO(Sirius902) Figure out what to do here. Can't await it if we're not async.
-        if let Some(task) = self.task.take() {
-            task.abort();
-            mem::drop(task);
-        }
     }
 }
 
