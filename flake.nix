@@ -11,8 +11,15 @@
     };
   };
 
-  outputs = { self, nixpkgs, crane, fenix, flake-parts, ... }@inputs:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = {
+    self,
+    nixpkgs,
+    crane,
+    fenix,
+    flake-parts,
+    ...
+  } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -20,76 +27,78 @@
         "aarch64-darwin"
       ];
 
-      perSystem = { system, ... }:
-        let
-          pkgs = import nixpkgs {
-            inherit system;
+      perSystem = {system, ...}: let
+        pkgs = import nixpkgs {
+          inherit system;
 
-            overlays = [ fenix.overlays.default ];
-          };
+          overlays = [fenix.overlays.default];
+        };
 
-          inherit (pkgs) lib;
+        inherit (pkgs) lib;
 
-          toolchain = fenix.packages.${system}.fromToolchainFile {
-            file = ./rust-toolchain.toml;
-            sha256 = "sha256-rqQlvQj2k8ohzPcGAr7kCsd2zkt033PaUbQWkNWWJd8=";
-          };
+        toolchain = fenix.packages.${system}.fromToolchainFile {
+          file = ./rust-toolchain.toml;
+          sha256 = "sha256-rqQlvQj2k8ohzPcGAr7kCsd2zkt033PaUbQWkNWWJd8=";
+        };
 
-          craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
-          src = craneLib.cleanCargoSource ./.;
+        craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
+        src = craneLib.cleanCargoSource ./.;
 
-          cargoVendorDir = craneLib.vendorCargoDeps {
-            inherit src;
+        cargoVendorDir = craneLib.vendorCargoDeps {
+          inherit src;
 
-            overrideVendorCargoPackage = p: drv:
-              if p.name == "libusb1-sys" && p.version == "0.7.0" then
-                drv.overrideAttrs
-                  (_old: {
-                    patches = [ ./nix/patches/libusb1-sys.patch ];
-                  })
-              else
-                drv;
-          };
+          overrideVendorCargoPackage = p: drv:
+            if p.name == "libusb1-sys" && p.version == "0.7.0"
+            then
+              drv.overrideAttrs
+              (_old: {
+                patches = [./nix/patches/libusb1-sys.patch];
+              })
+            else drv;
+        };
 
-          commonArgs = {
-            inherit src cargoVendorDir;
-            strictDeps = true;
+        commonArgs = {
+          inherit src cargoVendorDir;
+          strictDeps = true;
 
-            nativeBuildInputs = with pkgs; (lib.optionals stdenv.isLinux [
-              # Required for tray-icon.
-              pkg-config
-            ]);
+          nativeBuildInputs = with pkgs; (lib.optionals stdenv.isLinux [
+            # Required for tray-icon.
+            pkg-config
+          ]);
 
-            buildInputs = with pkgs; (lib.optionals stdenv.isLinux [
-              libGL
-              libxkbcommon
-              vulkan-loader
-              wayland
-              xorg.libX11
-              xorg.libXcursor
-              xorg.libxcb
-              xorg.libXi
+          buildInputs = with pkgs; (lib.optionals stdenv.isLinux [
+            libGL
+            libxkbcommon
+            vulkan-loader
+            wayland
+            xorg.libX11
+            xorg.libXcursor
+            xorg.libxcb
+            xorg.libXi
 
-              # Required for tray-icon.
-              gdk-pixbuf
-              glib
-              gtk3
-              libappindicator-gtk3
-              xdotool
-              zlib
-            ]);
-          };
+            # Required for tray-icon.
+            gdk-pixbuf
+            glib
+            gtk3
+            libappindicator-gtk3
+            xdotool
+            zlib
+          ]);
+        };
 
-          cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+        cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 
-          inherit (craneLib.crateNameFromCargoToml { inherit src; }) version;
+        inherit (craneLib.crateNameFromCargoToml {inherit src;}) version;
 
-          individualCrateArgs = commonArgs // {
+        individualCrateArgs =
+          commonArgs
+          // {
             inherit cargoArtifacts;
             inherit version;
           };
 
-          fileSetForCrate = crate: lib.fileset.toSource {
+        fileSetForCrate = crate:
+          lib.fileset.toSource {
             root = ./.;
             fileset = lib.fileset.unions [
               ./Cargo.toml
@@ -105,15 +114,18 @@
             ];
           };
 
-          gcfeeder = craneLib.buildPackage (individualCrateArgs // rec {
+        gcfeeder = craneLib.buildPackage (individualCrateArgs
+          // rec {
             pname = "gcfeeder";
             src = fileSetForCrate ./crates/gcfeeder;
             cargoExtraArgs = "-p gcfeeder --no-default-features";
 
-            nativeBuildInputs = commonArgs.nativeBuildInputs ++ (with pkgs; [
-              copyDesktopItems
-              makeWrapper
-            ]);
+            nativeBuildInputs =
+              commonArgs.nativeBuildInputs
+              ++ (with pkgs; [
+                copyDesktopItems
+                makeWrapper
+              ]);
 
             postInstall = ''
               wrapProgram $out/bin/gcfeeder \
@@ -134,7 +146,7 @@
                 exec = "gcfeeder %U";
                 comment = meta.description;
                 desktopName = "gcfeeder";
-                categories = [ "Utility" ];
+                categories = ["Utility"];
               })
             ];
 
@@ -153,20 +165,30 @@
               mainProgram = "gcfeeder";
             };
           });
-        in
+      in
         with pkgs; {
-          formatter = nixpkgs-fmt;
+          formatter = alejandra;
 
           checks = {
             inherit gcfeeder;
 
-            gcfeeder-clippy = craneLib.cargoClippy (commonArgs // {
-              inherit cargoArtifacts;
-            });
+            gcfeeder-clippy = craneLib.cargoClippy (commonArgs
+              // {
+                inherit cargoArtifacts;
+              });
 
             gcfeeder-fmt = craneLib.cargoFmt {
               inherit src;
             };
+          };
+
+          apps.fmt = {
+            type = "app";
+            program = writeShellScriptBin "fmt" ''
+              cargo fmt
+              taplo fmt
+              nix fmt
+            '';
           };
 
           packages.default = gcfeeder;
