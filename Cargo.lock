@@ -1478,11 +1478,13 @@ dependencies = [
 name = "gcfeederd"
 version = "3.0.1"
 dependencies = [
+ "directories",
  "gcfeeder-core",
  "gcinput",
  "nusb",
  "thiserror 2.0.11",
  "tokio",
+ "toml",
  "tracing",
  "tracing-subscriber",
 ]

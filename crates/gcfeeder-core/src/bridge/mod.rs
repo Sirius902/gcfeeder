@@ -15,7 +15,7 @@ pub mod vigem;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub trait Bridge {
+pub trait Bridge: Send {
     fn driver_name(&self) -> &'static str;
     fn feed(&self, input: &Option<Input>) -> Result<()>;
     fn rumble_state(&self) -> Rumble;

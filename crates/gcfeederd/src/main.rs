@@ -1,5 +1,10 @@
-use gcfeeder_core::adapter;
-use gcinput::Rumble;
+use std::time::Duration;
+
+use gcfeeder_core::{
+    adapter::{self, poller::Poller, source::InputSource, Port},
+    feeder,
+};
+use tracing::debug;
 use tracing_subscriber::{prelude::*, EnvFilter};
 
 #[tokio::main]
@@ -13,25 +18,31 @@ async fn main() -> adapter::Result<()> {
         }))
         .init();
 
-    let adapter = adapter::Adapter::open().await?;
+    // TODO(Sirius902) Actually read the config.
+    // let config_path = directories::BaseDirs::new()
+    //     .expect("Failed to get config directory")
+    //     .config_dir()
+    //     .join("gcfeeder")
+    //     .join("gcfeeder.toml");
+
+    let config = feeder::Config::default();
+
+    let poller = Poller::default();
+    let feeder = feeder::Feeder::new(config, poller.add_listener(Port::One).await);
+
+    let mut stats_interval = tokio::time::interval(Duration::from_secs(1));
 
     loop {
-        let then = std::time::Instant::now();
-
-        let adapter_task = async {
-            let inputs = adapter.read_inputs();
-            let rumble = adapter.write_rumble([Rumble::On; adapter::Port::COUNT]);
-            tokio::join!(inputs, rumble)
-        };
-
         tokio::select! {
             _ = tokio::signal::ctrl_c() => {
-                adapter.reset_rumble().await?;
+                // TODO(Sirius902) `feeder.close()`? Stop rumbling.
+                drop(feeder);
                 break;
-            },
-            _ = adapter_task => {
-                let now = std::time::Instant::now();
-                tracing::debug!("Poll time: {}ms", now.duration_since(then).subsec_millis());
+            }
+            _ = stats_interval.tick() => {
+                if let Some(feed_time) = feeder.average_feed_time().await {
+                    debug!("Average feed time: {}ms", feed_time.subsec_millis());
+                }
             }
         }
     }

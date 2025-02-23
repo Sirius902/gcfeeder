@@ -83,6 +83,7 @@ impl Drop for Poller {
 
         // TODO(Sirius902) Figure out what to do here. Can't await it if we're not async.
         if let Some(task) = self.task.take() {
+            task.abort();
             mem::drop(task);
         }
     }

@@ -8,10 +8,12 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
+directories = "6"
 gcfeeder-core = { path = "../gcfeeder-core" }
 gcinput = { path = "../gcinput" }
 nusb = "0.1"
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
+toml = "0.8"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }

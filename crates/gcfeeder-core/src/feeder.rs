@@ -2,9 +2,8 @@ use std::{
     mem,
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
+        Arc,
     },
-    thread,
     time::Duration,
 };
 
@@ -13,6 +12,7 @@ use crossbeam::atomic::AtomicCell;
 use gcinput::Input;
 use mapping::Layer;
 use serde::{Deserialize, Serialize};
+use tokio::{sync::Mutex, task::JoinHandle};
 use tracing::warn;
 
 use crate::{
@@ -43,7 +43,7 @@ pub const INPUT_TIMEOUT: Duration = Duration::from_millis(8);
 
 pub struct Feeder<L: InputListener + 'static> {
     context: Arc<Context<L>>,
-    thread: Option<thread::JoinHandle<()>>,
+    task: Option<JoinHandle<()>>,
 }
 
 impl<L: InputListener + 'static> Feeder<L> {
@@ -67,26 +67,30 @@ impl<L: InputListener + 'static> Feeder<L> {
         }
 
         let context = Arc::new(Context::new(config, input_source));
-        let thread = Some(thread::spawn({
+        let task = Some(tokio::task::spawn({
             let context = context.clone();
-            move || context.feed_loop(config.rumble, internal_layers, layers)
+            async move {
+                context
+                    .feed_loop(config.rumble, internal_layers, layers)
+                    .await
+            }
         }));
 
-        Self { context, thread }
+        Self { context, task }
     }
 
     #[must_use]
-    pub fn average_feed_time(&self) -> Option<Duration> {
-        *self.context.average_feed_time.lock().unwrap()
+    pub async fn average_feed_time(&self) -> Option<Duration> {
+        *self.context.average_feed_time.lock().await
     }
 
-    pub fn on_feed(&self, callback: impl FnMut(&Record) + Send + 'static) {
-        let mut callbacks = self.context.callbacks.lock().unwrap();
+    pub async fn on_feed(&self, callback: impl FnMut(&Record) + Send + 'static) {
+        let mut callbacks = self.context.callbacks.lock().await;
         callbacks.push(Box::new(callback));
     }
 
-    pub fn send_on_feed(&self, sender: Sender) {
-        let mut senders = self.context.senders.lock().unwrap();
+    pub async fn send_on_feed(&self, sender: Sender) {
+        let mut senders = self.context.senders.lock().await;
         senders.push(sender);
     }
 
@@ -95,8 +99,8 @@ impl<L: InputListener + 'static> Feeder<L> {
         self.context.connected.load(Ordering::Acquire)
     }
 
-    pub fn start_calibration(&self, sender: CalibrationSender) {
-        *self.context.calibration_sender.lock().unwrap() = Some(sender);
+    pub async fn start_calibration(&self, sender: CalibrationSender) {
+        *self.context.calibration_sender.lock().await = Some(sender);
     }
 }
 
@@ -104,8 +108,10 @@ impl<L: InputListener> Drop for Feeder<L> {
     fn drop(&mut self) {
         self.context.stop_flag.store(true, Ordering::Release);
 
-        if let Some(handle) = self.thread.take() {
-            mem::drop(handle.join());
+        // TODO(Sirius902) Figure out what to do here. Can't await it if we're not async.
+        if let Some(task) = self.task.take() {
+            task.abort();
+            mem::drop(task);
         }
     }
 }
@@ -142,7 +148,7 @@ impl<L: InputListener> Context<L> {
         }
     }
 
-    pub fn feed_loop(
+    pub async fn feed_loop(
         &self,
         rumble: RumbleSetting,
         mut internal_layers: Vec<Box<dyn Layer>>,
@@ -157,7 +163,7 @@ impl<L: InputListener> Context<L> {
                     Ok(b) => b,
                     Err(e) => {
                         warn!("Failed to connect to bridge: {}", e);
-                        thread::sleep(ERROR_TIMEOUT);
+                        tokio::time::sleep(ERROR_TIMEOUT).await;
                         continue;
                     }
                 };
@@ -185,7 +191,7 @@ impl<L: InputListener> Context<L> {
                         let layered = apply_layers(input, &mut layers);
 
                         let (input, layered) = {
-                            let mut calibration_sender = self.calibration_sender.lock().unwrap();
+                            let mut calibration_sender = self.calibration_sender.lock().await;
 
                             if let Some(sender) = calibration_sender.as_ref() {
                                 if let Err(CalibrationDisconnected) = sender.try_send(input) {
@@ -212,18 +218,18 @@ impl<L: InputListener> Context<L> {
             match record {
                 Ok(record) => {
                     {
-                        let mut callbacks = self.callbacks.lock().unwrap();
+                        let mut callbacks = self.callbacks.lock().await;
                         callbacks.iter_mut().for_each(|callback| callback(&record));
                     }
 
                     {
-                        let mut senders = self.senders.lock().unwrap();
+                        let mut senders = self.senders.lock().await;
                         senders.retain(|sender| {
                             !matches!(sender.try_send(record), Err(TrySendError::Disconnected(_)))
                         });
                     }
 
-                    *self.average_feed_time.lock().unwrap() = Some(timer.lap());
+                    *self.average_feed_time.lock().await = Some(timer.lap());
                 }
                 Err(e) => {
                     bridge = None;
