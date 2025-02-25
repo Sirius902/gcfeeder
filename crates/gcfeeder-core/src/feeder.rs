@@ -1,35 +1,26 @@
-use std::{
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    time::Duration,
-};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::time::Duration;
 
 use bridge::Bridge;
 use crossbeam::atomic::AtomicCell;
 use gcinput::Input;
 use mapping::Layer;
 use serde::{Deserialize, Serialize};
-use tokio::{sync::Mutex, task::JoinHandle};
+use tokio::sync::Mutex;
+use tokio::task::JoinHandle;
 use tracing::warn;
 
-use crate::{
-    adapter::{poller::ERROR_TIMEOUT, source::InputListener},
-    bridge::{self, Driver, Error as BridgeError},
-    calibration::{SticksCalibration, TriggersCalibration},
-    mapping::{
-        self,
-        layers::{self, AnalogScaling, CenterCalibration, EssInversion},
-    },
-    util::{
-        cell_channel::{self, RecvTimeoutError, TrySendError},
-        AverageTimer,
-    },
-};
-
+use crate::adapter::poller::ERROR_TIMEOUT;
+use crate::adapter::source::InputListener;
 #[cfg(target_os = "windows")]
 use crate::bridge::vigem::Config as ViGEmConfig;
+use crate::bridge::{self, Driver, Error as BridgeError};
+use crate::calibration::{SticksCalibration, TriggersCalibration};
+use crate::mapping::layers::{self, AnalogScaling, CenterCalibration, EssInversion};
+use crate::mapping::{self};
+use crate::util::cell_channel::{self, RecvTimeoutError, TrySendError};
+use crate::util::AverageTimer;
 
 type Result<T> = std::result::Result<T, BridgeError>;
 

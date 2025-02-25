@@ -1,8 +1,6 @@
 use eframe::epaint;
-use egui::{
-    epaint::PathStroke, Color32, CornerRadius, Pos2, Rgba, Sense, Stroke, StrokeKind, Vec2,
-};
-
+use egui::epaint::PathStroke;
+use egui::{Color32, CornerRadius, Pos2, Rgba, Sense, Stroke, StrokeKind, Vec2};
 use gcfeeder_core::calibration::NOTCHES;
 
 use super::shape::ngon_points;

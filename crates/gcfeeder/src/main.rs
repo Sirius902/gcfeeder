@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"]
 
-use std::{env, error::Error};
+use std::env;
+use std::error::Error;
 
 use gcfeeder::gui;
 

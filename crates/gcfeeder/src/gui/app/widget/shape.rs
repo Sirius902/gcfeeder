@@ -1,6 +1,6 @@
-use egui::Pos2;
-
 use std::f32::consts::{PI, TAU};
+
+use egui::Pos2;
 
 pub fn ngon_points(sides: usize, radius: f32) -> Vec<Pos2> {
     let start_angle = PI * 0.5;

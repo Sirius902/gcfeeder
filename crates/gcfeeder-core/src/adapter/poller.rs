@@ -1,25 +1,17 @@
-use std::{
-    array, io,
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    time::{Duration, Instant},
-};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+use std::{array, io};
 
 use crossbeam::atomic::AtomicCell;
-use tokio::{sync::Mutex, task::JoinHandle};
+use tokio::sync::Mutex;
+use tokio::task::JoinHandle;
 use tracing::warn;
 
-use crate::util::{
-    cell_channel::{self, TrySendError},
-    AverageTimer,
-};
-
-use super::{
-    source::{InputListener, InputSource},
-    Adapter, Input, Port, Rumble,
-};
+use super::source::{InputListener, InputSource};
+use super::{Adapter, Input, Port, Rumble};
+use crate::util::cell_channel::{self, TrySendError};
+use crate::util::AverageTimer;
 
 pub type InputMessage = Option<Input>;
 

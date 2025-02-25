@@ -4,7 +4,6 @@ use app::App;
 use crossbeam::channel;
 use egui::Color32;
 use gcfeeder_core::adapter::poller::Poller;
-
 use rusb::GlobalContext;
 
 mod app;

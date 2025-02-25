@@ -1,11 +1,10 @@
 use std::array;
 
+use gcinput::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
 use nalgebra::{Matrix3, Vector2, Vector3};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-
-use gcinput::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
 
 pub const NOTCHES: usize = 8;
 

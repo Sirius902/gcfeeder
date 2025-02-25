@@ -3,4 +3,5 @@ mod shape;
 pub mod stick;
 pub mod trigger;
 
-pub use self::{stick::Stick, trigger::Trigger};
+pub use self::stick::Stick;
+pub use self::trigger::Trigger;

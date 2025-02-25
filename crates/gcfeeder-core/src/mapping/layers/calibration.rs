@@ -1,9 +1,7 @@
 use tracing::warn;
 
-use crate::{
-    calibration::{SticksCalibration, TriggersCalibration},
-    mapping,
-};
+use crate::calibration::{SticksCalibration, TriggersCalibration};
+use crate::mapping;
 
 pub struct Calibration {
     stick_data: Option<SticksCalibration>,

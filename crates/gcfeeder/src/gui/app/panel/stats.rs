@@ -1,8 +1,7 @@
 use enum_iterator::all;
-use gcfeeder_core::{
-    adapter::{source::InputSource, Port},
-    feeder::Feeder,
-};
+use gcfeeder_core::adapter::source::InputSource;
+use gcfeeder_core::adapter::Port;
+use gcfeeder_core::feeder::Feeder;
 
 pub struct StatsPanel<'a, S: InputSource + 'static> {
     input_source: &'a mut S,

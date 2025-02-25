@@ -60,11 +60,10 @@ fn emit_git_version() -> Result<String, git2::Error> {
 
 #[cfg(target_os = "windows")]
 fn embed_icon() {
-    use std::{
-        fs::File,
-        io::{self, prelude::*},
-        path::Path,
-    };
+    use std::fs::File;
+    use std::io::prelude::*;
+    use std::io::{self};
+    use std::path::Path;
 
     const ICON_PATH: &str = "resource/icon.png";
     println!("cargo:rerun-if-changed={ICON_PATH}");

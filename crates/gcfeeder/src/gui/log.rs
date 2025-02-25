@@ -1,6 +1,7 @@
 use crossbeam::channel;
 use egui::Color32;
-use time::{format_description::FormatItem, OffsetDateTime};
+use time::format_description::FormatItem;
+use time::OffsetDateTime;
 
 use crate::gui::{DEBUG_COLOR, ERROR_COLOR, INFO_COLOR, WARN_COLOR};
 

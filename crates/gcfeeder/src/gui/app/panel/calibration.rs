@@ -1,17 +1,18 @@
-use std::{convert::TryFrom, iter};
+use std::convert::TryFrom;
+use std::iter;
 
 use egui::Color32;
+use gcfeeder_core::adapter::source::InputListener;
+use gcfeeder_core::adapter::Port;
+use gcfeeder_core::calibration::{
+    StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration,
+};
+use gcfeeder_core::feeder::{self, CalibrationReceiver, Feeder, Record};
 use gcinput::Input;
 
-use crate::{
-    config::Config,
-    gui::{app::widget, util::enum_combo_ui},
-};
-use gcfeeder_core::{
-    adapter::{source::InputListener, Port},
-    calibration::{StickCalibration, SticksCalibration, TriggerCalibration, TriggersCalibration},
-    feeder::{self, CalibrationReceiver, Feeder, Record},
-};
+use crate::config::Config;
+use crate::gui::app::widget;
+use crate::gui::util::enum_combo_ui;
 
 const NOTCH_NAMES: [&str; 8] = [
     "top",

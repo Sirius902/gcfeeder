@@ -1,32 +1,26 @@
-use std::{
-    collections::HashMap,
-    fs,
-    io::{self, Read, Write},
-    net::UdpSocket,
-    path::{Path, PathBuf},
-    time::{Duration, Instant},
-};
+use std::collections::HashMap;
+use std::fs;
+use std::io::{self, Read, Write};
+use std::net::UdpSocket;
+use std::path::{Path, PathBuf};
+use std::time::{Duration, Instant};
 
+use crossbeam::channel;
 use eframe::egui;
 use enum_iterator::all;
+use gcfeeder_core::adapter::source::InputSource;
+use gcfeeder_core::adapter::Port;
+use gcfeeder_core::feeder::{self, Feeder, Record};
+use gcfeeder_core::util::cell_channel::{self, TryRecvError};
+use log::{info, warn};
+use panel::calibration::State as CalibrationState;
+use panel::config::{Message as ConfigMessage, State as ConfigState};
+use panel::profile::{Message as ProfileMessage, State as ProfileState};
+use panel::{CalibrationPanel, ConfigEditor, LogPanel, ProfilePanel, StatsPanel};
 
 use self::panel::calibration::ConfigUpdate;
-
 use super::log::Message as LogMessage;
 use crate::config::{Config, Profile};
-use crossbeam::channel;
-use gcfeeder_core::{
-    adapter::{source::InputSource, Port},
-    feeder::{self, Feeder, Record},
-    util::cell_channel::{self, TryRecvError},
-};
-use log::{info, warn};
-use panel::{
-    calibration::State as CalibrationState, config::Message as ConfigMessage,
-    config::State as ConfigState, profile::Message as ProfileMessage,
-    profile::State as ProfileState, CalibrationPanel, ConfigEditor, LogPanel, ProfilePanel,
-    StatsPanel,
-};
 
 mod panel;
 mod widget;

@@ -1,8 +1,9 @@
-use std::{array, collections::HashMap};
+use std::array;
+use std::collections::HashMap;
 
+use gcfeeder_core::adapter::Port;
+use gcfeeder_core::feeder;
 use serde::{Deserialize, Serialize};
-
-use gcfeeder_core::{adapter::Port, feeder};
 
 pub type Profile = feeder::Config;
 

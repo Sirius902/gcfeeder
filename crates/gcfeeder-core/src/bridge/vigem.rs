@@ -1,15 +1,13 @@
-use std::{
-    mem,
-    sync::{Arc, Mutex},
-    thread,
-};
+use std::sync::{Arc, Mutex};
+use std::{mem, thread};
 
 use enum_iterator::Sequence;
 use gcinput::{Input, Rumble, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 use vigem_client as client;
 
-use super::{rumble::PatternRumbler, Bridge};
+use super::rumble::PatternRumbler;
+use super::Bridge;
 use crate::util::packed_bools;
 
 pub struct ViGEmBridge {

@@ -1,25 +1,20 @@
-use std::{
-    io, mem,
-    os::fd::{AsRawFd, BorrowedFd},
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
-    },
-    thread,
-    time::Duration,
-};
+use std::os::fd::{AsRawFd, BorrowedFd};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+use std::{io, mem, thread};
 
+use evdev::uinput::VirtualDevice;
 use evdev::{
-    uinput::VirtualDevice, AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode,
-    InputEvent, KeyCode, UinputAbsSetup,
+    AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode, InputEvent, KeyCode,
+    UinputAbsSetup,
 };
 use gcinput::{Input, Rumble, STICK_RANGE, TRIGGER_RANGE};
-use nix::{
-    fcntl::{FcntlArg, OFlag},
-    sys::epoll,
-};
+use nix::fcntl::{FcntlArg, OFlag};
+use nix::sys::epoll;
 
-use super::{rumble::PatternRumbler, Bridge};
+use super::rumble::PatternRumbler;
+use super::Bridge;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

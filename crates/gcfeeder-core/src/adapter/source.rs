@@ -1,11 +1,10 @@
-use std::{
-    future::Future,
-    time::{Duration, Instant},
-};
+use std::future::Future;
+use std::time::{Duration, Instant};
 
 use gcinput::Rumble;
 
-use super::{poller::InputMessage, Port};
+use super::poller::InputMessage;
+use super::Port;
 use crate::util::cell_channel;
 
 pub trait InputSource {

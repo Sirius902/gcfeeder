@@ -1,8 +1,7 @@
-use crate::{
-    config::{Config, Profile},
-    gui::util::{enum_combo_ui, enum_option_combo_ui},
-};
 use gcfeeder_core::calibration::{StickCalibration, TriggerCalibration, NOTCHES};
+
+use crate::config::{Config, Profile};
+use crate::gui::util::{enum_combo_ui, enum_option_combo_ui};
 
 const U8_TEXT_WIDTH: f32 = 30.0;
 

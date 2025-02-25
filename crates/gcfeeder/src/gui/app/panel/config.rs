@@ -1,7 +1,8 @@
 use enum_iterator::all;
-
-use crate::{config::Config, gui::ERROR_COLOR};
 use gcfeeder_core::adapter::Port;
+
+use crate::config::Config;
+use crate::gui::ERROR_COLOR;
 
 pub struct ConfigEditor<'a> {
     config: &'a mut Config,

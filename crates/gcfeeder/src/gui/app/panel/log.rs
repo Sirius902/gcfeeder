@@ -1,5 +1,6 @@
-use crate::gui::log::Message;
 use crossbeam::channel;
+
+use crate::gui::log::Message;
 
 pub struct LogPanel {
     receiver: channel::Receiver<Message>,

@@ -1,9 +1,6 @@
-use std::{
-    fs, io,
-    panic::PanicHookInfo,
-    sync::atomic::{AtomicBool, Ordering},
-    thread,
-};
+use std::panic::PanicHookInfo;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::{fs, io, thread};
 
 static PANICKED: AtomicBool = AtomicBool::new(false);
 

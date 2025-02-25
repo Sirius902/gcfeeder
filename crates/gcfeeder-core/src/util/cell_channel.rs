@@ -1,9 +1,8 @@
-use std::{
-    sync::Arc,
-    time::{Duration, Instant},
-};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 
-use crossbeam::{atomic::AtomicCell, channel};
+use crossbeam::atomic::AtomicCell;
+use crossbeam::channel;
 
 pub type SendError<T> = channel::SendError<T>;
 pub type SendTimeoutError<T> = channel::SendTimeoutError<T>;

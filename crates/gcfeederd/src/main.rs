@@ -2,7 +2,8 @@ use gcfeeder_core::adapter::{self, Port};
 use gcfeederd::services;
 use gcinput::Rumble;
 use tokio_util::task::TaskTracker;
-use tracing_subscriber::{prelude::*, EnvFilter};
+use tracing_subscriber::prelude::*;
+use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> adapter::Result<()> {
