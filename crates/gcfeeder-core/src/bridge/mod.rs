@@ -52,11 +52,10 @@ impl Driver {
             #[cfg(not(any(target_os = "windows", target_os = "linux")))]
             Self::Dummy => Ok(Box::new(dummy::DummyBridge)),
             #[cfg(target_os = "windows")]
-            Self::ViGEm => {
-                vigem::ViGEmBridge::new(config.vigem_config, vigem_client::Client::connect()?)
-                    .map(Into::into)
-                    .map_err(Into::into)
-            }
+            Self::ViGEm => Ok(Box::new(vigem::ViGEmBridge::new(
+                config.vigem_config,
+                vigem_client::Client::connect()?,
+            )?)),
             #[cfg(target_os = "linux")]
             Self::Evdev => Ok(Box::new(evdev::EvdevBridge::new())),
         }

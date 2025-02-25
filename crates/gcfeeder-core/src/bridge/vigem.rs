@@ -1,7 +1,6 @@
 use std::sync::{Arc, Mutex};
 use std::{mem, thread};
 
-use enum_iterator::Sequence;
 use gcinput::{Input, Rumble, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 use vigem_client as client;
@@ -224,7 +223,7 @@ impl Default for Config {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Pad {
     Xbox360,
@@ -232,13 +231,32 @@ pub enum Pad {
     // DualShock4,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, Sequence)]
+impl Pad {
+    #[must_use]
+    pub const fn all() -> &'static [Self] {
+        &[Self::Xbox360]
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TriggerMode {
     Analog,
     Digital,
     Combination,
     StickClick,
+}
+
+impl TriggerMode {
+    #[must_use]
+    pub const fn all() -> &'static [Self] {
+        &[
+            Self::Analog,
+            Self::Digital,
+            Self::Combination,
+            Self::StickClick,
+        ]
+    }
 }
 
 struct TriggerResult {
