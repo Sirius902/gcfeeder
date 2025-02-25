@@ -9,21 +9,23 @@ type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
-    rx_inputs: Vec<watch::Receiver<Option<Input>>>,
+    tx_inputs: mpsc::UnboundedSender<(Port, watch::Sender<Option<Input>>)>,
     tx_rumbles: watch::Sender<Rumbles>,
 }
 
 impl Service {
-    pub async fn stop(self) {
+    pub async fn stop(&self) {
         let (tx, rx) = oneshot::channel();
         self.tx_shutdown.send(tx).expect("sending shutdown signal");
         rx.await.expect("waiting for shutdown");
     }
 
-    pub async fn recv_input(&mut self, port: Port) -> Option<Input> {
-        let rx = &mut self.rx_inputs[port.index()];
-        rx.changed().await.expect("waiting for input");
-        *rx.borrow()
+    pub fn watch_input(&self, port: Port) -> watch::Receiver<Option<Input>> {
+        let (tx, rx) = watch::channel(None);
+        self.tx_inputs
+            .send((port, tx))
+            .expect("sending input sender");
+        rx
     }
 
     pub fn set_rumble(&self, port: Port, rumble: Rumble) {
@@ -41,36 +43,26 @@ impl Service {
 pub fn start(task_tracker: &TaskTracker) -> Service {
     let (tx_shutdown, rx_shutdown) = mpsc::unbounded_channel();
 
-    let (tx_inputs, rx_inputs) = {
-        let mut txs = Vec::with_capacity(Port::COUNT);
-        let mut rxs = Vec::with_capacity(Port::COUNT);
-
-        for _ in 0..Port::COUNT {
-            let (tx, rx) = watch::channel(None);
-            txs.push(tx);
-            rxs.push(rx);
-        }
-
-        (txs, rxs)
-    };
-
+    let (tx_inputs, rx_inputs) = mpsc::unbounded_channel();
     let (tx_rumbles, rx_rumbles) = watch::channel(Rumbles::default());
 
-    task_tracker.spawn(run(rx_shutdown, tx_inputs, tx_rumbles.clone(), rx_rumbles));
+    task_tracker.spawn(run(rx_shutdown, rx_inputs, tx_rumbles.clone(), rx_rumbles));
 
     Service {
         tx_shutdown,
-        rx_inputs,
+        tx_inputs,
         tx_rumbles,
     }
 }
 
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
-    tx_inputs: Vec<watch::Sender<Option<Input>>>,
+    mut rx_inputs: mpsc::UnboundedReceiver<(Port, watch::Sender<Option<Input>>)>,
     tx_rumbles: watch::Sender<Rumbles>,
     mut rx_rumbles: watch::Receiver<Rumbles>,
 ) {
+    let mut tx_inputs: Vec<(Port, watch::Sender<Option<Input>>)> = Vec::new();
+
     let mut adapter: Option<(nusb::DeviceId, Adapter)> = match nusb::list_devices() {
         Ok(mut devices) => loop {
             if let Some(device_info) = devices.next() {
@@ -116,14 +108,14 @@ async fn run(
                 if let Some(tx) = tx {
                     tx.send(()).expect("sending shutdown signal");
                 }
-                debug!("Adapter task finished");
+                debug!("Adapter service finished");
                 break;
             }
             inputs = input_task => {
                 match inputs {
                     Ok(inputs) => {
-                        for port in Port::all() {
-                            _ = tx_inputs[port.index()].send_if_modified(|input| {
+                        for (port, tx) in &tx_inputs {
+                            _ = tx.send_if_modified(|input| {
                                 if *input != inputs[port.index()] {
                                     *input = inputs[port.index()];
                                     true
@@ -136,7 +128,7 @@ async fn run(
                     Err(Error::Disconnected) => {
                         adapter = None;
 
-                        for tx in &tx_inputs {
+                        for (_, tx) in &tx_inputs {
                             tx.send(None).expect("sending input");
                         }
 
@@ -148,14 +140,14 @@ async fn run(
                 }
             }
             Ok(()) = rx_rumbles.changed() => {
-                let rumbles = *rx_rumbles.borrow();
+                let rumbles = *rx_rumbles.borrow_and_update();
                 if let Some((_, a)) = &adapter {
                     match a.write_rumble(rumbles).await {
                         Ok(()) => {}
                         Err(Error::Disconnected) => {
                             adapter = None;
 
-                            for tx in &tx_inputs {
+                            for (_, tx) in &tx_inputs {
                                 tx.send(None).expect("sending input");
                             }
 
@@ -166,6 +158,10 @@ async fn run(
                         }
                     }
                 }
+            }
+            Some(tx) = rx_inputs.recv() => {
+                tx_inputs.retain(|(_, tx)| !tx.is_closed());
+                tx_inputs.push(tx);
             }
             Some(event) = usb_watch.next() => {
                 match event {
@@ -189,7 +185,7 @@ async fn run(
                         {
                             adapter = None;
 
-                            for tx in &tx_inputs {
+                            for (_, tx) in &tx_inputs {
                                 tx.send(None).expect("sending input");
                             }
 
