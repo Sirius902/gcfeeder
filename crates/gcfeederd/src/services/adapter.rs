@@ -5,7 +5,7 @@ use tokio_stream::StreamExt;
 use tokio_util::task::TaskTracker;
 use tracing::{debug, error, info, warn};
 
-pub type Rumbles = [Rumble; Port::COUNT];
+type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
