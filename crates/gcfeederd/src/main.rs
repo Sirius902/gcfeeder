@@ -1,10 +1,7 @@
-use std::time::Duration;
-
-use gcfeeder_core::{
-    adapter::{self, poller::Poller, source::InputSource, Port},
-    feeder,
-};
-use tracing::debug;
+use gcfeeder_core::adapter::{self, Port};
+use gcfeederd::services;
+use gcinput::Rumble;
+use tokio_util::task::TaskTracker;
 use tracing_subscriber::{prelude::*, EnvFilter};
 
 #[tokio::main]
@@ -18,32 +15,34 @@ async fn main() -> adapter::Result<()> {
         }))
         .init();
 
-    // TODO(Sirius902) Actually read the config.
-    // let config_path = directories::BaseDirs::new()
-    //     .expect("Failed to get config directory")
-    //     .config_dir()
-    //     .join("gcfeeder")
-    //     .join("gcfeeder.toml");
+    let task_tracker = TaskTracker::new();
+    let adapter_service = services::adapter::start(&task_tracker);
 
-    let config = feeder::Config::default();
+    _ = task_tracker.close();
 
-    let poller = Poller::default();
-    let feeder = feeder::Feeder::new(config, poller.add_listener(Port::One).await);
-
-    let mut stats_interval = tokio::time::interval(Duration::from_secs(1));
+    let mut rumble_interval = tokio::time::interval(std::time::Duration::from_secs(2));
+    let mut rumble: Option<Rumble> = None;
 
     loop {
         tokio::select! {
-            _ = tokio::signal::ctrl_c() => {
-                feeder.close().await;
-                poller.close().await;
+            res = tokio::signal::ctrl_c() => {
+                if let Err(err) = res {
+                    tracing::warn!("Failed to wait for ctrl+c signal: {err}");
+                }
+
+                adapter_service.stop().await;
+                task_tracker.wait().await;
                 break;
             }
-            _ = stats_interval.tick() => {
-                if let Some(feed_time) = feeder.average_feed_time().await {
-                    debug!("Average feed time: {}ms", feed_time.subsec_millis());
-                }
+            _ = rumble_interval.tick() => {
+                adapter_service.set_rumble(Port::One, rumble.unwrap_or(Rumble::Off));
+
+                rumble = match rumble {
+                    Some(Rumble::Off) | None => Some(Rumble::On),
+                    Some(Rumble::On) => Some(Rumble::Off),
+                };
             }
+            _ = task_tracker.wait() => break,
         }
     }
 

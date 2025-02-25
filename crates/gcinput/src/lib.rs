@@ -10,7 +10,7 @@ pub const TRIGGER_RANGE: AnalogRange = AnalogRange {
     max: 0xFF,
 };
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Rumble {
     Off,
     On,
@@ -41,17 +41,19 @@ impl From<bool> for Rumble {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StickRange {
     pub center: u8,
     pub radius: u8,
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AnalogRange {
     pub min: u8,
     pub max: u8,
 }
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Stick {
     pub x: u8,
     pub y: u8,
@@ -107,7 +109,7 @@ impl From<[u8; 2]> for Stick {
     }
 }
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Input {
     pub button_a: bool,
     pub button_b: bool,

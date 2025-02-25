@@ -16,6 +16,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     #[error("no device")]
     NoDevice,
+    #[error("the device was disconnected")]
+    Disconnected,
     #[error("device is missing endpoints")]
     MissingEndpoints,
     #[error("io error: {0}")]
@@ -41,7 +43,7 @@ impl Adapter {
         // FUTURE(Sirius902) Use `watch_devices`.
         let mut device: Option<nusb::Device> = None;
         for device_info in nusb::list_devices()? {
-            if device_info.vendor_id() == VID && device_info.product_id() == PID {
+            if Self::is_candidate(&device_info) {
                 debug!("Adapter candidate found");
 
                 // FUTURE(Sirius902) Don't fail the function if the adapter fails to open, try
@@ -90,12 +92,63 @@ impl Adapter {
         Ok(adapter)
     }
 
+    pub async fn try_open(device_info: &nusb::DeviceInfo) -> Result<Self> {
+        if !Self::is_candidate(device_info) {
+            // TODO(Sirius902) A different error probably makes more sense here.
+            return Err(Error::NoDevice);
+        }
+
+        trace!("Attempting to open adapter...");
+
+        let device = device_info.open()?;
+
+        let interface = device.detach_and_claim_interface(0)?;
+        let endpoints = Self::find_endpoints(&interface)?;
+
+        // From Dolphin:
+        // This call makes Nyko-brand (and perhaps other) adapters work.
+        // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
+        interface
+            .control_out(ControlOut {
+                control_type: ControlType::Class,
+                recipient: Recipient::Interface,
+                request: 11,
+                value: 0x0001,
+                index: 0x0,
+                data: &[],
+            })
+            .await
+            .into_result()?;
+
+        // Initialize writing controller rumble.
+        interface
+            .interrupt_out(endpoints.out, vec![0x13])
+            .await
+            .into_result()?;
+
+        let adapter = Self {
+            interface,
+            endpoints,
+        };
+
+        // Reset rumble just in case the adapter was rumbling previously.
+        adapter.reset_rumble().await?;
+
+        debug!("Connected to adapter");
+
+        Ok(adapter)
+    }
+
     pub async fn read_inputs(&self) -> Result<[Option<Input>; Port::COUNT]> {
         let payload = self
             .interface
             .interrupt_in(self.endpoints.in_, RequestBuffer::new(INPUT_PAYLOAD_LEN))
             .await
-            .into_result()?;
+            .into_result()
+            .map_err(|err| match err {
+                nusb::transfer::TransferError::Disconnected => Error::Disconnected,
+                _ => err.into(),
+            })?;
 
         Ok(inputs_from_payload(&payload))
     }
@@ -113,13 +166,22 @@ impl Adapter {
                 ],
             )
             .await
-            .into_result()?;
+            .into_result()
+            .map_err(|err| match err {
+                nusb::transfer::TransferError::Disconnected => Error::Disconnected,
+                _ => err.into(),
+            })?;
 
         Ok(())
     }
 
     pub async fn reset_rumble(&self) -> Result<()> {
         self.write_rumble([Rumble::Off; Port::COUNT]).await
+    }
+
+    #[must_use]
+    pub fn is_candidate(device_info: &nusb::DeviceInfo) -> bool {
+        device_info.vendor_id() == VID && device_info.product_id() == PID
     }
 
     fn find_endpoints(interface: &nusb::Interface) -> Result<Endpoints> {
