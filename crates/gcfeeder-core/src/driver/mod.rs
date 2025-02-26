@@ -1,25 +1,23 @@
+use async_trait::async_trait;
 use gcinput::{Input, Rumble};
 use serde::{Deserialize, Serialize};
 
 use crate::feeder;
 
-#[cfg(not(any(target_os = "windows", target_os = "linux")))]
-pub mod dummy;
 #[cfg(target_os = "linux")]
 pub mod evdev;
 pub mod rumble;
 #[cfg(target_os = "windows")]
 pub mod vigem;
 
-// FUTURE(Sirius902) Rework bridges to be async?
-
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub trait Bridge: Send {
-    fn driver_name(&self) -> &'static str;
-    fn feed(&self, input: &Option<Input>) -> Result<()>;
-    fn rumble_state(&self) -> Rumble;
-    fn notify_rumble_consumed(&self);
+#[async_trait]
+pub trait Driver: Send {
+    fn name(&self) -> &'static str;
+    async fn feed(&self, input: &Option<Input>) -> Result<()>;
+    async fn peek_rumble_state(&self) -> Rumble;
+    async fn consume_rumble_state(&self) -> Rumble;
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -34,35 +32,28 @@ pub enum Error {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum Driver {
+pub enum DriverType {
     #[cfg(target_os = "windows")]
     ViGEm,
     #[cfg(target_os = "linux")]
     Evdev,
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-    Dummy,
 }
 
-impl Driver {
-    pub fn create_bridge(
-        self,
-        #[allow(unused)] config: &feeder::Config,
-    ) -> Result<Box<dyn Bridge>> {
+impl DriverType {
+    pub fn create(self, #[allow(unused)] config: &feeder::Config) -> Result<Box<dyn Driver>> {
         match self {
-            #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-            Self::Dummy => Ok(Box::new(dummy::DummyBridge)),
             #[cfg(target_os = "windows")]
             Self::ViGEm => Ok(Box::new(vigem::ViGEmBridge::new(
                 config.vigem_config,
                 vigem_client::Client::connect()?,
             )?)),
             #[cfg(target_os = "linux")]
-            Self::Evdev => Ok(Box::new(evdev::EvdevBridge::new())),
+            Self::Evdev => Ok(Box::new(evdev::Driver::new())),
         }
     }
 }
 
-impl Default for Driver {
+impl Default for DriverType {
     fn default() -> Self {
         #[cfg(target_os = "windows")]
         {
@@ -71,10 +62,6 @@ impl Default for Driver {
         #[cfg(target_os = "linux")]
         {
             Self::Evdev
-        }
-        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-        {
-            Self::Dummy
         }
     }
 }

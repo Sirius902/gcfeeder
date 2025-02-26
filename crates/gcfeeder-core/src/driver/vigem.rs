@@ -227,7 +227,7 @@ impl Default for Config {
 #[serde(rename_all = "lowercase")]
 pub enum Pad {
     Xbox360,
-    // TODO: DualShock4 support in the ViGEm client library is not complete.
+    // FUTURE(Sirius902) DualShock4 support in the ViGEm client library is not complete.
     // DualShock4,
 }
 

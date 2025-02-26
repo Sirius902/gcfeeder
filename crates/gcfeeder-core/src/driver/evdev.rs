@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use std::{io, mem, thread};
 
+use async_trait::async_trait;
 use evdev::uinput::VirtualDevice;
 use evdev::{
     AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode, InputEvent, KeyCode,
@@ -14,7 +15,6 @@ use nix::fcntl::{FcntlArg, OFlag};
 use nix::sys::epoll;
 
 use super::rumble::PatternRumbler;
-use super::Bridge;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -26,7 +26,7 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct EvdevBridge {
+pub struct Driver {
     device: Arc<Mutex<Option<VirtualDevice>>>,
     epoll_handle: Arc<Mutex<Option<epoll::Epoll>>>,
     rumbler: Arc<Mutex<PatternRumbler>>,
@@ -34,7 +34,7 @@ pub struct EvdevBridge {
     rumble_thread: Option<thread::JoinHandle<()>>,
 }
 
-impl EvdevBridge {
+impl Driver {
     pub fn new() -> Self {
         let device = Arc::new(Mutex::new(None));
         let epoll_handle = Arc::new(Mutex::new(None));
@@ -75,7 +75,7 @@ impl EvdevBridge {
             (STICK_RANGE.center + STICK_RANGE.radius).into(),
             0,
             0,
-            // TODO: Find out if this is a reasonable value.
+            // FUTURE(Sirius902) Find out if this is a reasonable value.
             50,
         );
 
@@ -85,7 +85,7 @@ impl EvdevBridge {
             TRIGGER_RANGE.max.into(),
             0,
             0,
-            // TODO: Find out if this is a reasonable value.
+            // FUTURE(Sirius902) Find out if this is a reasonable value.
             50,
         );
 
@@ -131,14 +131,14 @@ impl EvdevBridge {
             .build()?)
     }
 
-    // TODO: Use tokio instead of epoll?
+    // TODO(Sirius902) Use tokio instead of epoll?
     fn create_epoll(device: &VirtualDevice) -> Result<epoll::Epoll> {
         let raw_fd = device.as_raw_fd();
         nix::fcntl::fcntl(raw_fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK))?;
 
         let event = epoll::EpollEvent::new(epoll::EpollFlags::EPOLLIN, 0);
         let epoll_handle = epoll::Epoll::new(epoll::EpollCreateFlags::EPOLL_CLOEXEC)?;
-        // Safety: Epoll must be dropped before VirtualDevice is dropped.
+        // SAFETY: Epoll is dropped before VirtualDevice is dropped.
         epoll_handle.add(unsafe { BorrowedFd::borrow_raw(raw_fd) }, event)?;
         Ok(epoll_handle)
     }
@@ -252,13 +252,13 @@ impl EvdevBridge {
     }
 }
 
-impl Default for EvdevBridge {
+impl Default for Driver {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Drop for EvdevBridge {
+impl Drop for Driver {
     fn drop(&mut self) {
         self.stop_flag.store(true, Ordering::Release);
 
@@ -268,141 +268,164 @@ impl Drop for EvdevBridge {
     }
 }
 
-impl Bridge for EvdevBridge {
-    fn driver_name(&self) -> &'static str {
+#[async_trait]
+impl super::Driver for Driver {
+    fn name(&self) -> &'static str {
         "evdev"
     }
 
-    fn feed(&self, input: &Option<Input>) -> super::Result<()> {
-        let Some(input) = input else {
-            *self.epoll_handle.lock().unwrap() = None;
-            *self.device.lock().unwrap() = None;
-            *self.rumbler.lock().unwrap() = Default::default();
-            return Ok(());
-        };
+    async fn feed(&self, input: &Option<Input>) -> super::Result<()> {
+        tokio::task::spawn_blocking({
+            let input = *input;
+            let epoll_handle = self.epoll_handle.clone();
+            let device = self.device.clone();
+            let rumbler = self.rumbler.clone();
+            move || {
+                let Some(input) = input else {
+                    *epoll_handle.lock().unwrap() = None;
+                    *device.lock().unwrap() = None;
+                    *rumbler.lock().unwrap() = Default::default();
+                    return Ok(());
+                };
 
-        let mut device_opt = self.device.lock().unwrap();
-        let device = match &mut *device_opt {
-            Some(d) => d,
-            None => {
-                let device = device_opt.insert(Self::create_device()?);
-                *self.epoll_handle.lock().unwrap() = Some(Self::create_epoll(device)?);
+                let mut device_opt = device.lock().unwrap();
+                let device = match &mut *device_opt {
+                    Some(d) => d,
+                    None => {
+                        let device = device_opt.insert(Self::create_device()?);
+                        *epoll_handle.lock().unwrap() = Some(Self::create_epoll(device)?);
+                        device
+                    }
+                };
+
+                let btn_state = |b: bool| {
+                    if b {
+                        1
+                    } else {
+                        0
+                    }
+                };
+
+                let hat_state = |pos: bool, neg: bool| match (pos, neg) {
+                    (true, false) => 1,
+                    (false, true) => -1,
+                    _ => 0,
+                };
+
+                // FUTURE(Sirius902) Create a report based on the diff from the last input.
                 device
+                    .emit(&[
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_SOUTH.0,
+                            btn_state(input.button_a),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_EAST.0,
+                            btn_state(input.button_b),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_WEST.0,
+                            btn_state(input.button_x),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_NORTH.0,
+                            btn_state(input.button_y),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_START.0,
+                            btn_state(input.button_start),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_TR.0,
+                            btn_state(input.button_z),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_THUMBL.0,
+                            btn_state(input.button_l),
+                        ),
+                        InputEvent::new(
+                            EventType::KEY.0,
+                            KeyCode::BTN_THUMBR.0,
+                            btn_state(input.button_r),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_X.0,
+                            input.main_stick.x.into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_Y.0,
+                            (!input.main_stick.y).into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_RX.0,
+                            input.c_stick.x.into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_RY.0,
+                            (!input.c_stick.y).into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_Z.0,
+                            input.left_trigger.into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_RZ.0,
+                            input.right_trigger.into(),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_HAT0X.0,
+                            hat_state(input.button_right, input.button_left),
+                        ),
+                        InputEvent::new(
+                            EventType::ABSOLUTE.0,
+                            AbsoluteAxisCode::ABS_HAT0Y.0,
+                            hat_state(input.button_down, input.button_up),
+                        ),
+                    ])
+                    .map_err(Error::Io)?;
+
+                Ok(())
             }
-        };
-
-        let btn_state = |b: bool| {
-            if b {
-                1
-            } else {
-                0
-            }
-        };
-
-        let hat_state = |pos: bool, neg: bool| match (pos, neg) {
-            (true, false) => 1,
-            (false, true) => -1,
-            _ => 0,
-        };
-
-        // TODO: Create a report based on the diff from the last input.
-        device
-            .emit(&[
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_SOUTH.0,
-                    btn_state(input.button_a),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_EAST.0,
-                    btn_state(input.button_b),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_WEST.0,
-                    btn_state(input.button_x),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_NORTH.0,
-                    btn_state(input.button_y),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_START.0,
-                    btn_state(input.button_start),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_TR.0,
-                    btn_state(input.button_z),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_THUMBL.0,
-                    btn_state(input.button_l),
-                ),
-                InputEvent::new(
-                    EventType::KEY.0,
-                    KeyCode::BTN_THUMBR.0,
-                    btn_state(input.button_r),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_X.0,
-                    input.main_stick.x.into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_Y.0,
-                    (!input.main_stick.y).into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_RX.0,
-                    input.c_stick.x.into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_RY.0,
-                    (!input.c_stick.y).into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_Z.0,
-                    input.left_trigger.into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_RZ.0,
-                    input.right_trigger.into(),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_HAT0X.0,
-                    hat_state(input.button_right, input.button_left),
-                ),
-                InputEvent::new(
-                    EventType::ABSOLUTE.0,
-                    AbsoluteAxisCode::ABS_HAT0Y.0,
-                    hat_state(input.button_down, input.button_up),
-                ),
-            ])
-            .map_err(Error::Io)?;
-
-        Ok(())
+        })
+        .await
+        .expect("feed")
     }
 
-    fn rumble_state(&self) -> Rumble {
-        if self.rumbler.lock().unwrap().peek_rumble() {
-            Rumble::On
-        } else {
-            Rumble::Off
-        }
+    async fn peek_rumble_state(&self) -> Rumble {
+        tokio::task::spawn_blocking({
+            let rumbler = self.rumbler.clone();
+            move || match rumbler.lock().unwrap().peek_rumble() {
+                true => Rumble::On,
+                false => Rumble::Off,
+            }
+        })
+        .await
+        .expect("peek rumble state")
     }
 
-    fn notify_rumble_consumed(&self) {
-        let _ = self.rumbler.lock().unwrap().poll_rumble();
+    async fn consume_rumble_state(&self) -> Rumble {
+        tokio::task::spawn_blocking({
+            let rumbler = self.rumbler.clone();
+            move || match rumbler.lock().unwrap().consume_rumble() {
+                true => Rumble::On,
+                false => Rumble::Off,
+            }
+        })
+        .await
+        .expect("consume rumble state")
     }
 }

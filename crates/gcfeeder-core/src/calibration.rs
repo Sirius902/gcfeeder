@@ -1,14 +1,14 @@
 use std::array;
+use std::sync::LazyLock;
 
 use gcinput::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
 use nalgebra::{Matrix3, Vector2, Vector3};
-use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 pub const NOTCHES: usize = 8;
 
-pub static NOTCH_POINTS: Lazy<[[u8; 2]; NOTCHES]> = Lazy::new(|| {
+pub static NOTCH_POINTS: LazyLock<[[u8; 2]; NOTCHES]> = LazyLock::new(|| {
     use std::f64::consts::{PI, TAU};
 
     const CENTER: f64 = STICK_RANGE.center as f64;

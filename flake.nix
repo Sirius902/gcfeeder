@@ -147,7 +147,7 @@
                   services.udev.packages = [ pkgs.gcfeeder ]
               '';
               homepage = "https://github.com/Sirius902/gcfeeder";
-              # NOTE(Sirius902) No bridges are implemented for darwin. Putting this here mostly so it can be built for local dev.
+              # NOTE(Sirius902) No drivers are implemented for darwin. Putting this here mostly so it can be built for local dev.
               platforms = platforms.linux ++ platforms.darwin;
               mainProgram = "gcfeeder";
             };

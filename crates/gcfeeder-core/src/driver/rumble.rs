@@ -43,8 +43,8 @@ impl PatternRumbler {
         self.state.peek_rumble()
     }
 
-    pub fn poll_rumble(&mut self) -> bool {
-        self.state.poll_rumble()
+    pub fn consume_rumble(&mut self) -> bool {
+        self.state.consume_rumble()
     }
 }
 
@@ -72,7 +72,7 @@ impl PatternState {
         PATTERNS[self.index][self.poll_count]
     }
 
-    pub fn poll_rumble(&mut self) -> bool {
+    pub fn consume_rumble(&mut self) -> bool {
         let rumble = self.peek_rumble();
         self.poll_count = (self.poll_count + 1) % (PATTERNS.len() - 1);
         rumble
