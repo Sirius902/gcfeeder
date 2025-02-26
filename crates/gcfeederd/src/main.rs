@@ -13,7 +13,7 @@ async fn main() -> adapter::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
             EnvFilter::builder()
-                .parse("gcfeederd=trace")
+                .parse("gcfeederd=trace,gcfeeder_core=trace")
                 .expect("env filter string is valid")
         }))
         .init();
