@@ -24,22 +24,19 @@ async fn main() -> adapter::Result<()> {
 
     _ = task_tracker.close();
 
-    loop {
-        tokio::select! {
-            // FUTURE(Sirius902) Should we handle any other signals here?
-            res = tokio::signal::ctrl_c() => {
-                if let Err(err) = res {
-                    tracing::warn!("Failed to wait for ctrl+c signal: {err}");
-                }
-
-                driver_service.stop().await;
-                adapter_service.stop().await;
-
-                task_tracker.wait().await;
-                break;
+    tokio::select! {
+        // FUTURE(Sirius902) Should we handle any other signals here?
+        res = tokio::signal::ctrl_c() => {
+            if let Err(err) = res {
+                tracing::warn!("Failed to wait for ctrl+c signal: {err}");
             }
-            _ = task_tracker.wait() => break,
+
+            driver_service.stop().await;
+            adapter_service.stop().await;
+
+            task_tracker.wait().await;
         }
+        _ = task_tracker.wait() => {},
     }
 
     Ok(())
