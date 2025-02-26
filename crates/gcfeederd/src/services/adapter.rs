@@ -3,7 +3,7 @@ use gcinput::{Input, Rumble};
 use tokio::sync::{mpsc, oneshot, watch};
 use tokio_stream::StreamExt;
 use tokio_util::task::TaskTracker;
-use tracing::{debug, error, info, warn};
+use tracing::{error, info, warn};
 
 type Rumbles = [Rumble; Port::COUNT];
 
@@ -108,7 +108,7 @@ async fn run(
                 if let Some(tx) = tx {
                     tx.send(()).expect("sending shutdown signal");
                 }
-                debug!("Adapter service finished");
+                info!("Adapter service finished");
                 break;
             }
             inputs = input_task => {

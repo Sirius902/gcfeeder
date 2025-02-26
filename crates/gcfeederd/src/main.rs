@@ -3,6 +3,7 @@ use std::sync::Arc;
 use gcfeeder_core::adapter;
 use gcfeederd::services;
 use tokio_util::task::TaskTracker;
+use tracing::warn;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::EnvFilter;
 
@@ -28,7 +29,7 @@ async fn main() -> adapter::Result<()> {
         // FUTURE(Sirius902) Should we handle any other signals here?
         res = tokio::signal::ctrl_c() => {
             if let Err(err) = res {
-                tracing::warn!("Failed to wait for ctrl+c signal: {err}");
+                warn!("Failed to wait for ctrl+c signal: {err}");
             }
 
             driver_service.stop().await;

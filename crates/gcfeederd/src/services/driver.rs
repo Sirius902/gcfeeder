@@ -7,7 +7,7 @@ use gcfeeder_core::feeder;
 use gcfeeder_core::mapping::{layers, Layer};
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{debug, error, info, warn};
+use tracing::{error, info, warn};
 
 use super::adapter;
 
@@ -69,7 +69,7 @@ async fn run(
                 if let Some(tx) = tx {
                     tx.send(()).expect("sending shutdown signal");
                 }
-                debug!("Driver service finished");
+                info!("Driver service finished");
                 break;
             }
             // TODO(Sirius902) Do more than `Port::One`.

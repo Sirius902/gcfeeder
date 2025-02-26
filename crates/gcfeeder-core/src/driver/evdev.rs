@@ -13,6 +13,7 @@ use evdev::{
 use gcinput::{Input, Rumble, STICK_RANGE, TRIGGER_RANGE};
 use nix::fcntl::{FcntlArg, OFlag};
 use nix::sys::epoll;
+use tracing::debug;
 
 use super::rumble::PatternRumbler;
 
@@ -205,10 +206,7 @@ impl Driver {
                                         rumbler.lock().unwrap().update_strength(strength);
                                     }
                                     _ => {
-                                        tracing::warn!(
-                                            "unsupported ff effect: {:?}",
-                                            event.effect().kind
-                                        );
+                                        debug!("Unsupported ff effect: {:?}", event.effect().kind);
                                     }
                                 }
 
@@ -230,7 +228,7 @@ impl Driver {
                             }
                             evdev::EventSummary::ForceFeedback(_ev, _code, _value) => {}
                             _ => {
-                                tracing::debug!("Unknown evdev event = {:?}", event);
+                                debug!("Unknown evdev event = {:?}", event);
                             }
                         }
                     }
