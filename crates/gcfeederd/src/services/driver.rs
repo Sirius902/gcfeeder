@@ -7,7 +7,7 @@ use gcfeeder_core::feeder;
 use gcfeeder_core::mapping::{layers, Layer};
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{debug, error, warn};
+use tracing::{debug, error, info, warn};
 
 use super::adapter;
 
@@ -51,9 +51,16 @@ async fn run(
                 None
             }
         };
+
+    if driver.is_some() {
+        info!("Virtual controller created");
+    } else {
+        warn!("No virtual controller");
+    }
+
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
 
-    // FUTURE(Sirius902) Somehow get this from the adapter's polling rate?
+    // TODO(Sirius902) Asynchronously wait for driver rumble instead with tokio.
     let mut rumble_interval = tokio::time::interval(Duration::from_millis(8));
 
     loop {

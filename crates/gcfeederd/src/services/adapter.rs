@@ -80,9 +80,9 @@ async fn run(
     };
 
     if adapter.is_some() {
-        info!("Connected to adapter!");
+        info!("Adapter connected");
     } else {
-        debug!("Adapter is not connected");
+        info!("Adapter is not connected");
     }
 
     let Ok(mut usb_watch) = nusb::watch_devices() else {
@@ -169,6 +169,8 @@ async fn run(
                         if adapter.is_none() {
                             if let Ok(a) = Adapter::try_open(&device_info).await {
                                 adapter = Some((device_info.id(), a));
+
+                                info!("Adapter connected");
 
                                 // Resume previous rumble state when reconnecting.
                                 let _ = tx_rumbles.send_if_modified(|rumbles| {
