@@ -2,11 +2,12 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use gcfeeder_core::adapter::Port;
-use gcfeeder_core::driver::{evdev, Driver};
+use gcfeeder_core::driver::{Driver, DriverType};
+use gcfeeder_core::feeder;
 use gcfeeder_core::mapping::{layers, Layer};
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{debug, warn};
+use tracing::{debug, error, warn};
 
 use super::adapter;
 
@@ -42,7 +43,14 @@ async fn run(
 
     // TODO(Sirius902) Read inputs and pass to driver, forward rumble to adapter, handle config
     // updates. Don't hardcode testing stuff.
-    let driver: Box<dyn Driver> = Box::new(evdev::Driver::default());
+    let driver: Option<Box<dyn Driver>> =
+        match DriverType::default().create(&feeder::Config::default()) {
+            Ok(driver) => Some(driver),
+            Err(err) => {
+                error!("Error creating driver: {err}");
+                None
+            }
+        };
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
 
     // FUTURE(Sirius902) Somehow get this from the adapter's polling rate?
@@ -59,17 +67,22 @@ async fn run(
             }
             // TODO(Sirius902) Do more than `Port::One`.
             Ok(()) = rx_inputs[Port::One.index()].changed() => {
+                let Some(driver) = &driver else { continue; };
+
                 let raw_input = *rx_inputs[Port::One.index()].borrow_and_update();
 
                 let input = layers
                     .iter_mut()
                     .fold(raw_input, |input, layer| layer.apply(input));
 
+                let driver_name = driver.name();
                 if let Err(err) = driver.feed(&input).await {
-                    warn!("Error feeding with {} driver: {err}", driver.name());
+                    warn!("Error feeding with {} driver: {err}", driver_name);
                 }
             }
             _ = rumble_interval.tick() => {
+                let Some(driver) = &driver else { continue; };
+
                 adapter_service.set_rumble(Port::One, driver.consume_rumble_state().await);
             }
         }

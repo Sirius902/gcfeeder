@@ -43,7 +43,7 @@ impl DriverType {
     pub fn create(self, #[allow(unused)] config: &feeder::Config) -> Result<Box<dyn Driver>> {
         match self {
             #[cfg(target_os = "windows")]
-            Self::ViGEm => Ok(Box::new(vigem::ViGEmBridge::new(
+            Self::ViGEm => Ok(Box::new(vigem::Driver::new(
                 config.vigem_config,
                 vigem_client::Client::connect()?,
             )?)),

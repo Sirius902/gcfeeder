@@ -1,20 +1,20 @@
 use std::sync::{Arc, Mutex};
 use std::{mem, thread};
 
+use async_trait::async_trait;
 use gcinput::{Input, Rumble, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 use vigem_client as client;
 
 use super::rumble::PatternRumbler;
-use super::Bridge;
 use crate::util::packed_bools;
 
-pub struct ViGEmBridge {
+pub struct Driver {
     config: Config,
     device: Device,
 }
 
-impl ViGEmBridge {
+impl Driver {
     pub fn new(config: Config, client: client::Client) -> Result<Self, client::Error> {
         match config.pad {
             Pad::Xbox360 => {
@@ -31,7 +31,7 @@ impl ViGEmBridge {
         scaled.ceil() as i16
     }
 
-    const fn apply_trigger_mode(&self, input: &Input) -> TriggerResult {
+    const fn apply_trigger_mode(trigger_mode: TriggerMode, input: &Input) -> TriggerResult {
         let l: u8;
         let r: u8;
         let mut ls: bool = false;
@@ -45,7 +45,7 @@ impl ViGEmBridge {
             ..
         } = *input;
 
-        match self.config.trigger_mode {
+        match trigger_mode {
             TriggerMode::Analog => {
                 l = left_trigger;
                 r = right_trigger;
@@ -69,8 +69,8 @@ impl ViGEmBridge {
         TriggerResult { l, r, ls, rs }
     }
 
-    fn input_to_xinput(&self, input: &Input) -> client::XGamepad {
-        let result = self.apply_trigger_mode(input);
+    fn input_to_xinput(config: &Config, input: &Input) -> client::XGamepad {
+        let result = Self::apply_trigger_mode(config.trigger_mode, input);
 
         let buttons = packed_bools!((u16)
             input.button_up,
@@ -103,43 +103,71 @@ impl ViGEmBridge {
     }
 }
 
-impl Bridge for ViGEmBridge {
-    fn driver_name(&self) -> &'static str {
+#[async_trait]
+impl super::Driver for Driver {
+    fn name(&self) -> &'static str {
         "ViGEm"
     }
 
-    fn feed(&self, input: &Option<Input>) -> super::Result<()> {
-        let mut target = self.device.target.lock().unwrap();
-        let mut thread = self.device.notification_thread.lock().unwrap();
+    async fn feed(&self, input: &Option<Input>) -> super::Result<()> {
+        tokio::task::spawn_blocking({
+            let input = *input;
+            let config = self.config;
+            let target = self.device.target.clone();
+            let thread = self.device.notification_thread.clone();
+            let rumbler = self.device.rumbler.clone();
+            move || {
+                let mut target = target.lock().unwrap();
+                let mut thread = thread.lock().unwrap();
 
-        let target = target.as_mut().unwrap();
+                let target = target.as_mut().unwrap();
 
-        if let Some(input) = input {
-            if !target.is_attached() {
-                Device::plugin_locked(target, &mut thread, self.device.rumbler.clone())?;
+                if let Some(input) = input {
+                    if !target.is_attached() {
+                        Device::plugin_locked(target, &mut thread, rumbler.clone())?;
+                    }
+
+                    target.update(&Self::input_to_xinput(&config, &input))?;
+                } else if target.is_attached() {
+                    target.unplug()?;
+                }
+
+                Ok(())
             }
-
-            target.update(&self.input_to_xinput(input))?;
-        } else if target.is_attached() {
-            target.unplug()?;
-        }
-
-        Ok(())
+        })
+        .await
+        .expect("feed")
     }
 
-    fn rumble_state(&self) -> Rumble {
-        self.device.peek_rumble()
+    async fn peek_rumble_state(&self) -> Rumble {
+        tokio::task::spawn_blocking({
+            let rumbler = self.device.rumbler.clone();
+            move || match rumbler.lock().unwrap().peek_rumble() {
+                true => Rumble::On,
+                false => Rumble::Off,
+            }
+        })
+        .await
+        .expect("peek rumble state")
     }
 
-    fn notify_rumble_consumed(&self) {
-        let _ = self.device.poll_rumble();
+    async fn consume_rumble_state(&self) -> Rumble {
+        tokio::task::spawn_blocking({
+            let rumbler = self.device.rumbler.clone();
+            move || match rumbler.lock().unwrap().consume_rumble() {
+                true => Rumble::On,
+                false => Rumble::Off,
+            }
+        })
+        .await
+        .expect("consume rumble state")
     }
 }
 
 #[derive(Debug)]
 struct Device {
-    target: Mutex<Option<client::XTarget>>,
-    notification_thread: Mutex<Option<thread::JoinHandle<()>>>,
+    target: Arc<Mutex<Option<client::XTarget>>>,
+    notification_thread: Arc<Mutex<Option<thread::JoinHandle<()>>>>,
     rumbler: Arc<Mutex<PatternRumbler>>,
 }
 
@@ -148,20 +176,10 @@ impl Device {
         let target = client::XTarget::new(client, vigem_client::TargetId::XBOX360_WIRED);
 
         Ok(Self {
-            target: Mutex::new(Some(target)),
-            notification_thread: Mutex::new(None),
+            target: Arc::new(Mutex::new(Some(target))),
+            notification_thread: Arc::new(Mutex::new(None)),
             rumbler: Arc::new(Mutex::new(PatternRumbler::new())),
         })
-    }
-
-    #[must_use]
-    pub fn peek_rumble(&self) -> Rumble {
-        self.rumbler.lock().unwrap().peek_rumble().into()
-    }
-
-    #[must_use]
-    pub fn poll_rumble(&self) -> Rumble {
-        self.rumbler.lock().unwrap().poll_rumble().into()
     }
 
     pub fn plugin_locked(
@@ -200,9 +218,9 @@ impl Device {
 
 impl Drop for Device {
     fn drop(&mut self) {
-        *self.target.get_mut().unwrap() = None;
+        *self.target.lock().unwrap() = None;
 
-        if let Some(thread) = self.notification_thread.get_mut().unwrap().take() {
+        if let Some(thread) = self.notification_thread.lock().unwrap().take() {
             mem::drop(thread.join());
         }
     }
