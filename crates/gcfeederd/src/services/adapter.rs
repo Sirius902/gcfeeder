@@ -9,6 +9,7 @@ pub type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
+    // TODO(Sirius902) Use `tokio::sync::broadcast` instead of `watch` for multiple receivers.
     tx_inputs: mpsc::UnboundedSender<(Port, watch::Sender<Option<Input>>)>,
     tx_rumbles: mpsc::UnboundedSender<(Rumbles, oneshot::Sender<()>)>,
 }

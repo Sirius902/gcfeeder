@@ -1,27 +1,37 @@
-use std::sync::{Arc, Mutex};
-use std::{mem, thread};
+use std::sync::Arc;
 
 use async_trait::async_trait;
 use gcinput::{Input, Rumble, STICK_RANGE};
 use serde::{Deserialize, Serialize};
+use tokio::pin;
+use tokio::sync::Mutex;
 use vigem_client as client;
 
-use super::rumble::PatternRumbler;
 use crate::util::packed_bools;
 
 pub struct Driver {
     config: Config,
-    device: Device,
+    device: Mutex<client::XTarget>,
+    device_plugged: tokio::sync::Notify,
+    tx_rumble: Arc<Mutex<tokio::sync::mpsc::Sender<Option<Rumble>>>>,
+    rx_rumble: Mutex<tokio::sync::mpsc::Receiver<Option<Rumble>>>,
+    notification_task: Mutex<Option<tokio::task::JoinHandle<()>>>,
 }
 
 impl Driver {
     pub fn new(config: Config, client: client::Client) -> Result<Self, client::Error> {
-        match config.pad {
-            Pad::Xbox360 => {
-                let device = Device::new(client)?;
-                Ok(Self { config, device })
-            }
-        }
+        let (tx_rumble, rx_rumble) = tokio::sync::mpsc::channel(1);
+
+        Ok(Self {
+            config,
+            device: Mutex::new(match config.pad {
+                Pad::Xbox360 => client::XTarget::new(client, client::TargetId::XBOX360_WIRED),
+            }),
+            device_plugged: tokio::sync::Notify::new(),
+            tx_rumble: Arc::new(Mutex::new(tx_rumble)),
+            rx_rumble: Mutex::new(rx_rumble),
+            notification_task: Mutex::new(None),
+        })
     }
 
     fn stick_coord_to_xinput(coord: u8) -> i16 {
@@ -110,118 +120,85 @@ impl super::Driver for Driver {
     }
 
     async fn feed(&self, input: &Option<Input>) -> super::Result<()> {
-        tokio::task::spawn_blocking({
-            let input = *input;
-            let config = self.config;
-            let target = self.device.target.clone();
-            let thread = self.device.notification_thread.clone();
-            let rumbler = self.device.rumbler.clone();
-            move || {
-                let mut target = target.lock().unwrap();
-                let mut thread = thread.lock().unwrap();
-
-                let target = target.as_mut().unwrap();
-
-                if let Some(input) = input {
-                    if !target.is_attached() {
-                        Device::plugin_locked(target, &mut thread, rumbler.clone())?;
-                    }
-
-                    target.update(&Self::input_to_xinput(&config, &input))?;
-                } else if target.is_attached() {
-                    target.unplug()?;
-                }
-
-                Ok(())
+        let mut device = self.device.lock().await;
+        let Some(input) = input else {
+            if device.is_attached() {
+                device.unplug()?;
             }
-        })
-        .await
-        .expect("feed")
-    }
 
-    async fn peek_rumble_state(&self) -> Rumble {
-        tokio::task::spawn_blocking({
-            let rumbler = self.device.rumbler.clone();
-            move || match rumbler.lock().unwrap().peek_rumble() {
-                true => Rumble::On,
-                false => Rumble::Off,
-            }
-        })
-        .await
-        .expect("peek rumble state")
-    }
+            return Ok(());
+        };
 
-    async fn consume_rumble_state(&self) -> Rumble {
-        tokio::task::spawn_blocking({
-            let rumbler = self.device.rumbler.clone();
-            move || match rumbler.lock().unwrap().consume_rumble() {
-                true => Rumble::On,
-                false => Rumble::Off,
-            }
-        })
-        .await
-        .expect("consume rumble state")
-    }
-}
+        if !device.is_attached() {
+            device.plugin()?;
+            device.wait_ready()?;
 
-#[derive(Debug)]
-struct Device {
-    target: Arc<Mutex<Option<client::XTarget>>>,
-    notification_thread: Arc<Mutex<Option<thread::JoinHandle<()>>>>,
-    rumbler: Arc<Mutex<PatternRumbler>>,
-}
-
-impl Device {
-    pub fn new(client: client::Client) -> Result<Self, client::Error> {
-        let target = client::XTarget::new(client, vigem_client::TargetId::XBOX360_WIRED);
-
-        Ok(Self {
-            target: Arc::new(Mutex::new(Some(target))),
-            notification_thread: Arc::new(Mutex::new(None)),
-            rumbler: Arc::new(Mutex::new(PatternRumbler::new())),
-        })
-    }
-
-    pub fn plugin_locked(
-        target: &mut client::XTarget,
-        notification_thread: &mut Option<thread::JoinHandle<()>>,
-        rumbler: Arc<Mutex<PatternRumbler>>,
-    ) -> super::Result<()> {
-        let thread = target
-            .plugin()
-            .and_then(|()| target.wait_ready())
-            .and_then(|()| target.request_notification())
-            .map(|notification| {
-                notification.spawn_thread(move |_, data| {
-                    rumbler
-                        .lock()
-                        .unwrap()
-                        .update_strength(data.small_motor.max(data.large_motor));
-                })
-            });
-
-        match thread {
-            Ok(thread) => {
-                *notification_thread = Some(thread);
-                Ok(())
-            }
-            Err(e) => {
-                if target.is_attached() {
-                    let _ = target.unplug();
-                }
-
-                Err(e.into())
-            }
+            self.device_plugged.notify_one();
         }
+
+        device.update(&Self::input_to_xinput(&self.config, input))?;
+
+        Ok(())
     }
-}
 
-impl Drop for Device {
-    fn drop(&mut self) {
-        *self.target.lock().unwrap() = None;
+    async fn recv_rumble(&self) -> super::Result<Rumble> {
+        loop {
+            let mut notification_task = self.notification_task.lock().await;
+            if notification_task.is_some() {
+                if let Some(rumble) = self
+                    .rx_rumble
+                    .lock()
+                    .await
+                    .recv()
+                    .await
+                    .expect("rumble channel is not closed")
+                {
+                    *notification_task = None;
+                    return Ok(rumble);
+                }
+            }
 
-        if let Some(thread) = self.notification_thread.lock().unwrap().take() {
-            mem::drop(thread.join());
+            let mut device = self.device.lock().await;
+            if !device.is_attached() {
+                self.device_plugged.notified().await;
+                continue;
+            }
+
+            if let Some(task) = notification_task.take() {
+                task.await.expect("waiting for notification task");
+            }
+
+            let request_notification = device.request_notification()?;
+
+            tracing::trace!("Launching notification task");
+            notification_task.replace(tokio::task::spawn_blocking({
+                let tx_rumble = self.tx_rumble.clone();
+                move || {
+                    pin!(request_notification);
+                    request_notification.as_mut().request();
+                    let notification = request_notification
+                        .as_mut()
+                        .as_mut()
+                        .poll(true)
+                        .ok()
+                        .flatten();
+
+                    if let Some(notification) = notification {
+                        let rumble_strength =
+                            notification.small_motor.max(notification.large_motor);
+
+                        let _ = tx_rumble.blocking_lock().blocking_send(Some(
+                            if rumble_strength == 0 {
+                                Rumble::Off
+                            } else {
+                                Rumble::On
+                            },
+                        ));
+                    } else {
+                        let _ = tx_rumble.blocking_lock().blocking_send(None);
+                    }
+                }
+            }));
         }
     }
 }

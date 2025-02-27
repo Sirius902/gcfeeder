@@ -43,14 +43,20 @@ async fn run(
 
     // TODO(Sirius902) Read inputs and pass to driver, forward rumble to adapter, handle config
     // updates. Don't hardcode testing stuff.
-    let driver: Option<Box<dyn Driver>> =
-        match DriverType::default().create(&feeder::Config::default()) {
-            Ok(driver) => Some(driver),
-            Err(err) => {
-                error!("Error creating driver: {err}");
-                None
-            }
-        };
+    let driver: Option<Box<dyn Driver>> = match DriverType::default().create(&feeder::Config {
+        #[cfg(target_os = "windows")]
+        vigem_config: gcfeeder_core::driver::vigem::Config {
+            trigger_mode: gcfeeder_core::driver::vigem::TriggerMode::Digital,
+            ..Default::default()
+        },
+        ..Default::default()
+    }) {
+        Ok(driver) => Some(driver),
+        Err(err) => {
+            error!("Error creating driver: {err}");
+            None
+        }
+    };
 
     if driver.is_some() {
         info!("Virtual controller created");
@@ -94,6 +100,7 @@ async fn run(
             }
             Ok(rumble) = recv_rumble => {
                 debug!("Rumble received for port {:?}: {:?}", Port::One, rumble);
+                // TODO(Sirius902) Use `PatternRumbler`.
                 adapter_service.set_rumble([rumble, Rumble::Off, Rumble::Off, Rumble::Off]).await;
             }
         }
