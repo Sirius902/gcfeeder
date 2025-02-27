@@ -145,15 +145,17 @@ impl super::Driver for Driver {
         loop {
             let mut notification_task = self.notification_task.lock().await;
             if notification_task.is_some() {
-                if let Some(rumble) = self
+                let rumble = self
                     .rx_rumble
                     .lock()
                     .await
                     .recv()
                     .await
-                    .expect("rumble channel is not closed")
-                {
-                    *notification_task = None;
+                    .expect("rumble channel is not closed");
+
+                *notification_task = None;
+
+                if let Some(rumble) = rumble {
                     return Ok(rumble);
                 }
             }
