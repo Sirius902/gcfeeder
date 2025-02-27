@@ -173,6 +173,7 @@ impl Adapter {
     }
 
     pub async fn reset_rumble(&self) -> Result<()> {
+        debug!("Resetting rumble");
         self.write_rumble([Rumble::Off; Port::COUNT]).await
     }
 

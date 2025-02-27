@@ -13,11 +13,10 @@ pub mod vigem;
 pub type Result<T> = std::result::Result<T, Error>;
 
 #[async_trait]
-pub trait Driver: Send {
+pub trait Driver: Send + Sync {
     fn name(&self) -> &'static str;
     async fn feed(&self, input: &Option<Input>) -> Result<()>;
-    async fn peek_rumble_state(&self) -> Rumble;
-    async fn consume_rumble_state(&self) -> Rumble;
+    async fn recv_rumble(&self) -> Result<Rumble>;
 }
 
 #[derive(Debug, thiserror::Error)]

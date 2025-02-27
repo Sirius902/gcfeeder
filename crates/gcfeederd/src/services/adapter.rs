@@ -5,12 +5,12 @@ use tokio_stream::StreamExt;
 use tokio_util::task::TaskTracker;
 use tracing::{error, info, warn};
 
-type Rumbles = [Rumble; Port::COUNT];
+pub type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
     tx_inputs: mpsc::UnboundedSender<(Port, watch::Sender<Option<Input>>)>,
-    tx_rumbles: watch::Sender<Rumbles>,
+    tx_rumbles: mpsc::UnboundedSender<(Rumbles, oneshot::Sender<()>)>,
 }
 
 impl Service {
@@ -28,15 +28,12 @@ impl Service {
         rx
     }
 
-    pub fn set_rumble(&self, port: Port, rumble: Rumble) {
-        _ = self.tx_rumbles.send_if_modified(|rumbles| {
-            if rumbles[port.index()] != rumble {
-                rumbles[port.index()] = rumble;
-                true
-            } else {
-                false
-            }
-        });
+    pub async fn set_rumble(&self, rumbles: Rumbles) {
+        let (tx, rx) = oneshot::channel();
+        self.tx_rumbles
+            .send((rumbles, tx))
+            .expect("sending rumble sender");
+        rx.await.expect("waiting for rumble")
     }
 }
 
@@ -44,9 +41,9 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
     let (tx_shutdown, rx_shutdown) = mpsc::unbounded_channel();
 
     let (tx_inputs, rx_inputs) = mpsc::unbounded_channel();
-    let (tx_rumbles, rx_rumbles) = watch::channel(Rumbles::default());
+    let (tx_rumbles, rx_rumbles) = mpsc::unbounded_channel();
 
-    task_tracker.spawn(run(rx_shutdown, rx_inputs, tx_rumbles.clone(), rx_rumbles));
+    task_tracker.spawn(run(rx_shutdown, rx_inputs, rx_rumbles));
 
     Service {
         tx_shutdown,
@@ -58,8 +55,7 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     mut rx_inputs: mpsc::UnboundedReceiver<(Port, watch::Sender<Option<Input>>)>,
-    tx_rumbles: watch::Sender<Rumbles>,
-    mut rx_rumbles: watch::Receiver<Rumbles>,
+    mut rx_rumbles: mpsc::UnboundedReceiver<(Rumbles, oneshot::Sender<()>)>,
 ) {
     let mut tx_inputs: Vec<(Port, watch::Sender<Option<Input>>)> = Vec::new();
 
@@ -139,8 +135,7 @@ async fn run(
                     }
                 }
             }
-            Ok(()) = rx_rumbles.changed() => {
-                let rumbles = *rx_rumbles.borrow_and_update();
+            Some((rumbles, tx)) = rx_rumbles.recv() => {
                 if let Some((_, a)) = &adapter {
                     match a.write_rumble(rumbles).await {
                         Ok(()) => {}
@@ -158,6 +153,8 @@ async fn run(
                         }
                     }
                 }
+
+                tx.send(()).expect("sending rumble complete signal");
             }
             Some(tx) = rx_inputs.recv() => {
                 tx_inputs.retain(|(_, tx)| !tx.is_closed());
@@ -171,11 +168,6 @@ async fn run(
                                 adapter = Some((device_info.id(), a));
 
                                 info!("Adapter connected");
-
-                                // Resume previous rumble state when reconnecting.
-                                let _ = tx_rumbles.send_if_modified(|rumbles| {
-                                    !rumbles.iter().all(|r| matches!(r, Rumble::Off))
-                                });
                             }
                         }
                     }

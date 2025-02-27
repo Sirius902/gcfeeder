@@ -1,13 +1,13 @@
 use std::sync::Arc;
-use std::time::Duration;
 
 use gcfeeder_core::adapter::Port;
 use gcfeeder_core::driver::{Driver, DriverType};
 use gcfeeder_core::feeder;
 use gcfeeder_core::mapping::{layers, Layer};
+use gcinput::Rumble;
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{error, info, warn};
+use tracing::{debug, error, info, warn};
 
 use super::adapter;
 
@@ -60,10 +60,15 @@ async fn run(
 
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
 
-    // TODO(Sirius902) Asynchronously wait for driver rumble instead with tokio.
-    let mut rumble_interval = tokio::time::interval(Duration::from_millis(8));
-
     loop {
+        let recv_rumble = async {
+            if let Some(driver) = &driver {
+                driver.recv_rumble().await
+            } else {
+                std::future::pending().await
+            }
+        };
+
         tokio::select! {
             tx = rx_shutdown.recv() => {
                 if let Some(tx) = tx {
@@ -87,10 +92,9 @@ async fn run(
                     warn!("Error feeding with {} driver: {err}", driver_name);
                 }
             }
-            _ = rumble_interval.tick() => {
-                let Some(driver) = &driver else { continue; };
-
-                adapter_service.set_rumble(Port::One, driver.consume_rumble_state().await);
+            Ok(rumble) = recv_rumble => {
+                debug!("Rumble received for port {:?}: {:?}", Port::One, rumble);
+                adapter_service.set_rumble([rumble, Rumble::Off, Rumble::Off, Rumble::Off]).await;
             }
         }
     }
