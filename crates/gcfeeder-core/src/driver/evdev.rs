@@ -214,9 +214,9 @@ impl Driver {
         event: &evdev::InputEvent,
     ) -> Result<()> {
         match event.destructure() {
-            evdev::EventSummary::UInput(event, code, _value)
-                if code == evdev::UInputCode::UI_FF_UPLOAD =>
-            {
+            // TODO(Sirius902) Properly handle FF, setting rumble strength should happen in
+            // `evdev::EventSummary::ForceFeedback`.
+            evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_UPLOAD, _value) => {
                 let mut event = device.process_ff_upload(event)?;
 
                 match event.effect().kind {
@@ -239,9 +239,7 @@ impl Driver {
                 event.set_effect_id(0);
                 event.set_retval(0);
             }
-            evdev::EventSummary::UInput(event, code, _value)
-                if code == evdev::UInputCode::UI_FF_ERASE =>
-            {
+            evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_ERASE, _value) => {
                 let event = device.process_ff_erase(event)?;
 
                 if event.effect_id() == 0 {
@@ -268,9 +266,9 @@ impl super::Driver for Driver {
         let mut stream = self.stream.lock().await;
         let Some(input) = input else {
             if let Some(stream) = stream.take() {
-                // TODO(Sirius902) For some reason dropping the stream in this task will block
-                // forever??? Throw it in a task for now so we don't block feeding I guess. This is
-                // bad. Not sure if this task ever finishes.
+                // TODO(Sirius902) I don't think I should have to do this but trying to drop
+                // `stream` in the current task will block it indefinitely. Ship `stream` off to
+                // be dropped in a separate task.
                 tokio::task::spawn_blocking(move || {
                     drop(stream);
                 });
@@ -307,9 +305,9 @@ impl super::Driver for Driver {
             let device = stream.device_mut();
 
             match event.destructure() {
-                evdev::EventSummary::UInput(event, code, _value)
-                    if code == evdev::UInputCode::UI_FF_UPLOAD =>
-                {
+                // TODO(Sirius902) Properly handle FF, setting rumble strength should happen in
+                // `evdev::EventSummary::ForceFeedback`.
+                evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_UPLOAD, _value) => {
                     let mut event = device.process_ff_upload(event).map_err(Error::Io)?;
 
                     match event.effect().kind {
@@ -335,9 +333,7 @@ impl super::Driver for Driver {
                     event.set_effect_id(0);
                     event.set_retval(0);
                 }
-                evdev::EventSummary::UInput(event, code, _value)
-                    if code == evdev::UInputCode::UI_FF_ERASE =>
-                {
+                evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_ERASE, _value) => {
                     let event = device.process_ff_erase(event).map_err(Error::Io)?;
 
                     if event.effect_id() == 0 {
