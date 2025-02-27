@@ -188,6 +188,7 @@
               pkgs.lldb
               pkgs.rust-analyzer-nightly
               pkgs.taplo-cli
+              pkgs.tokio-console
               pkgs.just
             ];
 

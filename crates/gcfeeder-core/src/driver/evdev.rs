@@ -267,7 +267,15 @@ impl super::Driver for Driver {
     async fn feed(&self, input: &Option<Input>) -> super::Result<()> {
         let mut stream = self.stream.lock().await;
         let Some(input) = input else {
-            *stream = None;
+            if let Some(stream) = stream.take() {
+                // TODO(Sirius902) For some reason dropping the stream in this task will block
+                // forever??? Throw it in a task for now so we don't block feeding I guess. This is
+                // bad. Not sure if this task ever finishes.
+                tokio::task::spawn_blocking(move || {
+                    drop(stream);
+                });
+            }
+
             return Ok(());
         };
 
