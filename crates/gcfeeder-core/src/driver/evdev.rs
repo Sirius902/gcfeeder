@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use async_trait::async_trait;
 use evdev::uinput::{VirtualDevice, VirtualEventStream};
 use evdev::{
@@ -23,7 +21,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Default)]
 pub struct Driver {
     stream: Mutex<Option<VirtualEventStream>>,
-    rumbler: Mutex<PatternRumbler>,
+    stream_created: tokio::sync::Notify,
 }
 
 impl Driver {
@@ -277,7 +275,9 @@ impl super::Driver for Driver {
             if let Some(stream) = stream.as_mut() {
                 stream
             } else {
-                stream.get_or_insert(Self::create_stream()?)
+                let stream = stream.insert(Self::create_stream()?);
+                self.stream_created.notify_one();
+                stream
             }
         };
 
@@ -290,11 +290,11 @@ impl super::Driver for Driver {
         loop {
             let mut stream = self.stream.lock().await;
             let Some(stream) = stream.as_mut() else {
-                tokio::time::sleep(Duration::from_millis(8)).await;
+                drop(stream);
+                self.stream_created.notified().await;
                 continue;
             };
 
-            // TODO(Sirius902) Handle rumble pattern.
             let event = stream.next_event().await.map_err(Error::Io)?;
             let device = stream.device_mut();
 
