@@ -58,10 +58,10 @@ async fn run(
         }
     };
 
-    if driver.is_some() {
-        info!("Virtual controller created");
+    if let Some(driver) = &driver {
+        info!("{} driver created", driver.name());
     } else {
-        warn!("No virtual controller");
+        warn!("No driver");
     }
 
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
