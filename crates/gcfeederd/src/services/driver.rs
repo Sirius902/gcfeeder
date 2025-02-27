@@ -38,7 +38,7 @@ async fn run(
     // NOTE(Sirius902) This expects `Port::all` to be sorted by `Port::index`.
     let mut rx_inputs = Port::all()
         .iter()
-        .map(|port| adapter_service.watch_input(*port))
+        .map(|port| adapter_service.subscribe_input(*port))
         .collect::<Vec<_>>();
 
     // TODO(Sirius902) Read inputs and pass to driver, forward rumble to adapter, handle config
@@ -84,10 +84,8 @@ async fn run(
                 break;
             }
             // TODO(Sirius902) Do more than `Port::One`.
-            Ok(()) = rx_inputs[Port::One.index()].changed() => {
+            Ok(raw_input) = rx_inputs[Port::One.index()].recv() => {
                 let Some(driver) = &driver else { continue; };
-
-                let raw_input = *rx_inputs[Port::One.index()].borrow_and_update();
 
                 let input = layers
                     .iter_mut()

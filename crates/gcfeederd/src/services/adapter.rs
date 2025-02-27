@@ -1,6 +1,6 @@
 use gcfeeder_core::adapter::{Adapter, Error, Port};
 use gcinput::{Input, Rumble};
-use tokio::sync::{mpsc, oneshot, watch};
+use tokio::sync::{broadcast, mpsc, oneshot};
 use tokio_stream::StreamExt;
 use tokio_util::task::TaskTracker;
 use tracing::{error, info, warn};
@@ -9,8 +9,7 @@ pub type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
-    // TODO(Sirius902) Use `tokio::sync::broadcast` instead of `watch` for multiple receivers.
-    tx_inputs: mpsc::UnboundedSender<(Port, watch::Sender<Option<Input>>)>,
+    rx_inputs: Vec<broadcast::Receiver<Option<Input>>>,
     tx_rumbles: mpsc::UnboundedSender<(Rumbles, oneshot::Sender<()>)>,
 }
 
@@ -21,12 +20,8 @@ impl Service {
         rx.await.expect("waiting for shutdown");
     }
 
-    pub fn watch_input(&self, port: Port) -> watch::Receiver<Option<Input>> {
-        let (tx, rx) = watch::channel(None);
-        self.tx_inputs
-            .send((port, tx))
-            .expect("sending input sender");
-        rx
+    pub fn subscribe_input(&self, port: Port) -> broadcast::Receiver<Option<Input>> {
+        self.rx_inputs[port.index()].resubscribe()
     }
 
     pub async fn set_rumble(&self, rumbles: Rumbles) {
@@ -41,25 +36,35 @@ impl Service {
 pub fn start(task_tracker: &TaskTracker) -> Service {
     let (tx_shutdown, rx_shutdown) = mpsc::unbounded_channel();
 
-    let (tx_inputs, rx_inputs) = mpsc::unbounded_channel();
+    let (tx_inputs, rx_inputs) = {
+        let mut txs = Vec::with_capacity(Port::COUNT);
+        let mut rxs = Vec::with_capacity(Port::COUNT);
+
+        for _ in 0..Port::COUNT {
+            let (tx, rx) = broadcast::channel(1);
+            txs.push(tx);
+            rxs.push(rx);
+        }
+
+        (txs, rxs)
+    };
+
     let (tx_rumbles, rx_rumbles) = mpsc::unbounded_channel();
 
-    task_tracker.spawn(run(rx_shutdown, rx_inputs, rx_rumbles));
+    task_tracker.spawn(run(rx_shutdown, tx_inputs, rx_rumbles));
 
     Service {
         tx_shutdown,
-        tx_inputs,
+        rx_inputs,
         tx_rumbles,
     }
 }
 
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
-    mut rx_inputs: mpsc::UnboundedReceiver<(Port, watch::Sender<Option<Input>>)>,
+    tx_inputs: Vec<broadcast::Sender<Option<Input>>>,
     mut rx_rumbles: mpsc::UnboundedReceiver<(Rumbles, oneshot::Sender<()>)>,
 ) {
-    let mut tx_inputs: Vec<(Port, watch::Sender<Option<Input>>)> = Vec::new();
-
     let mut adapter: Option<(nusb::DeviceId, Adapter)> = match nusb::list_devices() {
         Ok(mut devices) => loop {
             if let Some(device_info) = devices.next() {
@@ -111,21 +116,14 @@ async fn run(
             inputs = input_task => {
                 match inputs {
                     Ok(inputs) => {
-                        for (port, tx) in &tx_inputs {
-                            _ = tx.send_if_modified(|input| {
-                                if *input != inputs[port.index()] {
-                                    *input = inputs[port.index()];
-                                    true
-                                } else {
-                                    false
-                                }
-                            });
+                        for (i, tx) in tx_inputs.iter().enumerate() {
+                            tx.send(inputs[i]).expect("input channels are not closed");
                         }
                     }
                     Err(Error::Disconnected) => {
                         adapter = None;
 
-                        for (_, tx) in &tx_inputs {
+                        for tx in &tx_inputs {
                             tx.send(None).expect("sending input");
                         }
 
@@ -143,7 +141,7 @@ async fn run(
                         Err(Error::Disconnected) => {
                             adapter = None;
 
-                            for (_, tx) in &tx_inputs {
+                            for tx in &tx_inputs {
                                 tx.send(None).expect("sending input");
                             }
 
@@ -156,10 +154,6 @@ async fn run(
                 }
 
                 tx.send(()).expect("sending rumble complete signal");
-            }
-            Some(tx) = rx_inputs.recv() => {
-                tx_inputs.retain(|(_, tx)| !tx.is_closed());
-                tx_inputs.push(tx);
             }
             Some(event) = usb_watch.next() => {
                 match event {
@@ -180,7 +174,7 @@ async fn run(
                         {
                             adapter = None;
 
-                            for (_, tx) in &tx_inputs {
+                            for tx in &tx_inputs {
                                 tx.send(None).expect("sending input");
                             }
 
