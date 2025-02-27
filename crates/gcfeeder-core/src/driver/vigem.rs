@@ -144,6 +144,8 @@ impl super::Driver for Driver {
     async fn recv_rumble(&self) -> super::Result<Rumble> {
         loop {
             let mut notification_task = self.notification_task.lock().await;
+
+            // If there's a current notification task, wait for it to finish. If the task succeeds then return its result.
             if notification_task.is_some() {
                 let rumble = self
                     .rx_rumble
@@ -160,19 +162,20 @@ impl super::Driver for Driver {
                 }
             }
 
+            // If there's no notification task, we need to create a new one. Wait until the device is attached.
             let mut device = self.device.lock().await;
             if !device.is_attached() {
+                drop(device);
+                drop(notification_task);
+
                 self.device_plugged.notified().await;
                 continue;
             }
 
-            if let Some(task) = notification_task.take() {
-                task.await.expect("waiting for notification task");
-            }
-
+            // At this point we know that there is no notification task, go ahead and spawn one and restart the loop.
             let request_notification = device.request_notification()?;
-
             tracing::trace!("Launching notification task");
+
             notification_task.replace(tokio::task::spawn_blocking({
                 let tx_rumble = self.tx_rumble.clone();
                 move || {

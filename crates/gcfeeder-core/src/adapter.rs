@@ -34,6 +34,7 @@ pub struct Adapter {
 }
 
 impl Adapter {
+    // TODO(Sirius902) Replace with `open_device`?
     pub async fn open() -> Result<Self> {
         trace!("Opening adapter...");
 

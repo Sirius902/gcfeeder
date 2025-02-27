@@ -16,7 +16,6 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub trait Driver: Send + Sync {
     fn name(&self) -> &'static str;
     async fn feed(&self, input: &Option<Input>) -> Result<()>;
-    // fn subscribe_rumble(&self) -> tokio::sync::broadcast::Receiver<Rumble>;
     async fn recv_rumble(&self) -> Result<Rumble>;
 }
 
