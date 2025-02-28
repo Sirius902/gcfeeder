@@ -1,10 +1,11 @@
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use gcinput::{Input, Rumble, STICK_RANGE};
+use gcinput::{Input, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 use tokio::pin;
 use tokio::sync::Mutex;
+use tracing::{debug, info};
 use vigem_client as client;
 
 use crate::util::packed_bools;
@@ -13,8 +14,8 @@ pub struct Driver {
     config: Config,
     device: Mutex<client::XTarget>,
     device_plugged: tokio::sync::Notify,
-    tx_rumble: Arc<Mutex<tokio::sync::mpsc::Sender<Option<Rumble>>>>,
-    rx_rumble: Mutex<tokio::sync::mpsc::Receiver<Option<Rumble>>>,
+    tx_rumble_strength: Arc<Mutex<tokio::sync::mpsc::Sender<Option<u8>>>>,
+    rx_rumble_strength: Mutex<tokio::sync::mpsc::Receiver<Option<u8>>>,
     notification_task: Mutex<Option<tokio::task::JoinHandle<()>>>,
 }
 
@@ -22,14 +23,18 @@ impl Driver {
     pub fn new(config: Config, client: client::Client) -> Result<Self, client::Error> {
         let (tx_rumble, rx_rumble) = tokio::sync::mpsc::channel(1);
 
+        info!("Creating virtual controller...");
+        let device = match config.pad {
+            Pad::Xbox360 => client::XTarget::new(client, client::TargetId::XBOX360_WIRED),
+        };
+        info!("Virtual controller created!");
+
         Ok(Self {
             config,
-            device: Mutex::new(match config.pad {
-                Pad::Xbox360 => client::XTarget::new(client, client::TargetId::XBOX360_WIRED),
-            }),
+            device: Mutex::new(device),
             device_plugged: tokio::sync::Notify::new(),
-            tx_rumble: Arc::new(Mutex::new(tx_rumble)),
-            rx_rumble: Mutex::new(rx_rumble),
+            tx_rumble_strength: Arc::new(Mutex::new(tx_rumble)),
+            rx_rumble_strength: Mutex::new(rx_rumble),
             notification_task: Mutex::new(None),
         })
     }
@@ -123,15 +128,19 @@ impl super::Driver for Driver {
         let mut device = self.device.lock().await;
         let Some(input) = input else {
             if device.is_attached() {
+                info!("Unplugging virtual controller...");
                 device.unplug()?;
+                info!("Virtual controller unplugged!");
             }
 
             return Ok(());
         };
 
         if !device.is_attached() {
+            info!("Plugging virtual controller...");
             device.plugin()?;
             device.wait_ready()?;
+            info!("Virtual controller plugged!");
 
             self.device_plugged.notify_one();
         }
@@ -141,14 +150,14 @@ impl super::Driver for Driver {
         Ok(())
     }
 
-    async fn recv_rumble(&self) -> super::Result<Rumble> {
+    async fn recv_rumble_strength(&self) -> super::Result<u8> {
         loop {
             let mut notification_task = self.notification_task.lock().await;
 
             // If there's a current notification task, wait for it to finish. If the task succeeds then return its result.
             if notification_task.is_some() {
-                let rumble = self
-                    .rx_rumble
+                let rumble_strength = self
+                    .rx_rumble_strength
                     .lock()
                     .await
                     .recv()
@@ -157,8 +166,9 @@ impl super::Driver for Driver {
 
                 *notification_task = None;
 
-                if let Some(rumble) = rumble {
-                    return Ok(rumble);
+                if let Some(strength) = rumble_strength {
+                    debug!("Received rumble of strength: {}", strength);
+                    return Ok(strength);
                 }
             }
 
@@ -177,7 +187,7 @@ impl super::Driver for Driver {
             tracing::trace!("Launching notification task");
 
             notification_task.replace(tokio::task::spawn_blocking({
-                let tx_rumble = self.tx_rumble.clone();
+                let tx_rumble = self.tx_rumble_strength.clone();
                 move || {
                     pin!(request_notification);
                     request_notification.as_mut().request();
@@ -192,13 +202,9 @@ impl super::Driver for Driver {
                         let rumble_strength =
                             notification.small_motor.max(notification.large_motor);
 
-                        let _ = tx_rumble.blocking_lock().blocking_send(Some(
-                            if rumble_strength == 0 {
-                                Rumble::Off
-                            } else {
-                                Rumble::On
-                            },
-                        ));
+                        let _ = tx_rumble
+                            .blocking_lock()
+                            .blocking_send(Some(rumble_strength));
                     } else {
                         let _ = tx_rumble.blocking_lock().blocking_send(None);
                     }
