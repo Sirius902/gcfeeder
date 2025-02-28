@@ -7,7 +7,7 @@ use gcfeeder_core::mapping::{layers, Layer};
 use gcinput::Rumble;
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{debug, error, info, warn};
+use tracing::{error, info, warn};
 
 use super::adapter;
 
@@ -67,9 +67,9 @@ async fn run(
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
 
     loop {
-        let recv_rumble = async {
+        let recv_rumble_strength = async {
             if let Some(driver) = &driver {
-                driver.recv_rumble().await
+                driver.recv_rumble_strength().await
             } else {
                 std::future::pending().await
             }
@@ -96,10 +96,9 @@ async fn run(
                     warn!("Error feeding with {} driver: {err}", driver_name);
                 }
             }
-            Ok(rumble) = recv_rumble => {
-                debug!("Rumble received for port {:?}: {:?}", Port::One, rumble);
+            Ok(strength) = recv_rumble_strength => {
                 // TODO(Sirius902) Use `PatternRumbler`.
-                adapter_service.set_rumble([rumble, Rumble::Off, Rumble::Off, Rumble::Off]).await;
+                adapter_service.set_rumble([(strength != 0).into(), Rumble::Off, Rumble::Off, Rumble::Off]).await;
             }
         }
     }

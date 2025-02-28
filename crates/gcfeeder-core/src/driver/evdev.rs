@@ -1,14 +1,12 @@
 use async_trait::async_trait;
 use evdev::uinput::{VirtualDevice, VirtualEventStream};
 use evdev::{
-    AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode, InputEvent, KeyCode,
-    UinputAbsSetup,
+    AbsInfo, AbsoluteAxisCode, AttributeSet, EventType, FFEffectCode, FFStatusCode, InputEvent,
+    KeyCode, SynchronizationCode, UinputAbsSetup,
 };
-use gcinput::{Input, Rumble, STICK_RANGE, TRIGGER_RANGE};
+use gcinput::{Input, STICK_RANGE, TRIGGER_RANGE};
 use tokio::sync::Mutex;
-use tracing::debug;
-
-use super::rumble::PatternRumbler;
+use tracing::{debug, info, warn};
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -22,6 +20,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub struct Driver {
     stream: Mutex<Option<VirtualEventStream>>,
     stream_created: tokio::sync::Notify,
+    rumble_strength: Mutex<u8>,
 }
 
 impl Driver {
@@ -46,8 +45,7 @@ impl Driver {
             (STICK_RANGE.center + STICK_RANGE.radius).into(),
             0,
             0,
-            // FUTURE(Sirius902) Find out if this is a reasonable value.
-            50,
+            0,
         );
 
         let trigger_axis_info = AbsInfo::new(
@@ -56,14 +54,10 @@ impl Driver {
             TRIGGER_RANGE.max.into(),
             0,
             0,
-            // FUTURE(Sirius902) Find out if this is a reasonable value.
-            50,
+            0,
         );
 
-        let hat_axis_info = AbsInfo::new(
-            0, -1, 1, 0, 0, // FUTURE(Sirius902) Find out if this is a reasonable value.
-            50,
-        );
+        let hat_axis_info = AbsInfo::new(0, -1, 1, 0, 0, 0);
 
         Ok(VirtualDevice::builder()?
             .name("gcfeeder | GameCube Controller")
@@ -121,7 +115,6 @@ impl Driver {
             _ => 0,
         };
 
-        // FUTURE(Sirius902) Create a report based on the diff from the last input.
         device.emit(&[
             InputEvent::new(
                 EventType::KEY.0,
@@ -203,54 +196,12 @@ impl Driver {
                 AbsoluteAxisCode::ABS_HAT0Y.0,
                 hat_state(input.button_down, input.button_up),
             ),
+            InputEvent::new(
+                EventType::SYNCHRONIZATION.0,
+                SynchronizationCode::SYN_REPORT.0,
+                0,
+            ),
         ])?;
-
-        Ok(())
-    }
-
-    async fn handle_rumble_event(
-        device: &mut VirtualDevice,
-        rumbler: &mut PatternRumbler,
-        event: &evdev::InputEvent,
-    ) -> Result<()> {
-        match event.destructure() {
-            // TODO(Sirius902) Properly handle FF, setting rumble strength should happen in
-            // `evdev::EventSummary::ForceFeedback`.
-            evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_UPLOAD, _value) => {
-                let mut event = device.process_ff_upload(event)?;
-
-                match event.effect().kind {
-                    evdev::FFEffectKind::Rumble {
-                        strong_magnitude,
-                        weak_magnitude,
-                    } => {
-                        let strength = ((strong_magnitude.max(weak_magnitude) as f32)
-                            / (u16::MAX as f32)
-                            * (u8::MAX as f32))
-                            .round() as u8;
-
-                        rumbler.update_strength(strength);
-                    }
-                    _ => {
-                        debug!("Unsupported ff effect: {:?}", event.effect().kind);
-                    }
-                }
-
-                event.set_effect_id(0);
-                event.set_retval(0);
-            }
-            evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_ERASE, _value) => {
-                let event = device.process_ff_erase(event)?;
-
-                if event.effect_id() == 0 {
-                    rumbler.update_strength(0);
-                }
-            }
-            evdev::EventSummary::ForceFeedback(_ev, _code, _value) => {}
-            _ => {
-                debug!("Unknown evdev event = {:?}", event);
-            }
-        }
 
         Ok(())
     }
@@ -266,11 +217,14 @@ impl super::Driver for Driver {
         let mut stream = self.stream.lock().await;
         let Some(input) = input else {
             if let Some(stream) = stream.take() {
-                // TODO(Sirius902) I don't think I should have to do this but trying to drop
+                info!("Disconnecting virtual controller...");
+
+                // FUTURE(Sirius902) I don't think I should have to do this but trying to drop
                 // `stream` in the current task will block it indefinitely. Ship `stream` off to
                 // be dropped in a separate task.
                 tokio::task::spawn_blocking(move || {
                     drop(stream);
+                    info!("Virtual controller disconnected!");
                 });
             }
 
@@ -281,7 +235,10 @@ impl super::Driver for Driver {
             if let Some(stream) = stream.as_mut() {
                 stream
             } else {
+                info!("Creating virtual controller...");
                 let stream = stream.insert(Self::create_stream()?);
+                info!("Virtual controller created!");
+
                 self.stream_created.notify_one();
                 stream
             }
@@ -292,7 +249,7 @@ impl super::Driver for Driver {
         Ok(())
     }
 
-    async fn recv_rumble(&self) -> super::Result<Rumble> {
+    async fn recv_rumble_strength(&self) -> super::Result<u8> {
         loop {
             let mut stream = self.stream.lock().await;
             let Some(stream) = stream.as_mut() else {
@@ -304,10 +261,12 @@ impl super::Driver for Driver {
             let event = stream.next_event().await.map_err(Error::Io)?;
             let device = stream.device_mut();
 
+            const PLAYING: i32 = FFStatusCode::FF_STATUS_PLAYING.0 as i32;
+            const STOPPED: i32 = FFStatusCode::FF_STATUS_STOPPED.0 as i32;
+
             match event.destructure() {
-                // TODO(Sirius902) Properly handle FF, setting rumble strength should happen in
-                // `evdev::EventSummary::ForceFeedback`.
                 evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_UPLOAD, _value) => {
+                    let mut strength = self.rumble_strength.lock().await;
                     let mut event = device.process_ff_upload(event).map_err(Error::Io)?;
 
                     match event.effect().kind {
@@ -315,34 +274,53 @@ impl super::Driver for Driver {
                             strong_magnitude,
                             weak_magnitude,
                         } => {
-                            let strength = ((strong_magnitude.max(weak_magnitude) as f32)
+                            let new_strength = ((strong_magnitude.max(weak_magnitude) as f32)
                                 / (u16::MAX as f32)
                                 * (u8::MAX as f32))
                                 .round() as u8;
 
-                            return Ok(match strength {
-                                0 => Rumble::Off,
-                                _ => Rumble::On,
-                            });
+                            debug!("Received FF effect of strength: {}", new_strength);
+
+                            event.set_effect_id(0);
+                            event.set_retval(0);
+
+                            *strength = new_strength;
                         }
                         _ => {
-                            debug!("Unsupported ff effect: {:?}", event.effect().kind);
+                            debug!("Unimplemented FF effect: {:?}", event.effect().kind);
                         }
                     }
-
-                    event.set_effect_id(0);
-                    event.set_retval(0);
                 }
                 evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_ERASE, _value) => {
+                    let mut strength = self.rumble_strength.lock().await;
                     let event = device.process_ff_erase(event).map_err(Error::Io)?;
 
                     if event.effect_id() == 0 {
-                        return Ok(Rumble::Off);
+                        debug!("Erasing FF effect");
+                        *strength = 0;
+                        return Ok(0);
+                    } else {
+                        warn!("Erasing unknown FF effect id: {}", event.effect_id())
                     }
                 }
-                evdev::EventSummary::ForceFeedback(_ev, _code, _value) => {}
+                evdev::EventSummary::ForceFeedback(_ev, effect_id, PLAYING) => {
+                    let strength = self.rumble_strength.lock().await;
+
+                    if effect_id.0 == 0 {
+                        debug!("Playing FF effect of strength {}", *strength);
+                        return Ok(*strength);
+                    }
+                }
+                evdev::EventSummary::ForceFeedback(_ev, effect_id, STOPPED) => {
+                    if effect_id.0 == 0 {
+                        debug!("Stopping FF effect");
+                        return Ok(0);
+                    } else {
+                        warn!("Stopping FF effect id: {}", effect_id.0)
+                    }
+                }
                 _ => {
-                    debug!("Unknown evdev event = {:?}", event);
+                    debug!("Unimplemented evdev event: {:?}", event);
                 }
             }
         }

@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use gcinput::{Input, Rumble};
+use gcinput::Input;
 use serde::{Deserialize, Serialize};
 
 use crate::feeder;
@@ -16,7 +16,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub trait Driver: Send + Sync {
     fn name(&self) -> &'static str;
     async fn feed(&self, input: &Option<Input>) -> Result<()>;
-    async fn recv_rumble(&self) -> Result<Rumble>;
+    async fn recv_rumble_strength(&self) -> Result<u8>;
 }
 
 #[derive(Debug, thiserror::Error)]
