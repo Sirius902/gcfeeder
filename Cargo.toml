@@ -1,5 +1,7 @@
 [workspace]
 members = ["crates/*"]
+# TODO(Sirius902) Remove this once gcfeeder compiles with new API.
+exclude = ["crates/gcfeeder"]
 resolver = "2"
 
 [workspace.package]
