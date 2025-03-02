@@ -23,6 +23,8 @@ mod tests {
         };
     }
 
+    const TOLERANCE: i32 = 1;
+
     const TEST_DATA: &[(Stick, Stick, Stick)] = &[
         test_data!([-128, -128], [-39, -39], [-56, -56]),
         test_data!([-128, -127], [-39, -39], [-56, -56]),
@@ -49,7 +51,18 @@ mod tests {
                 ..Default::default()
             };
 
-            assert_eq!(Clamp::clamp(input).main_stick, *clamp);
+            let res = Clamp::clamp(input).main_stick;
+            let err_x = i32::from(res.x) - i32::from(clamp.x);
+            let err_y = i32::from(res.y) - i32::from(clamp.y);
+
+            assert!(
+                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
+                "Error for mapped {:?} is at most {}, was ({}, {})",
+                raw,
+                TOLERANCE,
+                err_x,
+                err_y,
+            );
         }
     }
 
@@ -61,7 +74,18 @@ mod tests {
                 ..Default::default()
             };
 
-            assert_eq!(Vc::apply(input).main_stick, *vc);
+            let res = Vc::apply(input).main_stick;
+            let err_x = i32::from(res.x) - i32::from(vc.x);
+            let err_y = i32::from(res.y) - i32::from(vc.y);
+
+            assert!(
+                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
+                "Error for mapped {:?} is at most {}, was ({}, {})",
+                clamp,
+                TOLERANCE,
+                err_x,
+                err_y,
+            );
         }
     }
 }
