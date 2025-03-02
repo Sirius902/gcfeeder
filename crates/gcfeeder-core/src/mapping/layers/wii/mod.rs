@@ -6,7 +6,7 @@ pub use vc::*;
 
 #[cfg(test)]
 mod tests {
-    use gcinput::{Input, Stick};
+    use gcinput::{Input, Stick, STICK_RANGE};
 
     use crate::mapping::layers::wii::{Clamp, Vc};
 
@@ -15,8 +15,8 @@ mod tests {
             (
                 $(
                     Stick::new(
-                        unsafe { std::mem::transmute::<i8, u8>($x) },
-                        unsafe { std::mem::transmute::<i8, u8>($y) }
+                        ($x + STICK_RANGE.center as i32) as u8,
+                        ($y + STICK_RANGE.center as i32) as u8,
                     ),
                 )*
             )
@@ -49,7 +49,7 @@ mod tests {
                 ..Default::default()
             };
 
-            assert_eq!(Clamp::apply(input).main_stick, *clamp);
+            assert_eq!(Clamp::clamp(input).main_stick, *clamp);
         }
     }
 

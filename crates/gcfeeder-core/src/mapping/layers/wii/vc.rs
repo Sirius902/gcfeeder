@@ -21,6 +21,6 @@ impl mapping::Layer for Vc {
     }
 
     fn apply(&mut self, input: Option<Input>) -> Option<Input> {
-        todo!()
+        input.map(Self::apply)
     }
 }
