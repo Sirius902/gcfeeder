@@ -76,10 +76,81 @@ impl Clamp {
 
 impl crate::layers::Layer for Clamp {
     fn name(&self) -> &'static str {
-        "Wii Clamp"
+        "oot-vc Clamp"
     }
 
     fn apply(&mut self, input: Option<Input>) -> Option<Input> {
         input.map(Self::clamp)
+    }
+}
+
+#[derive(Default)]
+pub struct InverseClamp;
+
+impl InverseClamp {
+    pub const fn new() -> Self {
+        Self
+    }
+
+    pub fn unclamp(mut input: Input) -> Input {
+        input.main_stick = Self::unclamp_stick(input.main_stick, 56, 15);
+        input.c_stick = Self::unclamp_stick(input.c_stick, 44, 15);
+
+        if input.left_trigger > 0 {
+            input.left_trigger += 30;
+        }
+
+        if input.right_trigger > 0 {
+            input.right_trigger += 30;
+        }
+
+        input
+    }
+
+    pub fn unclamp_stick(stick: Stick, radius: u8, deadzone: u8) -> Stick {
+        let mut x = i32::from(stick.x) - i32::from(STICK_RANGE.center);
+        let mut y = i32::from(stick.y) - i32::from(STICK_RANGE.center);
+
+        let deadzone = i32::from(deadzone);
+
+        if x > 0 {
+            x += deadzone;
+        } else if x < 0 {
+            x -= deadzone;
+        }
+
+        if y > 0 {
+            y += deadzone;
+        } else if y < 0 {
+            y -= deadzone;
+        }
+
+        let mag_sq = x * x + y * y;
+        let radius_sq = i32::from(radius) * i32::from(radius);
+        if mag_sq > radius_sq {
+            let mag = (mag_sq as f32).sqrt();
+            let scale = mag / radius as f32;
+
+            x = (x as f32 * scale) as i32;
+            y = (y as f32 * scale) as i32;
+        }
+
+        x += i32::from(STICK_RANGE.center);
+        y += i32::from(STICK_RANGE.center);
+
+        Stick::new(
+            x.approx_as::<u8>().unwrap_or_saturate(),
+            y.approx_as::<u8>().unwrap_or_saturate(),
+        )
+    }
+}
+
+impl crate::layers::Layer for InverseClamp {
+    fn name(&self) -> &'static str {
+        "Inverse oot-vc Clamp"
+    }
+
+    fn apply(&mut self, input: Option<Input>) -> Option<Input> {
+        input.map(Self::unclamp)
     }
 }

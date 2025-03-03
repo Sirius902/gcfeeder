@@ -9,6 +9,7 @@ mod tests {
     use gcinput::{Input, Stick, STICK_RANGE};
 
     use super::{Clamp, Vc};
+    use crate::layers::oot_vc::{InverseClamp, InverseVc};
 
     macro_rules! test_data {
         ($( [$x:expr, $y:expr] ),* ) => {
@@ -24,6 +25,7 @@ mod tests {
     }
 
     const TOLERANCE: i32 = 1;
+    const INV_TOLERANCE: i32 = 2;
 
     const TEST_DATA: &[(Stick, Stick, Stick)] = &[
         test_data!([-128, -128], [-39, -39], [-56, -56]),
@@ -84,6 +86,52 @@ mod tests {
                 "Error for mapped {:?} is at most {}, was ({}, {})",
                 clamp,
                 TOLERANCE,
+                err_x,
+                err_y,
+            );
+        }
+    }
+
+    #[test]
+    fn inv_clamp_main_stick_works() {
+        for (raw, clamp, _) in TEST_DATA {
+            let input = Input {
+                main_stick: *clamp,
+                ..Default::default()
+            };
+
+            let res = Clamp::clamp(InverseClamp::unclamp(input)).main_stick;
+            let err_x = i32::from(res.x) - i32::from(clamp.x);
+            let err_y = i32::from(res.y) - i32::from(clamp.y);
+
+            assert!(
+                err_x.abs() <= INV_TOLERANCE && err_y.abs() <= INV_TOLERANCE,
+                "Error for mapped {:?} is at most {}, was ({}, {})",
+                raw,
+                INV_TOLERANCE,
+                err_x,
+                err_y,
+            );
+        }
+    }
+
+    #[test]
+    fn inv_vc_main_stick_works() {
+        for (_, clamp, vc) in TEST_DATA {
+            let input = Input {
+                main_stick: *vc,
+                ..Default::default()
+            };
+
+            let res = Vc::apply(InverseVc::apply(input)).main_stick;
+            let err_x = i32::from(res.x) - i32::from(vc.x);
+            let err_y = i32::from(res.y) - i32::from(vc.y);
+
+            assert!(
+                err_x.abs() <= INV_TOLERANCE && err_y.abs() <= INV_TOLERANCE,
+                "Error for mapped {:?} is at most {}, was ({}, {})",
+                clamp,
+                INV_TOLERANCE,
                 err_x,
                 err_y,
             );

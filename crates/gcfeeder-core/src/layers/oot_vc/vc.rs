@@ -47,7 +47,61 @@ impl Vc {
 
 impl crate::layers::Layer for Vc {
     fn name(&self) -> &'static str {
-        "Wii VC OoT"
+        "oot-vc"
+    }
+
+    fn apply(&mut self, input: Option<Input>) -> Option<Input> {
+        input.map(Self::apply)
+    }
+}
+
+#[derive(Default)]
+pub struct InverseVc;
+
+impl InverseVc {
+    pub const fn new() -> Self {
+        Self
+    }
+
+    pub fn apply(mut input: Input) -> Input {
+        let mut main_x = i32::from(input.main_stick.x) - i32::from(STICK_RANGE.center);
+        let mut main_y = i32::from(input.main_stick.y) - i32::from(STICK_RANGE.center);
+
+        let mut main_x_f = main_x as f64 / 127.0;
+        let mut main_y_f = main_y as f64 / 127.0;
+
+        if main_x_f >= 0.0 {
+            main_x_f = 1.0 - (1.0 - main_x_f).powi(2);
+            main_x_f *= 56.0;
+        } else {
+            main_x_f = -1.0 + (1.0 + main_x_f).powi(2);
+            main_x_f *= 56.0;
+        }
+
+        if main_y_f >= 0.0 {
+            main_y_f = 1.0 - (1.0 - main_y_f).powi(2);
+            main_y_f *= 56.0;
+        } else {
+            main_y_f = -1.0 + (1.0 + main_y_f).powi(2);
+            main_y_f *= 56.0;
+        }
+
+        main_x = main_x_f as i32;
+        main_y = main_y_f as i32;
+
+        main_x += i32::from(STICK_RANGE.center);
+        main_y += i32::from(STICK_RANGE.center);
+
+        input.main_stick.x = main_x.approx_as::<u8>().unwrap_or_saturate();
+        input.main_stick.y = main_y.approx_as::<u8>().unwrap_or_saturate();
+
+        input
+    }
+}
+
+impl crate::layers::Layer for InverseVc {
+    fn name(&self) -> &'static str {
+        "Inverse oot-vc"
     }
 
     fn apply(&mut self, input: Option<Input>) -> Option<Input> {
