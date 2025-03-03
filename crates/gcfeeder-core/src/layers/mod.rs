@@ -2,7 +2,7 @@ mod analog_scaling;
 mod calibration;
 mod center_calibration;
 mod ess_inversion;
-pub mod wii;
+pub mod oot_vc;
 
 pub use analog_scaling::*;
 pub use calibration::*;
