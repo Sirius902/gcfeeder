@@ -1,7 +1,6 @@
 use tracing::warn;
 
 use crate::calibration::{SticksCalibration, TriggersCalibration};
-use crate::mapping;
 
 pub struct Calibration {
     stick_data: Option<SticksCalibration>,
@@ -24,7 +23,7 @@ impl Calibration {
     }
 }
 
-impl mapping::Layer for Calibration {
+impl super::Layer for Calibration {
     fn name(&self) -> &'static str {
         "Calibrated"
     }

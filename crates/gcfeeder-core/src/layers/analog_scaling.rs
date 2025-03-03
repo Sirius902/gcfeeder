@@ -1,7 +1,5 @@
 use gcinput::{Input, Stick, STICK_RANGE};
 
-use crate::mapping;
-
 pub struct AnalogScaling {
     scale: f64,
 }
@@ -17,7 +15,7 @@ impl AnalogScaling {
     }
 }
 
-impl mapping::Layer for AnalogScaling {
+impl super::Layer for AnalogScaling {
     fn name(&self) -> &'static str {
         "Scaled"
     }

@@ -4,7 +4,7 @@ use crate::calibration::{SticksCalibration, TriggersCalibration};
 #[cfg(target_os = "windows")]
 use crate::driver::vigem::Config as ViGEmConfig;
 use crate::driver::DriverType;
-use crate::mapping::layers::EssInversion;
+use crate::layers::EssInversion;
 
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct Config {

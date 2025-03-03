@@ -3,7 +3,7 @@ use std::sync::Arc;
 use gcfeeder_core::adapter::Port;
 use gcfeeder_core::driver::{Driver, DriverType};
 use gcfeeder_core::feeder;
-use gcfeeder_core::mapping::{layers, Layer};
+use gcfeeder_core::layers::{self, Layer};
 use gcinput::Rumble;
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;

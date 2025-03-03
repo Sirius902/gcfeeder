@@ -1,8 +1,6 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{Input, STICK_RANGE};
 
-use crate::mapping;
-
 #[derive(Default)]
 pub struct Vc;
 
@@ -47,7 +45,7 @@ impl Vc {
     }
 }
 
-impl mapping::Layer for Vc {
+impl crate::layers::Layer for Vc {
     fn name(&self) -> &'static str {
         "Wii VC OoT"
     }

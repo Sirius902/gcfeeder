@@ -1,8 +1,6 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{Input, Stick, STICK_RANGE};
 
-use crate::mapping;
-
 #[derive(Default)]
 pub struct Clamp;
 
@@ -76,7 +74,7 @@ impl Clamp {
     }
 }
 
-impl mapping::Layer for Clamp {
+impl crate::layers::Layer for Clamp {
     fn name(&self) -> &'static str {
         "Wii Clamp"
     }

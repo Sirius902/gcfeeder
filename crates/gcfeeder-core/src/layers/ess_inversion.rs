@@ -2,8 +2,6 @@ use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{Input, STICK_RANGE};
 use serde::{Deserialize, Serialize};
 
-use crate::mapping;
-
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EssInversion {
     #[serde(rename = "oot-vc")]
@@ -19,17 +17,17 @@ impl EssInversion {
         match self {
             Self::OotVc => {
                 const MAP: NormalizedMap =
-                    NormalizedMap::new(include_bytes!("../../../resource/ess/oot-vc.bin"));
+                    NormalizedMap::new(include_bytes!("../../resource/ess/oot-vc.bin"));
                 &MAP
             }
             Self::MmVc => {
                 const MAP: NormalizedMap =
-                    NormalizedMap::new(include_bytes!("../../../resource/ess/mm-vc.bin"));
+                    NormalizedMap::new(include_bytes!("../../resource/ess/mm-vc.bin"));
                 &MAP
             }
             Self::Z64Gc => {
                 const MAP: NormalizedMap =
-                    NormalizedMap::new(include_bytes!("../../../resource/ess/z64-gc.bin"));
+                    NormalizedMap::new(include_bytes!("../../resource/ess/z64-gc.bin"));
                 &MAP
             }
         }
@@ -45,7 +43,7 @@ impl EssInversion {
     }
 }
 
-impl mapping::Layer for EssInversion {
+impl super::Layer for EssInversion {
     fn name(&self) -> &'static str {
         match *self {
             Self::OotVc => "OoT VC ESS",

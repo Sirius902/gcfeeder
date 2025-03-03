@@ -8,7 +8,7 @@ pub use vc::*;
 mod tests {
     use gcinput::{Input, Stick, STICK_RANGE};
 
-    use crate::mapping::layers::wii::{Clamp, Vc};
+    use super::{Clamp, Vc};
 
     macro_rules! test_data {
         ($( [$x:expr, $y:expr] ),* ) => {

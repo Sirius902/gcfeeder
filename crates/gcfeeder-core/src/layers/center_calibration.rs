@@ -2,8 +2,6 @@ use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{STICK_RANGE, TRIGGER_RANGE};
 use nalgebra::Vector2;
 
-use crate::mapping;
-
 #[derive(Default)]
 pub struct CenterCalibration {
     center_data: Option<DriftData>,
@@ -35,7 +33,7 @@ impl DriftData {
     }
 }
 
-impl mapping::Layer for CenterCalibration {
+impl super::Layer for CenterCalibration {
     fn name(&self) -> &'static str {
         "Centered"
     }
