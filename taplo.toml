@@ -2,7 +2,7 @@
 #
 # https://taplo.tamasfe.dev/configuration/file.html#configuration-file
 
-include = ["crates/**/Cargo.toml"]
+include = ["Cargo.toml", "crates/**/Cargo.toml"]
 exclude = []
 
 [formatting]

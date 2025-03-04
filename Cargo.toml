@@ -5,12 +5,13 @@ exclude = ["crates/gcfeeder"]
 resolver = "2"
 
 [workspace.package]
-description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter."
-version = "3.0.1"
-repository = "https://github.com/Sirius902/gcfeeder"
-edition = "2021"
-readme = "README.md"
 authors = ["Sirius902"]
+description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter."
+edition = "2021"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/Sirius902/gcfeeder"
+version = "3.0.1"
 
 [workspace.metadata.crane]
 name = "workspace"
