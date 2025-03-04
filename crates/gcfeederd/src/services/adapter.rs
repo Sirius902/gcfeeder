@@ -155,6 +155,8 @@ async fn run(
 
                 tx.send(()).expect("sending rumble complete signal");
             }
+            // FUTURE(Sirius902) Don't just watch for hotplug, also check every second or so to see
+            // if a busy adapter became available.
             Some(event) = usb_watch.next() => {
                 match event {
                     nusb::hotplug::HotplugEvent::Connected(device_info) => {
