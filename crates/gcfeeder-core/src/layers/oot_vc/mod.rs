@@ -24,9 +24,6 @@ mod tests {
         };
     }
 
-    const TOLERANCE: i32 = 1;
-    const INV_TOLERANCE: i32 = 2;
-
     const TEST_DATA: &[(Stick, Stick, Stick)] = &[
         test_data!([-128, -128], [-39, -39], [-56, -56]),
         test_data!([-128, -127], [-39, -39], [-56, -56]),
@@ -55,22 +52,18 @@ mod tests {
             };
 
             let res = Clamp::clamp(input).main_stick;
-            let err_x = i32::from(res.x) - i32::from(clamp.x);
-            let err_y = i32::from(res.y) - i32::from(clamp.y);
-
-            assert!(
-                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
-                "Error for mapped {:?} is at most {}, was ({}, {})",
-                raw,
-                TOLERANCE,
-                err_x,
-                err_y,
+            assert_eq!(
+                res, *clamp,
+                "Expected {:?} -> {:?}, got {:?}",
+                raw, clamp, res
             );
         }
     }
 
     #[test]
     fn vc_main_stick_works() {
+        const TOLERANCE: i32 = 1;
+
         for (_, clamp, vc) in TEST_DATA {
             let input = Input {
                 main_stick: *clamp,
@@ -94,30 +87,26 @@ mod tests {
 
     #[test]
     fn inv_clamp_main_stick_works() {
-        for (raw, clamp, _) in TEST_DATA {
+        for (_, clamp, _) in TEST_DATA {
             let input = Input {
                 main_stick: *clamp,
                 ..Default::default()
             };
 
             let res = Clamp::clamp(InverseClamp::unclamp(input)).main_stick;
-            let err_x = i32::from(res.x) - i32::from(clamp.x);
-            let err_y = i32::from(res.y) - i32::from(clamp.y);
-
-            assert!(
-                err_x.abs() <= INV_TOLERANCE && err_y.abs() <= INV_TOLERANCE,
-                "Error for mapped {:?} is at most {}, was ({}, {})",
-                raw,
-                INV_TOLERANCE,
-                err_x,
-                err_y,
+            assert_eq!(
+                res, *clamp,
+                "Expected {:?} -> {:?}, got {:?}",
+                clamp, clamp, res
             );
         }
     }
 
     #[test]
     fn inv_vc_main_stick_works() {
-        for (_, clamp, vc) in TEST_DATA {
+        const TOLERANCE: i32 = 2;
+
+        for (_, _, vc) in TEST_DATA {
             let input = Input {
                 main_stick: *vc,
                 ..Default::default()
@@ -128,10 +117,10 @@ mod tests {
             let err_y = i32::from(res.y) - i32::from(vc.y);
 
             assert!(
-                err_x.abs() <= INV_TOLERANCE && err_y.abs() <= INV_TOLERANCE,
+                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
                 "Error for mapped {:?} is at most {}, was ({}, {})",
-                clamp,
-                INV_TOLERANCE,
+                vc,
+                TOLERANCE,
                 err_x,
                 err_y,
             );
