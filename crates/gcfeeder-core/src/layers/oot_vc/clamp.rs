@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{Input, Stick, STICK_RANGE};
 
@@ -113,16 +115,24 @@ impl InverseClamp {
 
         let deadzone = i32::from(deadzone);
 
-        if x > 0 {
-            x += deadzone;
-        } else if x < 0 {
-            x -= deadzone;
+        match x.cmp(&0) {
+            Ordering::Greater => {
+                x += deadzone;
+            }
+            Ordering::Less => {
+                x -= deadzone;
+            }
+            _ => {}
         }
 
-        if y > 0 {
-            y += deadzone;
-        } else if y < 0 {
-            y -= deadzone;
+        match y.cmp(&0) {
+            Ordering::Greater => {
+                y += deadzone;
+            }
+            Ordering::Less => {
+                y -= deadzone;
+            }
+            _ => {}
         }
 
         let mag_sq = x * x + y * y;
