@@ -2,7 +2,54 @@ mod clamp;
 mod vc;
 
 pub use clamp::*;
+use gcinput::{Stick, STICK_RANGE};
 pub use vc::*;
+
+pub fn is_ess(stick: Stick) -> bool {
+    const DEADZONE: i32 = 7;
+    const MAX: i32 = 67;
+
+    let apply_deadzone = |n: i32| {
+        if n > DEADZONE {
+            if n < MAX {
+                n - DEADZONE
+            } else {
+                MAX - DEADZONE
+            }
+        } else if n < -DEADZONE {
+            if n > -MAX {
+                n + DEADZONE
+            } else {
+                -MAX + DEADZONE
+            }
+        } else {
+            0
+        }
+    };
+
+    let x = i32::from(stick.x) - i32::from(STICK_RANGE.center);
+    let y = i32::from(stick.y) - i32::from(STICK_RANGE.center);
+
+    let rx = apply_deadzone(x);
+    let ry = apply_deadzone(y);
+
+    // Not in ESS position if in the deadzone.
+    if rx == 0 && ry == 0 {
+        return false;
+    }
+
+    let mag = ((rx * rx + ry * ry) as f32).sqrt();
+
+    let mut speed = mag - 20.0;
+    if speed < 0.0 {
+        speed = 0.0;
+    } else {
+        let temp = 1.0 - (speed * 450.0).cos();
+        speed = (temp * temp * 30.0) + 7.0;
+    }
+
+    speed <= 0.0
+}
 
 #[cfg(test)]
 mod tests {
