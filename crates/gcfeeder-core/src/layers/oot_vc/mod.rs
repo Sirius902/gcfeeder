@@ -109,8 +109,6 @@ mod tests {
 
     #[test]
     fn vc_main_stick_works() {
-        const TOLERANCE: i32 = 1;
-
         for (_, clamp, vc) in TEST_DATA {
             let input = Input {
                 main_stick: *clamp,
@@ -118,17 +116,7 @@ mod tests {
             };
 
             let res = Vc::apply(input).main_stick;
-            let err_x = i32::from(res.x) - i32::from(vc.x);
-            let err_y = i32::from(res.y) - i32::from(vc.y);
-
-            assert!(
-                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
-                "Error for mapped {:?} is at most {}, was ({}, {})",
-                clamp,
-                TOLERANCE,
-                err_x,
-                err_y,
-            );
+            assert_eq!(res, *vc, "Expected {:?} -> {:?}, got {:?}", clamp, vc, res);
         }
     }
 
@@ -151,8 +139,6 @@ mod tests {
 
     #[test]
     fn inv_vc_main_stick_works() {
-        const TOLERANCE: i32 = 2;
-
         for (_, _, vc) in TEST_DATA {
             let input = Input {
                 main_stick: *vc,
@@ -160,17 +146,7 @@ mod tests {
             };
 
             let res = Vc::apply(InverseVc::apply(input)).main_stick;
-            let err_x = i32::from(res.x) - i32::from(vc.x);
-            let err_y = i32::from(res.y) - i32::from(vc.y);
-
-            assert!(
-                err_x.abs() <= TOLERANCE && err_y.abs() <= TOLERANCE,
-                "Error for mapped {:?} is at most {}, was ({}, {})",
-                vc,
-                TOLERANCE,
-                err_x,
-                err_y,
-            );
+            assert_eq!(res, *vc, "Expected {:?} -> {:?}, got {:?}", vc, vc, res);
         }
     }
 }
