@@ -37,30 +37,25 @@ async fn main() -> adapter::Result<()> {
 }
 
 fn init_logging() {
-    let registry = tracing_subscriber::registry();
-
-    #[cfg(not(feature = "tokio-console"))]
-    let layered = registry;
+    let builder = tracing_subscriber::registry();
 
     #[cfg(feature = "tokio-console")]
-    let layered = registry.with(console_subscriber::spawn());
+    let builder = builder.with(console_subscriber::spawn().with_filter({
+        use tracing::level_filters::LevelFilter;
 
-    layered
-        .with(tracing_subscriber::fmt::layer())
-        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-            EnvFilter::builder()
-                .parse(
-                    [
-                        "gcfeederd=trace",
-                        "gcfeeder_core=trace",
-                        #[cfg(feature = "tokio-console")]
-                        "tokio=trace",
-                        #[cfg(feature = "tokio-console")]
-                        "runtime=trace",
-                    ]
-                    .join(","),
-                )
-                .expect("env filter string is valid")
-        }))
+        EnvFilter::builder()
+            .with_default_directive(LevelFilter::DEBUG.into())
+            .parse("tokio=trace,runtime=trace")
+            .expect("tokio-console env filter string parses")
+    }));
+
+    builder
+        .with(tracing_subscriber::fmt::layer().with_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                EnvFilter::builder()
+                    .parse(["gcfeederd=trace", "gcfeeder_core=trace"].join(","))
+                    .expect("env filter string parses")
+            }),
+        ))
         .init();
 }
