@@ -184,7 +184,7 @@ impl super::Driver for Driver {
 
             // At this point we know that there is no notification task, go ahead and spawn one and restart the loop.
             let request_notification = device.request_notification()?;
-            tracing::trace!("Launching notification task");
+            debug!("Launching notification task");
 
             notification_task.replace(tokio::task::spawn_blocking({
                 let tx_rumble = self.tx_rumble_strength.clone();

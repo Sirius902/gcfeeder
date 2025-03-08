@@ -16,7 +16,7 @@ async fn main() -> adapter::Result<()> {
     let adapter_service = Arc::new(services::adapter::start(&task_tracker));
     let driver_service = services::driver::start(&task_tracker, adapter_service.clone());
 
-    _ = task_tracker.close();
+    task_tracker.close();
 
     tokio::select! {
         // FUTURE(Sirius902) Should we handle any other signals here?

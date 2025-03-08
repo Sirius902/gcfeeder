@@ -97,7 +97,7 @@ async fn run(
             }
             Ok(strength) = recv_rumble_strength => {
                 // TODO(Sirius902) Use `PatternRumbler`.
-                adapter_service.set_rumble([(strength != 0).into(), Rumble::Off, Rumble::Off, Rumble::Off]).await;
+                adapter_service.set_rumble([(strength != 0).into(), Rumble::Off, Rumble::Off, Rumble::Off]);
             }
         }
     }

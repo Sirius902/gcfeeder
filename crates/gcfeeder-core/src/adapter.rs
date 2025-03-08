@@ -1,6 +1,6 @@
 use gcinput::{Input, Rumble, Stick};
 use nusb::transfer::{ControlOut, ControlType, Recipient, RequestBuffer};
-use tracing::{debug, trace};
+use tracing::debug;
 
 const VID: u16 = 0x057E;
 const PID: u16 = 0x0337;
@@ -36,7 +36,7 @@ pub struct Adapter {
 impl Adapter {
     // TODO(Sirius902) Replace with `open_device`?
     pub async fn open() -> Result<Self> {
-        trace!("Opening adapter...");
+        debug!("Opening adapter...");
 
         // FUTURE(Sirius902) Use `watch_devices`.
         let mut device: Option<nusb::Device> = None;
@@ -96,7 +96,7 @@ impl Adapter {
             return Err(Error::NoDevice);
         }
 
-        trace!("Attempting to open adapter...");
+        debug!("Attempting to open adapter...");
 
         let device = device_info.open()?;
 
