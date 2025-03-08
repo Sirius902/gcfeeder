@@ -224,6 +224,7 @@ impl Port {
         }
     }
 
+    /// Returns all [`Port`] in sorted order.
     #[must_use]
     pub const fn all() -> &'static [Self] {
         &[Self::One, Self::Two, Self::Three, Self::Four]

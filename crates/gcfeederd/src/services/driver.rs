@@ -35,7 +35,6 @@ async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     adapter_service: Arc<adapter::Service>,
 ) {
-    // NOTE(Sirius902) This expects `Port::all` to be sorted by `Port::index`.
     let mut rx_inputs = Port::all()
         .iter()
         .map(|port| adapter_service.subscribe_input(*port))
