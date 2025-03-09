@@ -3,6 +3,7 @@ mod calibration;
 mod center_calibration;
 mod ess_inversion;
 pub mod oot_vc;
+pub mod z64_gc;
 
 pub use analog_scaling::*;
 pub use calibration::*;
