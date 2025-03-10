@@ -2,6 +2,7 @@ mod analog_scaling;
 mod calibration;
 mod center_calibration;
 mod ess_inversion;
+pub mod mm_vc;
 pub mod oot_vc;
 pub mod z64_gc;
 
