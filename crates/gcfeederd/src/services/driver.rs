@@ -50,7 +50,7 @@ async fn run(
         },
         ..Default::default()
     }) {
-        Ok(driver) => Some(driver),
+        Ok(driver) => driver,
         Err(err) => {
             error!("Error creating driver: {err}");
             None

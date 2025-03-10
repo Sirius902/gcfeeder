@@ -36,18 +36,25 @@ pub enum DriverType {
     ViGEm,
     #[cfg(target_os = "linux")]
     Evdev,
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    None,
 }
 
 impl DriverType {
-    pub fn create(self, #[allow(unused)] config: &feeder::Config) -> Result<Box<dyn Driver>> {
+    pub fn create(
+        self,
+        #[allow(unused)] config: &feeder::Config,
+    ) -> Result<Option<Box<dyn Driver>>> {
         match self {
             #[cfg(target_os = "windows")]
-            Self::ViGEm => Ok(Box::new(vigem::Driver::new(
+            Self::ViGEm => Ok(Some(Box::new(vigem::Driver::new(
                 config.vigem_config,
                 vigem_client::Client::connect()?,
-            )?)),
+            )?))),
             #[cfg(target_os = "linux")]
-            Self::Evdev => Ok(Box::new(evdev::Driver::new())),
+            Self::Evdev => Ok(Some(Box::new(evdev::Driver::new()))),
+            #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+            Self::None => Ok(None),
         }
     }
 }
@@ -61,6 +68,10 @@ impl Default for DriverType {
         #[cfg(target_os = "linux")]
         {
             Self::Evdev
+        }
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        {
+            Self::None
         }
     }
 }
