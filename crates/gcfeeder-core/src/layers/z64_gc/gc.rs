@@ -26,21 +26,17 @@ impl Gc {
     }
 
     fn apply_axis(n: i32) -> i32 {
-        fn round_shift(val: i32, shift: u32) -> i32 {
-            (val >> shift) + ((val < 0 && (val & ((1 << shift) - 1)) != 0) as i32)
-        }
-
         match n {
-            -39..=39 => (n * 67) / 40 + ((n * 67) >> 31) - (((n * 67) / 40) >> 31),
+            -39..=39 => (n * 67) / 40,
             -71..=-40 => {
                 let n1 = (-40 - n) * -90;
                 let n2 = (n + 72) * -67;
-                round_shift(n1, 5) + round_shift(n2, 5)
+                n1 / 32 + n2 / 32
             }
             40..=71 => {
                 let n1 = (72 - n) * 67;
                 let n2 = (n - 40) * 90;
-                round_shift(n1, 5) + round_shift(n2, 5)
+                n1 / 32 + n2 / 32
             }
             ..=-72 => -90,
             72.. => 90,
