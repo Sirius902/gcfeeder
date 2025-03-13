@@ -1,6 +1,8 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
 use gcinput::{Input, Stick, STICK_RANGE};
 
+// FUTURE(Sirius902) Merge this module with the z64_gc one, they are identical.
+
 #[derive(Default)]
 pub struct Clamp;
 

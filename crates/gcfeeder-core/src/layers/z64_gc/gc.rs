@@ -26,40 +26,25 @@ impl Gc {
     }
 
     fn apply_axis(n: i32) -> i32 {
-        let i32_from_bool = |b: bool| if b { 1 } else { 0 };
-
-        let mut u_var4;
-        let u_var5;
-        let mut i_var6 = n;
-
-        if !(0..=39).contains(&i_var6) && !(-39..=-1).contains(&i_var6) {
-            if !(40..=71).contains(&i_var6) {
-                if (i_var6 < -39) && (-72 < i_var6) {
-                    u_var5 = (-40 - i_var6) * -90;
-                    u_var4 = (i_var6 + 72) * -67;
-                    u_var4 = (u_var5 >> 5)
-                        + i32_from_bool(u_var5 < 0 && (u_var5 & 0x1f) != 0)
-                        + (u_var4 >> 5)
-                        + i32_from_bool(u_var4 < 0 && (u_var4 & 0x1f) != 0);
-                } else if i_var6 < 72 {
-                    u_var4 = -90;
-                } else {
-                    u_var4 = 90;
-                }
-            } else {
-                u_var5 = (72 - i_var6) * 67;
-                u_var4 = (i_var6 + -40) * 90;
-                u_var4 = (u_var5 >> 5)
-                    + i32_from_bool(u_var5 < 0 && (u_var5 & 0x1f) != 0)
-                    + (u_var4 >> 5)
-                    + i32_from_bool(u_var4 < 0 && (u_var4 & 0x1f) != 0);
-            }
-        } else {
-            i_var6 = (i_var6 * 67) / 40 + ((i_var6 * 67) >> 0x1f);
-            u_var4 = i_var6 - (i_var6 >> 0x1f);
+        fn round_shift(val: i32, shift: u32) -> i32 {
+            (val >> shift) + ((val < 0 && (val & ((1 << shift) - 1)) != 0) as i32)
         }
 
-        u_var4
+        match n {
+            -39..=39 => (n * 67) / 40 + ((n * 67) >> 31) - (((n * 67) / 40) >> 31),
+            -71..=-40 => {
+                let n1 = (-40 - n) * -90;
+                let n2 = (n + 72) * -67;
+                round_shift(n1, 5) + round_shift(n2, 5)
+            }
+            40..=71 => {
+                let n1 = (72 - n) * 67;
+                let n2 = (n - 40) * 90;
+                round_shift(n1, 5) + round_shift(n2, 5)
+            }
+            ..=-72 => -90,
+            72.. => 90,
+        }
     }
 }
 
@@ -97,8 +82,39 @@ impl InverseGc {
         input
     }
 
+    // TODO(Sirius902) Make this more accurate.
     fn apply_axis(n: i32) -> i32 {
-        todo!()
+        match n {
+            -90 => -72,
+            90 => 72,
+            -89..=-68 => {
+                let mut lo = -72;
+                let mut hi = -40;
+                while lo < hi {
+                    let mid = (lo + hi + 1) / 2;
+                    if Gc::apply_axis(mid) < n {
+                        lo = mid;
+                    } else {
+                        hi = mid - 1;
+                    }
+                }
+                lo
+            }
+            68..=89 => {
+                let mut lo = 40;
+                let mut hi = 72;
+                while lo < hi {
+                    let mid = (lo + hi) / 2;
+                    if Gc::apply_axis(mid) > n {
+                        hi = mid;
+                    } else {
+                        lo = mid + 1;
+                    }
+                }
+                lo - 1
+            }
+            _ => ((n - ((n >> 31) - ((n / 67) >> 31))) * 40) / 67,
+        }
     }
 }
 

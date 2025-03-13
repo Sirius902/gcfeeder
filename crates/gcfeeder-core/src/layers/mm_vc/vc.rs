@@ -87,6 +87,7 @@ impl InverseVc {
         input
     }
 
+    // TODO(Sirius902) Make this more accurate.
     fn scale_diagonal(x: &mut i32, y: &mut i32, scale: f64) {
         if *x == 0 || *y == 0 {
             return;
