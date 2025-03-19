@@ -14,6 +14,7 @@ directories = "6"
 gcfeeder-core = { path = "../gcfeeder-core" }
 gcinput = { path = "../gcinput" }
 nusb = "0.1"
+serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
 tokio-stream = "0.1"

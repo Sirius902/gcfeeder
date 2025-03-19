@@ -458,6 +458,7 @@ dependencies = [
  "gcfeeder-core",
  "gcinput",
  "nusb",
+ "serde",
  "thiserror",
  "tokio",
  "tokio-stream",

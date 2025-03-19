@@ -45,7 +45,7 @@ udevadm control --reload-rules && udevadm trigger
 ### Location
 
 * Windows
-  * `%AppData%\gcfeeder\gcfeeder.toml`
+  * `%LocalAppData%\gcfeeder\gcfeeder.toml`
 * Linux
   * Stored at one of the following locations:
     * `$XDG_CONFIG_HOME/gcfeeder/gcfeeder.toml`

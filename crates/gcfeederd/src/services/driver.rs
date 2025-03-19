@@ -2,14 +2,14 @@ use std::sync::Arc;
 
 use gcfeeder_core::adapter::Port;
 use gcfeeder_core::driver::{Driver, DriverType};
-use gcfeeder_core::feeder;
 use gcfeeder_core::layers::{self, Layer};
 use gcinput::Rumble;
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::task::TaskTracker;
-use tracing::{error, info, warn};
+use tracing::{debug, error, info, warn};
 
 use super::adapter;
+use crate::config::Config;
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
@@ -35,21 +35,47 @@ async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     adapter_service: Arc<adapter::Service>,
 ) {
+    let config_file_path = directories::BaseDirs::new().map(|dirs| {
+        dirs.config_local_dir()
+            .join("gcfeeder")
+            .join("gcfeeder.toml")
+    });
+
+    let config = if let Some(config_file_path) = config_file_path {
+        match tokio::fs::read_to_string(config_file_path).await {
+            Ok(config_file) => toml::from_str::<Config>(&config_file).unwrap_or_else(|err| {
+                warn!("Failed to parse config file, using default config: {err}");
+                Default::default()
+            }),
+            Err(err) => {
+                warn!("Failed to read config file, using default config: {err}");
+                Default::default()
+            }
+        }
+    } else {
+        debug!("No config file, using default config");
+        Default::default()
+    };
+
     let mut rx_inputs = Port::all()
         .iter()
         .map(|port| adapter_service.subscribe_input(*port))
         .collect::<Vec<_>>();
 
+    let profile = config
+        .profile
+        .selected(Port::One)
+        .cloned()
+        .unwrap_or_default();
+
+    info!(
+        "Using profile \"{}\"",
+        config.profile.selected[Port::One.index()]
+    );
+
     // TODO(Sirius902) Read inputs and pass to driver, forward rumble to adapter, handle config
     // updates. Don't hardcode testing stuff.
-    let driver: Option<Box<dyn Driver>> = match DriverType::default().create(&feeder::Config {
-        #[cfg(target_os = "windows")]
-        vigem_config: gcfeeder_core::driver::vigem::Config {
-            trigger_mode: gcfeeder_core::driver::vigem::TriggerMode::Digital,
-            ..Default::default()
-        },
-        ..Default::default()
-    }) {
+    let driver: Option<Box<dyn Driver>> = match DriverType::default().create(&profile) {
         Ok(driver) => driver,
         Err(err) => {
             error!("Error creating driver: {err}");
@@ -64,6 +90,13 @@ async fn run(
     }
 
     let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
+
+    if profile.calibration.enabled {
+        layers.push(Box::new(layers::Calibration::new(
+            profile.calibration.stick_data,
+            profile.calibration.trigger_data,
+        )));
+    }
 
     loop {
         let recv_rumble_strength = async {
