@@ -293,11 +293,14 @@ impl super::Driver for Driver {
                 }
                 evdev::EventSummary::UInput(event, evdev::UInputCode::UI_FF_ERASE, _value) => {
                     let mut strength = self.rumble_strength.lock().await;
-                    let event = device.process_ff_erase(event).map_err(Error::Io)?;
+                    let mut event = device.process_ff_erase(event).map_err(Error::Io)?;
 
                     if event.effect_id() == 0 {
                         debug!("Erasing FF effect");
                         *strength = 0;
+
+                        event.set_retval(0);
+
                         return Ok(0);
                     } else {
                         warn!("Erasing unknown FF effect id: {}", event.effect_id())
