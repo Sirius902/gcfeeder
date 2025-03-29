@@ -111,19 +111,10 @@ async fn run(
     ));
     tasks.close();
 
-    loop {
+    let tx = loop {
         tokio::select! {
             tx = rx_shutdown.recv() => {
-                debug!("Shutting down adapter tasks...");
-                task_token.cancel();
-                tasks.wait().await;
-                debug!("Adapter tasks finished!");
-
-                if let Some(tx) = tx {
-                    tx.send(()).expect("sending shutdown signal");
-                }
-                info!("Adapter service finished");
-                break;
+                break tx;
             }
             _ = try_connect_interval.tick() => {
                 let adapter_is_none = { tx_adapter.borrow().is_none() };
@@ -162,7 +153,17 @@ async fn run(
                 }
             }
         }
+    };
+
+    debug!("Shutting down adapter tasks...");
+    task_token.cancel();
+    tasks.wait().await;
+    debug!("Adapter tasks finished!");
+
+    if let Some(tx) = tx {
+        tx.send(()).expect("sending shutdown signal");
     }
+    info!("Adapter service finished");
 }
 
 async fn try_connect_adapter() -> Option<(Adapter, nusb::DeviceId)> {
