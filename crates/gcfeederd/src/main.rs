@@ -13,12 +13,20 @@ async fn main() -> adapter::Result<()> {
 
     let task_tracker = TaskTracker::new();
 
-    let adapter_service = Arc::new(services::adapter::start(&task_tracker));
-    let driver_service = services::driver::start(&task_tracker, adapter_service.clone());
+    let config_service = Arc::new(services::config::start(&task_tracker));
 
-    let mut tray_service = services::tray::start();
+    let adapter_service = Arc::new(services::adapter::start(&task_tracker));
+    let driver_service = services::driver::start(
+        &task_tracker,
+        adapter_service.clone(),
+        config_service.clone(),
+    );
+
+    let mut tray_service = services::tray::start(config_service.clone());
 
     task_tracker.close();
+
+    config_service.reload_config();
 
     tokio::select! {
         // FUTURE(Sirius902) Should we handle any other signals here?
@@ -35,6 +43,8 @@ async fn main() -> adapter::Result<()> {
 
     driver_service.stop().await;
     adapter_service.stop().await;
+
+    config_service.stop().await;
 
     task_tracker.wait().await;
 

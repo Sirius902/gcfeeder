@@ -3,17 +3,17 @@ use std::time::Duration;
 
 use gcfeeder_core::adapter::Port;
 use gcfeeder_core::driver::rumble::PatternRumbler;
-use gcfeeder_core::driver::{Driver, DriverType};
-use gcfeeder_core::feeder::{self, RumbleSetting};
+use gcfeeder_core::driver::Driver;
+use gcfeeder_core::feeder::RumbleSetting;
 use gcfeeder_core::layers::{self, Layer};
 use gcinput::Input;
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{broadcast, mpsc, oneshot};
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
 use tracing::{debug, error, info, warn};
 
-use super::adapter;
-use crate::config::Config;
+use super::{adapter, config};
+use crate::config::{Config, Profile};
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
@@ -27,10 +27,18 @@ impl Service {
     }
 }
 
-pub fn start(task_tracker: &TaskTracker, adapter_service: Arc<adapter::Service>) -> Service {
+pub fn start(
+    task_tracker: &TaskTracker,
+    adapter_service: Arc<adapter::Service>,
+    config_service: Arc<config::Service>,
+) -> Service {
     let (tx_shutdown, rx_shutdown) = mpsc::unbounded_channel();
 
-    task_tracker.spawn(run(rx_shutdown, adapter_service));
+    task_tracker.spawn(run(
+        rx_shutdown,
+        adapter_service,
+        config_service.subscribe_config(),
+    ));
 
     Service { tx_shutdown }
 }
@@ -38,29 +46,8 @@ pub fn start(task_tracker: &TaskTracker, adapter_service: Arc<adapter::Service>)
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     adapter_service: Arc<adapter::Service>,
+    rx_config: broadcast::Receiver<Config>,
 ) {
-    let config_file_path = directories::BaseDirs::new().map(|dirs| {
-        dirs.config_local_dir()
-            .join("gcfeeder")
-            .join("gcfeeder.toml")
-    });
-
-    let config = if let Some(config_file_path) = config_file_path {
-        match tokio::fs::read_to_string(config_file_path).await {
-            Ok(config_file) => toml::from_str::<Config>(&config_file).unwrap_or_else(|err| {
-                warn!("Failed to parse config file, using default config: {err}");
-                Default::default()
-            }),
-            Err(err) => {
-                warn!("Failed to read config file, using default config: {err}");
-                Default::default()
-            }
-        }
-    } else {
-        debug!("No config file, using default config");
-        Default::default()
-    };
-
     let task_token = CancellationToken::new();
     let tasks = TaskTracker::new();
 
@@ -73,42 +60,14 @@ async fn run(
     ));
 
     for port in Port::all() {
-        // Give the virtual controllers time to be created otherwise the order isn't consistent.
-        if port != Port::all().first().expect("there is at least one port") {
-            tokio::time::sleep(Duration::from_millis(50)).await;
-        }
-
         let rx_inputs = adapter_service.subscribe_input(*port);
-
-        let profile = config.profile.selected(*port).cloned().unwrap_or_default();
-
-        info!(
-            "Using profile \"{}\" for port {:?}",
-            config.profile.selected[port.index()],
-            port,
-        );
-
-        let driver: Option<Box<dyn Driver>> = match DriverType::default().create(&profile) {
-            Ok(driver) => driver,
-            Err(err) => {
-                error!("Error creating driver: {err}");
-                None
-            }
-        };
-
-        if let Some(driver) = &driver {
-            info!("{} driver created", driver.name());
-        } else {
-            warn!("No driver");
-        }
 
         tasks.spawn(driver_task(
             task_token.clone(),
+            *port,
             rx_inputs,
             tx_rumble.clone(),
-            driver,
-            *port,
-            profile,
+            rx_config.resubscribe(),
         ));
     }
 
@@ -130,15 +89,9 @@ async fn run(
     info!("Driver service finished");
 }
 
-async fn driver_task(
-    token: CancellationToken,
-    mut rx_inputs: tokio::sync::broadcast::Receiver<Option<Input>>,
-    tx_rumble: tokio::sync::mpsc::UnboundedSender<(Port, u8)>,
-    driver: Option<Box<dyn Driver>>,
-    port: Port,
-    profile: feeder::Config,
-) {
-    let mut layers: Vec<Box<dyn Layer>> = vec![Box::new(layers::CenterCalibration::default())];
+fn fill_layers(profile: &Profile, layers: &mut Vec<Box<dyn Layer>>) {
+    layers.clear();
+    layers.push(Box::new(layers::CenterCalibration::default()));
 
     if profile.calibration.enabled {
         layers.push(Box::new(layers::Calibration::new(
@@ -166,6 +119,18 @@ async fn driver_task(
         }
         None => {}
     }
+}
+
+async fn driver_task(
+    token: CancellationToken,
+    port: Port,
+    mut rx_inputs: tokio::sync::broadcast::Receiver<Option<Input>>,
+    tx_rumble: tokio::sync::mpsc::UnboundedSender<(Port, u8)>,
+    mut rx_config: broadcast::Receiver<Config>,
+) {
+    let mut driver: Option<Box<dyn Driver>> = None;
+    let mut layers: Vec<Box<dyn Layer>> = Vec::new();
+    let mut rumble_enabled = false;
 
     loop {
         let recv_rumble_strength = async {
@@ -180,6 +145,35 @@ async fn driver_task(
             _ = token.cancelled() => {
                 break;
             }
+            Ok(config) = rx_config.recv() => {
+                drop(driver.take());
+
+                let profile = config.profile.selected(port).cloned().unwrap_or_default();
+
+                info!(
+                    "Using profile \"{}\" for port {:?}",
+                    config.profile.selected[port.index()],
+                    port,
+                );
+
+                driver = match profile.driver.create(port, &profile) {
+                    Ok(driver) => driver,
+                    Err(err) => {
+                        error!("Error creating driver: {err}");
+                        None
+                    }
+                };
+
+                if let Some(driver) = &driver {
+                    info!("{} driver created", driver.name());
+                } else {
+                    warn!("No driver");
+                }
+
+                fill_layers(&profile, &mut layers);
+
+                rumble_enabled = profile.rumble == RumbleSetting::On;
+            }
             Ok(raw_input) = rx_inputs.recv() => {
                 let Some(driver) = &driver else { continue; };
 
@@ -193,7 +187,7 @@ async fn driver_task(
                 }
             }
             Ok(strength) = recv_rumble_strength => {
-                if profile.rumble == RumbleSetting::On {
+                if rumble_enabled {
                     tx_rumble.send((port, strength)).expect("failed to send rumble");
                 }
             }
@@ -206,8 +200,7 @@ async fn rumble_task(
     mut rx_rumble: tokio::sync::mpsc::UnboundedReceiver<(Port, u8)>,
     adapter_service: Arc<adapter::Service>,
 ) {
-    let mut rumblers: [PatternRumbler; Port::COUNT] =
-        std::array::from_fn(|_| PatternRumbler::new());
+    let mut rumblers: [_; Port::COUNT] = std::array::from_fn(|_| PatternRumbler::new());
 
     loop {
         tokio::select! {

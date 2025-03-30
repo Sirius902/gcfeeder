@@ -2,6 +2,7 @@ use async_trait::async_trait;
 use gcinput::Input;
 use serde::{Deserialize, Serialize};
 
+use crate::adapter::Port;
 use crate::feeder;
 
 #[cfg(target_os = "linux")]
@@ -43,6 +44,7 @@ pub enum DriverType {
 impl DriverType {
     pub fn create(
         self,
+        #[allow(unused)] port: Port,
         #[allow(unused)] config: &feeder::Config,
     ) -> Result<Option<Box<dyn Driver>>> {
         match self {
@@ -52,7 +54,7 @@ impl DriverType {
                 vigem_client::Client::connect()?,
             )?))),
             #[cfg(target_os = "linux")]
-            Self::Evdev => Ok(Some(Box::new(evdev::Driver::new()))),
+            Self::Evdev => Ok(Some(Box::new(evdev::Driver::new(port)))),
             #[cfg(not(any(target_os = "windows", target_os = "linux")))]
             Self::None => Ok(None),
         }

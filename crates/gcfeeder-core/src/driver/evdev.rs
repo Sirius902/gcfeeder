@@ -8,6 +8,8 @@ use gcinput::{Input, STICK_RANGE, TRIGGER_RANGE};
 use tokio::sync::Mutex;
 use tracing::{debug, info, warn};
 
+use crate::adapter::Port;
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("io: {0}")]
@@ -16,19 +18,24 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Default)]
 pub struct Driver {
+    port: Port,
     stream: Mutex<Option<VirtualEventStream>>,
     stream_created: tokio::sync::Notify,
     rumble_strength: Mutex<u8>,
 }
 
 impl Driver {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(port: Port) -> Self {
+        Self {
+            port,
+            stream: Default::default(),
+            stream_created: Default::default(),
+            rumble_strength: Default::default(),
+        }
     }
 
-    fn create_stream() -> Result<VirtualEventStream> {
+    fn create_stream(port: Port) -> Result<VirtualEventStream> {
         let mut keys = AttributeSet::<KeyCode>::new();
         keys.insert(KeyCode::BTN_SOUTH); // A
         keys.insert(KeyCode::BTN_EAST); // B
@@ -60,7 +67,10 @@ impl Driver {
         let hat_axis_info = AbsInfo::new(0, -1, 1, 0, 0, 0);
 
         Ok(VirtualDevice::builder()?
-            .name("gcfeeder | GameCube Controller")
+            .name(&format!(
+                "gcfeeder Port {} | GameCube Controller",
+                port.index() + 1
+            ))
             .with_ff(&AttributeSet::from_iter([FFEffectCode::FF_RUMBLE]))?
             .with_ff_effects_max(1)
             .with_keys(&keys)?
@@ -236,7 +246,7 @@ impl super::Driver for Driver {
                 stream
             } else {
                 info!("Creating virtual controller...");
-                let stream = stream.insert(Self::create_stream()?);
+                let stream = stream.insert(Self::create_stream(self.port)?);
                 info!("Virtual controller created!");
 
                 self.stream_created.notify_one();

@@ -1,5 +1,10 @@
+use std::sync::Arc;
+
+use gcfeeder_core::adapter::Port;
 use tokio::sync::mpsc;
 use tracing::warn;
+
+use super::config;
 
 const ICON_FILE: &[u8] = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/resource/icon.png"));
 
@@ -13,7 +18,7 @@ impl Service {
     }
 }
 
-pub fn start() -> Service {
+pub fn start(config_service: Arc<config::Service>) -> Service {
     let icon = image::load_from_memory(ICON_FILE).expect("load icon");
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
@@ -27,6 +32,25 @@ pub fn start() -> Service {
             &tray_icon::menu::MenuItem::with_id("show", "Show", true, None),
             &tray_icon::menu::MenuItem::with_id("hide", "Hide", true, None),
             &tray_icon::menu::MenuItem::with_id("reload", "Reload Config", true, None),
+            &tray_icon::menu::PredefinedMenuItem::separator(),
+        ]);
+
+        // TODO(Sirius902) Rebuild tray when config updates.
+        // TODO(Sirius902) Implement switching profiles from these button.
+        for i in 0..Port::COUNT {
+            let _ = tray_menu.append(
+                &tray_icon::menu::SubmenuBuilder::new()
+                    .id(format!("profile{i}").into())
+                    .text(format!("Profile {}", i + 1))
+                    .item(&tray_icon::menu::MenuItem::with_id(
+                        "default", "default", true, None,
+                    ))
+                    .build()
+                    .expect("build submenu"),
+            );
+        }
+
+        let _ = tray_menu.append_items(&[
             &tray_icon::menu::PredefinedMenuItem::separator(),
             &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
         ]);
@@ -76,12 +100,12 @@ pub fn start() -> Service {
         tracing::warn!("System tray not implemented on this platform");
     }
 
-    std::thread::spawn(move || run_menu(tx_quit));
+    std::thread::spawn(move || run_menu(tx_quit, config_service.clone()));
 
     Service { rx_quit }
 }
 
-fn run_menu(tx_quit: mpsc::Sender<()>) {
+fn run_menu(tx_quit: mpsc::Sender<()>, config_service: Arc<config::Service>) {
     let rx_event = tray_icon::menu::MenuEvent::receiver();
 
     while let Ok(event) = tokio::task::block_in_place(|| rx_event.recv()) {
@@ -93,7 +117,7 @@ fn run_menu(tx_quit: mpsc::Sender<()>) {
                 // TODO(Sirius902) Implement.
             }
             "reload" => {
-                // TODO(Sirius902) Implement.
+                config_service.reload_config();
             }
             "quit" => {
                 if let Err(err) = tx_quit.try_send(()) {
