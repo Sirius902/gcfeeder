@@ -145,7 +145,9 @@ async fn driver_task(
             _ = token.cancelled() => {
                 break;
             }
-            Ok(config) = rx_config.recv() => {
+            config = rx_config.recv() => {
+                let Ok(config) = config else { continue; };
+
                 drop(driver.take());
 
                 let profile = config.profile.selected(port).cloned().unwrap_or_default();
@@ -174,7 +176,8 @@ async fn driver_task(
 
                 rumble_enabled = profile.rumble == RumbleSetting::On;
             }
-            Ok(raw_input) = rx_inputs.recv() => {
+            raw_input = rx_inputs.recv() => {
+                let Ok(raw_input) = raw_input else { continue; };
                 let Some(driver) = &driver else { continue; };
 
                 let input = layers
@@ -186,7 +189,9 @@ async fn driver_task(
                     warn!("Error feeding with {} driver: {err}", driver_name);
                 }
             }
-            Ok(strength) = recv_rumble_strength => {
+            strength = recv_rumble_strength => {
+                let Ok(strength) = strength else { continue; };
+
                 if rumble_enabled {
                     tx_rumble.send((port, strength)).expect("failed to send rumble");
                 }
@@ -215,7 +220,9 @@ async fn rumble_task(
                     rumblers[Port::Four.index()].consume_rumble().into(),
                 ]);
             }
-            Some((port, strength)) = rx_rumble.recv() => {
+            rumble = rx_rumble.recv() => {
+                let Some((port, strength)) = rumble else { continue; };
+
                 rumblers[port.index()].update_strength(strength);
             }
         }

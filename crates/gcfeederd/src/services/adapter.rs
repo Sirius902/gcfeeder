@@ -129,7 +129,9 @@ async fn run(
                     }
                 }
             }
-            Some(event) = usb_watch.next() => {
+            event = usb_watch.next() => {
+                let Some(event) = event else { continue; };
+
                 match event {
                     nusb::hotplug::HotplugEvent::Connected(device_info) => {
                         let adapter_is_none = { tx_adapter.borrow().is_none() };

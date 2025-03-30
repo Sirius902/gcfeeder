@@ -53,7 +53,11 @@ async fn run(
             tx = rx_shutdown.recv() => {
                 break tx;
             }
-            Some(()) = rx_reload.recv() => {
+            reload = rx_reload.recv() => {
+                if reload != Some(()) {
+                    continue;
+                }
+
                 let config_file_path = directories::BaseDirs::new().map(|dirs| {
                     dirs.config_local_dir()
                         .join("gcfeeder")
