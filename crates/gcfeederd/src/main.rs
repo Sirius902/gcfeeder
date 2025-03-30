@@ -16,6 +16,8 @@ async fn main() -> adapter::Result<()> {
     let adapter_service = Arc::new(services::adapter::start(&task_tracker));
     let driver_service = services::driver::start(&task_tracker, adapter_service.clone());
 
+    let mut tray_service = services::tray::start();
+
     task_tracker.close();
 
     tokio::select! {
@@ -24,14 +26,17 @@ async fn main() -> adapter::Result<()> {
             if let Err(err) = res {
                 warn!("Failed to wait for ctrl+c signal: {err}");
             }
-
-            driver_service.stop().await;
-            adapter_service.stop().await;
-
-            task_tracker.wait().await;
         }
-        _ = task_tracker.wait() => {},
+        _ = tray_service.recv_quit() => {},
+        _ = task_tracker.wait() => {
+            return Ok(());
+        },
     }
+
+    driver_service.stop().await;
+    adapter_service.stop().await;
+
+    task_tracker.wait().await;
 
     Ok(())
 }
