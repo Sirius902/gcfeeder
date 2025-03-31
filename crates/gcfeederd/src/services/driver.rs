@@ -188,9 +188,7 @@ async fn driver_task(
                     warn!("Error feeding with {} driver: {err}", driver_name);
                 }
             }
-            strength = recv_rumble_strength => {
-                let Ok(strength) = strength else { continue; };
-
+            Ok(strength) = recv_rumble_strength => {
                 if rumble_enabled {
                     tx_rumble.send((port, strength)).expect("failed to send rumble");
                 }
