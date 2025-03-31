@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use tokio::sync::{broadcast, mpsc, oneshot};
 use tokio_util::task::TaskTracker;
 use tracing::{debug, info, warn};
@@ -6,7 +8,7 @@ use crate::config::Config;
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
-    rx_config: broadcast::Receiver<Config>,
+    rx_config: broadcast::Receiver<Arc<Config>>,
     tx_reload: mpsc::Sender<()>,
 }
 
@@ -17,7 +19,7 @@ impl Service {
         rx.await.expect("waiting for shutdown");
     }
 
-    pub fn subscribe_config(&self) -> broadcast::Receiver<Config> {
+    pub fn subscribe_config(&self) -> broadcast::Receiver<Arc<Config>> {
         self.rx_config.resubscribe()
     }
 
@@ -45,7 +47,7 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
 
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
-    tx_config: broadcast::Sender<Config>,
+    tx_config: broadcast::Sender<Arc<Config>>,
     mut rx_reload: mpsc::Receiver<()>,
 ) {
     let tx = loop {
@@ -80,7 +82,7 @@ async fn run(
                     Default::default()
                 };
 
-                if let Err(err) = tx_config.send(config) {
+                if let Err(err) = tx_config.send(Arc::new(config)) {
                     warn!("Failed to send config: {err}");
                 }
             }

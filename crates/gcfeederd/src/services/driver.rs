@@ -46,7 +46,7 @@ pub fn start(
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     adapter_service: Arc<adapter::Service>,
-    rx_config: broadcast::Receiver<Config>,
+    rx_config: broadcast::Receiver<Arc<Config>>,
 ) {
     let task_token = CancellationToken::new();
     let tasks = TaskTracker::new();
@@ -126,7 +126,7 @@ async fn driver_task(
     port: Port,
     mut rx_inputs: tokio::sync::broadcast::Receiver<Option<Input>>,
     tx_rumble: tokio::sync::mpsc::UnboundedSender<(Port, u8)>,
-    mut rx_config: broadcast::Receiver<Config>,
+    mut rx_config: broadcast::Receiver<Arc<Config>>,
 ) {
     let mut driver: Option<Box<dyn Driver>> = None;
     let mut layers: Vec<Box<dyn Layer>> = Vec::new();
