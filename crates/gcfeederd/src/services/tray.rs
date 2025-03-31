@@ -55,8 +55,9 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
             .map(|p| {
                 tray_icon::menu::SubmenuBuilder::new()
                     .text(format!("Profile {}", p.index() + 1))
+                    .enabled(false)
                     .item(&tray_icon::menu::MenuItem::with_id(
-                        "default", "default", true, None,
+                        "default", "default", false, None,
                     ))
                     .build()
                     .expect("build submenu")
@@ -162,7 +163,7 @@ async fn run(
 
     #[cfg(target_os = "windows")]
     {
-        use Win32::UI::WindowsAndMessaging::PostQuitMessage;
+        use windows::Win32::UI::WindowsAndMessaging::PostQuitMessage;
         unsafe {
             PostQuitMessage(0);
         }
