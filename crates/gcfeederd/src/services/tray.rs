@@ -196,9 +196,15 @@ fn update_profiles(
 
         for profile in config.profile.list.keys() {
             let key = format!("port{}_{}", port.index() + 1, profile);
-            let _ = submenu.append(&tray_icon::menu::MenuItem::with_id(
-                &key, profile, true, None,
-            ));
+
+            // FUTURE(Sirius902) Add checkmark next to the item like a radio menu?
+            let text = if config.profile.selected[port.index()] == *profile {
+                format!("*{}", profile)
+            } else {
+                profile.clone()
+            };
+
+            let _ = submenu.append(&tray_icon::menu::MenuItem::with_id(&key, text, true, None));
             profile_menu_params.insert(key, (*port, profile.clone()));
         }
 
