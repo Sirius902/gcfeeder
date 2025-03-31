@@ -3,7 +3,7 @@ use std::sync::Arc;
 use gcfeeder_core::adapter;
 use gcfeederd::services;
 use tokio_util::task::TaskTracker;
-use tracing::warn;
+use tracing::{info, warn};
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::EnvFilter;
 
@@ -22,7 +22,7 @@ async fn main() -> adapter::Result<()> {
         config_service.clone(),
     );
 
-    let mut tray_service = services::tray::start(config_service.clone());
+    let mut tray_service = services::tray::start(&task_tracker, config_service.clone());
 
     task_tracker.close();
 
@@ -41,12 +41,25 @@ async fn main() -> adapter::Result<()> {
         },
     }
 
+    info!("Stopping tray service...");
+    tray_service.stop().await;
+    info!("Tray service stopped!");
+
+    info!("Stopping driver service...");
     driver_service.stop().await;
+    info!("Driver service stopped!");
+
+    info!("Stopping adapter service...");
     adapter_service.stop().await;
+    info!("Adapter service stopped!");
 
+    info!("Stopping config service...");
     config_service.stop().await;
+    info!("Config service stopped!");
 
+    info!("Waiting for task tracker...");
     task_tracker.wait().await;
+    info!("Task tracker finished!");
 
     Ok(())
 }

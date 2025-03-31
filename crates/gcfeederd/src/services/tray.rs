@@ -1,7 +1,9 @@
 use std::sync::Arc;
 
 use gcfeeder_core::adapter::Port;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, oneshot};
+use tokio_util::sync::CancellationToken;
+use tokio_util::task::TaskTracker;
 use tracing::warn;
 
 use super::config;
@@ -9,21 +11,34 @@ use super::config;
 const ICON_FILE: &[u8] = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/resource/icon.png"));
 
 pub struct Service {
+    tx_shutdown: oneshot::Sender<oneshot::Sender<()>>,
     rx_quit: mpsc::Receiver<()>,
 }
 
 impl Service {
+    pub async fn stop(self) {
+        let (tx, rx) = oneshot::channel();
+        self.tx_shutdown.send(tx).expect("sending shutdown signal");
+        rx.await.expect("waiting for shutdown");
+    }
+
     pub async fn recv_quit(&mut self) {
         self.rx_quit.recv().await.expect("waiting for quit");
     }
 }
 
-pub fn start(config_service: Arc<config::Service>) -> Service {
+pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -> Service {
     let icon = image::load_from_memory(ICON_FILE).expect("load icon");
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
 
+    let rx_config = config_service.subscribe_config();
+
+    let (tx_shutdown, rx_shutdown) = oneshot::channel();
     let (tx_quit, rx_quit) = mpsc::channel(1);
+
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    let (tx_quit_event_loop, mut rx_quit_event_loop) = oneshot::channel();
 
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     let build = move || {
@@ -35,19 +50,21 @@ pub fn start(config_service: Arc<config::Service>) -> Service {
             &tray_icon::menu::PredefinedMenuItem::separator(),
         ]);
 
-        // TODO(Sirius902) Rebuild tray when config updates.
-        // TODO(Sirius902) Implement switching profiles from these button.
-        for i in 0..Port::COUNT {
-            let _ = tray_menu.append(
-                &tray_icon::menu::SubmenuBuilder::new()
-                    .id(format!("profile{i}").into())
-                    .text(format!("Profile {}", i + 1))
+        let profile_submenus = Port::all()
+            .iter()
+            .map(|p| {
+                tray_icon::menu::SubmenuBuilder::new()
+                    .text(format!("Profile {}", p.index() + 1))
                     .item(&tray_icon::menu::MenuItem::with_id(
                         "default", "default", true, None,
                     ))
                     .build()
-                    .expect("build submenu"),
-            );
+                    .expect("build submenu")
+            })
+            .collect::<Vec<_>>();
+
+        for submenu in &profile_submenus {
+            let _ = tray_menu.append(submenu);
         }
 
         let _ = tray_menu.append_items(&[
@@ -71,14 +88,17 @@ pub fn start(config_service: Arc<config::Service>) -> Service {
             DispatchMessageW, GetMessageW, TranslateMessage, MSG,
         };
 
-        std::thread::spawn(move || {
+        task_tracker.spawn_blocking(move || {
             let icon = build().ok();
             if icon.is_some() {
                 let mut msg = MSG::default();
                 while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
-                    unsafe {
-                        let _ = TranslateMessage(&msg);
-                        DispatchMessageW(&msg);
+                    match rx_quit_event_loop.try_recv() {
+                        Ok(()) | Err(oneshot::error::TryRecvError::Closed) => break,
+                        Err(oneshot::error::TryRecvError::Empty) => unsafe {
+                            let _ = TranslateMessage(&msg);
+                            DispatchMessageW(&msg);
+                        },
                     }
                 }
             }
@@ -87,10 +107,17 @@ pub fn start(config_service: Arc<config::Service>) -> Service {
 
     #[cfg(target_os = "linux")]
     {
-        std::thread::spawn(move || {
+        task_tracker.spawn_blocking(move || {
             let icon = gtk::init().ok().and_then(|()| build().ok());
             if icon.is_some() {
-                gtk::main();
+                loop {
+                    match rx_quit_event_loop.try_recv() {
+                        Ok(()) | Err(oneshot::error::TryRecvError::Closed) => break,
+                        Err(oneshot::error::TryRecvError::Empty) => {
+                            gtk::main_iteration_do(false);
+                        }
+                    }
+                }
             }
         });
     }
@@ -100,32 +127,87 @@ pub fn start(config_service: Arc<config::Service>) -> Service {
         tracing::warn!("System tray not implemented on this platform");
     }
 
-    std::thread::spawn(move || run_menu(tx_quit, config_service.clone()));
+    let task_token = Arc::new(CancellationToken::new());
 
-    Service { rx_quit }
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    {
+        let task_token = task_token.clone();
+        task_tracker.spawn_blocking(move || run_menu(task_token, tx_quit, config_service));
+    }
+
+    task_tracker.spawn(run(
+        rx_shutdown,
+        task_token,
+        #[cfg(any(target_os = "windows", target_os = "linux"))]
+        tx_quit_event_loop,
+    ));
+
+    Service {
+        tx_shutdown,
+        rx_quit,
+    }
 }
 
-fn run_menu(tx_quit: mpsc::Sender<()>, config_service: Arc<config::Service>) {
+async fn run(
+    rx_shutdown: oneshot::Receiver<oneshot::Sender<()>>,
+    task_token: Arc<CancellationToken>,
+    #[cfg(any(target_os = "windows", target_os = "linux"))] tx_quit_event_loop: oneshot::Sender<()>,
+) {
+    let tx = rx_shutdown.await.expect("recv shutdown");
+
+    task_token.cancel();
+
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    tx_quit_event_loop.send(()).expect("send quit event loop");
+
+    #[cfg(target_os = "windows")]
+    {
+        use Win32::UI::WindowsAndMessaging::PostQuitMessage;
+        unsafe {
+            PostQuitMessage(0);
+        }
+    }
+
+    tx.send(()).expect("send shutdown");
+}
+
+#[cfg(any(target_os = "windows", target_os = "linux"))]
+fn run_menu(
+    token: Arc<CancellationToken>,
+    tx_quit: mpsc::Sender<()>,
+    config_service: Arc<config::Service>,
+) {
+    use std::time::Duration;
+
     let rx_event = tray_icon::menu::MenuEvent::receiver();
 
-    while let Ok(event) = tokio::task::block_in_place(|| rx_event.recv()) {
-        match event.id.as_ref() {
-            "show" => {
-                // TODO(Sirius902) Implement.
-            }
-            "hide" => {
-                // TODO(Sirius902) Implement.
-            }
-            "reload" => {
-                config_service.reload_config();
-            }
-            "quit" => {
-                if let Err(err) = tx_quit.try_send(()) {
-                    warn!("Failed to send quit: {err}");
+    loop {
+        if token.is_cancelled() {
+            break;
+        }
+
+        // NOTE(Sirius902) A timeout is needed here as the channel is never closed so `recv` could
+        // block forever.
+        // https://github.com/tauri-apps/tray-icon/issues/244
+        if let Ok(event) = rx_event.recv_timeout(Duration::from_millis(100)) {
+            match event.id.as_ref() {
+                "show" => {
+                    // TODO(Sirius902) Implement.
                 }
-            }
-            id => {
-                warn!("Unknown menu event: {id}");
+                "hide" => {
+                    // TODO(Sirius902) Implement.
+                }
+                "reload" => {
+                    config_service.reload_config();
+                }
+                "quit" => {
+                    if let Err(err) = tx_quit.try_send(()) {
+                        warn!("Failed to send quit: {err}");
+                    }
+                }
+                id => {
+                    warn!("Unknown menu event: {id}");
+                }
             }
         }
     }
