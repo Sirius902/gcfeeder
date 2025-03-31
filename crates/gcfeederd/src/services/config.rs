@@ -137,10 +137,14 @@ async fn run(
 ) {
     let mut config: Option<Config> = None;
 
-    let tx = loop {
+    loop {
         tokio::select! {
             tx = rx_shutdown.recv() => {
-                break tx;
+                if let Some(tx) = tx {
+                    tx.send(()).expect("sending shutdown signal");
+                }
+                info!("Config service finished");
+                break;
             }
             reload = rx_reload.recv() => {
                 if reload != Some(()) {
@@ -169,10 +173,5 @@ async fn run(
                 }
             }
         }
-    };
-
-    if let Some(tx) = tx {
-        tx.send(()).expect("sending shutdown signal");
     }
-    info!("Config service finished");
 }
