@@ -272,7 +272,10 @@ fn run_menu(
 
                     if let Some((port, profile)) = profile_menu_params {
                         debug!("Switching port {:?} profile to \"{}\"", port, profile);
-                        // TODO(Sirius902) Implement.
+
+                        config_service.modify_config(Box::new(move |config| {
+                            config.profile.selected[port.index()] = profile;
+                        }));
                     } else {
                         warn!("Unknown menu event: {id}");
                     }

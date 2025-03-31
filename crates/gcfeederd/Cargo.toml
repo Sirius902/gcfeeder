@@ -16,6 +16,7 @@ gcinput = { path = "../gcinput" }
 image = { version = "0.25", features = ["png"], default-features = false }
 nusb = "0.1"
 serde = { version = "1", features = ["derive"] }
+tempfile = "3"
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
 tokio-stream = "0.1"
