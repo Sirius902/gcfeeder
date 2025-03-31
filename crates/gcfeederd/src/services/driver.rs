@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use std::time::Duration;
 
 use gcfeeder_core::adapter::Port;
 use gcfeeder_core::driver::rumble::PatternRumbler;
@@ -212,18 +211,17 @@ async fn rumble_task(
             _ = token.cancelled() => {
                 break;
             }
-            _ = tokio::time::timeout(Duration::from_millis(8), adapter_service.rumble_written()) => {
-                adapter_service.set_rumble([
-                    rumblers[Port::One.index()].consume_rumble().into(),
-                    rumblers[Port::Two.index()].consume_rumble().into(),
-                    rumblers[Port::Three.index()].consume_rumble().into(),
-                    rumblers[Port::Four.index()].consume_rumble().into(),
-                ]);
-            }
             rumble = rx_rumble.recv() => {
                 let Some((port, strength)) = rumble else { continue; };
 
                 rumblers[port.index()].update_strength(strength);
+            }
+            _ = adapter_service.set_rumble(std::array::from_fn(|i|
+                rumblers[i].peek_rumble().into(),
+            )) => {
+                for rumbler in &mut rumblers {
+                    let _ = rumbler.consume_rumble();
+                }
             }
         }
     }

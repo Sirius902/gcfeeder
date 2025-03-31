@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use gcfeeder_core::adapter::{Adapter, Error, Port};
 use gcinput::{Input, Rumble};
-use tokio::sync::{broadcast, mpsc, oneshot, watch, Notify};
+use tokio::sync::{broadcast, mpsc, oneshot, watch};
 use tokio_stream::StreamExt;
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
@@ -14,8 +14,7 @@ pub type Rumbles = [Rumble; Port::COUNT];
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
     rx_inputs: Vec<broadcast::Receiver<Option<Input>>>,
-    tx_rumbles: watch::Sender<Rumbles>,
-    rumble_written: Arc<Notify>,
+    tx_rumbles: mpsc::Sender<Rumbles>,
 }
 
 impl Service {
@@ -29,19 +28,8 @@ impl Service {
         self.rx_inputs[port.index()].resubscribe()
     }
 
-    pub fn set_rumble(&self, rumbles: Rumbles) {
-        self.tx_rumbles.send_if_modified(|prev| {
-            if *prev != rumbles {
-                *prev = rumbles;
-                true
-            } else {
-                false
-            }
-        });
-    }
-
-    pub async fn rumble_written(&self) {
-        self.rumble_written.notified().await
+    pub async fn set_rumble(&self, rumbles: Rumbles) {
+        self.tx_rumbles.send(rumbles).await.expect("send rumbles");
     }
 }
 
@@ -61,29 +49,21 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
         (txs, rxs)
     };
 
-    let (tx_rumbles, rx_rumbles) = watch::channel(Rumbles::default());
-    let rumble_written = Arc::new(Notify::new());
+    let (tx_rumbles, rx_rumbles) = mpsc::channel(1);
 
-    task_tracker.spawn(run(
-        rx_shutdown,
-        tx_inputs,
-        rx_rumbles,
-        rumble_written.clone(),
-    ));
+    task_tracker.spawn(run(rx_shutdown, tx_inputs, rx_rumbles));
 
     Service {
         tx_shutdown,
         rx_inputs,
         tx_rumbles,
-        rumble_written,
     }
 }
 
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
     tx_inputs: Vec<broadcast::Sender<Option<Input>>>,
-    rx_rumbles: watch::Receiver<Rumbles>,
-    rumble_written: Arc<Notify>,
+    rx_rumbles: mpsc::Receiver<Rumbles>,
 ) {
     let (tx_adapter, rx_adapter) = watch::channel(None);
     let mut adapter_id: Option<nusb::DeviceId> = None;
@@ -103,12 +83,7 @@ async fn run(
         rx_adapter.clone(),
         tx_inputs,
     ));
-    tasks.spawn(rumble_task(
-        task_token.clone(),
-        rx_adapter,
-        rx_rumbles,
-        rumble_written,
-    ));
+    tasks.spawn(rumble_task(task_token.clone(), rx_adapter, rx_rumbles));
     tasks.close();
 
     let tx = loop {
@@ -229,8 +204,7 @@ async fn input_task(
 async fn rumble_task(
     token: CancellationToken,
     mut rx_adapter: watch::Receiver<Option<Arc<Adapter>>>,
-    mut rx_rumbles: watch::Receiver<Rumbles>,
-    rumble_written: Arc<Notify>,
+    mut rx_rumbles: mpsc::Receiver<Rumbles>,
 ) {
     let mut adapter_ref: Option<Arc<Adapter>> = None;
 
@@ -245,8 +219,8 @@ async fn rumble_task(
             _ = rx_adapter.changed() => {
                 adapter_ref = rx_adapter.borrow_and_update().clone();
             }
-            _ = rx_rumbles.changed() => {
-                let rumbles = { *rx_rumbles.borrow_and_update() };
+            rumbles = rx_rumbles.recv() => {
+                let Some(rumbles) = rumbles else { continue; };
 
                 if let Some(adapter) = &adapter_ref {
                     match adapter.write_rumble(rumbles).await {
@@ -259,8 +233,6 @@ async fn rumble_task(
                         }
                     }
                 }
-
-                rumble_written.notify_waiters();
             }
         }
     }
