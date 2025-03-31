@@ -1,12 +1,14 @@
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use gcfeeder_core::adapter::Port;
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{mpsc, oneshot, Mutex};
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
 use tracing::warn;
 
 use super::config;
+use crate::config::Config;
 
 const ICON_FILE: &[u8] = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/resource/icon.png"));
 
@@ -32,13 +34,16 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
 
-    let rx_config = config_service.subscribe_config();
+    let mut rx_config = config_service.subscribe_config();
 
     let (tx_shutdown, rx_shutdown) = oneshot::channel();
     let (tx_quit, rx_quit) = mpsc::channel(1);
 
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     let (tx_quit_event_loop, mut rx_quit_event_loop) = oneshot::channel();
+
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    let profile_menu_params = Arc::new(Mutex::new(HashMap::new()));
 
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     let build = move || {
@@ -73,14 +78,18 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
             &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
         ]);
 
-        tray_icon::TrayIconBuilder::new()
-            .with_menu(Box::new(tray_menu))
-            .with_tooltip("gcfeeder")
-            .with_icon(
-                tray_icon::Icon::from_rgba(icon_data.to_vec(), icon_dim.0, icon_dim.1)
-                    .expect("icon to be valid"),
-            )
-            .build()
+        (
+            tray_icon::TrayIconBuilder::new()
+                .with_menu(Box::new(tray_menu))
+                .with_tooltip("gcfeeder")
+                .with_icon(
+                    tray_icon::Icon::from_rgba(icon_data.to_vec(), icon_dim.0, icon_dim.1)
+                        .expect("icon to be valid"),
+                )
+                .build()
+                .expect("build tray"),
+            profile_submenus,
+        )
     };
 
     #[cfg(target_os = "windows")]
@@ -89,17 +98,25 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
             DispatchMessageW, GetMessageW, TranslateMessage, MSG,
         };
 
+        let profile_menu_params = profile_menu_params.clone();
+
         task_tracker.spawn_blocking(move || {
-            let icon = build().ok();
-            if icon.is_some() {
-                let mut msg = MSG::default();
-                while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
-                    match rx_quit_event_loop.try_recv() {
-                        Ok(()) | Err(oneshot::error::TryRecvError::Closed) => break,
-                        Err(oneshot::error::TryRecvError::Empty) => unsafe {
+            let (_icon, profile_submenus) = build();
+
+            let mut msg = MSG::default();
+            while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
+                match rx_quit_event_loop.try_recv() {
+                    Ok(()) | Err(oneshot::error::TryRecvError::Closed) => break,
+                    Err(oneshot::error::TryRecvError::Empty) => {
+                        if let Ok(config) = rx_config.try_recv() {
+                            let mut profile_menu_params = profile_menu_params.blocking_lock();
+                            update_profiles(&config, &profile_submenus, &mut profile_menu_params);
+                        }
+
+                        unsafe {
                             let _ = TranslateMessage(&msg);
                             DispatchMessageW(&msg);
-                        },
+                        }
                     }
                 }
             }
@@ -108,13 +125,24 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
 
     #[cfg(target_os = "linux")]
     {
+        let profile_menu_params = profile_menu_params.clone();
+
         task_tracker.spawn_blocking(move || {
-            let icon = gtk::init().ok().and_then(|()| build().ok());
-            if icon.is_some() {
+            let icon = gtk::init().ok().map(|()| build());
+            if let Some((_icon, profile_submenus)) = icon {
                 loop {
                     match rx_quit_event_loop.try_recv() {
                         Ok(()) | Err(oneshot::error::TryRecvError::Closed) => break,
                         Err(oneshot::error::TryRecvError::Empty) => {
+                            if let Ok(config) = rx_config.try_recv() {
+                                let mut profile_menu_params = profile_menu_params.blocking_lock();
+                                update_profiles(
+                                    &config,
+                                    &profile_submenus,
+                                    &mut profile_menu_params,
+                                );
+                            }
+
                             gtk::main_iteration_do(false);
                         }
                     }
@@ -133,7 +161,10 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     {
         let task_token = task_token.clone();
-        task_tracker.spawn_blocking(move || run_menu(task_token, tx_quit, config_service));
+        let profile_menu_params = profile_menu_params.clone();
+        task_tracker.spawn_blocking(move || {
+            run_menu(task_token, tx_quit, config_service, profile_menu_params)
+        });
     }
 
     task_tracker.spawn(run(
@@ -146,6 +177,32 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
     Service {
         tx_shutdown,
         rx_quit,
+    }
+}
+
+fn update_profiles(
+    config: &Config,
+    profile_submenus: &[tray_icon::menu::Submenu],
+    profile_menu_params: &mut HashMap<String, (Port, String)>,
+) {
+    profile_menu_params.clear();
+
+    for port in Port::all() {
+        let submenu = &profile_submenus[port.index()];
+
+        submenu.set_enabled(false);
+
+        while submenu.remove_at(0).is_some() {}
+
+        for profile in config.profile.list.keys() {
+            let key = format!("port{}_{}", port.index() + 1, profile);
+            let _ = submenu.append(&tray_icon::menu::MenuItem::with_id(
+                &key, profile, true, None,
+            ));
+            profile_menu_params.insert(key, (*port, profile.clone()));
+        }
+
+        submenu.set_enabled(true);
     }
 }
 
@@ -177,8 +234,11 @@ fn run_menu(
     token: Arc<CancellationToken>,
     tx_quit: mpsc::Sender<()>,
     config_service: Arc<config::Service>,
+    profile_menu_params: Arc<Mutex<HashMap<String, (Port, String)>>>,
 ) {
     use std::time::Duration;
+
+    use tracing::debug;
 
     let rx_event = tray_icon::menu::MenuEvent::receiver();
 
@@ -207,7 +267,15 @@ fn run_menu(
                     }
                 }
                 id => {
-                    warn!("Unknown menu event: {id}");
+                    let profile_menu_params =
+                        { profile_menu_params.blocking_lock().get(id).cloned() };
+
+                    if let Some((port, profile)) = profile_menu_params {
+                        debug!("Switching port {:?} profile to \"{}\"", port, profile);
+                        // TODO(Sirius902) Implement.
+                    } else {
+                        warn!("Unknown menu event: {id}");
+                    }
                 }
             }
         }
