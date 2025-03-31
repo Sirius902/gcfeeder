@@ -38,14 +38,10 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
 
     let (tx_shutdown, rx_shutdown) = oneshot::channel();
     let (tx_quit, rx_quit) = mpsc::channel(1);
-
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
     let (tx_quit_event_loop, mut rx_quit_event_loop) = oneshot::channel();
 
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
     let profile_menu_params = Arc::new(Mutex::new(HashMap::new()));
 
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
     let build = move || {
         let tray_menu = tray_icon::menu::Menu::new();
         let _ = tray_menu.append_items(&[
@@ -151,14 +147,8 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
         });
     }
 
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-    {
-        tracing::warn!("System tray not implemented on this platform");
-    }
-
     let task_token = Arc::new(CancellationToken::new());
 
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
     {
         let task_token = task_token.clone();
         let profile_menu_params = profile_menu_params.clone();
@@ -167,12 +157,7 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
         });
     }
 
-    task_tracker.spawn(run(
-        rx_shutdown,
-        task_token,
-        #[cfg(any(target_os = "windows", target_os = "linux"))]
-        tx_quit_event_loop,
-    ));
+    task_tracker.spawn(run(rx_shutdown, task_token, tx_quit_event_loop));
 
     Service {
         tx_shutdown,
@@ -215,13 +200,11 @@ fn update_profiles(
 async fn run(
     rx_shutdown: oneshot::Receiver<oneshot::Sender<()>>,
     task_token: Arc<CancellationToken>,
-    #[cfg(any(target_os = "windows", target_os = "linux"))] tx_quit_event_loop: oneshot::Sender<()>,
+    tx_quit_event_loop: oneshot::Sender<()>,
 ) {
     let tx = rx_shutdown.await.expect("recv shutdown");
 
     task_token.cancel();
-
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
     tx_quit_event_loop.send(()).expect("send quit event loop");
 
     #[cfg(target_os = "windows")]
@@ -235,7 +218,6 @@ async fn run(
     tx.send(()).expect("send shutdown");
 }
 
-#[cfg(any(target_os = "windows", target_os = "linux"))]
 fn run_menu(
     token: Arc<CancellationToken>,
     tx_quit: mpsc::Sender<()>,

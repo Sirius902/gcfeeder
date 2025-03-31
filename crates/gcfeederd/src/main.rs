@@ -22,11 +22,21 @@ async fn main() -> adapter::Result<()> {
         config_service.clone(),
     );
 
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
     let mut tray_service = services::tray::start(&task_tracker, config_service.clone());
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    tracing::warn!("System tray is not implemented on this platform.");
 
     task_tracker.close();
 
     config_service.reload_config();
+
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    let tray_recv_quit = tray_service.recv_quit();
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    let tray_recv_quit = std::future::pending::<()>();
 
     tokio::select! {
         // FUTURE(Sirius902) Should we handle any other signals here?
@@ -35,15 +45,18 @@ async fn main() -> adapter::Result<()> {
                 warn!("Failed to wait for ctrl+c signal: {err}");
             }
         }
-        _ = tray_service.recv_quit() => {},
+        _ = tray_recv_quit => {},
         _ = task_tracker.wait() => {
             return Ok(());
         },
     }
 
-    info!("Stopping tray service...");
-    tray_service.stop().await;
-    info!("Tray service stopped!");
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    {
+        info!("Stopping tray service...");
+        tray_service.stop().await;
+        info!("Tray service stopped!");
+    }
 
     info!("Stopping driver service...");
     driver_service.stop().await;
