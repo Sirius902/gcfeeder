@@ -169,13 +169,29 @@ fn update_profiles(
 
         while submenu.remove_at(0).is_some() {}
 
-        for profile in config.profile.list.keys() {
+        let mut add_profile = |profile: &str| {
             let key = format!("port{}_{}", port.index() + 1, profile);
             let checked = config.profile.selected[port.index()] == *profile;
             let item = tray_icon::menu::CheckMenuItem::with_id(&key, profile, true, checked, None);
 
             let _ = submenu.append(&item);
-            profile_menu_params.insert(key, (*port, profile.clone()));
+            profile_menu_params.insert(key, (*port, profile.to_string()));
+        };
+
+        let mut keys: Vec<_> = config
+            .profile
+            .list
+            .keys()
+            .filter(|k| *k != "default")
+            .collect();
+
+        keys.sort();
+
+        add_profile("default");
+        let _ = submenu.append(&tray_icon::menu::PredefinedMenuItem::separator());
+
+        for profile in keys {
+            add_profile(profile);
         }
 
         submenu.set_enabled(true);
