@@ -240,8 +240,8 @@ async fn rumble_task(
                     rumbles
                 };
 
-                if let Some(rumble) = constant_rumble {
-                    adapter_service.set_rumble(rumble).await;
+                if let Some(rumbles) = constant_rumble {
+                    adapter_service.set_rumble(rumbles).await;
                 }
             }
             _ = set_rumble_fut => {
