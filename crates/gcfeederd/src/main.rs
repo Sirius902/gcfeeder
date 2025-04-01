@@ -58,13 +58,13 @@ async fn run(
         }
         _ = tray_service.recv_quit() => {},
         _ = task_tracker.wait() => {
+            info!("Stopping tray service...");
+            tray_service.stop().await;
+            info!("Tray service stopped!");
+
             return;
         },
     }
-
-    info!("Stopping tray service...");
-    tray_service.stop().await;
-    info!("Tray service stopped!");
 
     info!("Stopping driver service...");
     driver_service.stop().await;
@@ -81,6 +81,10 @@ async fn run(
     info!("Waiting for task tracker...");
     task_tracker.wait().await;
     info!("Task tracker finished!");
+
+    info!("Stopping tray service...");
+    tray_service.stop().await;
+    info!("Tray service stopped!");
 }
 
 fn setup_logging() -> Option<tracing_appender::non_blocking::WorkerGuard> {
