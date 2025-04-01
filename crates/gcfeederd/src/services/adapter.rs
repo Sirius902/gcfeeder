@@ -166,6 +166,7 @@ async fn input_task(
     tx_inputs: Vec<broadcast::Sender<Option<Input>>>,
 ) {
     let mut adapter_ref: Option<Arc<Adapter>> = None;
+    let mut prev_inputs: Option<[Option<Input>; Port::COUNT]> = None;
 
     loop {
         let input_fut = async {
@@ -185,8 +186,12 @@ async fn input_task(
                 match inputs {
                     Ok(inputs) => {
                         for (i, tx) in tx_inputs.iter().enumerate() {
-                            tx.send(inputs[i]).expect("input channels are not closed");
+                            if prev_inputs.map(|inputs| inputs[i]) != Some(inputs[i]) {
+                                tx.send(inputs[i]).expect("input channels are not closed");
+                            }
                         }
+
+                        prev_inputs = Some(inputs);
                     }
                     Err(Error::Disconnected) => {
                         adapter_ref = None;

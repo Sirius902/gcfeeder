@@ -5,7 +5,7 @@ use gcfeeder_core::driver::rumble::PatternRumbler;
 use gcfeeder_core::driver::Driver;
 use gcfeeder_core::feeder::RumbleSetting;
 use gcfeeder_core::layers::{self, Layer};
-use gcinput::Input;
+use gcinput::{Input, Rumble};
 use tokio::sync::{broadcast, mpsc, oneshot};
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
@@ -205,6 +205,17 @@ async fn rumble_task(
     let mut rumblers: [_; Port::COUNT] = std::array::from_fn(|_| PatternRumbler::new());
 
     loop {
+        let is_rumble_active = rumblers.iter().any(|r| r.strength() != 0);
+        let rumbles = std::array::from_fn(|i| rumblers[i].peek_rumble().into());
+
+        let set_rumble_fut = async {
+            if is_rumble_active {
+                adapter_service.set_rumble(rumbles).await
+            } else {
+                std::future::pending().await
+            }
+        };
+
         tokio::select! {
             _ = token.cancelled() => {
                 break;
@@ -213,10 +224,13 @@ async fn rumble_task(
                 let Some((port, strength)) = rumble else { continue; };
 
                 rumblers[port.index()].update_strength(strength);
+
+                let is_rumble_active = rumblers.iter().any(|r| r.strength() != 0);
+                if !is_rumble_active {
+                    adapter_service.set_rumble([Rumble::Off; Port::COUNT]).await;
+                }
             }
-            _ = adapter_service.set_rumble(std::array::from_fn(|i|
-                rumblers[i].peek_rumble().into(),
-            )) => {
+            _ = set_rumble_fut => {
                 for rumbler in &mut rumblers {
                     let _ = rumbler.consume_rumble();
                 }
