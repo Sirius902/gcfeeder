@@ -57,8 +57,8 @@ pub fn start(task_tracker: &TaskTracker, config_service: Arc<config::Service>) -
                 tray_icon::menu::SubmenuBuilder::new()
                     .text(format!("Profile {}", p.index() + 1))
                     .enabled(false)
-                    .item(&tray_icon::menu::MenuItem::with_id(
-                        "default", "default", false, None,
+                    .item(&tray_icon::menu::CheckMenuItem::with_id(
+                        "default", "default", false, true, None,
                     ))
                     .build()
                     .expect("build submenu")
@@ -181,15 +181,10 @@ fn update_profiles(
 
         for profile in config.profile.list.keys() {
             let key = format!("port{}_{}", port.index() + 1, profile);
+            let checked = config.profile.selected[port.index()] == *profile;
+            let item = tray_icon::menu::CheckMenuItem::with_id(&key, profile, true, checked, None);
 
-            // FUTURE(Sirius902) Add checkmark next to the item like a radio menu?
-            let text = if config.profile.selected[port.index()] == *profile {
-                format!("*{}", profile)
-            } else {
-                profile.clone()
-            };
-
-            let _ = submenu.append(&tray_icon::menu::MenuItem::with_id(&key, text, true, None));
+            let _ = submenu.append(&item);
             profile_menu_params.insert(key, (*port, profile.clone()));
         }
 
