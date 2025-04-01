@@ -773,6 +773,7 @@ version = "3.0.1"
 dependencies = [
  "console-subscriber",
  "directories",
+ "dispatch",
  "gcfeeder-core",
  "gcinput",
  "glib",

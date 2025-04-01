@@ -97,7 +97,7 @@ pub fn run(
     let rx_menu_event = tray_icon::menu::MenuEvent::receiver();
     let mut profile_params = HashMap::new();
 
-    let handle_messages = || {
+    let handle_messages = move || {
         match rx_shutdown.try_recv() {
             Ok(tx) => {
                 tx.send(()).expect("send shutdown signal");
@@ -221,7 +221,7 @@ mod events {
         let _ = unsafe { PostThreadMessageW(event_thread_id, WM_NULL, WPARAM(0), LPARAM(0)) };
     }
 
-    pub fn run(mut handle_messages: impl FnMut() -> bool) {
+    pub fn run(mut handle_messages: impl FnMut() -> bool + 'static) {
         let mut msg = MSG::default();
         while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
             unsafe {
@@ -251,7 +251,7 @@ mod events {
         glib::idle_add(|| glib::ControlFlow::Continue);
     }
 
-    pub fn run(mut handle_messages: impl FnMut() -> bool) {
+    pub fn run(mut handle_messages: impl FnMut() -> bool + 'static) {
         loop {
             gtk::main_iteration();
 
@@ -262,59 +262,43 @@ mod events {
     }
 }
 
+// TODO(Sirius902) Call `HANDLE_MESSAGES` after each application event is received.
 #[cfg(target_os = "macos")]
 mod events {
-    use std::cell::UnsafeCell;
+    use std::cell::RefCell;
 
-    use objc2::rc::Retained;
+    use dispatch::Queue;
     use objc2::MainThreadMarker;
-    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy, NSEventMask};
-    use objc2_foundation::{NSDate, NSRunLoop, NSString};
+    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy};
 
-    static mut APP: UnsafeCell<Option<Retained<NSApplication>>> = UnsafeCell::new(None);
+    thread_local! {
+        static HANDLE_MESSAGES: RefCell<Option<Box<dyn FnMut() -> bool>>> = const { RefCell::new(None) };
+    }
 
     pub fn setup() {
         let mtm = MainThreadMarker::new().expect("on main thread");
-
         let app = NSApplication::sharedApplication(mtm);
         app.setActivationPolicy(NSApplicationActivationPolicy::Regular);
-
-        // SAFETY: The only mutable borrow exists here prior to `run` or `quit`.
-        #[allow(static_mut_refs)]
-        unsafe {
-            *APP.get_mut() = Some(app);
-        }
     }
 
-    pub fn quit() {}
+    pub fn quit() {
+        Queue::main().exec_async(|| {
+            // TODO(Sirius902) Do this in NSApplicationDelegate event handler instead.
+            HANDLE_MESSAGES.with_borrow_mut(|f| f.as_mut().expect("exists")());
 
-    pub fn run(mut handle_messages: impl FnMut() -> bool) {
-        // SAFETY: The only mutable borrow existed prior to this function.
-        #[allow(static_mut_refs)]
-        let app = (unsafe { &*APP.get() }).as_ref().expect("app exists");
+            let mtm = MainThreadMarker::new().expect("on main thread");
+            let app = NSApplication::sharedApplication(mtm);
+            unsafe { app.terminate(None) };
+        });
+    }
 
-        let run_loop = unsafe { NSRunLoop::currentRunLoop() };
-        let run_loop_mode = NSString::from_str("kCFRunLoopDefaultMode");
+    pub fn run(handle_messages: impl FnMut() -> bool + 'static) {
+        HANDLE_MESSAGES.with_borrow_mut(|f| {
+            *f = Some(Box::new(handle_messages));
+        });
 
-        loop {
-            let next_loop = unsafe { NSDate::dateWithTimeIntervalSinceNow(0.1) };
-
-            while let Some(event) = unsafe {
-                app.nextEventMatchingMask_untilDate_inMode_dequeue(
-                    NSEventMask::Any,
-                    Some(&next_loop),
-                    &run_loop_mode,
-                    true,
-                )
-            } {
-                unsafe { app.sendEvent(&event) };
-            }
-
-            if handle_messages() {
-                break;
-            }
-
-            unsafe { run_loop.runUntilDate(&next_loop) };
-        }
+        let mtm = MainThreadMarker::new().expect("on main thread");
+        let app = NSApplication::sharedApplication(mtm);
+        app.run();
     }
 }
