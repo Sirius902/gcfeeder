@@ -46,6 +46,8 @@ pub fn run(
     let (tx_shutdown, mut rx_shutdown) = oneshot::channel();
     let (tx_quit, rx_quit) = mpsc::channel(1);
 
+    events::setup();
+
     tx_service
         .send(Service {
             tx_shutdown,
@@ -56,8 +58,6 @@ pub fn run(
     let icon = image::load_from_memory(ICON_FILE).expect("load icon");
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
-
-    events::setup();
 
     let tray_menu = tray_icon::menu::Menu::new();
     let _ = tray_menu.append_items(&[
@@ -200,16 +200,25 @@ fn update_profiles(
 
 #[cfg(target_os = "windows")]
 mod events {
+    use std::sync::atomic::{AtomicU32, Ordering};
+
+    use windows::Win32::Foundation::{LPARAM, WPARAM};
+    use windows::Win32::System::Threading::GetCurrentThreadId;
     use windows::Win32::UI::WindowsAndMessaging::{
-        DispatchMessageW, GetMessageW, PostQuitMessage, TranslateMessage, MSG,
+        DispatchMessageW, GetMessageW, PostThreadMessageW, TranslateMessage, MSG, WM_NULL,
     };
 
-    pub fn setup() {}
+    static EVENT_THREAD_ID: AtomicU32 = AtomicU32::new(0);
+
+    pub fn setup() {
+        EVENT_THREAD_ID.store(unsafe { GetCurrentThreadId() }, Ordering::Relaxed);
+    }
 
     pub fn quit() {
-        unsafe {
-            PostQuitMessage(0);
-        }
+        let event_thread_id = EVENT_THREAD_ID.load(Ordering::Relaxed);
+        assert!(event_thread_id != 0, "event_thread_id is set");
+
+        let _ = unsafe { PostThreadMessageW(event_thread_id, WM_NULL, WPARAM(0), LPARAM(0)) };
     }
 
     pub fn run(mut handle_messages: impl FnMut() -> bool) {
