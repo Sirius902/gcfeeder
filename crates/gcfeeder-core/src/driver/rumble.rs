@@ -1,3 +1,5 @@
+use gcinput::Rumble;
+
 macro_rules! make_patterns {
     ([ $([ $( $v:tt ),* ],)* ]) => {
         [ $( [$( pattern_value!($v), )*], )* ]
@@ -27,7 +29,6 @@ pub const PATTERNS: [Pattern; 7] = make_patterns!([
 
 #[derive(Debug, Default)]
 pub struct PatternRumbler {
-    strength: u8,
     state: PatternState,
 }
 
@@ -37,15 +38,15 @@ impl PatternRumbler {
     }
 
     pub fn update_strength(&mut self, strength: u8) {
-        self.strength = strength;
         self.state = PatternState::new(strength);
     }
 
     #[must_use]
-    pub const fn strength(&self) -> u8 {
-        self.strength
+    pub fn constant_rumble(&self) -> Option<Rumble> {
+        self.state.constant_rumble()
     }
 
+    #[must_use]
     pub const fn peek_rumble(&self) -> bool {
         self.state.peek_rumble()
     }
@@ -75,6 +76,14 @@ impl PatternState {
         }
     }
 
+    #[must_use]
+    pub fn constant_rumble(&self) -> Option<Rumble> {
+        let mut iter = PATTERNS[self.index].iter().cloned();
+        let first = iter.next().expect("pattern has at least one rumble");
+        Some(first.into()).filter(|_| iter.all(|r| r == first))
+    }
+
+    #[must_use]
     pub const fn peek_rumble(&self) -> bool {
         PATTERNS[self.index][self.poll_count]
     }

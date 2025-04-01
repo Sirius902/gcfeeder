@@ -205,14 +205,15 @@ async fn rumble_task(
     let mut rumblers: [_; Port::COUNT] = std::array::from_fn(|_| PatternRumbler::new());
 
     loop {
-        let is_rumble_active = rumblers.iter().any(|r| r.strength() != 0);
-        let rumbles = std::array::from_fn(|i| rumblers[i].peek_rumble().into());
+        let is_rumble_constant = rumblers.iter().all(|r| r.constant_rumble().is_some());
 
         let set_rumble_fut = async {
-            if is_rumble_active {
-                adapter_service.set_rumble(rumbles).await
-            } else {
+            if is_rumble_constant {
                 std::future::pending().await
+            } else {
+                adapter_service
+                    .set_rumble(std::array::from_fn(|i| rumblers[i].peek_rumble().into()))
+                    .await
             }
         };
 
@@ -225,9 +226,22 @@ async fn rumble_task(
 
                 rumblers[port.index()].update_strength(strength);
 
-                let is_rumble_active = rumblers.iter().any(|r| r.strength() != 0);
-                if !is_rumble_active {
-                    adapter_service.set_rumble([Rumble::Off; Port::COUNT]).await;
+                let constant_rumble = {
+                    let mut rumbles = Some([Rumble::Off; Port::COUNT]);
+                    for (i, rumbler) in rumblers.iter().enumerate() {
+                        if let Some(rumble) = rumbler.constant_rumble() {
+                            let Some(rumbles) = &mut rumbles else { unreachable!() };
+                            rumbles[i] = rumble;
+                        } else {
+                            rumbles = None;
+                            break;
+                        }
+                    }
+                    rumbles
+                };
+
+                if let Some(rumble) = constant_rumble {
+                    adapter_service.set_rumble(rumble).await;
                 }
             }
             _ = set_rumble_fut => {
