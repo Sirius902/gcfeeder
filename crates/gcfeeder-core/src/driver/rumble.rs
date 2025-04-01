@@ -30,6 +30,7 @@ pub const PATTERNS: [Pattern; 7] = make_patterns!([
 #[derive(Debug, Default)]
 pub struct PatternRumbler {
     state: PatternState,
+    constant_rumble: Option<Rumble>,
 }
 
 impl PatternRumbler {
@@ -39,11 +40,12 @@ impl PatternRumbler {
 
     pub fn update_strength(&mut self, strength: u8) {
         self.state = PatternState::new(strength);
+        self.constant_rumble = self.state.constant_rumble();
     }
 
     #[must_use]
-    pub fn constant_rumble(&self) -> Option<Rumble> {
-        self.state.constant_rumble()
+    pub const fn constant_rumble(&self) -> Option<Rumble> {
+        self.constant_rumble
     }
 
     #[must_use]
