@@ -262,18 +262,59 @@ mod events {
     }
 }
 
-// TODO(Sirius902) Implement.
 #[cfg(target_os = "macos")]
 mod events {
+    use std::cell::UnsafeCell;
+
+    use objc2::rc::Retained;
+    use objc2::MainThreadMarker;
+    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy, NSEventMask};
+    use objc2_foundation::{NSDate, NSRunLoop, NSString};
+
+    static mut APP: UnsafeCell<Option<Retained<NSApplication>>> = UnsafeCell::new(None);
+
     pub fn setup() {
-        todo!()
+        let mtm = MainThreadMarker::new().expect("on main thread");
+
+        let app = NSApplication::sharedApplication(mtm);
+        app.setActivationPolicy(NSApplicationActivationPolicy::Regular);
+
+        // SAFETY: The only mutable borrow exists here prior to `run` or `quit`.
+        #[allow(static_mut_refs)]
+        unsafe {
+            *APP.get_mut() = Some(app);
+        }
     }
 
-    pub fn quit() {
-        todo!()
-    }
+    pub fn quit() {}
 
-    pub fn run(_handle_messages: impl FnMut() -> bool) {
-        todo!()
+    pub fn run(mut handle_messages: impl FnMut() -> bool) {
+        // SAFETY: The only mutable borrow existed prior to this function.
+        #[allow(static_mut_refs)]
+        let app = (unsafe { &*APP.get() }).as_ref().expect("app exists");
+
+        let run_loop = unsafe { NSRunLoop::currentRunLoop() };
+        let run_loop_mode = NSString::from_str("kCFRunLoopDefaultMode");
+
+        loop {
+            let next_loop = unsafe { NSDate::dateWithTimeIntervalSinceNow(0.1) };
+
+            while let Some(event) = unsafe {
+                app.nextEventMatchingMask_untilDate_inMode_dequeue(
+                    NSEventMask::Any,
+                    Some(&next_loop),
+                    &run_loop_mode,
+                    true,
+                )
+            } {
+                unsafe { app.sendEvent(&event) };
+            }
+
+            if handle_messages() {
+                break;
+            }
+
+            unsafe { run_loop.runUntilDate(&next_loop) };
+        }
     }
 }
