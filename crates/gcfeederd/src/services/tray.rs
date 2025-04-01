@@ -56,6 +56,7 @@ pub fn run(
         .expect("send service");
 
     let icon = image::load_from_memory(ICON_FILE).expect("load icon");
+    // FUTURE(Sirius902) Change non-transparent colors to black on macOS.
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
 
