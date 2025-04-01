@@ -27,7 +27,7 @@ pub const PATTERNS: [Pattern; 7] = make_patterns!([
     [1, 1, 1, 1, 1, 1],
 ]);
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct PatternRumbler {
     state: PatternState,
     constant_rumble: Option<Rumble>,
@@ -55,6 +55,18 @@ impl PatternRumbler {
 
     pub fn consume_rumble(&mut self) -> bool {
         self.state.consume_rumble()
+    }
+}
+
+impl Default for PatternRumbler {
+    fn default() -> Self {
+        let state = PatternState::default();
+        let constant_rumble = state.constant_rumble();
+
+        Self {
+            state,
+            constant_rumble,
+        }
     }
 }
 
