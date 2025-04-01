@@ -1,19 +1,38 @@
 use std::sync::Arc;
 
-use gcfeeder_core::adapter;
 use gcfeederd::services;
+use tokio::sync::oneshot;
 use tokio_util::task::TaskTracker;
 use tracing::{info, warn};
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::EnvFilter;
 
-#[tokio::main]
-async fn main() -> adapter::Result<()> {
+fn main() {
     let _guard = setup_logging();
 
+    let (tx_tray_service, rx_tray_service) = oneshot::channel();
+    let (tx_config_service, rx_config_service) = oneshot::channel();
+
+    let rt = tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .expect("build tokio runtime");
+
+    rt.spawn(run(rx_tray_service, tx_config_service));
+
+    services::tray::run(rx_config_service, tx_tray_service);
+}
+
+async fn run(
+    rx_tray_service: oneshot::Receiver<services::tray::Service>,
+    tx_config_service: oneshot::Sender<Arc<services::config::Service>>,
+) {
     let task_tracker = TaskTracker::new();
 
     let config_service = Arc::new(services::config::start(&task_tracker));
+    tx_config_service
+        .send(config_service.clone())
+        .expect("send config service");
 
     let adapter_service = Arc::new(services::adapter::start(&task_tracker));
     let driver_service = services::driver::start(
@@ -22,21 +41,11 @@ async fn main() -> adapter::Result<()> {
         config_service.clone(),
     );
 
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
-    let mut tray_service = services::tray::start(&task_tracker, config_service.clone());
-
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-    tracing::warn!("System tray is not implemented on this platform.");
-
     task_tracker.close();
 
+    let mut tray_service = rx_tray_service.await.expect("recv tray service");
+
     config_service.reload_config();
-
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
-    let tray_recv_quit = tray_service.recv_quit();
-
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-    let tray_recv_quit = std::future::pending::<()>();
 
     tokio::select! {
         // FUTURE(Sirius902) Should we handle any other signals here?
@@ -45,18 +54,15 @@ async fn main() -> adapter::Result<()> {
                 warn!("Failed to wait for ctrl+c signal: {err}");
             }
         }
-        _ = tray_recv_quit => {},
+        _ = tray_service.recv_quit() => {},
         _ = task_tracker.wait() => {
-            return Ok(());
+            return;
         },
     }
 
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
-    {
-        info!("Stopping tray service...");
-        tray_service.stop().await;
-        info!("Tray service stopped!");
-    }
+    info!("Stopping tray service...");
+    tray_service.stop().await;
+    info!("Tray service stopped!");
 
     info!("Stopping driver service...");
     driver_service.stop().await;
@@ -73,8 +79,6 @@ async fn main() -> adapter::Result<()> {
     info!("Waiting for task tracker...");
     task_tracker.wait().await;
     info!("Task tracker finished!");
-
-    Ok(())
 }
 
 fn setup_logging() -> Option<tracing_appender::non_blocking::WorkerGuard> {

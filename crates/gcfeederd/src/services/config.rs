@@ -9,6 +9,7 @@ use crate::config::Config;
 
 pub type ConfigVisitor = dyn FnOnce(&mut Config) + Send;
 
+#[derive(Debug)]
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
     rx_config: broadcast::Receiver<Arc<Config>>,
