@@ -56,7 +56,6 @@ pub fn run(
         .expect("send service");
 
     let icon = image::load_from_memory(ICON_FILE).expect("load icon");
-    // FUTURE(Sirius902) Change non-transparent colors to black on macOS.
     let icon_data = icon.into_rgba8();
     let icon_dim = icon_data.dimensions();
 
@@ -85,7 +84,7 @@ pub fn run(
         &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
     ]);
 
-    let _icon = tray_icon::TrayIconBuilder::new()
+    let icon = tray_icon::TrayIconBuilder::new()
         .with_menu(Box::new(tray_menu))
         .with_tooltip("gcfeeder")
         .with_icon(
@@ -94,6 +93,9 @@ pub fn run(
         )
         .build()
         .expect("build tray");
+
+    // Use icon as template on macOS.
+    icon.set_icon_as_template(true);
 
     let rx_menu_event = tray_icon::menu::MenuEvent::receiver();
     let mut profile_params = HashMap::new();
