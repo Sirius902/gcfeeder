@@ -265,30 +265,111 @@ mod events {
     }
 }
 
-// TODO(Sirius902) Call `HANDLE_MESSAGES` after each application event is received.
 #[cfg(target_os = "macos")]
 mod events {
-    use std::cell::RefCell;
+    use std::cell::{OnceCell, RefCell};
 
     use dispatch::Queue;
-    use objc2::MainThreadMarker;
-    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy};
+    use objc2::rc::Retained;
+    use objc2::runtime::ProtocolObject;
+    use objc2::{define_class, msg_send, sel, DefinedClass, MainThreadMarker, MainThreadOnly};
+    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy, NSApplicationDelegate};
+    use objc2_foundation::{NSNotification, NSObject, NSObjectProtocol, NSTimer};
 
     thread_local! {
         static HANDLE_MESSAGES: RefCell<Option<Box<dyn FnMut() -> bool>>> = const { RefCell::new(None) };
     }
 
+    #[derive(Debug, Default)]
+    struct AppDelegateIvars {
+        timer: OnceCell<Retained<NSTimer>>,
+    }
+
+    define_class!(
+        // SAFETY:
+        // - The superclass NSObject does not have any subclassing requirements.
+        // - `Delegate` does not implement `Drop`.
+        #[unsafe(super = NSObject)]
+        #[thread_kind = MainThreadOnly]
+        #[name = "Delegate"]
+        #[ivars = AppDelegateIvars]
+        struct Delegate;
+
+        // SAFETY: `NSObjectProtocol` has no safety requirements.
+        unsafe impl NSObjectProtocol for Delegate {}
+
+        // SAFETY: `NSApplicationDelegate` has no safety requirements.
+        unsafe impl NSApplicationDelegate for Delegate {
+            // SAFETY: The signature is correct.
+            #[unsafe(method(applicationDidFinishLaunching:))]
+            fn did_finish_launching(&self, notification: &NSNotification) {
+                let app = unsafe { notification.object() }
+                    .expect("app exists")
+                    .downcast::<NSApplication>()
+                    .expect("app is NSApplication");
+
+                // Start the timer to call `handle_messages` every 100ms
+                let timer = unsafe {
+                    NSTimer::scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+                        0.1,
+                        self,
+                        sel!(timerFired:),
+                        None,
+                        true,
+                    )
+                };
+
+                self.ivars()
+                    .timer
+                    .set(timer)
+                    .expect("timer was not initialized");
+
+                app.setActivationPolicy(NSApplicationActivationPolicy::Regular);
+
+                // Activate the application.
+                // Required when launching unbundled (as is done with Cargo).
+                #[allow(deprecated)]
+                app.activateIgnoringOtherApps(true);
+            }
+
+            // SAFETY: The signature is correct.
+            #[unsafe(method(applicationWillTerminate:))]
+            fn will_terminate(&self, _notification: &NSNotification) {
+                HANDLE_MESSAGES.with_borrow_mut(|f| {
+                    let f = f.as_mut().expect("message handler was set");
+                    f();
+                });
+            }
+
+            // SAFETY: The signature is correct
+            #[unsafe(method(timerFired:))]
+            fn timer_fired(&self, _timer: &NSTimer) {
+                HANDLE_MESSAGES.with_borrow_mut(|f| {
+                    let f = f.as_mut().expect("message handler was set");
+                    f();
+                });
+            }
+        }
+    );
+
+    impl Delegate {
+        fn new(mtm: MainThreadMarker) -> Retained<Self> {
+            let this = Self::alloc(mtm).set_ivars(AppDelegateIvars::default());
+            // SAFETY: The signature of `NSObject`'s `init` method is correct.
+            unsafe { msg_send![super(this), init] }
+        }
+    }
+
     pub fn setup() {
         let mtm = MainThreadMarker::new().expect("on main thread");
+
         let app = NSApplication::sharedApplication(mtm);
-        app.setActivationPolicy(NSApplicationActivationPolicy::Regular);
+        let delegate = Delegate::new(mtm);
+        app.setDelegate(Some(ProtocolObject::from_ref(&*delegate)));
     }
 
     pub fn quit() {
         Queue::main().exec_async(|| {
-            // TODO(Sirius902) Do this in NSApplicationDelegate event handler instead.
-            HANDLE_MESSAGES.with_borrow_mut(|f| f.as_mut().expect("exists")());
-
             let mtm = MainThreadMarker::new().expect("on main thread");
             let app = NSApplication::sharedApplication(mtm);
             unsafe { app.terminate(None) };
