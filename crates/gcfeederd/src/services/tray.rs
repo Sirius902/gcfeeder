@@ -269,10 +269,14 @@ mod events {
 mod events {
     use dispatch::Queue;
     use objc2::MainThreadMarker;
-    use objc2_app_kit::{NSApplication, NSEventMask};
+    use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy, NSEventMask};
     use objc2_foundation::{NSDate, NSDefaultRunLoopMode, NSRunLoop};
 
-    pub fn setup() {}
+    pub fn setup() {
+        let mtm = MainThreadMarker::new().expect("on main thread");
+        let app = NSApplication::sharedApplication(mtm);
+        app.setActivationPolicy(NSApplicationActivationPolicy::Accessory);
+    }
 
     pub fn quit() {
         Queue::main().exec_async(|| {
