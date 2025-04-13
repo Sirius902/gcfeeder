@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use gcfeeder_core::adapter::{Adapter, Error, Port};
 use gcinput::{Input, Rumble};
-use tokio::sync::{broadcast, mpsc, oneshot, watch};
+use tokio::sync::{mpsc, oneshot, watch};
 use tokio_stream::StreamExt;
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
@@ -13,7 +13,7 @@ pub type Rumbles = [Rumble; Port::COUNT];
 
 pub struct Service {
     tx_shutdown: mpsc::UnboundedSender<oneshot::Sender<()>>,
-    rx_inputs: Vec<broadcast::Receiver<Option<Input>>>,
+    rx_inputs: Vec<watch::Receiver<Option<Input>>>,
     tx_rumbles: mpsc::Sender<Rumbles>,
 }
 
@@ -24,8 +24,8 @@ impl Service {
         rx.await.expect("waiting for shutdown");
     }
 
-    pub fn subscribe_input(&self, port: Port) -> broadcast::Receiver<Option<Input>> {
-        self.rx_inputs[port.index()].resubscribe()
+    pub fn watch_input(&self, port: Port) -> watch::Receiver<Option<Input>> {
+        self.rx_inputs[port.index()].clone()
     }
 
     pub async fn set_rumble(&self, rumbles: Rumbles) {
@@ -41,7 +41,7 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
         let mut rxs = Vec::with_capacity(Port::COUNT);
 
         for _ in 0..Port::COUNT {
-            let (tx, rx) = broadcast::channel(1);
+            let (tx, rx) = watch::channel(None);
             txs.push(tx);
             rxs.push(rx);
         }
@@ -62,7 +62,7 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
 
 async fn run(
     mut rx_shutdown: mpsc::UnboundedReceiver<oneshot::Sender<()>>,
-    tx_inputs: Vec<broadcast::Sender<Option<Input>>>,
+    tx_inputs: Vec<watch::Sender<Option<Input>>>,
     rx_rumbles: mpsc::Receiver<Rumbles>,
 ) {
     let (tx_adapter, rx_adapter) = watch::channel(None);
@@ -163,10 +163,9 @@ async fn try_connect_adapter() -> Option<(Adapter, nusb::DeviceId)> {
 async fn input_task(
     token: CancellationToken,
     mut rx_adapter: watch::Receiver<Option<Arc<Adapter>>>,
-    tx_inputs: Vec<broadcast::Sender<Option<Input>>>,
+    tx_inputs: Vec<watch::Sender<Option<Input>>>,
 ) {
     let mut adapter_ref: Option<Arc<Adapter>> = None;
-    let mut prev_inputs: Option<[Option<Input>; Port::COUNT]> = None;
 
     loop {
         let input_fut = async {
@@ -186,12 +185,15 @@ async fn input_task(
                 match inputs {
                     Ok(inputs) => {
                         for (i, tx) in tx_inputs.iter().enumerate() {
-                            if prev_inputs.map(|inputs| inputs[i]) != Some(inputs[i]) {
-                                tx.send(inputs[i]).expect("input channels are not closed");
-                            }
+                            tx.send_if_modified(|input| {
+                                if inputs[i] != *input {
+                                    *input = inputs[i];
+                                    true
+                                } else {
+                                    false
+                                }
+                            });
                         }
-
-                        prev_inputs = Some(inputs);
                     }
                     Err(Error::Disconnected) => {
                         adapter_ref = None;

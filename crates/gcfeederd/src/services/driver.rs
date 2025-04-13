@@ -6,7 +6,7 @@ use gcfeeder_core::driver::Driver;
 use gcfeeder_core::feeder::RumbleSetting;
 use gcfeeder_core::layers::{self, Layer};
 use gcinput::{Input, Rumble};
-use tokio::sync::{broadcast, mpsc, oneshot};
+use tokio::sync::{broadcast, mpsc, oneshot, watch};
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
 use tracing::{debug, error, info, warn};
@@ -59,7 +59,7 @@ async fn run(
     ));
 
     for port in Port::all() {
-        let rx_inputs = adapter_service.subscribe_input(*port);
+        let rx_inputs = adapter_service.watch_input(*port);
 
         tasks.spawn(driver_task(
             task_token.clone(),
@@ -123,8 +123,8 @@ fn fill_layers(profile: &Profile, layers: &mut Vec<Box<dyn Layer>>) {
 async fn driver_task(
     token: CancellationToken,
     port: Port,
-    mut rx_inputs: tokio::sync::broadcast::Receiver<Option<Input>>,
-    tx_rumble: tokio::sync::mpsc::UnboundedSender<(Port, u8)>,
+    mut rx_inputs: watch::Receiver<Option<Input>>,
+    tx_rumble: mpsc::UnboundedSender<(Port, u8)>,
     mut rx_config: broadcast::Receiver<Arc<Config>>,
 ) {
     let mut driver: Option<Box<dyn Driver>> = None;
@@ -175,8 +175,12 @@ async fn driver_task(
 
                 rumble_enabled = profile.rumble == RumbleSetting::On;
             }
-            raw_input = rx_inputs.recv() => {
-                let Ok(raw_input) = raw_input else { continue; };
+            changed = rx_inputs.changed() => {
+                let raw_input = if changed.is_ok() {
+                    *rx_inputs.borrow_and_update()
+                } else {
+                    continue;
+                };
                 let Some(driver) = &driver else { continue; };
 
                 let input = layers
