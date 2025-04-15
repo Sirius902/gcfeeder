@@ -43,6 +43,12 @@ async fn run(
         config_service.clone(),
     );
 
+    let input_server = services::input_server::start(
+        &task_tracker,
+        adapter_service.clone(),
+        config_service.clone(),
+    );
+
     task_tracker.close();
 
     let mut tray_service = rx_tray_service.await.expect("recv tray service");
@@ -65,6 +71,10 @@ async fn run(
             return;
         },
     }
+
+    info!("Stopping input server service...");
+    input_server.stop().await;
+    info!("Input server service stopped!");
 
     info!("Stopping driver service...");
     driver_service.stop().await;
