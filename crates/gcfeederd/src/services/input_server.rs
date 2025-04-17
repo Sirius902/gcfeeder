@@ -81,7 +81,10 @@ async fn server_task(
     mut rx_config: broadcast::Receiver<Arc<Config>>,
 ) {
     let mut socket: Option<UdpSocket> = None;
+    let mut config: Option<Arc<Config>> = None;
     let mut clients: HashMap<SocketAddr, Instant> = HashMap::new();
+
+    let mut bind_interval = tokio::time::interval(Duration::from_secs(1));
     let mut heartbeat_interval = tokio::time::interval(Duration::from_secs(10));
 
     let mut center_calibration = CenterCalibration::default();
@@ -99,6 +102,32 @@ async fn server_task(
             _ = token.cancelled() => {
                 break;
             }
+            _ = bind_interval.tick() => {
+                if socket.is_some() {
+                    continue;
+                }
+
+                if let Some(config) = &config {
+                    let server_config = &config.input_server[port.index()];
+                    if server_config.enabled {
+                        match UdpSocket::bind(("127.0.0.1", server_config.port)).await {
+                            Ok(s) => {
+                                info!(
+                                    "Created input server on localhost:{} for port {port:?}!",
+                                    server_config.port,
+                                );
+                                socket = Some(s);
+                            }
+                            Err(err) => {
+                                warn!(
+                                    "Failed to bind input server on localhost:{} for port {port:?}: {err}",
+                                    server_config.port,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
             res = heartbeat_fut => {
                 match res {
                     Ok((_, src_addr)) => {
@@ -113,12 +142,14 @@ async fn server_task(
                     }
                 }
             }
+            // NOTE(Sirius902) Due to the current implementation it is possible for a client connection to
+            // exist for two times the interval without heartbeats.
             deadline = heartbeat_interval.tick() => {
                 clients.retain(|addr, heartbeat| {
                     let is_deadline_met =
                         deadline.duration_since(*heartbeat) <= heartbeat_interval.period();
                     if !is_deadline_met {
-                        info!("Client {addr} disconnected.")
+                        info!("Client {addr} failed to heartbeat within deadline, disconnected.");
                     }
 
                     is_deadline_met
@@ -148,32 +179,21 @@ async fn server_task(
                     }
                 }
             }
-            config = rx_config.recv() => {
-                if let Ok(config) = config {
-                    // FUTURE(Sirius902) Log when server is destroyed?
-                    socket = None;
-                    clients.clear();
+            config_update = rx_config.recv() => {
+                if let Ok(config_update) = config_update {
+                    if let Some(socket) = socket.take() {
+                        drop(socket);
+                        clients.clear();
 
-                    // FUTURE(Sirius902) If we fail to connect, store the config update and try
-                    // again on an interval.
-                    let server_config = &config.input_server[port.index()];
-                    if server_config.enabled {
-                        match UdpSocket::bind(("127.0.0.1", server_config.port)).await {
-                            Ok(s) => {
-                                info!(
-                                    "Created input server on localhost:{} for port {port:?}!",
-                                    server_config.port,
-                                );
-                                socket = Some(s);
-                            }
-                            Err(err) => {
-                                warn!(
-                                    "Failed to bind input server on localhost:{} for port {port:?}: {err}",
-                                    server_config.port,
-                                );
-                            }
-                        }
+                        let server_config =
+                            &config.as_ref().expect("server needs config").input_server
+                                [port.index()];
+
+                        info!("Stopped server on localhost:{} for port {port:?}", server_config.port);
                     }
+
+                    config = Some(config_update);
+                    bind_interval.reset_immediately();
                 }
             }
         }
