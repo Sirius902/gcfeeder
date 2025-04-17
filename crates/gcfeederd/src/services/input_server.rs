@@ -85,7 +85,7 @@ async fn server_task(
     let mut clients: HashMap<SocketAddr, Instant> = HashMap::new();
 
     let mut bind_interval = tokio::time::interval(Duration::from_secs(1));
-    let mut heartbeat_interval = tokio::time::interval(Duration::from_secs(10));
+    let mut heartbeat_interval = tokio::time::interval(Duration::from_secs(5));
 
     let mut center_calibration = CenterCalibration::default();
 
