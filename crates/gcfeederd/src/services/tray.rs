@@ -60,32 +60,30 @@ pub fn run(
     let icon_dim = icon_data.dimensions();
 
     let tray_menu = tray_icon::menu::Menu::new();
-    let _ = tray_menu.append_items(&[
-        &tray_icon::menu::MenuItem::with_id("show", "Show", true, None),
-        &tray_icon::menu::MenuItem::with_id("hide", "Hide", true, None),
-        &tray_icon::menu::MenuItem::with_id("reload", "Reload Config", true, None),
-        &tray_icon::menu::PredefinedMenuItem::separator(),
-    ]);
+    tray_menu
+        .append_items(&[
+            &tray_icon::menu::MenuItem::with_id("show", "Show", true, None),
+            &tray_icon::menu::MenuItem::with_id("hide", "Hide", true, None),
+            &tray_icon::menu::MenuItem::with_id("reload", "Reload Config", true, None),
+            &tray_icon::menu::PredefinedMenuItem::separator(),
+        ])
+        .expect("tray append");
 
-    let profile_submenus: [_; Port::COUNT] = std::array::from_fn(|i| {
-        tray_icon::menu::SubmenuBuilder::new()
-            .text(format!("Profile {}", i + 1))
-            .enabled(false)
-            .build()
-            .expect("build submenu")
-    });
-
-    for submenu in &profile_submenus {
-        let _ = tray_menu.append(submenu);
+    for port in Port::all() {
+        tray_menu
+            .append(&make_empty_profile_menu(*port))
+            .expect("tray append");
     }
 
-    let _ = tray_menu.append_items(&[
-        &tray_icon::menu::PredefinedMenuItem::separator(),
-        &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
-    ]);
+    tray_menu
+        .append_items(&[
+            &tray_icon::menu::PredefinedMenuItem::separator(),
+            &tray_icon::menu::MenuItem::with_id("quit", "Quit", true, None),
+        ])
+        .expect("tray append");
 
     let icon = tray_icon::TrayIconBuilder::new()
-        .with_menu(Box::new(tray_menu))
+        .with_menu(Box::new(tray_menu.clone()))
         .with_tooltip("gcfeeder")
         .with_icon(
             tray_icon::Icon::from_rgba(icon_data.to_vec(), icon_dim.0, icon_dim.1)
@@ -113,7 +111,7 @@ pub fn run(
         }
 
         if let Ok(config) = rx_config.try_recv() {
-            update_profiles(&config, &profile_submenus, &mut profile_params);
+            update_profiles(&config, &tray_menu, &mut profile_params);
         }
 
         if let Ok(event) = rx_menu_event.try_recv() {
@@ -143,7 +141,7 @@ pub fn run(
                         }));
 
                         if let Ok(config) = rx_config.blocking_recv() {
-                            update_profiles(&config, &profile_submenus, &mut profile_params);
+                            update_profiles(&config, &tray_menu, &mut profile_params);
                         }
                     } else {
                         warn!("Unknown menu event: {id}");
@@ -158,26 +156,45 @@ pub fn run(
     events::run(handle_messages);
 }
 
+fn profile_menu_id(port: Port) -> tray_icon::menu::MenuId {
+    format!("profile{}", port.index() + 1).into()
+}
+
+fn make_empty_profile_menu(port: Port) -> tray_icon::menu::Submenu {
+    tray_icon::menu::SubmenuBuilder::new()
+        .id(profile_menu_id(port))
+        .text(format!("Profile {}", port.index() + 1))
+        .enabled(false)
+        .build()
+        .expect("build submenu")
+}
+
 fn update_profiles(
     config: &Config,
-    profile_submenus: &[tray_icon::menu::Submenu],
+    menu: &tray_icon::menu::Menu,
     profile_menu_params: &mut HashMap<String, (Port, String)>,
 ) {
     profile_menu_params.clear();
 
     for port in Port::all() {
-        let submenu = &profile_submenus[port.index()];
+        let id = profile_menu_id(*port);
+        let index = menu
+            .items()
+            .iter()
+            .position(|item| *item.id() == id)
+            .expect("profile submenu is in tray");
 
-        submenu.set_enabled(false);
+        // Remove the old submenu and build the new one.
+        assert_eq!(*menu.remove_at(index).expect("removing submenu").id(), id);
 
-        while submenu.remove_at(0).is_some() {}
+        let submenu = make_empty_profile_menu(*port);
 
         let mut add_profile = |profile: &str| {
             let key = format!("port{}_{}", port.index() + 1, profile);
             let checked = config.profile.selected[port.index()] == *profile;
             let item = tray_icon::menu::CheckMenuItem::with_id(&key, profile, true, checked, None);
 
-            let _ = submenu.append(&item);
+            submenu.append(&item).expect("tray append");
             profile_menu_params.insert(key, (*port, profile.to_string()));
         };
 
@@ -191,13 +208,17 @@ fn update_profiles(
         keys.sort();
 
         add_profile("default");
-        let _ = submenu.append(&tray_icon::menu::PredefinedMenuItem::separator());
+        submenu
+            .append(&tray_icon::menu::PredefinedMenuItem::separator())
+            .expect("tray append");
 
         for profile in keys {
             add_profile(profile);
         }
 
         submenu.set_enabled(true);
+
+        menu.insert(&submenu, index).expect("tray insert");
     }
 }
 
