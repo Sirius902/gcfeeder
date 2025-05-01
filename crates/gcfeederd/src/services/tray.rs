@@ -169,6 +169,8 @@ fn make_empty_profile_menu(port: Port) -> tray_icon::menu::Submenu {
         .expect("build submenu")
 }
 
+// FUTURE(Sirius902) Only rebuild necessary parts. We have to be careful to avoid KDE caching
+// issues though.
 fn update_profiles(
     config: &Config,
     menu: &tray_icon::menu::Menu,
