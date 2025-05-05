@@ -169,8 +169,6 @@ fn make_empty_profile_menu(port: Port) -> tray_icon::menu::Submenu {
         .expect("build submenu")
 }
 
-// FUTURE(Sirius902) Only rebuild necessary parts. We have to be careful to avoid KDE caching
-// issues though.
 fn update_profiles(
     config: &Config,
     menu: &tray_icon::menu::Menu,
@@ -249,6 +247,7 @@ mod events {
 
     pub fn run(mut handle_messages: impl FnMut() -> bool + 'static) {
         let mut msg = MSG::default();
+        // TODO(Sirius902) Handle -1 return code. Excuse me for thinking "BOOL" is a boolean.
         while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
             unsafe {
                 let _ = TranslateMessage(&msg);
