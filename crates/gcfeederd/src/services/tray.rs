@@ -226,10 +226,12 @@ fn update_profiles(
 mod events {
     use std::sync::atomic::{AtomicU32, Ordering};
 
+    use tracing::error;
+    use windows::core::BOOL;
     use windows::Win32::Foundation::{LPARAM, WPARAM};
     use windows::Win32::System::Threading::GetCurrentThreadId;
     use windows::Win32::UI::WindowsAndMessaging::{
-        DispatchMessageW, GetMessageW, PostThreadMessageW, TranslateMessage, MSG, WM_NULL,
+        DispatchMessageW, GetMessageW, PostThreadMessageW, TranslateMessage, MSG, WM_QUIT,
     };
 
     static EVENT_THREAD_ID: AtomicU32 = AtomicU32::new(0);
@@ -242,21 +244,36 @@ mod events {
         let event_thread_id = EVENT_THREAD_ID.load(Ordering::Relaxed);
         assert!(event_thread_id != 0, "event_thread_id is set");
 
-        let _ = unsafe { PostThreadMessageW(event_thread_id, WM_NULL, WPARAM(0), LPARAM(0)) };
+        let _ = unsafe { PostThreadMessageW(event_thread_id, WM_QUIT, WPARAM(0), LPARAM(0)) };
     }
 
     pub fn run(mut handle_messages: impl FnMut() -> bool + 'static) {
         let mut msg = MSG::default();
-        // TODO(Sirius902) Handle -1 return code. Excuse me for thinking "BOOL" is a boolean.
-        while unsafe { GetMessageW(&mut msg, None, 0, 0) }.as_bool() {
-            unsafe {
-                let _ = TranslateMessage(&msg);
-                DispatchMessageW(&msg);
+        loop {
+            match unsafe { GetMessageW(&mut msg, None, 0, 0) } {
+                BOOL(0) => {}
+                BOOL(-1) => {
+                    error!(
+                        "Failed to get message: {}",
+                        windows::core::Error::from_win32()
+                    );
+                }
+                BOOL(_) => {
+                    unsafe {
+                        let _ = TranslateMessage(&msg);
+                        DispatchMessageW(&msg);
+                    }
+
+                    if handle_messages() {
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
             }
 
-            if handle_messages() {
-                break;
-            }
+            handle_messages();
+            break;
         }
     }
 }
