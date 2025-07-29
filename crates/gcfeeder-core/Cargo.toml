@@ -13,7 +13,7 @@ async-trait = "0.1"
 conv = "0.3"
 gcinput = { path = "../gcinput", features = ["nalgebra"] }
 nalgebra = "0.33"
-nusb = "0.1"
+nusb = { workspace = true }
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["rt", "sync"] }

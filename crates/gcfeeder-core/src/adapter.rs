@@ -1,10 +1,15 @@
+use std::time::Duration;
+
 use gcinput::{Input, Rumble, Stick};
-use nusb::transfer::{ControlOut, ControlType, Recipient, RequestBuffer};
+use nusb::transfer::{Buffer, ControlOut, ControlType, In, Interrupt, Out, Recipient};
 use tracing::debug;
 
 const VID: u16 = 0x057E;
 const PID: u16 = 0x0337;
 
+// FUTURE(Sirius902) nusb timeout is hardcoded to 5 seconds for Windows so just match for now.
+// Figure out what the proper thing is to do later.
+const TIMEOUT: Duration = Duration::from_secs(5);
 const INPUT_PAYLOAD_LEN: usize = 37;
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -19,6 +24,8 @@ pub enum Error {
     MissingEndpoints,
     #[error("io error: {0}")]
     Io(#[from] std::io::Error),
+    #[error("nusb error: {0}")]
+    Nusb(#[from] nusb::Error),
     #[error("nusb transfer error: {0}")]
     NusbTransfer(#[from] nusb::transfer::TransferError),
 }
@@ -40,19 +47,19 @@ impl Adapter {
 
         // FUTURE(Sirius902) Use `watch_devices`.
         let mut device: Option<nusb::Device> = None;
-        for device_info in nusb::list_devices()? {
+        for device_info in nusb::list_devices().await? {
             if Self::is_candidate(&device_info) {
                 debug!("Adapter candidate found");
 
                 // FUTURE(Sirius902) Don't fail the function if the adapter fails to open, try
                 // others.
-                device = Some(device_info.open()?);
+                device = Some(device_info.open().await?);
                 break;
             }
         }
 
         let device = device.ok_or(Error::NoDevice)?;
-        let interface = device.detach_and_claim_interface(0)?;
+        let interface = device.detach_and_claim_interface(0).await?;
 
         let endpoints = Self::find_endpoints(&interface)?;
 
@@ -60,22 +67,25 @@ impl Adapter {
         // This call makes Nyko-brand (and perhaps other) adapters work.
         // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
         interface
-            .control_out(ControlOut {
-                control_type: ControlType::Class,
-                recipient: Recipient::Interface,
-                request: 11,
-                value: 0x0001,
-                index: 0x0,
-                data: &[],
-            })
-            .await
-            .into_result()?;
+            .control_out(
+                ControlOut {
+                    control_type: ControlType::Class,
+                    recipient: Recipient::Interface,
+                    request: 11,
+                    value: 0x0001,
+                    index: 0x0,
+                    data: &[],
+                },
+                TIMEOUT,
+            )
+            .await?;
 
         // Initialize writing controller rumble.
-        interface
-            .interrupt_out(endpoints.out, vec![0x13])
-            .await
-            .into_result()?;
+        {
+            let mut endpoint = interface.endpoint::<Interrupt, Out>(endpoints.out)?;
+            endpoint.submit(vec![0x13].into());
+            endpoint.next_complete().await;
+        }
 
         let adapter = Self {
             interface,
@@ -98,31 +108,34 @@ impl Adapter {
 
         debug!("Attempting to open adapter...");
 
-        let device = device_info.open()?;
+        let device = device_info.open().await?;
 
-        let interface = device.detach_and_claim_interface(0)?;
+        let interface = device.detach_and_claim_interface(0).await?;
         let endpoints = Self::find_endpoints(&interface)?;
 
         // From Dolphin:
         // This call makes Nyko-brand (and perhaps other) adapters work.
         // However it returns LIBUSB_ERROR_PIPE with Mayflash adapters.
         interface
-            .control_out(ControlOut {
-                control_type: ControlType::Class,
-                recipient: Recipient::Interface,
-                request: 11,
-                value: 0x0001,
-                index: 0x0,
-                data: &[],
-            })
-            .await
-            .into_result()?;
+            .control_out(
+                ControlOut {
+                    control_type: ControlType::Class,
+                    recipient: Recipient::Interface,
+                    request: 11,
+                    value: 0x0001,
+                    index: 0x0,
+                    data: &[],
+                },
+                TIMEOUT,
+            )
+            .await?;
 
         // Initialize writing controller rumble.
-        interface
-            .interrupt_out(endpoints.out, vec![0x13])
-            .await
-            .into_result()?;
+        {
+            let mut endpoint = interface.endpoint::<Interrupt, Out>(endpoints.out)?;
+            endpoint.submit(vec![0x13].into());
+            endpoint.next_complete().await;
+        }
 
         let adapter = Self {
             interface,
@@ -138,9 +151,13 @@ impl Adapter {
     }
 
     pub async fn read_inputs(&self) -> Result<[Option<Input>; Port::COUNT]> {
-        let payload = self
+        let mut endpoint = self
             .interface
-            .interrupt_in(self.endpoints.in_, RequestBuffer::new(INPUT_PAYLOAD_LEN))
+            .endpoint::<Interrupt, In>(self.endpoints.in_)?;
+        endpoint.submit(Buffer::new(INPUT_PAYLOAD_LEN));
+
+        let payload = endpoint
+            .next_complete()
             .await
             .into_result()
             .map_err(|err| match err {
@@ -152,17 +169,22 @@ impl Adapter {
     }
 
     pub async fn write_rumble(&self, states: [Rumble; Port::COUNT]) -> Result<()> {
-        self.interface
-            .interrupt_out(
-                self.endpoints.out,
-                vec![
-                    0x11,
-                    states[0].into(),
-                    states[1].into(),
-                    states[2].into(),
-                    states[3].into(),
-                ],
-            )
+        let mut endpoint = self
+            .interface
+            .endpoint::<Interrupt, Out>(self.endpoints.out)?;
+        endpoint.submit(
+            vec![
+                0x11,
+                states[0].into(),
+                states[1].into(),
+                states[2].into(),
+                states[3].into(),
+            ]
+            .into(),
+        );
+
+        endpoint
+            .next_complete()
             .await
             .into_result()
             .map_err(|err| match err {

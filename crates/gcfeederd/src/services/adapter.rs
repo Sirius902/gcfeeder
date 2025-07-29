@@ -143,7 +143,7 @@ async fn run(
 }
 
 async fn try_connect_adapter() -> Option<(Adapter, nusb::DeviceId)> {
-    match nusb::list_devices() {
+    match nusb::list_devices().await {
         Ok(mut devices) => loop {
             if let Some(device_info) = devices.next() {
                 if let Ok(adapter) = Adapter::try_open(&device_info).await {
