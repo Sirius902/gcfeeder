@@ -9,7 +9,7 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-nalgebra = { version = "0.33", optional = true }
+nalgebra = { workspace = true, optional = true }
 serde = { version = "1", features = ["derive"] }
 
 [features]

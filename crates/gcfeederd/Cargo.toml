@@ -26,7 +26,7 @@ toml = "0.8"
 tracing = "0.1"
 tracing-appender = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tray-icon = "0.20"
+tray-icon = "0.21"
 winit = { version = "0.30", features = ["x11"], default-features = false }
 
 [target.'cfg(target_os = "windows")'.dependencies]
