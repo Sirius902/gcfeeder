@@ -6,7 +6,7 @@ pub use vc::*;
 
 #[cfg(test)]
 mod tests {
-    use gcinput::{Input, Stick, STICK_RANGE};
+    use gcinput::{Input, STICK_RANGE, Stick};
 
     use super::{Clamp, Vc};
     use crate::layers::mm_vc::{InverseClamp, InverseVc};

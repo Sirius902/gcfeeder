@@ -188,9 +188,9 @@ fn gc_to_n64(coords: [u8; 2]) -> [u8; 2] {
 
 #[cfg(test)]
 mod tests {
-    use gcinput::{StickRange, STICK_RANGE};
+    use gcinput::{STICK_RANGE, StickRange};
 
-    use super::{gc_to_n64, Quadrant};
+    use super::{Quadrant, gc_to_n64};
 
     #[test]
     fn qudrant_works() {

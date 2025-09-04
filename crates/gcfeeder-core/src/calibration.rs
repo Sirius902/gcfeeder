@@ -1,7 +1,7 @@
 use std::array;
 use std::sync::LazyLock;
 
-use gcinput::{Input, Stick, STICK_RANGE, TRIGGER_RANGE};
+use gcinput::{Input, STICK_RANGE, Stick, TRIGGER_RANGE};
 use nalgebra::{Matrix3, Vector2, Vector3};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;

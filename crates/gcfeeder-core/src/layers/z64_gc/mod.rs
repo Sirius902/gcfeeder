@@ -6,7 +6,7 @@ pub use gc::*;
 
 #[cfg(test)]
 mod tests {
-    use gcinput::{Input, Stick, STICK_RANGE};
+    use gcinput::{Input, STICK_RANGE, Stick};
 
     use super::{Clamp, Gc};
     use crate::layers::z64_gc::{InverseClamp, InverseGc};

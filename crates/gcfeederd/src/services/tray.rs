@@ -227,12 +227,12 @@ mod events {
     use std::sync::atomic::{AtomicU32, Ordering};
 
     use tracing::error;
-    use windows::core::BOOL;
     use windows::Win32::Foundation::{LPARAM, WPARAM};
     use windows::Win32::System::Threading::GetCurrentThreadId;
     use windows::Win32::UI::WindowsAndMessaging::{
-        DispatchMessageW, GetMessageW, PostThreadMessageW, TranslateMessage, MSG, WM_QUIT,
+        DispatchMessageW, GetMessageW, MSG, PostThreadMessageW, TranslateMessage, WM_QUIT,
     };
+    use windows::core::BOOL;
 
     static EVENT_THREAD_ID: AtomicU32 = AtomicU32::new(0);
 

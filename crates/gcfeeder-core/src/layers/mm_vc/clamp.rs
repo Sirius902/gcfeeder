@@ -1,5 +1,5 @@
 use conv::{ConvUtil, UnwrapOrSaturate};
-use gcinput::{Input, Stick, STICK_RANGE};
+use gcinput::{Input, STICK_RANGE, Stick};
 
 // FUTURE(Sirius902) Merge this module with the z64_gc one, they are identical.
 

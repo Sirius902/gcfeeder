@@ -1,4 +1,4 @@
-use gcinput::{Input, Stick, STICK_RANGE};
+use gcinput::{Input, STICK_RANGE, Stick};
 
 pub struct AnalogScaling {
     scale: f64,

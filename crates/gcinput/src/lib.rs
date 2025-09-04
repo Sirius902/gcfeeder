@@ -33,11 +33,7 @@ impl From<Rumble> for u8 {
 
 impl From<bool> for Rumble {
     fn from(b: bool) -> Self {
-        if b {
-            Self::On
-        } else {
-            Self::Off
-        }
+        if b { Self::On } else { Self::Off }
     }
 }
 

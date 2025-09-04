@@ -112,11 +112,7 @@ impl Driver {
 
     fn write_inputs(device: &mut VirtualDevice, input: &Input) -> std::io::Result<()> {
         let btn_state = |b: bool| {
-            if b {
-                1
-            } else {
-                0
-            }
+            if b { 1 } else { 0 }
         };
 
         let hat_state = |pos: bool, neg: bool| match (pos, neg) {

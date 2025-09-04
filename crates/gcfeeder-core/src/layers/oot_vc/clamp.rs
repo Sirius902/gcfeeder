@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use conv::{ConvUtil, UnwrapOrSaturate};
-use gcinput::{Input, Stick, STICK_RANGE};
+use gcinput::{Input, STICK_RANGE, Stick};
 
 #[derive(Default)]
 pub struct Clamp;

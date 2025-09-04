@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::calibration::{SticksCalibration, TriggersCalibration};
+use crate::driver::DriverType;
 #[cfg(target_os = "windows")]
 use crate::driver::vigem::Config as ViGEmConfig;
-use crate::driver::DriverType;
 use crate::layers::EssInversion;
 
 #[derive(Copy, Clone, Serialize, Deserialize)]

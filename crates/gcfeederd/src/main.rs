@@ -6,8 +6,8 @@ use gcfeederd::services;
 use tokio::sync::oneshot;
 use tokio_util::task::TaskTracker;
 use tracing::{info, warn};
-use tracing_subscriber::prelude::*;
 use tracing_subscriber::EnvFilter;
+use tracing_subscriber::prelude::*;
 
 fn main() {
     let _guard = setup_logging();

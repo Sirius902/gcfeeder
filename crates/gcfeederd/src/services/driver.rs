@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use gcfeeder_core::adapter::Port;
-use gcfeeder_core::driver::rumble::PatternRumbler;
 use gcfeeder_core::driver::Driver;
+use gcfeeder_core::driver::rumble::PatternRumbler;
 use gcfeeder_core::feeder::RumbleSetting;
 use gcfeeder_core::layers::{self, Layer};
 use gcinput::{Input, Rumble};

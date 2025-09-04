@@ -2,7 +2,7 @@ mod clamp;
 mod vc;
 
 pub use clamp::*;
-use gcinput::{Stick, STICK_RANGE};
+use gcinput::{STICK_RANGE, Stick};
 pub use vc::*;
 
 pub fn is_ess(stick: Stick) -> bool {
@@ -53,7 +53,7 @@ pub fn is_ess(stick: Stick) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use gcinput::{Input, Stick, STICK_RANGE};
+    use gcinput::{Input, STICK_RANGE, Stick};
 
     use super::{Clamp, Vc};
     use crate::layers::oot_vc::{InverseClamp, InverseVc};
