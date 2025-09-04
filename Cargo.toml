@@ -7,7 +7,7 @@ resolver = "2"
 [workspace.package]
 authors = ["Sirius902"]
 description = "A ViGEm / evdev feeder for GameCube controllers using the GameCube Controller Adapter."
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/Sirius902/gcfeeder"
