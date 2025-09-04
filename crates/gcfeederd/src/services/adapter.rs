@@ -119,14 +119,13 @@ async fn run(
                 match event {
                     nusb::hotplug::HotplugEvent::Connected(device_info) => {
                         let adapter_is_none = { tx_adapter.borrow().is_none() };
-                        if adapter_is_none {
-                            if let Ok(adapter) = Adapter::try_open(&device_info).await {
+                        if adapter_is_none
+                            && let Ok(adapter) = Adapter::try_open(&device_info).await {
                                 adapter_id = Some(device_info.id());
                                 tx_adapter.send(Some(Arc::new(adapter))).expect("adapter send");
 
                                 info!("Adapter connected");
                             }
-                        }
                     }
                     nusb::hotplug::HotplugEvent::Disconnected(device_id) => {
                         if adapter_id == Some(device_id) {

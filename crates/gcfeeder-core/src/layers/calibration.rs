@@ -30,8 +30,8 @@ impl super::Layer for Calibration {
 
     fn apply(&mut self, mut input: Option<gcinput::Input>) -> Option<gcinput::Input> {
         if let Some(input) = input.as_mut() {
-            if !self.stick_bad {
-                if let Some(calibration) = self.stick_data.as_ref() {
+            if !self.stick_bad
+                && let Some(calibration) = self.stick_data.as_ref() {
                     if let Ok(i) = calibration.map(*input) {
                         *input = i;
                     } else {
@@ -39,10 +39,9 @@ impl super::Layer for Calibration {
                         warn!("Ignoring bad stick calibration");
                     }
                 }
-            }
 
-            if !self.trigger_bad {
-                if let Some(calibration) = self.trigger_data.as_ref() {
+            if !self.trigger_bad
+                && let Some(calibration) = self.trigger_data.as_ref() {
                     if let Ok(i) = calibration.map(*input) {
                         *input = i;
                     } else {
@@ -50,7 +49,6 @@ impl super::Layer for Calibration {
                         warn!("Ignoring bad trigger calibration");
                     }
                 }
-            }
         }
 
         input
