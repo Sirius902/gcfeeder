@@ -57,8 +57,6 @@ pub fn start(task_tracker: &TaskTracker) -> Service {
 }
 
 async fn load_config(path: Option<impl AsRef<Path>>) -> Config {
-    
-
     if let Some(config_file_path) = path {
         match tokio::fs::read_to_string(config_file_path).await {
             Ok(config_file) => toml::from_str::<Config>(&config_file).unwrap_or_else(|err| {
@@ -133,12 +131,13 @@ async fn run(
         directories::BaseDirs::new().map(|dirs| dirs.config_local_dir().join("gcfeeder"));
 
     if let Some(config_dir) = &config_dir
-        && let Err(err) = std::fs::create_dir_all(config_dir) {
-            warn!(
-                "Failed to create config dir \"{}\": {err}",
-                config_dir.display()
-            );
-        }
+        && let Err(err) = std::fs::create_dir_all(config_dir)
+    {
+        warn!(
+            "Failed to create config dir \"{}\": {err}",
+            config_dir.display()
+        );
+    }
 
     let config_file_path = config_dir.map(|p| p.join("gcfeeder.toml"));
 
