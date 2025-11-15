@@ -58,4 +58,3 @@ impl RumbleSetting {
         &[Self::On, Self::Off]
     }
 }
-
