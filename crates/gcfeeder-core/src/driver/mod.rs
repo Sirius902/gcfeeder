@@ -32,10 +32,12 @@ pub enum Error {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
+#[derive(Default)]
 pub enum DriverType {
     #[cfg(target_os = "windows")]
     ViGEm,
     #[cfg(target_os = "linux")]
+    #[default]
     Evdev,
     #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     None,
@@ -61,19 +63,3 @@ impl DriverType {
     }
 }
 
-impl Default for DriverType {
-    fn default() -> Self {
-        #[cfg(target_os = "windows")]
-        {
-            Self::ViGEm
-        }
-        #[cfg(target_os = "linux")]
-        {
-            Self::Evdev
-        }
-        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-        {
-            Self::None
-        }
-    }
-}

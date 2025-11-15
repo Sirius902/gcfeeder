@@ -45,7 +45,9 @@ pub struct EssConfig {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum RumbleSetting {
+    #[default]
     On,
     Off,
 }
@@ -57,8 +59,3 @@ impl RumbleSetting {
     }
 }
 
-impl Default for RumbleSetting {
-    fn default() -> Self {
-        Self::On
-    }
-}

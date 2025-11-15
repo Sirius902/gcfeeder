@@ -11,16 +11,13 @@ pub const TRIGGER_RANGE: AnalogRange = AnalogRange {
 };
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum Rumble {
+    #[default]
     Off,
     On,
 }
 
-impl Default for Rumble {
-    fn default() -> Self {
-        Self::Off
-    }
-}
 
 impl From<Rumble> for u8 {
     fn from(rumble: Rumble) -> Self {
