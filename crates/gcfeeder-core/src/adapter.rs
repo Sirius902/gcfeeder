@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use gcinput::{Input, Rumble, Stick};
 use nusb::transfer::{Buffer, ControlOut, ControlType, In, Interrupt, Out, Recipient};
-use tracing::debug;
+use tracing::{debug, warn};
 
 const VID: u16 = 0x057E;
 const PID: u16 = 0x0337;
@@ -162,6 +162,10 @@ impl Adapter {
             .into_result()
             .map_err(|err| match err {
                 nusb::transfer::TransferError::Disconnected => Error::Disconnected,
+                nusb::transfer::TransferError::Unknown(_) => {
+                    warn!("Unknown nusb error encountered, disconnecting: {err}");
+                    Error::Disconnected
+                }
                 _ => err.into(),
             })?;
 
@@ -189,6 +193,10 @@ impl Adapter {
             .into_result()
             .map_err(|err| match err {
                 nusb::transfer::TransferError::Disconnected => Error::Disconnected,
+                nusb::transfer::TransferError::Unknown(_) => {
+                    warn!("Unknown nusb error encountered, disconnecting: {err}");
+                    Error::Disconnected
+                }
                 _ => err.into(),
             })?;
 
